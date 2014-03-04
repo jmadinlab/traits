@@ -1,0 +1,76 @@
+<% provide(:title, 'Standards') %>
+
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+
+		<h3>Standards</h3>
+
+		<div class="well">
+			<% if signed_in? %>	
+				<%= link_to 'New Standard', new_standard_path, class: "btn btn-primary btn-md pull-right" %>
+			<% end %>
+			
+			<div class="row">
+			  <div class="col-lg-6">
+					<%= form_tag standards_path, :method => 'get' do %>
+				    <div class="input-group">
+				      <%= text_field_tag :search, params[:search], :placeholder => "Search standards...", class: "form-control" %>
+				      <span class="input-group-btn">
+						    <%= submit_tag "Search", :name => nil, class: "btn btn-default" %>
+								<%= link_to 'Reset', standards_path, class: "btn btn-default" %>
+				      </span>
+				    </div>
+					<% end %>
+			  </div>
+			</div>
+
+			<br/>Download standards list as a <%= link_to "csv", standards_path(format: "csv") %>.
+
+		</div>
+
+		<table class="table table-condensed">
+		  <thead>
+		    <tr>
+		      <th></th>
+		      <th style="color: lightgrey;">ID</th>
+		      <th>Standard name</th>
+		      <th>Standard unit</th>
+		      <th></th>
+		    </tr>
+		  </thead>
+
+			<tbody>
+				<% temp = "" %>
+				<% @standards.sort_by{ |h| [h[:standard_class], h[:standard_name]] }.each do |stand| %>
+				  <tr>
+						<% if temp != stand.standard_class %>
+							<% temp = stand.standard_class %>
+							<td><b>
+								<% if stand.standard_class.blank? %>
+									Still to be categorised
+								<% else %>
+									<%= stand.standard_class %>
+								<% end %>
+							</b>
+						<% else %>
+				    	<td style="border:none;"></td>
+						<% end %>
+				    <td style="color: lightgrey;"><%= stand.id %></td>
+				    <td><%= link_to stand.standard_name, stand %></td>
+				    <td><%= stand.standard_unit %></td>
+						
+			      <td style="text-align:right; min-width: 170px;">
+			      <%= link_to 'Edit', edit_standard_path(stand) %>
+					  <% if current_user.admin? %> |
+			      <%= link_to 'Delete', stand, method: :delete, data: { confirm: 'Are you sure?' } %><% end %></td>
+				  </tr>
+
+
+			  <% end %>
+			</tbody>
+
+		</table>
+
+	</div>
+</div>
+

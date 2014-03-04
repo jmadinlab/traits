@@ -1,0 +1,124 @@
+<% provide(:title, "Resource") %>
+
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+
+		<h3>
+		  Resource
+		</h3>
+
+		<p>
+		  <strong>Author:</strong>
+		  <%= @resource.author %>
+		</p>
+
+		<p>
+		  <strong>Year:</strong>
+		  <%= @resource.year %>
+		</p>
+
+		<p>
+		  <strong>Title:</strong>
+		  <%= @resource.title %>
+		</p>
+
+		<p>
+		  <strong>Resource type:</strong>
+		  <%= @resource.resource_type %>
+		</p>
+
+		<p>
+		  <strong>Doi isbn:</strong>
+			<% if @resource.doi_isbn.present? %>
+		  	<%= link_to "Link", @resource.doi_isbn, :target => "_blank" %>
+			<% else %>
+				No record
+			<% end %>
+		</p>
+
+		<p>
+		  <strong>Journal:</strong>
+		  <%= @resource.journal %>
+		</p>
+
+		<p>
+		  <strong>Volume pages:</strong>
+		  <%= @resource.volume_pages %>
+		</p>
+
+		<p>
+		  <strong>Resource notes:</strong>
+		  <%= @resource.resource_notes %>
+		</p>
+
+		<% if @resource.user.present? %>
+			<p>
+			  <strong>Contributor:</strong>
+			  <%= @resource.user.name %>
+			</p>
+		<% end %>
+
+		<p>
+			<%= link_to 'Edit', edit_resource_path(@resource) %> |
+		<%= link_to 'Back', resources_path %>
+		</p>
+		
+		<% if @resource.traits %>
+			<div class="well">
+				<p>Used as primary resource for following traits:</p>
+				<ul>
+					<% if @resource.traits.present? %>
+						<% @resource.traits.each do |tra| %>
+							<li><%= link_to tra.trait_name, trait_path(tra) %></li>
+						<% end %>
+					<% else %>
+						<li>No traits entered</li>
+					<% end %>
+				</ul>
+				<%= link_to 'Add Trait', new_citation_path(:resource => @resource), class: "btn btn-primary btn-md" %><%= link_to 'Manage Citations', citations_path(:resource => @resource), class: "pull-right" %>
+			</div>
+		<% end %>
+
+		<h3>Observations from this resource</h3>
+
+		<% if @observations.empty? %>
+			<p class="alert alert-danger">No records available.</p>
+		<% else %>
+
+			<% if @observations.size < Observation.where{resource_id == my{@resource.id}}.size %>
+	      <div class="alert alert-danger">Not all records for this resource are currently displayed.</div>
+	    <% else %>
+	    	<div class="alert alert-success">All records for this resource are displayed.</div>
+	    <% end %>
+
+			<div class="well">
+					
+				<%= form_tag resource_path, :method => 'get' do %>
+					<div class="row">
+					  <div class="col-lg-6">
+					    <div class="input-group">
+					      <%= text_field_tag :search, params[:search], :placeholder => "Search by value...", class: "form-control" %>
+					      <span class="input-group-btn">
+							    <%= submit_tag "Update", :name => nil, class: "btn btn-default" %>
+									<%= link_to 'Reset', resource_path, class: "btn btn-default" %>
+					      </span>
+					    </div>
+					  </div>
+						Return: <%= select_tag :n, options_for_select([10, 100, 1000, "all"], params[:n]) %> records.
+					</div>
+				<% end %>
+			
+				<% if @observations.size > 0 %>
+				
+					<br/>
+			
+					<%= link_to "Download", resource_path(format: "csv", search: params[:search], n: params[:n]), class: "btn btn-success btn-md" %> currently displayed data.
+					<% end %>
+			</div>	
+
+
+
+			<%= render "resource_observations" %>
+	   <% end %>
+	</div>
+</div>

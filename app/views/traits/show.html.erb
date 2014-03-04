@@ -1,0 +1,93 @@
+<% provide(:title, @trait.trait_name) %>
+
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+
+		<h3>
+			<%= @trait.trait_name %>
+		</h3>
+
+		<p>
+		  <strong>Default standard:</strong>
+			<% if !@trait.standard.blank? %>
+		  	<%= @trait.standard.standard_name %> (<%= @trait.standard.standard_unit %>)
+			<% end %>
+		</p>
+
+		<% if @trait.value_range.present? %>
+			<p>
+			  <strong>Value range:</strong>
+			  <%= @trait.value_range %>
+			</p>
+		<% end %>
+
+		<p>
+		  <strong>Trait class:</strong>
+		  <%= @trait.trait_class %>
+		</p>
+
+		<p>
+		  <strong>Trait description:</strong>
+			<% if @trait.value_range.present? %>
+			  <%= @trait.trait_description %>
+			<% else %>
+				Needs entering
+			<% end %>
+		</p>
+
+		<p>
+		  <strong>Contributor:</strong>
+			<% if !@trait.user.blank? %>
+		  	<%= @trait.user.name %>
+			<% end %>
+		</p>
+
+		<% img = "#{@trait.trait_name.downcase.tr(" ", "_")}.png" %>
+		<% @temp = @files.find_all{|item| item.include? img }.last %>
+
+		<% if !@temp.nil? %>
+			<p style="text-align:left;"><%= image_tag "traits/#{@trait.trait_name.downcase.tr(" ", "_")}.png", :style => "border:0px;", class:  "img-responsive" %></p>
+		<% end %>
+
+		<p>
+			<% if signed_in? && current_user.contributor? %>
+				<%= link_to 'Edit', edit_trait_path(@trait) %> |
+			<% end %>
+			<%= link_to 'Back', traits_path %>
+		</p>
+
+		
+		<div class="well">
+					
+			<%= form_tag trait_path, :method => 'get' do %>
+				<div class="row">
+				  <div class="col-lg-6">
+				    <div class="input-group">
+				      <%= text_field_tag :search, params[:search], :placeholder => "Search by value...", class: "form-control" %>
+				      <span class="input-group-btn">
+						    <%= submit_tag "Update", :name => nil, class: "btn btn-default" %>
+								<%= link_to 'Reset', trait_path, class: "btn btn-default" %>
+				      </span>
+				    </div>
+				  </div>
+					Return: <%= select_tag :n, options_for_select([10, 100, 1000, "all"], params[:n]) %> observations.
+				</div>
+			<% end %>
+			
+			<% if @observations.size > 0 %>
+				
+				<br/>
+			
+				<%= link_to "Download", trait_path(format: "csv", search: params[:search], n: params[:n]), class: "btn btn-success btn-md" %> currently displayed data.
+				<% end %>
+		</div>	
+
+		<% if @observations.size < Observation.joins{measurements}.where{measurements.trait_id == my{@trait.id}}.size %>
+      <div class="alert alert-danger">Not all observations for this trait are currently displayed.</div>
+    <% else %>
+    	<div class="alert alert-success">All observations for this trait are now displayed.</div>
+    <% end %>
+		
+		<%= render "trait_observations" %>
+	</div>
+</div>

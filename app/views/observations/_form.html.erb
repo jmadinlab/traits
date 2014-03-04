@@ -1,0 +1,60 @@
+<%= form_for @observation, class: "form-group" do |f| %>
+
+	<script>
+		$(document).ready(function() {
+			$('select#simple-example').select2();
+		});
+	</script>
+
+  <%= render 'shared/error_messages', object: f.object %>
+
+
+  <div class="form-group">
+	  <%= f.label :coral %><br/>
+			<%= f.select :coral_id, Coral.all.map { |u| [u.coral_name, u.id] }, { include_blank: "Choose coral..." }, { id: 'simple-example' } %> <%= link_to 'Add', new_coral_path, class: "label label-default pull-right" %>
+	</div>
+
+  <div class="form-group">
+	  <%= f.label :location %>
+		<br/><%= f.select :location_id, Location.all.map { |u| [u.location_name, u.id] }, { include_blank: "Choose location..." }, { id: 'simple-example' } %> <%= link_to 'Add', new_location_path, class: "label label-default pull-right" %>
+	</div>
+
+  <div class="form-group">
+	  <%= f.label :resource %>
+		<br/><%= f.select :resource_id, Resource.all.map { |u| ["#{u.author} (#{u.year})", u.id] }, { include_blank: "Choose resource..." }, { id: 'simple-example' } %> <%= link_to 'Add', new_resource_path, class: "label label-default pull-right" %>
+	</div>
+
+  <%= f.label :private %> <%= f.check_box :private %></p>
+  <%#= f.label :user %> <%#= current_user.name %></p>
+  <%#= f.hidden_field :user_id, :value => current_user.id %>
+
+	<div class="form-group">
+		<% if current_user.admin? %>
+				<%= f.label :user %>
+				<%= f.select :user_id, User.all.collect {|a| [a.name, a.id]}, {:selected => @observation.user_id}, class: "form-control" %>
+		<% else %>
+			<%= f.label :user %>: <%= current_user.name %>
+		  <%= f.hidden_field :user_id, :value => current_user.id %>
+		<% end %>
+	</div>
+
+
+
+  <% if f.object.measurements.blank? %>      
+    <% f.object.measurements.build %>
+  <% end %>
+
+  
+  <h3>Measurements</h3>
+  
+  <%= f.fields_for :measurements do |mea| %>
+  	<%= render "measurement_fields", :f => mea %>
+  <% end %>
+  <div class="links">
+    <p><%= link_to_add_association "Add another measurement", f, :measurements %></p>
+  </div>
+
+  <%= f.submit 'Save', class: "btn btn-primary btn-lg" %>
+
+
+<% end %>

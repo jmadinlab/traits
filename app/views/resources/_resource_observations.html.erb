@@ -1,0 +1,98 @@
+
+	<% temp = "" %>
+	<table class="table table-condensed">
+		<thead>
+			<tr>
+				<th style="text-align: right;">Coral</th>
+				<th>Location</th>
+				<th>Resource</th>
+				<th>Trait</th>
+				<th>Value</th>
+				<th>Access</th>
+				<th></th>
+			</tr>
+		</thead>
+
+		<% mark = "" %>
+		<% mark1 = "" %>
+		<% mark2 = "" %>
+
+		<tbody>
+			<% @observations.each do |grp| %>    
+			  <% grp.measurements.each do |mea| %>    
+					<tr>
+						<% if grp.coral.coral_name != mark %>
+							<td style="text-align: right;">
+								<em><%= link_to grp.coral.coral_name, "/corals/" + grp.coral_id.to_s %></em>
+							</td>				
+						<% else %>
+							<td style="border:none;">
+							</td>				
+						<% end %>
+		
+						<% if grp.id != mark1 %>
+
+						<td style="text-align:center;">
+		  				<% if !grp.location_id.blank? && grp.location_id != 0 %>
+		  				  <% if grp.location_id == 1 %>
+					      	<%= link_to "Global", "/locations/" + grp.location_id.to_s, 'data-no-turbolink' => true %>
+		  				  <% else %> 
+		  			      <%= link_to "", "/locations/" + grp.location_id.to_s, class: "glyphicon glyphicon-globe", 'data-no-turbolink' => true %>
+		  				  <% end %> 
+		  				<% end %> 
+		  			</td>
+
+							<td style="text-align:center;">
+								<% if !grp.resource_id.blank? && grp.resource_id != 0 %>
+								<%= link_to "", "/resources/" + grp.resource_id.to_s, class: "glyphicon glyphicon-book" %>
+								<% end %>
+							</td>
+
+						<% else %>
+							<td colspan=2 style="border:none;">
+							</td>				
+						<% end %>						
+		
+						<%# if mea.trait.trait_name != mark2 || grp.coral.coral_name != mark %>
+							<td style="text-align: right;">
+								<em><%= link_to mea.trait.trait_name, "/traits/" + mea.trait_id.to_s %></em>
+							</td>				
+						<%# else %>
+							<!-- <td style="border:none;">
+							</td>				 -->
+						<%# end %>
+
+						<td>
+							<%= mea.value %> 
+							<% if !mea.standard_id.blank? && mea.standard_id != 0 %>
+								<% sta = Standard.find(mea.standard_id).standard_unit %>
+									(<%= sta %>)
+							<% end %> 
+						</td>	
+
+						<% if grp.id != mark1 %>	
+							<% if grp.private == true %>
+								<td style="color:red;text-align:center;"><span class="glyphicon glyphicon-remove-circle"></span></td>
+							<% else %>
+								<td style="color:green;text-align:center;"><span class="glyphicon glyphicon-ok-circle"></span></td>
+							<% end %>
+							<td style="min-width: 130px;">
+								<%= link_to 'Show', observation_path(grp, :user => @user) %> |
+					    	<%= link_to 'Edit', edit_observation_path(grp, :user => @user) %> |
+					    	<%= link_to 'Delete', observation_path(grp, :user => @user), method: :delete, data: { confirm: 'Are you sure?' } %>
+							</td>
+						<% else %>
+							<td style="border:none;">
+							</td>				
+						<% end %>
+					</tr>
+
+					<% mark = grp.coral.coral_name %>
+					<% mark1 = grp.id %>
+					<% mark2 = mea.trait.trait_name %>
+				<% end %>
+			<% end %>
+		<tbody>
+	</table>
+
+

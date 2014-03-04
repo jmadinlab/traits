@@ -1,0 +1,89 @@
+<% provide(:title, 'Users') %>
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+	<h3>Contributors</h3>
+	<br>
+
+	<table class="table table-condensed">
+		<thead>
+		  <tr>
+		    <!-- <th style="color: lightgrey;">ID</th> -->
+		    <th>Name</th>
+		    <th>Email</th>
+			  <% if current_user.admin? %>
+	  	    <th style="text-align:center;">Admin</th>
+				<% end %>
+		    <th></th>
+		  </tr>
+		</thead>
+	
+	  <tbody>
+			<% @users.each do |user| %>
+				<% if user.contributor %>
+					<tr>
+						<td><%= link_to user.name, user %></td>
+					  <td><%= user.email %></td>
+					  <% if current_user.admin? %>
+						  <% if !user.admin? %>
+								<td style="color:red;text-align:center;"><span class="glyphicon glyphicon-remove-circle"></span></td>
+							<% else %>
+								<td style="color:green;text-align:center;"><span class="glyphicon glyphicon-ok-circle"></span></td>
+							<% end %>
+						<% end %>
+
+					  <td>      
+					  	<% if current_user.admin? && !current_user?(user) %>
+					    	<%= link_to "Delete", user, method: :delete, data: { confirm: "You sure?" } %>
+							<% end %>
+						</td>
+					</tr>
+				<% end %>
+			<% end %>
+		</tbody>
+	</table>
+
+	<% if current_user.admin %>
+		<h3>Other users</h3>
+		<br>
+
+		<table class="table table-condensed">
+			<thead>
+			  <tr>
+			    <!-- <th style="color: lightgrey;">ID</th> -->
+			    <th>Name</th>
+			    <th>Email</th>
+				  <% if current_user.admin? %>
+		  	    <th style="text-align:center;">Admin</th>
+					<% end %>
+			    <th></th>
+			  </tr>
+			</thead>
+	
+		  <tbody>
+				<% @users.each do |user| %>
+					<% if !user.contributor %>
+						<tr>
+							<td><%= link_to user.name, user %></td>
+						  <td><%= user.email %></td>
+						  <% if current_user.admin? %>
+							  <% if !user.admin? %>
+									<td style="color:red;text-align:center;"><span class="glyphicon glyphicon-remove-circle"></span></td>
+								<% else %>
+									<td style="color:green;text-align:center;"><span class="glyphicon glyphicon-ok-circle"></span></td>
+								<% end %>
+							<% end %>
+
+						  <td style="text-align:right; min-width: 150px;">      
+						  	<% if current_user.admin? && !current_user?(user) %>
+						    	<%= link_to "Delete", user, method: :delete, data: { confirm: "You sure?" } %>
+								<% end %>
+							</td>
+						</tr>
+					<% end %>
+				<% end %>
+			</tbody>
+		</table>
+	<% end %>
+
+	</div>
+</div>

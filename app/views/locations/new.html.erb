@@ -1,0 +1,14 @@
+<div class="row">
+	<div class="col-md-6 col-md-offset-3">
+		<h3>New location</h3>
+
+		<%= render 'form' %>
+
+		<% if params[:coral].blank? %>
+			<%= link_to 'Back', locations_path %>
+		<% else %>
+			<%= link_to 'Back', new_observation_path(:coral => params[:coral]) %>
+		<% end %>
+
+	</div>
+</div>

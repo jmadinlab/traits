@@ -1,0 +1,114 @@
+<% provide(:title, 'Locations') %>
+
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+
+		<h3>Locations</h3>
+
+		<div class="row">
+		  <div class="col-md-4">
+				<p>Data for each of the locations listed below can be downloaded by selecting them using the checkbox and clicking <code style="color:green;">Download</code>.  Only public trait data will be downloaded for each location.</p>
+			</div>
+		  <div class="col-md-8">
+				<div id="map-canvas" class="map-container"></div> 
+			</div>
+		</div>
+		
+		<br/>
+		
+		<div class="well">
+			<% if signed_in? %>	
+				<%= link_to 'New Location', new_location_path, class: "btn btn-primary btn-md pull-right" %>
+			<% end %>
+			
+			<div class="row">
+			  <div class="col-lg-6">
+					<%= form_tag locations_path, :method => 'get' do %>
+				    <div class="input-group">
+				      <%= text_field_tag :search, params[:search], :placeholder => "Search locations...", class: "form-control" %>
+				      <span class="input-group-btn">
+						    <%= submit_tag "Search", :name => nil, class: "btn btn-default" %>
+								<%= link_to 'Reset', locations_path, class: "btn btn-default" %>
+				      </span>
+				    </div>
+					<% end %>
+			  </div>
+			</div>
+
+			<br/>Download location list as a <%= link_to "csv", locations_path(format: "csv") %>.
+
+		</div>
+
+		<%= form_tag export_locations_path do %>
+
+			<table class="table table-condensed">
+			  <thead>
+			    <tr>
+			      <th style="color: lightgrey;"><%= sortable "id", "ID" %></th>
+			      <th><%= sortable "location_name", "Location name" %></th>
+			      <th><%= sortable "latitude", "Latitude" %></th>
+			      <th><%= sortable "longitude", "Longitude" %></th>
+			      <th style="text-align:center;"><%= submit_tag "Download", class: "btn btn-success btn-sm" %></th>
+			      <th>Obs</th>
+			      <th></th>
+			    </tr>
+			  </thead>
+
+			  <tbody>
+			    <% @locations.each do |location| %>
+			      <tr>
+			        <td style="color: lightgrey;"><%= location.id %></td>
+			        <td><%= link_to location.location_name, location, 'data-no-turbolink' => true %></td>
+			        <td><%= location.latitude.round(4) %></td>
+			        <td><%= location.longitude.round(4) %></td>
+						 	<td style="text-align:center;">
+								<%= check_box_tag "checked[]", location.id %>
+							</td>						
+			        <td><%= Observation.where(:location_id => location).size %></td>
+			        <td style="text-align:right; min-width: 170px;">
+			        <%= link_to 'Edit', edit_location_path(location) %>
+						  <% if current_user.admin? %> |
+			        <%= link_to 'Delete', location, method: :delete, data: { confirm: 'Are you sure?' } %><% end %></td>
+			      </tr>
+			    <% end %>
+			  </tbody>
+			</table>
+	   <% end %>
+	</div>
+</div>
+
+<script type="text/javascript">
+  var locations = <%= raw @locations.map {|i| [i.location_name.to_s, i.latitude.to_s, i.longitude.to_s, i.id.to_s] } %>;
+
+  var map = new google.maps.Map(document.getElementById('map-canvas'), {
+    zoom: 1,
+    center: new google.maps.LatLng(0, 155),
+    mapTypeId: google.maps.MapTypeId.SATELLITE,
+    streetViewControl: false
+  });
+
+  var infowindow = new google.maps.InfoWindow();
+
+  var marker, i;
+
+  for (i = 0; i < locations.length; i++) {  
+    marker = new google.maps.Marker({
+      position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+      map: map
+    });
+
+    google.maps.event.addListener(marker, 'click', (function(marker, i) {
+      return function() {
+        infowindow.setContent('<a data-no-turbolink="true" href="locations/'+locations[i][3]+'">'+locations[i][0]+'</a>');
+        infowindow.open(map, marker);
+      }
+    })(marker, i));
+  }
+</script>
+
+
+
+
+
+
+

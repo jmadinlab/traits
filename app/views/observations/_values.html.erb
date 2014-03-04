@@ -1,0 +1,22 @@
+<div class="panel panel-default">
+	<div class="panel-body">
+		<% if @values.present? %>
+			<p>
+				Suggested value for trait:
+				<ul>
+					<% @values.each do |v| %>
+						<li><%= v %></li>
+					<% end %>
+				</ul>
+			</p>
+		<% end %>
+		<% if @standard.present? %>
+			<p>
+				Suggested standard for trait:
+				<ul>
+					<li><%= @standard.standard_name %> (<%= @standard.standard_unit %>)</li>
+				</ul>
+			</p>
+		<% end %>
+	</div>
+</div>

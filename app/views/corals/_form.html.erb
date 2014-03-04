@@ -1,0 +1,28 @@
+<%= form_for(@coral) do |f| %>
+
+  <%= render 'shared/error_messages', object: f.object %>
+
+
+	<div class="form-group">
+		<%= f.label :coral_name %><br>
+		<%= f.text_field :coral_name, :placeholder => "Required...", class: "form-control" %>
+	</div>
+
+	<div class="form-group">
+		<%= f.label :coral_description %><br>
+		<%= f.text_area :coral_description, class: "form-control" %>
+	</div>
+
+	<div class="form-group">
+		<% if current_user.admin? %>
+				<%= f.label :user %>
+				<%= f.select :user_id, User.all.collect {|a| [a.name, a.id]}, {:selected => current_user.id}, class: "form-control" %>
+		<% else %>
+			<%= f.label :user %>: <%= current_user.name %>
+		  <%= f.hidden_field :user_id, :value => current_user.id %>
+		<% end %>
+	</div>
+	
+	<%= f.submit "Submit", class: "btn btn-primary btn-md" %>
+
+<% end %>

@@ -1,0 +1,150 @@
+<div class="row">
+	<div class="col-md-6 col-md-offset-3">
+
+		<h3>Observation record</h3>
+
+		<p>
+	  	<strong>Coral:</strong>
+		  <em><%= link_to @observation.coral.coral_name, "/corals/#{@observation.coral.id}" %></em>
+		</p>
+
+		<p>
+		  <strong>Location:</strong>
+			<% if @observation.location.present? %>
+			  <%= link_to @observation.location.location_name, "/locations/#{@observation.location.id}" %>
+			<% else %>
+					No record
+			<% end %>
+		</p>
+
+		<p>
+		  <strong>Resource:</strong>
+				<% if @observation.resource.present? %>
+		  		<%= link_to "#{@observation.resource.author} (#{@observation.resource.year}) #{@observation.resource.title}. #{@observation.resource.journal}, #{@observation.resource.volume_pages}.", "/resources/#{@observation.resource.id}" %>
+				<% else %>
+					No record
+				<% end %>
+		</p>
+
+		<p>
+		  <strong>Original user:</strong>
+			<% if @observation.user.present? %>
+		  	<%= link_to @observation.user.name, "/users/#{@observation.user.id}" %>
+			<% else %>
+				No record
+			<% end %>
+		</p>
+
+		<p>
+		  <strong>Access:</strong>
+			<% if @observation.private == true %>
+				<span class="glyphicon glyphicon-remove-circle" style="color:red;"></span>
+			<% else %>
+				<span class="glyphicon glyphicon-ok-circle" style="color:green;"></span>
+			<% end %>
+		</p>
+
+		
+		<% if @observation.updated_at.present? %>
+			<p>
+			  <strong>Last modified:</strong>
+			  <%= @observation.updated_at %>
+			</p>
+		<% end %>
+
+		<% if @observation.created_at.present? %>
+			<p>
+			  <strong>Created:</strong>
+			  <%= @observation.created_at %>
+			</p>
+		<% end %>
+
+		<h3>Measurements</h3>
+		<% if @observation.measurements.count > 0 %>
+		  <% @observation.measurements.each do |mea| %>
+			  <div class="well">
+					
+					
+					<div class="row">
+					  <div class="col-md-12">
+				      <strong>Trait:</strong> 
+					  	<%= link_to Trait.find(mea.trait_id).trait_name, "/traits/#{Trait.find(mea.trait_id).id}" %>
+						</div>
+					</div>
+
+					<div class="row">
+					  <div class="col-md-12">
+				      <strong>Standard:</strong> 
+							<% if mea.standard.present? %>
+					  		<%= link_to Standard.find(mea.standard_id).standard_name, "/standards/#{Standard.find(mea.standard_id).id}" %>
+								<% else %>
+									No record
+								<% end %>
+						</div>
+					</div>    
+	  
+					<div class="row">
+					  <div class="col-md-6">
+				      <strong>Value:</strong> <%= mea.value %>
+						</div>
+						<div class="col-md-6">
+				      (Original value: <%= mea.orig_value %>)
+						</div>
+					</div>
+					
+					<div class="row">
+					  <div class="col-md-6">
+				      <strong>Precision type:</strong> <%= mea.precision_type %>
+						</div>
+						<div class="col-md-6">
+				      <strong>Precision:</strong> <%= mea.precision %>
+						</div>
+					</div>
+
+					<div class="row">
+					  <div class="col-md-6">
+				      <strong>Precision upper:</strong> <%= mea.precision_upper %>
+						</div>
+						<div class="col-md-6">
+				      <strong>Replicate:</strong> <%= mea.replicates %>
+						</div>
+					</div>
+
+					<div class="row">
+					  <div class="col-md-6">
+				      <strong>User:</strong> <%= mea.user_id %>
+						</div>
+						<div class="col-md-6">
+				      <strong>Original user:</strong> <%= mea.orig_user_id %>
+						</div>
+					</div>
+
+					<div class="row">
+					  <div class="col-md-6">
+				      <strong>Last modified:</strong> <%= mea.updated_at %>
+						</div>
+						<div class="col-md-6">
+				      <strong>Created:</strong> <%= mea.created_at %>
+						</div>
+					</div>
+
+					<div class="row">
+					  <div class="col-md-12">
+				      <strong>Notes:</strong> <%= mea.notes %>
+						</div>
+					</div>
+										
+					
+		    </div>
+		  <% end %>
+		<% end %>
+
+
+		<p><%= link_to 'Edit', edit_observation_path(@observation) %> |
+    <%= link_to 'Back', user_path(current_user) %></p>
+
+
+  </div>
+ </div>
+
+

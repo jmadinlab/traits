@@ -1,0 +1,59 @@
+<% provide(:title, @user.name) %>
+
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+
+		<h3>
+		  <%= @user.name %>
+		</h3>
+
+		<p>
+		  <strong>Email:</strong>
+		  <%= @user.email %>
+		</p>
+
+		<% if current_user.contributor %>
+			<p>Observations that entered by <%= @user.name %> are listed below.  These are original/new observations only (i.e., not  observations that have been modified/edited). Displayed data can be downloaded by clicking <code style="color:green;">Download</code>.  Use the search filter and number of measurements to be returned (above) to limit or expand your download.  You will only see (and be able to download) public <span class="glyphicon glyphicon-ok-circle" style="color:green;"></span> observations as well as the private <span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> observations that you entered.  If these are your observations, then you can also control their access.</p>
+
+			<% if @observations.blank? %>
+				<div class="alert alert-danger">No records available.</div>
+			<% else %>
+
+				<% if @observations.size < Observation.where{user_id == my{@user.id}}.size %>
+			    <div class="alert alert-danger">Not all of <%= @user.name %>'s observations are currently displayed.</div>
+			  <% else %>
+			  	<div class="alert alert-success">All of <%= @user.name %>'s observations are displayed.</div>
+			  <% end %>
+		
+				<div class="well">
+					
+					<%= form_tag user_path, :method => 'get' do %>
+						<div class="row">
+						  <div class="col-lg-6">
+						    <div class="input-group">
+						      <%= text_field_tag :search, params[:search], :placeholder => "Search by value...", class: "form-control" %>
+						      <span class="input-group-btn">
+								    <%= submit_tag "Update", :name => nil, class: "btn btn-default" %>
+										<%= link_to 'Reset', user_path, class: "btn btn-default" %>
+						      </span>
+						    </div>
+						  </div>
+							Return: <%= select_tag :n, options_for_select([10, 100, 1000, "all"], params[:n]) %> measurements.  Keep in mind that very large data sets may take a while to load.
+						</div>
+					<% end %>
+
+					<% if @observations.size > 0 %>
+				
+						<br/>
+			
+						<%= link_to "Download", user_path(format: "csv", search: params[:search], n: params[:n]), class: "btn btn-success btn-md" %> currently displayed data as CSV file
+			    <% end %>
+
+				<!-- </div> -->
+				<%= render "user_observations" %>
+			
+			<% end %>	
+		<% end %>
+
+	</div>
+</div>
