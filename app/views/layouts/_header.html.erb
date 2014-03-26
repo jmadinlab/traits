@@ -18,6 +18,19 @@
 					<li><%= link_to "Home", root_path %></li>
 				</ul>
 
+				<ul class="nav navbar-nav navbar-left">
+		    <li id="fat-menu" class="dropdown">
+		       <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+		         Information<b class="caret"></b>
+		       </a>
+		       <ul class="dropdown-menu" style="text-align: left;">
+						 <li><%#= link_to "Download", download_path %></li>
+						 <li><%= link_to "About", about_path %></li>
+						 <li><%= link_to "Help", help_path %></li>
+		       </ul>
+		     </li>
+				</ul>
+
 			  <% if signed_in? %>
 					<ul class="nav navbar-nav navbar-left">
 			    <li id="fat-menu" class="dropdown">
@@ -38,11 +51,11 @@
 				         <li><%= link_to "Resources", "", style:"color:grey;" %></li>
 				         <li><%= link_to "Citations", "", style:"color:grey;" %></li>
 								<% end %>
-							 <li class="divider"></li>
+<!-- 							 <li class="divider"></li>
 							 <li><%#= link_to "Download", download_path %></li>
-							 <li><%= link_to "Help", help_path %></li>
-							 <li><%= link_to "About", about_path %></li>
-			       </ul>
+							 <li><%#= link_to "Help", help_path %></li>
+							 <li><%#= link_to "About", about_path %></li>
+ -->			       </ul>
 			     </li>
 					</ul>
 				<% end %>
