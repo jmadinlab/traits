@@ -1,4 +1,4 @@
-# Observations and Measurements Database (OBOE)
+# The Coral Trait Database
 
 This is the first application for the
 [*Observations and Measurement Tutorial*](http://railstutorial.org/)
