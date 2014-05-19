@@ -9,7 +9,7 @@ gem 'will_paginate'#, '3.0.4'
 gem 'bootstrap-will_paginate'#, '0.0.9'
 gem "select2-rails"
 # gem 'select2-sass-bootstrap-rails'
-gem "squeel"
+gem 'squeel', github: 'kiela/squeel'
 
 group :development, :test do
   gem 'sqlite3'#, '1.3.8'
