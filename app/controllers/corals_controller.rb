@@ -72,19 +72,18 @@ class CoralsController < ApplicationController
     
     @coral = Coral.find(params[:id])
 
-    # @observations = Observation.find(:all, :conditions => ["coral_id=?", @coral.id])
 
-    if signed_in? && current_user.contributor?
-      if current_user.admin?
-		    @observations = Observation.where(:coral_id => @coral.id)
-		  else
-        @observations = Observation.find(:all, :conditions => ["coral_id=? AND (private=? OR (user_id=? AND private=?))", @coral.id, false, current_user.id, true])
-      end
-    else
-      @observations = Observation.where(:coral_id => @coral.id).where(:private => false)
-      # flash[:success] = "You are not a data contributor. You will only see publicly accessable data and maps."
+    if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
+      @observations = Observation.where(['observations.coral_id IS ? AND observations.private IS ?', @coral.id, false])
     end
-    # @measurements = Measurement.where(:observation_id => @observations.map(&:id))
+    
+    if signed_in? && current_user.contributor?
+      @observations = Observation.where(['observations.coral_id IS ? AND (observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?))', @coral.id, false, current_user.id, true])
+    end
+
+    if signed_in? && current_user.admin?
+      @observations = Observation.where(:coral_id => @coral.id)
+    end
 
     respond_to do |format|
       format.html

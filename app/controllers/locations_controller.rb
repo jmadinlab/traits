@@ -80,18 +80,6 @@ class LocationsController < ApplicationController
       n = 9999999
     end
 
-    # if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
-    # @observations = Observation.where(:location_id => @location.id).where(:private => false).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").limit(n)
-    # end
-    
-    # if signed_in? && current_user.contributor?
-    #   @observations = Observation.where(:location_id => @location.id).where(:private => false).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").limit(n)
-    # end
-
-    # if signed_in? && current_user.admin?
-    #   @observations = Observation.where(:location_id => @location.id).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").limit(n)
-    # end
-
     if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
     @observations = Observation.where(['observations.location_id IS ? AND observations.private IS ?', @location.id, false]).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").limit(n)
     end
@@ -137,7 +125,7 @@ class LocationsController < ApplicationController
     
         send_data csv_string, 
           :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
-          :disposition => "attachment; filename=ctdb_#{Date.today.strftime('%Y%m%d')}.csv"
+          :disposition => "attachment; filename=location_#{Date.today.strftime('%Y%m%d')}.csv"
 
         }
     end

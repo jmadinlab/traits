@@ -87,13 +87,15 @@
 
 						<% if grp.id != mark1 %>	
 							<td style="min-width: 130px;">
-								<%= link_to 'Show', observation_path(grp, :user => @user) %> |
-					    	<%= link_to 'Edit', edit_observation_path(grp, :user => @user) %> |
-					    	<%= link_to 'Delete', observation_path(grp, :user => @user), method: :delete, data: { confirm: 'Are you sure?' } %>
+				  			<% if signed_in? && current_user.contributor? %>
+									<%= link_to 'Show', observation_path(grp, :user => @user) %> |
+						    	<%= link_to 'Edit', edit_observation_path(grp, :user => @user) %> |
+						    	<%= link_to 'Delete', observation_path(grp, :user => @user), method: :delete, data: { confirm: 'Are you sure?' } %>
+								<% end %>						
 							</td>
 						<% else %>
 							<td style="border:none;">
-							</td>				
+							</td>	
 						<% end %>						
 				
 					</tr>

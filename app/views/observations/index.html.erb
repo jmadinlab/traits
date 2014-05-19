@@ -1,28 +1,37 @@
-<% provide(:title, 'Locations') %>
+<% provide(:title, 'Observations') %>
 
 <div class="row">
-  <div class="col-md-10 col-md-offset-1">
+  <div class="col-md-8 col-md-offset-2">
 
 		<h3>Observations</h3>
 
+
 		<div class="well">
-			Download observations and measurements as a <%= link_to "csv", observations_path(format: "csv") %>.
+			
+			<%= form_tag observations_path, :method => 'get' do %>
+				<div class="row">
+				  <div class="col-lg-6">
+				    <div class="input-group">
+				      <%= text_field_tag :search, params[:search], :placeholder => "Search by value...", class: "form-control" %>
+				      <span class="input-group-btn">
+						    <%= submit_tag "Update", :name => nil, class: "btn btn-default" %>
+								<%= link_to 'Reset', observations_path, class: "btn btn-default" %>
+				      </span>
+				    </div>
+				  </div>
+					Return: <%= select_tag :n, options_for_select([10, 100, 1000, "all"], params[:n]) %> measurements.  Keep in mind that very large data sets may take a while to load.
+				</div>
+			<% end %>
+
+			<% if @observations.size > 0 %>
+		
+				<br/>
+	
+				<%= link_to "Download", observations_path(format: "csv", search: params[:search], n: params[:n]), class: "btn btn-success btn-md" %> currently displayed data as CSV file
+	    <% end %>
+
 		</div>
 
-		<div class="row">
-		  <div class="col-lg-6">
-				<%= form_tag observations_path, :method => 'get' do %>
-			    <div class="input-group">
-			      <%= text_field_tag :search, params[:search], :placeholder => "Search observations by measurement value...", class: "form-control" %>
-			      <span class="input-group-btn">
-					    <%= submit_tag "Search", :name => nil, class: "btn btn-default" %>
-							<%= link_to 'Reset', observations_path, class: "btn btn-default" %>
-			      </span>
-			    </div>
-					Return: <%= select_tag :n, options_for_select([10, 100, 1000], params[:n]) %> observations
-				<% end %>
-		  </div>
-		</div>
 
 		<br/>
 		<% if @observations.empty? %>

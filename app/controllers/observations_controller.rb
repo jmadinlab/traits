@@ -31,41 +31,28 @@ class ObservationsController < ApplicationController
   def index
 
     if params[:n].blank?
-      params[:n] = 100
+      params[:n] = 10
+    end
+    
+    n = params[:n]
+    
+    if params[:n] == "all"
+      n = 9999999
+    end
+
+    if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
+      @observations = Observation.where(['observations.private IS ?', false]).includes(:coral).joins(:measurements).where('measurements.value LIKE ?', "%#{params[:search]}%").limit(n)
     end
     
     if signed_in? && current_user.contributor?
-      if current_user.admin?
-        @observations = Observation.includes(:coral).
-          joins{measurements}.
-          where{measurements.value =~ my{"%#{params[:search]}%"}}.limit(params[:n]) |
-          Observation.includes(:coral).
-          joins{measurements.trait}.
-          where{measurements.traits.trait_name =~ my{"%#{params[:search]}%"}}.limit(params[:n])  
-		  else
-        @observations = Observation.
-          where{ (private == 'f') | ((user_id == my{current_user.id}) & (private == 't')) }.
-          includes(:coral).
-          joins{measurements}.
-          where{measurements.value =~ my{"%#{params[:search]}%"}}.limit(params[:n]) |
-          Observation.
-          where{ (private == 'f') | ((user_id == my{current_user.id}) & (private == 't')) }.
-          includes(:coral).          
-          joins{measurements.trait}.
-          where{measurements.traits.trait_name =~ my{"%#{params[:search]}%"}}.limit(params[:n])
-      end
-    else
-      @observations = Observation.includes(:coral).
-        where{ (private == 'f') }.
-        joins{measurements}.
-        where{measurements.value =~ my{"%#{params[:search]}%"}}.limit(params[:n]) |
-        Observation.includes(:coral).
-        where{ (private == 'f') }.
-        joins{measurements.trait}.
-        where{measurements.traits.trait_name =~ my{"%#{params[:search]}%"}}.limit(params[:n])
-      flash[:warning] = "You are not a data contributor. You will only see publicly accessable data and maps."
+      @observations = Observation.where(['observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?)', false, current_user.id, true]).includes(:coral).joins(:measurements).where('measurements.value LIKE ?', "%#{params[:search]}%").limit(n)
     end
 
+    if signed_in? && current_user.admin?
+      @observations = Observation.includes(:coral).joins(:measurements).where('measurements.value LIKE ?', "%#{params[:search]}%").limit(n)
+    end
+
+    
     respond_to do |format|
       format.html
       format.csv { 

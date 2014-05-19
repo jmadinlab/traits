@@ -59,9 +59,10 @@
 		<% end %>
 
 		<p>
+		<% if signed_in? && current_user.contributor? %>
 			<%= link_to 'Edit', edit_resource_path(@resource) %> |
-		<%= link_to 'Back', resources_path %>
-		</p>
+		<% end %>
+		<%= link_to 'Back', resources_path %></p>
 		
 		<% if @resource.traits %>
 			<div class="well">
@@ -75,7 +76,11 @@
 						<li>No traits entered</li>
 					<% end %>
 				</ul>
-				<%= link_to 'Add Trait', new_citation_path(:resource => @resource), class: "btn btn-primary btn-md" %><%= link_to 'Manage Citations', citations_path(:resource => @resource), class: "pull-right" %>
+
+				<% if signed_in? && current_user.contributor? %>
+					<%= link_to 'Add Trait', new_citation_path(:resource => @resource), class: "btn btn-primary btn-md" %><%= link_to 'Manage Citations', citations_path(:resource => @resource), class: "pull-right" %>
+				<% end %>
+
 			</div>
 		<% end %>
 

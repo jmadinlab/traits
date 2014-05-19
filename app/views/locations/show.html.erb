@@ -30,9 +30,13 @@
 				  	<%= @location.user.name %>
 					<% end %>
 				</p>
-				
-				<p><%= link_to 'Edit', edit_location_path(@location) %> |
+
+				<p>
+				<% if signed_in? && current_user.contributor? %>
+					<%= link_to 'Edit', edit_location_path(@location) %> |
+				<% end %>
 				<%= link_to 'Back', locations_path %></p>
+				
 			</div>
 
 		  <div class="col-md-6">
