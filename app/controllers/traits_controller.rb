@@ -1,5 +1,6 @@
 class TraitsController < ApplicationController
-  before_action :signed_in_user
+
+  # before_action :signed_in_user
   before_action :contributor, except: [:index, :show, :export]
   before_action :set_trait, only: [:show, :edit, :update, :destroy]
   before_action :admin_user, only: :destroy
@@ -16,18 +17,18 @@ class TraitsController < ApplicationController
   end
 
   def export
-      
-    if signed_in? && current_user.contributor?
-      if current_user.admin?
-        @observations = Observation.joins{measurements}.where{measurements.trait_id.in my{params[:checked]}}  
-      else
-        @observations = Observation.where{ (private == 'f') | ((user_id == my{current_user.id}) & (private == 't')) }.        
-          joins{measurements}.where{measurements.trait_id.in my{params[:checked]}}
-      end
-    else
-      @observations = Observation.where{ (private == 'f') }.
-        joins{measurements}.where{measurements.trait_id.in my{params[:checked]}}        
-    end        
+
+    if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
+      @observations = Observation.where(:private => false).joins(:measurements).where(:measurements => {:trait_id => params[:checked]})        
+    end
+    
+    if signed_in? && current_user.contributor? & !current_user.admin?
+      @observations = Observation.where(['observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?)', false, current_user.id, true]).joins(:measurements).where(:measurements => {:trait_id => params[:checked]})
+    end
+
+    if signed_in? && current_user.admin?
+      @observations = Observation.joins(:measurements).where(:measurements => {:trait_id => params[:checked]})        
+    end
     
     csv_string = CSV.generate do |csv|
       csv << ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "precision", "precision_type", "precision_upper", "replicates"]
@@ -82,23 +83,18 @@ class TraitsController < ApplicationController
       n = 9999999
     end
 
+      # @observations = Observation.where(:private == false).includes(:coral).joins(:measurements).where(:measurements => {:trait_id => @trait.id}).where('value LIKE ?', "%#{params[:search]}%").limit(n) 
+
+    if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
+      @observations = Observation.where(['observations.private IS ?', false]).includes(:coral).joins(:measurements).where('measurements.trait_id IS ? AND measurements.value LIKE ?', @trait.id, "%#{params[:search]}%").limit(n)
+    end
+    
     if signed_in? && current_user.contributor?
-      if current_user.admin?
-        @observations = Observation.includes(:coral).
-          joins{measurements}.where{(measurements.value =~ my{"%#{params[:search]}%"}) & (measurements.trait_id == my{@trait.id})}.limit(n) |
-          Observation.includes(:coral).
-          joins{measurements.trait}.where{(measurements.traits.trait_name =~ my{"%#{params[:search]}%"}) & (measurements.trait_id == my{@trait.id})}.limit(n)
-		  else
-        @observations = Observation.where{ (private == 'f') | ((user_id == my{current_user.id}) & (private == 't')) }.includes(:coral).
-          joins{measurements}.where{(measurements.value =~ my{"%#{params[:search]}%"}) & (measurements.trait_id == my{@trait.id})}.limit(n) |
-          Observation.where{ (private == 'f') | ((user_id == my{current_user.id}) & (private == 't')) }.includes(:coral).          
-          joins{measurements.trait}.where{(measurements.traits.trait_name =~ my{"%#{params[:search]}%"}) & (measurements.trait_id == my{@trait.id})}.limit(n)
-      end
-    else
-      @observations = Observation.where{ private == 'f' }.includes(:coral).
-        joins{measurements}.where{(measurements.value =~ my{"%#{params[:search]}%"}) & (measurements.trait_id == my{@trait.id})}.limit(n) |
-        Observation.where{ private == 'f' }.includes(:coral).          
-        joins{measurements.trait}.where{(measurements.traits.trait_name =~ my{"%#{params[:search]}%"}) & (measurements.trait_id == my{@trait.id})}.limit(n)
+      @observations = Observation.where(['observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?)', false, current_user.id, true]).includes(:coral).joins(:measurements).where('measurements.trait_id IS ? AND measurements.value LIKE ?', @trait.id, "%#{params[:search]}%").limit(n)
+    end
+
+    if signed_in? && current_user.admin?
+      @observations = Observation.includes(:coral).joins(:measurements).where('measurements.trait_id IS ? AND measurements.value LIKE ?', @trait.id, "%#{params[:search]}%").limit(n)
     end
     
     respond_to do |format|

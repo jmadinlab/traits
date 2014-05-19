@@ -1,5 +1,5 @@
 class CoralsController < ApplicationController
-  before_action :signed_in_user
+
   before_action :contributor, except: [:index, :show, :export]
   before_action :set_coral, only: [:show, :edit, :update, :destroy]
   before_action :admin_user, only: :destroy
@@ -17,19 +17,20 @@ class CoralsController < ApplicationController
 
   def export
     checked = params[:checked]
-      
-    if signed_in? && current_user.contributor?
-      if current_user.admin?
-        @observations = Observation.where{coral_id.in my{params[:checked]}}
-      else
-        @observations = Observation.where{ (private == 'f') | ((user_id == my{current_user.id}) & (private == 't')) }.        
-        where{coral_id.in my{params[:checked]}}
-      end
-    else
-      @observations = Observation.where{ (private == 'f') }.
-        where{coral_id.in my{params[:checked]}}        
-    end        
+
+
+    if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
+      @observations = Observation.where(:private => false).where(:coral_id => params[:checked])        
+    end
     
+    if signed_in? && current_user.contributor?
+      @observations = Observation.where(['observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?)', false, current_user.id, true]).where(:coral_id => params[:checked])
+    end
+
+    if signed_in? && current_user.admin?
+      @observations = Observation.where(:coral_id => params[:checked])        
+    end
+        
     csv_string = CSV.generate do |csv|
       csv << ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "precision", "precision_type", "precision_upper", "replicates"]
       @observations.each do |obs|
@@ -75,13 +76,13 @@ class CoralsController < ApplicationController
 
     if signed_in? && current_user.contributor?
       if current_user.admin?
-		    @observations = Observation.find(:all, :conditions => ["coral_id=?", @coral.id])
+		    @observations = Observation.where(:coral_id => @coral.id)
 		  else
         @observations = Observation.find(:all, :conditions => ["coral_id=? AND (private=? OR (user_id=? AND private=?))", @coral.id, false, current_user.id, true])
       end
     else
-      @observations = Observation.find(:all, :conditions => ["coral_id=? AND private=?", @coral.id, false])
-      flash[:success] = "You are not a data contributor. You will only see publicly accessable data and maps."
+      @observations = Observation.where(:coral_id => @coral.id).where(:private => false)
+      # flash[:success] = "You are not a data contributor. You will only see publicly accessable data and maps."
     end
     # @measurements = Measurement.where(:observation_id => @observations.map(&:id))
 

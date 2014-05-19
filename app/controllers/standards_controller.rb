@@ -1,6 +1,6 @@
 class StandardsController < ApplicationController
-  before_action :signed_in_user
-  before_action :contributor
+  # before_action :signed_in_user
+  before_action :contributor, except: [:index, :show, :export]
   before_action :set_standard, only: [:show, :edit, :update, :destroy]
   before_action :admin_user, only: :destroy
 

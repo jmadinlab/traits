@@ -1,6 +1,6 @@
 class LocationsController < ApplicationController
-  before_action :signed_in_user
-  before_action :contributor
+  # before_action :signed_in_user
+  before_action :contributor, except: [:index, :show, :export]
   before_action :set_location, only: [:show, :edit, :update, :destroy]
   before_action :admin_user, only: :destroy
 
@@ -30,8 +30,7 @@ class LocationsController < ApplicationController
         where{location_id.in my{params[:checked]}}
       end
     else
-      @observations = Observation.where{ (private == 'f') }.
-        where{location_id.in my{params[:checked]}}        
+      @observations = Observation.where(:private => false).where(:location_id => params[:checked])        
     end        
     
     csv_string = CSV.generate do |csv|
@@ -81,24 +80,31 @@ class LocationsController < ApplicationController
       n = 9999999
     end
 
-    if signed_in? && current_user.contributor?
-      if current_user.admin?
-        @observations = Observation.where{ location_id == my{@location.id} }.
-          includes(:coral).
-          joins{measurements}.where{measurements.value =~ my{"%#{params[:search]}%"}}.limit(n) |
-          Observation.where{ location_id == my{@location.id} }.
-          includes(:coral).
-          joins{measurements.trait}.where{measurements.traits.trait_name =~ my{"%#{params[:search]}%"}}.limit(n)
-		  else
-        @observations = Observation.where{ (location_id == my{@location.id}) & ((private == 'f') | ((user_id == my{current_user.id}) & (private == 't'))) }.
-          includes(:coral).
-          joins{measurements}.where{measurements.value =~ my{"%#{params[:search]}%"}}.limit(n) |
-          Observation.where{ (location_id == my{@location.id}) & ((private == 'f') | ((user_id == my{current_user.id}) & (private == 't'))) }.
-          includes(:coral).          
-          joins{measurements.trait}.where{measurements.traits.trait_name =~ my{"%#{params[:search]}%"}}.limit(n)
-      end
+    # if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
+    # @observations = Observation.where(:location_id => @location.id).where(:private => false).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").limit(n)
+    # end
+    
+    # if signed_in? && current_user.contributor?
+    #   @observations = Observation.where(:location_id => @location.id).where(:private => false).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").limit(n)
+    # end
+
+    # if signed_in? && current_user.admin?
+    #   @observations = Observation.where(:location_id => @location.id).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").limit(n)
+    # end
+
+    if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
+    @observations = Observation.where(['observations.location_id IS ? AND observations.private IS ?', @location.id, false]).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").limit(n)
     end
     
+    if signed_in? && current_user.contributor?
+      @observations = Observation.where(['observations.location_id IS ? AND (observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?))', @location.id, false, current_user.id, true]).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").limit(n)
+    end
+
+    if signed_in? && current_user.admin?
+      @observations = Observation.where(:location_id => @location.id).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").limit(n)
+    end
+
+
     respond_to do |format|
       format.html
       format.csv { 
@@ -131,7 +137,7 @@ class LocationsController < ApplicationController
     
         send_data csv_string, 
           :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
-          :disposition => "attachment; filename=location_#{Date.today.strftime('%Y%m%d')}.csv"
+          :disposition => "attachment; filename=ctdb_#{Date.today.strftime('%Y%m%d')}.csv"
 
         }
     end

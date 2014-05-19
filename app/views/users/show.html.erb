@@ -19,7 +19,7 @@
 				<div class="alert alert-danger">No records available.</div>
 			<% else %>
 
-				<% if @observations.size < Observation.where{user_id == my{@user.id}}.size %>
+				<% if @observations.size < Observation.where(:user_id => @user.id).size %>
 			    <div class="alert alert-danger">Not all of <%= @user.name %>'s observations are currently displayed.</div>
 			  <% else %>
 			  	<div class="alert alert-success">All of <%= @user.name %>'s observations are displayed.</div>

@@ -82,7 +82,7 @@
 				<% end %>
 		</div>	
 
-		<% if @observations.size < Observation.joins{measurements}.where{measurements.trait_id == my{@trait.id}}.size %>
+		<% if @observations.size < Observation.joins(:measurements).where(:measurements => {:trait_id => @trait.id}).size %>
       <div class="alert alert-danger">Not all observations for this trait are currently displayed.</div>
     <% else %>
     	<div class="alert alert-success">All observations for this trait are now displayed.</div>

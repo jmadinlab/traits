@@ -66,9 +66,10 @@
 							</td>						
 			        <td><%= Observation.where(:location_id => location).size %></td>
 			        <td style="text-align:right; min-width: 170px;">
-			        <%= link_to 'Edit', edit_location_path(location) %>
-						  <% if current_user.admin? %> |
-			        <%= link_to 'Delete', location, method: :delete, data: { confirm: 'Are you sure?' } %><% end %></td>
+							<% if signed_in? && current_user.admin? %> 
+			        	<%= link_to 'Edit', edit_location_path(location) %> |
+			        	<%= link_to 'Delete', location, method: :delete, data: { confirm: 'Are you sure?' } %>
+			        <% end %></td>
 			      </tr>
 			    <% end %>
 			  </tbody>

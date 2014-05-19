@@ -81,11 +81,11 @@
 					    <td><%= link_to trait.trait_name, trait %></td>
 						
 						 	<td style="text-align:center;">
-								<% access = Observation.select(:private).joins{measurements}.where{measurements.trait_id == my{trait.id}} %>
-								<% if access.where{private == 'f'}.size == 0 %>
+								<% access = Observation.select(:private).joins(:measurements).where(:measurements => {:trait_id => trait.id}) %>
+								<% if access.where(:private == false).size == 0 %>
 									<span class="glyphicon glyphicon-remove-circle" style="color:red;">
 								<% else %>
-									<% if access.where(:private => 'f').size == access.size %>
+									<% if access.where(:private => false).size == access.size %>
 										<span class="glyphicon glyphicon-ok-circle" style="color:green;">
 									<% else %>
 										<span class="glyphicon glyphicon-record" style="color:orange;">

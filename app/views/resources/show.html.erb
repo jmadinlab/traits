@@ -85,7 +85,7 @@
 			<p class="alert alert-danger">No records available.</p>
 		<% else %>
 
-			<% if @observations.size < Observation.where{resource_id == my{@resource.id}}.size %>
+			<% if @observations.size < Observation.where(:resource_id => @resource.id).size %>
 	      <div class="alert alert-danger">Not all records for this resource are currently displayed.</div>
 	    <% else %>
 	    	<div class="alert alert-success">All records for this resource are displayed.</div>

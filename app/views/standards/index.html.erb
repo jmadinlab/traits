@@ -60,9 +60,10 @@
 				    <td><%= stand.standard_unit %></td>
 						
 			      <td style="text-align:right; min-width: 170px;">
-			      <%= link_to 'Edit', edit_standard_path(stand) %>
-					  <% if current_user.admin? %> |
-			      <%= link_to 'Delete', stand, method: :delete, data: { confirm: 'Are you sure?' } %><% end %></td>
+			      <% if signed_in? && current_user.admin? %>
+				      <%= link_to 'Edit', edit_standard_path(stand) %> |
+				      <%= link_to 'Delete', stand, method: :delete, data: { confirm: 'Are you sure?' } %>
+			      <% end %></td>
 				  </tr>
 
 

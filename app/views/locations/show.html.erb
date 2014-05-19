@@ -48,7 +48,7 @@
 			<p class="alert alert-danger">No records available.</p>
 		<% else %>
 		
-			<% if @observations.size < Observation.where{location_id == my{@location.id}}.size %>
+			<% if @observations.size < Observation.where(:location_id => @location.id).size %>
 	      <div class="alert alert-danger">Not all records for this location are currently displayed.</div>
 	    <% else %>
 	    	<div class="alert alert-success">All records for this location are displayed.</div>
