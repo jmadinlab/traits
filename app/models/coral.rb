@@ -1,6 +1,7 @@
 class Coral < ActiveRecord::Base
   has_many :observations
-  validates :name, :presence => true
+  has_paper_trail
+  validates :coral_name, :presence => true
 
   def self.to_csv
     CSV.generate do |csv|

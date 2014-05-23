@@ -28,5 +28,16 @@ class ApplicationController < ActionController::Base
       ) unless signed_in? && current_user.contributor?
       
   end
+
+  # get ip of the user for versioning database
+  def info_for_paper_trail
+    # Save additional info
+    { ip: request.remote_ip }
+  end
+
+  def user_for_paper_trail
+    # Save the user responsible for the action
+    signed_in? ? current_user.id : 'Guest'
+  end
   
 end

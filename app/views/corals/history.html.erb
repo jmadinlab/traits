@@ -1,0 +1,66 @@
+<div class="container">
+  <h1>History</h1>
+ 
+  <ul>
+    <% @versions.each do |version| %>
+      <h4> Version <%= version.id %> </h4>
+      
+      <div>
+        
+        
+        Changeset: <br/>
+        <pre><%= version.changeset %></pre>
+
+        <table class="table">
+          <tr>
+            <th> Field </th>
+            <th> Original Value </th>
+            <th> Updated Value </th>
+
+          </tr>
+
+          <% version.changeset.each do |key, value| %>
+            <tr>
+              <td> <b> <%= key %> </b>  </td>
+              <td><%= value[0] %> </td>
+              <td><%= value[1] %> </td>
+            </tr>
+
+          <% end %>
+
+
+        </table>
+        
+
+      </div>
+
+      <b>User:</b>
+      <% if version.whodunnit && version.whodunnit != 'Guest' %>
+        <% user = User.find_by_id(version.whodunnit) %>
+        <% if user %>
+          <%= user.name %>
+          
+        <% end %>
+      <% else %>
+        Guest
+      <% end %>
+      
+     &nbsp;&nbsp;&nbsp;&nbsp;
+      
+      <b>Remote address:</b> <%= version.ip %>
+&nbsp;          
+          <b>Target:</b> <%= version.item_type %>
+          <small>(id: <%= version.item_id %>)</small>; <b>action:</b> <%= version.event %>;
+          &nbsp;          
+          <b>Date:</b> <%= l(version.created_at, format: '%B %e at %l:%M %p') %> <br/>
+          <div>
+            <br/>
+            <%= link_to 'Revert Back to following State', "/corals/revert/#{version.id}" ,class: "btn btn-primary btn-md ", :method => :post%>
+              <br/><br/>          
+              <pre><%= version.object %></pre>
+          </div>
+        
+        <hr/>
+    <% end %>
+  </ul>
+</div>

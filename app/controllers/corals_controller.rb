@@ -74,7 +74,9 @@ class CoralsController < ApplicationController
 
 
     if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
-      @observations = Observation.where(['observations.coral_id IS ? AND observations.private IS ?', @coral.id, false])
+      #@observations = Observation.where(['observations.coral_id IS ? AND observations.private IS ?', @coral.id, false])
+      # just a better approach to find active `
+      @observations = @coral.observations.where(private: false)
     end
     
     if signed_in? && current_user.contributor?
@@ -164,6 +166,43 @@ class CoralsController < ApplicationController
     end
   end
 
+  # method for versioning
+  def history
+    @versions = PaperTrail::Version.order('created_at DESC')
+
+    
+  end
+
+
+  def revert_back
+    #@version = PaperTrail::Version.find_by_id(params[:id])
+    @version = PaperTrail::Version.find_by_id(params[:version_id])
+    begin
+      if @version.reify
+        # revert back to any action (update, destroy )
+        @version.reify.save
+      else
+        # revert back for create action
+        @version.item.destroy
+      end
+      flash[:success] = ' Successfully Reverted back to the version'
+
+    rescue
+      flash[:alert] = 'Revert Failed'
+    ensure 
+      redirect_to root_path
+    end
+
+  end
+
+  # Create revert back link for version history
+  def make_revert_link(coral_id)
+    @coral = Coral.find_by_id(coral_id)
+    #view_context.link_to 'Revert Back', revert_back_path(@coral.versions.last), method: :post
+  end
+
+
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_coral
@@ -172,6 +211,8 @@ class CoralsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def coral_params
-      params.require(:coral).permit(:coral_name, :coral_description)
+      params.require(:coral).permit(:coral_name, :coral_description, :user_id)
     end
+
+    
 end
