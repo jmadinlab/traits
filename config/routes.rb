@@ -2,6 +2,7 @@ Traits::Application.routes.draw do
   resources :citations
 
   get '/corals/history', to: 'corals#history', as: :corals_history
+  get '/corals/history/:version_id', to: 'corals#history_csv', as: :corals_history_csv
 
   post '/corals/revert/:version_id', to: 'corals#revert_back', as: :revert_back
   resources :corals do

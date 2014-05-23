@@ -173,6 +173,16 @@ class CoralsController < ApplicationController
     
   end
 
+  def history_csv
+    @version = PaperTrail::Version.find_by_id(params[:version_id])
+    @version.reify
+    
+    respond_to do |format|
+      format.html
+      format.csv { send_data @corals.to_csv }
+    end    
+    
+  end
 
   def revert_back
     #@version = PaperTrail::Version.find_by_id(params[:id])
