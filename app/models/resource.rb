@@ -3,7 +3,8 @@ class Resource < ActiveRecord::Base
   has_many :citations#, :dependent => true
   has_many :traits, :through => :citations
   belongs_to :user
-
+  has_paper_trail
+  
   validates :author, :presence => true
   validates :title, :presence => true
   # validates :user_id, :presence => true

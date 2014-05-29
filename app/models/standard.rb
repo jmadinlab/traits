@@ -3,7 +3,8 @@ class Standard < ActiveRecord::Base
   belongs_to :user
   has_many :measurements
   has_many :traits
-
+  has_paper_trail
+  
   validates :standard_name, :presence => true
   validates :standard_class, :presence => true
 

@@ -39,5 +39,11 @@ class ApplicationController < ActionController::Base
     # Save the user responsible for the action
     signed_in? ? current_user.id : 'Guest'
   end
+
+
+
+  
+
+
   
 end

@@ -7,6 +7,7 @@ class User < ActiveRecord::Base
   has_many :locations
   has_many :standards
   has_many :citations
+  has_paper_trail
   
   default_scope -> { order('name ASC') }
   

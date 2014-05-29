@@ -70,9 +70,10 @@ class CoralsController < ApplicationController
     @vfiles = Dir.glob("app/assets/images/veron/*")
     @hfiles = Dir.glob("app/assets/images/hughes/*")
     
-    if params[:id]
-      @coral = Coral.find(params[:id])
-    end
+    @coral = @item if @item
+    @coral = Coral.find(params[:id]) if params[:id]
+    
+
 
 
     if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
@@ -168,46 +169,6 @@ class CoralsController < ApplicationController
     end
   end
 
-  # method for versioning
-  def history
-    @versions = PaperTrail::Version.order('created_at DESC')
-
-    
-  end
-
-  def history_csv
-    @version = PaperTrail::Version.find_by_id(params[:version_id])
-    @coral = @version.reify
-    
-    show()
-  end
-
-  def revert_back
-    #@version = PaperTrail::Version.find_by_id(params[:id])
-    @version = PaperTrail::Version.find_by_id(params[:version_id])
-    begin
-      if @version.reify
-        # revert back to any action (update, destroy )
-        @version.reify.save
-      else
-        # revert back for create action
-        @version.item.destroy
-      end
-      flash[:success] = ' Successfully Reverted back to the version'
-
-    rescue
-      flash[:alert] = 'Revert Failed'
-    ensure 
-      redirect_to root_path
-    end
-
-  end
-
-  # Create revert back link for version history
-  def make_revert_link(coral_id)
-    @coral = Coral.find_by_id(coral_id)
-    #view_context.link_to 'Revert Back', revert_back_path(@coral.versions.last), method: :post
-  end
 
 
 

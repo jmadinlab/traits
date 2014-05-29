@@ -1,7 +1,8 @@
 class Trait < ActiveRecord::Base
   belongs_to :standard
   belongs_to :user
-
+  has_paper_trail
+  
   has_many :measurements, :dependent => :destroy
   validates :trait_name, :presence => true
 
