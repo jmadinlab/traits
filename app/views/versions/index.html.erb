@@ -1,8 +1,20 @@
 <div class="container">
   <h1>History</h1>
- 
-  <ul>
+    Filter by: <%= link_to "All", '/history' %>
+    <% types = [] %>
     <% @versions.each do |version| %>
+      <% type = version.item_type %>
+      <% if not types.include? type %>
+        <% types.append(type) %>
+        | <%= link_to type, "/history?type=#{type}" %>
+      <% end %>
+
+    <% end %>
+    |
+
+    <br/><br/>
+  <ul>
+    <% @versions_by_item.each do |version| %>
     
 
     <div class="panel panel-info">

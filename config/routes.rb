@@ -1,16 +1,11 @@
 Traits::Application.routes.draw do
   resources :citations
 
-  #get ':controller/history', to 'controller#history'
-  #get '/corals/history', to: 'corals#history', as: :corals_history
-  #get '/corals/history/:version_id', to: 'corals#history_csv', as: :corals_history_csv
   
-  #get '/observations/history', to: 'observations#history'
   get '/history', to:'versions#index'
   get '/history/:version_id', to: 'versions#show'
-  
   post '/revert/:version_id', to: 'versions#revert_back'
-  #post '/corals/revert/:version_id', to: 'corals#revert_back', as: :revert_back
+  
   resources :corals do
     post :export, :on => :collection
   end
