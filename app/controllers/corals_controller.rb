@@ -70,7 +70,9 @@ class CoralsController < ApplicationController
     @vfiles = Dir.glob("app/assets/images/veron/*")
     @hfiles = Dir.glob("app/assets/images/hughes/*")
     
-    @coral = Coral.find(params[:id])
+    if params[:id]
+      @coral = Coral.find(params[:id])
+    end
 
 
     if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
@@ -175,13 +177,9 @@ class CoralsController < ApplicationController
 
   def history_csv
     @version = PaperTrail::Version.find_by_id(params[:version_id])
-    @version.reify
+    @coral = @version.reify
     
-    respond_to do |format|
-      format.html
-      format.csv { send_data @corals.to_csv }
-    end    
-    
+    show()
   end
 
   def revert_back
