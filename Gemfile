@@ -14,6 +14,9 @@ gem 'squeel', github: 'kiela/squeel'
 # using paper_trail for versioning database
 gem 'paper_trail', '~> 3.0.1'
 
+# using google analytics gem
+gem 'google-analytics-rails'
+
 group :development, :test do
   gem 'sqlite3'#, '1.3.8'
   # gem 'rspec-rails', '2.13.1'
