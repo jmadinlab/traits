@@ -128,7 +128,7 @@ class CoralsController < ApplicationController
 
         file1 = "corals_file.csv"
         file1_path = "public/" + file1
-        FileUtils.rm_f(file1_path)
+        #FileUtils.rm_f(file1_path)
         _file1 = File.open(file1_path, "w") { |f| f << csv_string }
         
 
@@ -163,7 +163,7 @@ class CoralsController < ApplicationController
         file2 = "resources_file.csv"
         file2_path = "public/" + file2
         #File.delete(file2_path) if File.exist?(file2_path)
-        FileUtils.rm_f(file2_path)
+        #FileUtils.rm_f(file2_path)
         _file2 = File.open(file2_path, "w") { |f| f << resources_string }
         
 
@@ -172,8 +172,8 @@ class CoralsController < ApplicationController
         require 'zip'
 
         zipfile_name = 'zippedfiles.zip'
-        FileUtils.rm_f(zipfile_name)
-        
+        #FileUtils.rm_f(zipfile_name)
+
         folder = 'public'
         input_filenames = [file1, file2]
         Zip::File.open(zipfile_name, Zip::File::CREATE) do |zipfile|
@@ -189,7 +189,13 @@ class CoralsController < ApplicationController
 
         #_file2.close()
 
-        send_file (zipfile_name)
+        File.open(zipfile_name, 'r') do |f|
+          send_data f.read, type: "application/zip", :stream => true,
+          :disposition => "attachment; filename = 'zippedfile.zip'"
+        end
+        File.delete(zipfile_name)
+        FileUtils.rm_f(file2_path)
+        FileUtils.rm_f(file1_path)
         
 
 
