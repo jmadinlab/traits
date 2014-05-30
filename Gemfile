@@ -21,6 +21,14 @@ gem 'google-analytics-rails'
 gem 'rubyzip', '>= 1.0.0'
 gem 'zip-zip'
 
+# for prettifying the rails console output
+# Include the following code into ~/.irbrc file, so that everytime you start rails console, the hirb view is automatically loaded
+# require 'hirb'
+# View class needs to come before enable()
+# class Hirb::Helpers::Yaml; def self.render(output, options={}); output.to_yaml; end ;end
+# Hirb.enable :output=>{"Hash"=>{:class=>"Hirb::Helpers::Yaml"}}
+gem 'hirb'
+
 group :development, :test do
   gem 'sqlite3'#, '1.3.8'
   # gem 'rspec-rails', '2.13.1'
