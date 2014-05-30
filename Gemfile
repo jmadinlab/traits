@@ -17,6 +17,10 @@ gem 'paper_trail', '~> 3.0.1'
 # using google analytics gem
 gem 'google-analytics-rails'
 
+# using zip to send multiple csv files in one click (eg: corals.csv + resources.csv, observation.csv + resources.csv etc)
+gem 'rubyzip', '>= 1.0.0'
+gem 'zip-zip'
+
 group :development, :test do
   gem 'sqlite3'#, '1.3.8'
   # gem 'rspec-rails', '2.13.1'
