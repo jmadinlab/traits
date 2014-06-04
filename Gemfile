@@ -29,6 +29,10 @@ gem 'zip-zip'
 # Hirb.enable :output=>{"Hash"=>{:class=>"Hirb::Helpers::Yaml"}}
 gem 'hirb'
 
+# for sharding database (main database and temporary database)
+#gem 'ar-octopus'
+#gem "ar-octopus", :git => "git://github.com/tchandy/octopus.git", :require => "octopus"
+
 group :development, :test do
   gem 'sqlite3'#, '1.3.8'
   # gem 'rspec-rails', '2.13.1'

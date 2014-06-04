@@ -9,6 +9,9 @@ class CoralsController < ApplicationController
   def index
     @corals = Coral.search(params[:search])
     
+    @corals = PaperTrail::Version.find(params[:version]).reify if params[:version]
+
+
     respond_to do |format|
       format.html
       format.csv { send_data @corals.to_csv }
