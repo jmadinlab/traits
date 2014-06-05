@@ -2,9 +2,6 @@ class VersionsController < ApplicationController
 
   before_action :signed_in_user
   before_action :contributor
-  # before_action :set_citation, only: [:show, :edit, :update, :destroy]
-  # before_action :admin_user, only: :destroy
-
 
 # method for versioning
   def index
