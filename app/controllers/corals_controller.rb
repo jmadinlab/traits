@@ -96,102 +96,43 @@ class CoralsController < ApplicationController
     respond_to do |format|
       format.html
       format.csv {
-        csv_string = CSV.generate do |csv|
-          csv << ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "precision", "precision_type", "precision_upper", "replicates"]
-          @observations.each do |obs|
-      	    obs.measurements.each do |mea|
-              if obs.location.present?
-                loc = obs.location.location_name
-                lat = obs.location.latitude
-                lon = obs.location.longitude
-                if obs.location.id == 1
-                  lat = ""
-                  lon = ""
-                end
-              else
-                loc = ""
-                lat = ""
-                lon = ""
-              end
-              if obs.private == true
-                acc = 0
-              else
-                acc = 1
-              end
-              csv << [obs.id, acc, obs.user_id, obs.coral.coral_name, loc, lat, lon, obs.resource_id, mea.id, mea.trait.trait_name, mea.standard.standard_unit, mea.value, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates]
-            end
-          end
-        end
-    
         
-        #send_data csv_string, 
-        #  :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
-        #  :disposition => "attachment; filename=coral_#{Date.today.strftime('%Y%m%d')}.csv"
-
-
-        file1 = "corals_file.csv"
-        file1_path = "public/" + file1
-        #FileUtils.rm_f(file1_path)
-        _file1 = File.open(file1_path, "w") { |f| f << csv_string }
+        csv_string = get_corals_csv()
         
+        send_data csv_string, 
+          :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
+          :disposition => "attachment; filename=coral_#{Date.today.strftime('%Y%m%d')}.csv"
 
-        
+        }
 
-        resources_string = CSV.generate do |csv|
-          csv << ["observation_id", "enterer", "coral", "Resource ID", "Author", "Year", "Title", "Resource Type", "Resource ISBN", "Resource Journal", "Resource Volume Pages", "Resource Notes"]
-          @observations.each do |obs|
-            if obs.resource
-              res = obs.resource
-              res_id = obs.resource.id
-              res_author = res.author
-              res_year = res.year
-              res_title = res.title
-              res_type = res.resource_type
-              res_isbn = res.doi_isbn
-              res_journal = res.journal
-              res_volume = res.volume_pages
-              res_notes = res.resource_notes
-
-              csv << [obs.id, obs.user_id, obs.coral.coral_name, res_id, res_author, res_year, res_title, res_type, res_isbn, res_journal, res_volume, res_notes]
-            end
-          end
-        end
-        
-    
-        #send_data resources_string, 
-        #  :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
-        #  :disposition => "attachment; filename=resource_#{Date.today.strftime('%Y%m%d')}.csv"
-
-
-        file2 = "resources_file.csv"
-        file2_path = "public/" + file2
-        #File.delete(file2_path) if File.exist?(file2_path)
-        #FileUtils.rm_f(file2_path)
-        _file2 = File.open(file2_path, "w") { |f| f << resources_string }
-        
-
-
+      format.zip{
         require 'rubygems'
         require 'zip'
 
-        zipfile_name = 'zippedfiles.zip'
-        #FileUtils.rm_f(zipfile_name)
+        # Process file1 corals.csv
+        csv_string = get_corals_csv()
+        file1 = "corals_file.csv"
+        file1_path = "public/" + file1
+        _file1 = File.open(file1_path, "w") { |f| f << csv_string }
+        
 
+        # Process file2 resources.csv
+        resources_string = get_resources_csv()
+        file2 = "resources_file.csv"
+        file2_path = "public/" + file2
+        _file2 = File.open(file2_path, "w") { |f| f << resources_string }
+        
+        # Combine file1 and file2 into zip file
+        zipfile_name = 'zippedfiles.zip'
         folder = 'public'
         input_filenames = [file1, file2]
         Zip::File.open(zipfile_name, Zip::File::CREATE) do |zipfile|
           input_filenames.each do |filename|
             zipfile.add(filename, folder + "/" + filename)
           end
-
-          #zipfile.get_output_stream("myfile") { |os| os.write "myfile contains just hits" }
-
         end
 
-        #_file1.close()
-
-        #_file2.close()
-
+        
         File.open(zipfile_name, 'r') do |f|
           send_data f.read, type: "application/zip", :stream => true,
           :disposition => "attachment; filename = 'zippedfile.zip'"
@@ -199,10 +140,8 @@ class CoralsController < ApplicationController
         File.delete(zipfile_name)
         FileUtils.rm_f(file2_path)
         FileUtils.rm_f(file1_path)
-        
-
-
-        }
+      }
+      
     end
   end
 
@@ -259,6 +198,62 @@ class CoralsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def coral_params
       params.require(:coral).permit(:coral_name, :coral_description, :user_id)
+    end
+
+    def get_corals_csv()
+      csv_string = CSV.generate do |csv|
+          csv << ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "precision", "precision_type", "precision_upper", "replicates"]
+          @observations.each do |obs|
+            obs.measurements.each do |mea|
+              if obs.location.present?
+                loc = obs.location.location_name
+                lat = obs.location.latitude
+                lon = obs.location.longitude
+                if obs.location.id == 1
+                  lat = ""
+                  lon = ""
+                end
+              else
+                loc = ""
+                lat = ""
+                lon = ""
+              end
+              if obs.private == true
+                acc = 0
+              else
+                acc = 1
+              end
+              csv << [obs.id, acc, obs.user_id, obs.coral.coral_name, loc, lat, lon, obs.resource_id, mea.id, mea.trait.trait_name, mea.standard.standard_unit, mea.value, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates]
+            end
+          end
+        end
+    
+     return csv_string
+    end
+
+
+    def get_resources_csv()
+      resources_string = CSV.generate do |csv|
+          csv << ["observation_id", "enterer", "coral", "Resource ID", "Author", "Year", "Title", "Resource Type", "Resource ISBN", "Resource Journal", "Resource Volume Pages", "Resource Notes"]
+          @observations.each do |obs|
+            if obs.resource
+              res = obs.resource
+              res_id = obs.resource.id
+              res_author = res.author
+              res_year = res.year
+              res_title = res.title
+              res_type = res.resource_type
+              res_isbn = res.doi_isbn
+              res_journal = res.journal
+              res_volume = res.volume_pages
+              res_notes = res.resource_notes
+
+              csv << [obs.id, obs.user_id, obs.coral.coral_name, res_id, res_author, res_year, res_title, res_type, res_isbn, res_journal, res_volume, res_notes]
+            end
+          end
+        end
+
+      return resources_string
     end
 
     
