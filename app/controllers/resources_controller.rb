@@ -47,6 +47,14 @@ class ResourcesController < ApplicationController
     respond_to do |format|
       format.html
       format.csv { 
+        csv_string = get_main_csv(@observations)
+
+        send_data csv_string, 
+          :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
+          :disposition => "attachment; filename=resource_#{Date.today.strftime('%Y%m%d')}.csv"
+
+
+        '''
         csv_string = CSV.generate do |csv|
           csv << ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "precision", "precision_type", "precision_upper", "replicates"]
           @observations.each do |obs|
@@ -73,12 +81,14 @@ class ResourcesController < ApplicationController
             end
           end
         end
-    
-        send_data csv_string, 
-          :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
-          :disposition => "attachment; filename=resource_#{Date.today.strftime('%Y%m%d')}.csv"
+        '''
 
+        
         }
+
+      format.zip{
+        send_zip(@observations, 'resources.csv')
+      }
     end
 
     # if signed_in?
