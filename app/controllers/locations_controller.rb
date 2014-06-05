@@ -24,41 +24,19 @@ class LocationsController < ApplicationController
       
     if signed_in? && current_user.contributor?
       if current_user.admin?
-        @observations = Observation.where{location_id.in my{params[:checked]}}
+        #@observations = Observation.where{location_id.in my{params[:checked]}}
+        @observations = Observation.where(:location_id => params[:checked])
       else
-        @observations = Observation.where{ (private == 'f') | ((user_id == my{current_user.id}) & (private == 't')) }.        
-        where{location_id.in my{params[:checked]}}
+        #@observations = Observation.where{ (private == 'f') | ((user_id == my{current_user.id}) & (private == 't')) }.        
+        #where{location_id.in my{params[:checked]}}
+        @observations = Observation.where(" (private = 'f' or (private = 't' and user_id = ? )) ", current_user.id).where(:location_id => params[:checked])
+
       end
     else
       @observations = Observation.where(:private => false).where(:location_id => params[:checked])        
     end        
     
-    csv_string = CSV.generate do |csv|
-      csv << ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "precision", "precision_type", "precision_upper", "replicates"]
-      @observations.each do |obs|
-        obs.measurements.each do |mea|
-          if obs.location.present?
-            loc = obs.location.location_name
-            lat = obs.location.latitude
-            lon = obs.location.longitude
-            if obs.location.id == 1
-              lat = ""
-              lon = ""
-            end
-          else
-            loc = ""
-            lat = ""
-            lon = ""
-          end
-          if obs.private == true
-            acc = 0
-          else
-            acc = 1
-          end
-          csv << [obs.id, acc, obs.user_id, obs.coral.coral_name, loc, lat, lon, obs.resource_id, mea.id, mea.trait.trait_name, mea.standard.standard_unit, mea.value, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates]
-        end
-      end
-    end
+    csv_string = get_main_csv(@observations)
 
     send_data csv_string, 
       :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
@@ -103,37 +81,6 @@ class LocationsController < ApplicationController
           :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
           :disposition => "attachment; filename=location_#{Date.today.strftime('%Y%m%d')}.csv"
 
-        
-        '''
-        csv_string = CSV.generate do |csv|
-          csv << ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "precision", "precision_type", "precision_upper", "replicates"]
-          @observations.each do |obs|
-      	    obs.measurements.each do |mea|
-              if obs.location.present?
-                loc = obs.location.location_name
-                lat = obs.location.latitude
-                lon = obs.location.longitude
-                if obs.location.id == 1
-                  lat = ""
-                  lon = ""
-                end
-              else
-                loc = ""
-                lat = ""
-                lon = ""
-              end
-              if obs.private == true
-                acc = 0
-              else
-                acc = 1
-              end
-              csv << [obs.id, acc, obs.user_id, obs.coral.coral_name, loc, lat, lon, obs.resource_id, mea.id, mea.trait.trait_name, mea.standard.standard_unit, mea.value, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates]
-            end
-          end
-        end
-        '''
-        
-        
         }
 
         format.zip{

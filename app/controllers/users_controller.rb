@@ -43,35 +43,6 @@ class UsersController < ApplicationController
             :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
             :disposition => "attachment; filename=user_#{Date.today.strftime('%Y%m%d')}.csv"
 
-
-          '''
-          csv_string = CSV.generate do |csv|
-            csv << ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "precision", "precision_type", "precision_upper", "replicates"]
-            @observations.each do |obs|
-        	    obs.measurements.each do |mea|
-                if obs.location.present?
-                  loc = obs.location.location_name
-                  lat = obs.location.latitude
-                  lon = obs.location.longitude
-                  if obs.location.id == 1
-                    lat = ""
-                    lon = ""
-                  end
-                else
-                  loc = ""
-                  lat = ""
-                  lon = ""
-                end
-                if obs.private == true
-                  acc = 0
-                else
-                  acc = 1
-                end
-                csv << [obs.id, acc, obs.user_id, obs.coral.coral_name, loc, lat, lon, obs.resource_id, mea.id, mea.trait.trait_name, mea.standard.standard_unit, mea.value, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates]
-              end
-            end
-          end
-          '''
         }
 
         format.zip{
