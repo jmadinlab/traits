@@ -30,7 +30,6 @@ gem 'zip-zip'
 gem 'hirb'
 
 # for sharding database (main database and temporary database)
-#gem 'ar-octopus'
 #gem "ar-octopus", :git => "git://github.com/tchandy/octopus.git", :require => "octopus"
 
 group :development, :test do
