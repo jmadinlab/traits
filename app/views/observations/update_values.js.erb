@@ -1,28 +1,43 @@
-//$('#values_select').html("<%= escape_javascript(render 'values', :locals => {:value => @values, :standard => @standards}) %>");
-$('#trait_values option').remove();
-$('#trait_values').append('<option> Choose Value</option>');
+$('#values_select').html("<%= escape_javascript(render 'values', :locals => {:value => @values, :standard => @standards}) %>");
 
+console.log('printing element');
+var val = '#trait_value' + <%= @element_id %>
+var val_id = 'trait_value' + <%= @element_id %>
+var val_option = val + ' option'
+var standard = '#trait_standard'+ <%= @element_id %>
+var standard_option = standard + ' option'
+console.log('<%= @element_id %>');
+console.log(val);
+console.log(standard);
 
-$('#trait_standard option').remove();
-$('#trait_standard').append('<option> Choose Standard</option>');
+$(val_option).remove();
+$(val).append('<option> Choose Value</option>');
+
+$(standard_option).remove();
+$(standard).append('<option> Choose Standard</option>');
+
+var name = $(val).attr('name');
 
 <% if @values.size == 0 %>
-	var name = $('#trait_values').attr('name');
-	var input_box = '<input type="text" id="trait_value" name="' + name + '" />' ;
-	$('#trait_values').replaceWith(input_box);
+	
+	var input_box = '<input type="text" id="' + val_id + '" name="' + name + '" />' ;
+	$(val).replaceWith(input_box);
 	
 
 <% else %>
+	var select_box = '<select id="' + val_id + '" name="' + name + '" > <option> Choose Value..<option> </select>' ;
+	$(val).replaceWith(select_box);
+
 	<% @values.each do |value| %>
 		
 		var option ="<option value= <%= value %> ><%= value %></option> ";
-		$('#trait_values').append(option);
+		$(val).append(option);
 		 
 	<% end %>
 <% end %>
 
 var option = "<option value= <%= @standard.id %> ><%= @standard.standard_name %> ( <%= @standard.standard_unit %>)</option> ";
-$('#trait_standard').append(option)
+$(standard).append(option)
 
 
 

@@ -11,6 +11,10 @@ class ObservationsController < ApplicationController
   def update_values
       @values = Trait.find(params[:trait_id]).value_range.split(',').map(&:strip)
       @standard = Standard.find(Trait.find(params[:trait_id]).standard_id)
+      @element_id = params[:element_id].split("trait_select")[-1]
+      puts "element id"
+      puts @element_id
+
   end
 
   def edit_multiple
@@ -74,6 +78,7 @@ class ObservationsController < ApplicationController
   def new
     @observation = Observation.new
     @values = ""
+    @temp_var = 0
   end
 
   # GET /observations/1/edit
