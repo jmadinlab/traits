@@ -33,52 +33,36 @@ class ResourcesController < ApplicationController
     end
 
     if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
-    @observations = Observation.where(['observations.resource_id IS ? AND observations.private IS ?', @resource.id, false]).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").limit(n)
+    @observations = Observation.where(['observations.resource_id IS ? AND observations.private IS ?', @resource.id, false]).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").uniq.limit(n)
     end
     
     if signed_in? && current_user.contributor?
-      @observations = Observation.where(['observations.resource_id IS ? AND (observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?))', @resource.id, false, current_user.id, true]).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").limit(n)
+      @observations = Observation.where(['observations.resource_id IS ? AND (observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?))', @resource.id, false, current_user.id, true]).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").uniq.limit(n)
     end
 
     if signed_in? && current_user.admin?
-      @observations = Observation.where(:resource_id => @resource.id).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").limit(n)
+      @observations = Observation.where(:resource_id => @resource.id).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").uniq.limit(n)
     end
     
     respond_to do |format|
       format.html
       format.csv { 
-        csv_string = CSV.generate do |csv|
-          csv << ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "precision", "precision_type", "precision_upper", "replicates"]
-          @observations.each do |obs|
-      	    obs.measurements.each do |mea|
-              if obs.location.present?
-                loc = obs.location.location_name
-                lat = obs.location.latitude
-                lon = obs.location.longitude
-                if obs.location.id == 1
-                  lat = ""
-                  lon = ""
-                end
-              else
-                loc = ""
-                lat = ""
-                lon = ""
-              end
-              if obs.private == true
-                acc = 0
-              else
-                acc = 1
-              end
-              csv << [obs.id, acc, obs.user_id, obs.coral.coral_name, loc, lat, lon, obs.resource_id, mea.id, mea.trait.trait_name, mea.standard.standard_unit, mea.value, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates]
-            end
-          end
+        if request.url.include? 'resources.csv'
+          csv_string = get_resources_csv(@observations)
+          filename = 'resources_extra.csv'
+        else
+          csv_string = get_main_csv(@observations)
+          filename = 'resources_main.csv'
         end
-    
+        
         send_data csv_string, 
           :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
-          :disposition => "attachment; filename=resource_#{Date.today.strftime('%Y%m%d')}.csv"
+          :disposition => "attachment; filename=#{filename}_#{Date.today.strftime('%Y%m%d')}.csv"
+      }
 
-        }
+      format.zip{
+        send_zip(@observations, 'resources.csv')
+      }
     end
 
     # if signed_in?

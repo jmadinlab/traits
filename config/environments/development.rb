@@ -25,4 +25,6 @@ Traits::Application.configure do
   # Debug mode disables concatenation and preprocessing of assets.
   config.assets.debug = true
 
+  # Google Analytics code
+  GA.tracker = "UA-51287714-1"
 end

@@ -3,6 +3,7 @@ class Observation < ActiveRecord::Base
   belongs_to :location
   belongs_to :coral
   belongs_to :resource
+  has_paper_trail
   
   default_scope -> { order('coral_id ASC') }
   # default_scope :include => :corals, :order => "corals.coral_name ASC"

@@ -85,4 +85,6 @@ Traits::Application.configure do
   
   config.assets.precompile += %w( '.woff', '.eot', '.svg', '.ttf' )
   
+  # Google Analytics code
+  GA.tracker = "UA-51287714-1"
 end
