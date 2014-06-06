@@ -33,15 +33,15 @@ class ResourcesController < ApplicationController
     end
 
     if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
-    @observations = Observation.where(['observations.resource_id IS ? AND observations.private IS ?', @resource.id, false]).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").limit(n)
+    @observations = Observation.where(['observations.resource_id IS ? AND observations.private IS ?', @resource.id, false]).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").uniq.limit(n)
     end
     
     if signed_in? && current_user.contributor?
-      @observations = Observation.where(['observations.resource_id IS ? AND (observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?))', @resource.id, false, current_user.id, true]).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").limit(n)
+      @observations = Observation.where(['observations.resource_id IS ? AND (observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?))', @resource.id, false, current_user.id, true]).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").uniq.limit(n)
     end
 
     if signed_in? && current_user.admin?
-      @observations = Observation.where(:resource_id => @resource.id).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").limit(n)
+      @observations = Observation.where(:resource_id => @resource.id).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").uniq.limit(n)
     end
     
     respond_to do |format|

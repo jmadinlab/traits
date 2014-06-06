@@ -1,9 +1,6 @@
 class VersionsController < ApplicationController
-
-  
   before_action :contributor
   
-  # method for versioning
   def index
 
     @versions = PaperTrail::Version.order('created_at DESC')
