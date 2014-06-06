@@ -1,5 +1,9 @@
 class VersionsController < ApplicationController
-# method for versioning
+
+  
+  before_action :contributor
+  
+  # method for versioning
   def index
 
     @versions = PaperTrail::Version.order('created_at DESC')
@@ -9,14 +13,21 @@ class VersionsController < ApplicationController
 
   def show
     @version = PaperTrail::Version.find_by_id(params[:version_id])
-    @object_fields = @version.object.split("\n")
+    
+    if @version.event == 'create'
+      @object_fields = ''
+      @object = []
+    else
 
-    # ignoring the first item which is '---'
-    @object_fields.delete('---')
-    @object = []
-    @object_fields.each do |obj|
-      @object.append([ obj.split(":")[0], obj.split(":")[1] ])
-      
+      @object_fields = @version.object.split("\n")
+
+      # ignoring the first item which is '---'
+      @object_fields.delete('---')
+      @object = []
+      @object_fields.each do |obj|
+        @object.append([ obj.split(":")[0], obj.split(":")[1] ])
+        
+      end
     end
     
   end

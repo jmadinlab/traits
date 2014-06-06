@@ -9,7 +9,7 @@
         | <%= link_to type, "/history?type=#{type}" %>
       <% end %>
 
-    <% end %>
+    <% end %>s
     |
 
     <br/><br/>
@@ -28,24 +28,28 @@
         <!--
           <pre><%= version.changeset %></pre>
         -->
-        <table class="table">
-          <tr>
-            <th> Field </th>
-            <th> Original Value </th>
-            <th> Updated Value </th>
+        <% if version.changeset.size > 0 %>
+          <table class="table">
+            <tr>
+              <th> Field </th>
+              <th> Original Value </th>
+              <th> Updated Value </th>
 
-          </tr>
+            </tr>
 
-          <% version.changeset.each do |key, value| %>
-            <% if key != "updated_at" %>
-              <tr>
-                <td> <b> <%= key %> </b>  </td>
-                <td><%= value[0] %> </td>
-                <td><%= value[1] %> </td>
-              </tr>
+            <% version.changeset.each do |key, value| %>
+              <% if key != "updated_at" %>
+                <tr>
+                  <td> <b> <%= key %> </b>  </td>
+                  <td><%= value[0] %> </td>
+                  <td><%= value[1] %> </td>
+                </tr>
+              <% end %>
             <% end %>
-          <% end %>
-        </table>
+          </table>
+        <% else %>
+          <%= version.item_type %> with id <%= version.item_id %> <b>DELETED</b>  <br/><br/>
+        <% end %>
     
 
       
@@ -73,6 +77,7 @@
           &nbsp;
 
           <%= link_to 'View Change', "/history/#{version.id}", class: "btn btn-primary" %>
+          
           <%= link_to 'Revert Back', "/revert/#{version.id}" ,class: "btn btn-danger btn-md ", :method => :post%>
             
         </div>

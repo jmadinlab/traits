@@ -25,7 +25,7 @@ class ApplicationController < ActionController::Base
   def contributor
       redirect_to(
         root_url,flash: {danger: "You need to be a contributor to access this area of the database." }
-      ) unless signed_in? && current_user.contributor?
+      ) unless (signed_in? && (current_user.contributor? || current_user.admin?))
       
   end
 
