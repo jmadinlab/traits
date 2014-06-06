@@ -12,8 +12,8 @@ class ObservationsController < ApplicationController
       @values = Trait.find(params[:trait_id]).value_range.split(',').map(&:strip)
       @standard = Standard.find(Trait.find(params[:trait_id]).standard_id)
       @element_id = params[:element_id].split("trait_select")[-1]
-      puts "element id"
-      puts @element_id
+      puts 'trait id '
+      puts params[:trait_id]
 
   end
 
