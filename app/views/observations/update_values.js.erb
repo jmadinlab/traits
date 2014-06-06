@@ -1,1 +1,20 @@
-$('#values_select').html("<%= escape_javascript(render 'values', :locals => {:value => @values, :standard => @standards}) %>");
+//$('#values_select').html("<%= escape_javascript(render 'values', :locals => {:value => @values, :standard => @standards}) %>");
+$('#trait_values option').remove();
+$('#trait_values').append('<option> Choose Value</option>');
+
+
+$('#trait_standard option').remove();
+$('#trait_standard').append('<option> Choose Standard</option>');
+
+<% @values.each do |value| %>
+	
+	var option ="<option value= <%= value %> ><%= value %></option> ";
+	$('#trait_values').append(option);
+	 
+<% end %>
+
+var option = "<option value= <%= @standard.id %> ><%= @standard.standard_name %> ( <%= @standard.standard_unit %>)</option> ";
+$('#trait_standard').append(option)
+
+
+
