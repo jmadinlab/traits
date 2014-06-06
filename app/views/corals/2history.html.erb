@@ -1,0 +1,43 @@
+<div class="container">
+  <h1>History</h1>
+ 
+  <ul>
+    <% @versions.each do |version| %>
+
+    <li> 
+    	
+    	<b>Version <%= version.id %> </b>:
+    	<% version.changeset.each do |key, value| %>
+		
+		   	<% if key != "updated_at" %>
+			 <%= key %> </b> changed from <b><%= value[0] %></b> to <b><%= value[1] %> </b>
+			<br/>	
+		     <% end %>
+		<% end %>
+
+		<b>Updated By:</b>
+      <% if version.whodunnit && version.whodunnit != 'Guest' %>
+        <% user = User.find_by_id(version.whodunnit) %>
+        <% if user %>
+          <%= user.name %>
+          
+        <% end %>
+      <% else %>
+        Guest
+      <% end %>
+
+      on <%= l(version.created_at, format: '%B %e at %l:%M %p') %> 
+      <%= link_to 'Revert Back', "/corals/revert/#{version.id}" , :method => :post%>
+
+    </li>
+
+    
+    
+
+
+    <% end %>
+
+  </ul>
+
+
+</div>

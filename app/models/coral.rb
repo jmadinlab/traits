@@ -1,15 +1,7 @@
 class Coral < ActiveRecord::Base
   has_many :observations
-  validates :name, :presence => true
-
-  def self.to_csv
-    CSV.generate do |csv|
-      csv << column_names
-      all.each do |product|
-        csv << product.attributes.values_at(*column_names)
-      end
-    end
-  end
+  has_paper_trail
+  validates :coral_name, :presence => true
 
   def self.search(search)
       if search

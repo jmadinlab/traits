@@ -9,9 +9,12 @@ class CoralsController < ApplicationController
   def index
     @corals = Coral.search(params[:search])
     
+    @corals = PaperTrail::Version.find(params[:version]).reify if params[:version]
+
     respond_to do |format|
       format.html
       format.csv { send_data @corals.to_csv }
+      
     end    
   end
 
@@ -30,37 +33,15 @@ class CoralsController < ApplicationController
     if signed_in? && current_user.admin?
       @observations = Observation.where(:coral_id => params[:checked])        
     end
-        
-    csv_string = CSV.generate do |csv|
-      csv << ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "precision", "precision_type", "precision_upper", "replicates"]
-      @observations.each do |obs|
-        obs.measurements.each do |mea|
-          if obs.location.present?
-            loc = obs.location.location_name
-            lat = obs.location.latitude
-            lon = obs.location.longitude
-            if obs.location.id == 1
-              lat = ""
-              lon = ""
-            end
-          else
-            loc = ""
-            lat = ""
-            lon = ""
-          end
-          if obs.private == true
-            acc = 0
-          else
-            acc = 1
-          end
-          csv << [obs.id, acc, obs.user_id, obs.coral.coral_name, loc, lat, lon, obs.resource_id, mea.id, mea.trait.trait_name, mea.standard.standard_unit, mea.value, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates]
-        end
-      end
-    end
+    
+    #csv_string = get_main_csv(@observations)
 
-    send_data csv_string, 
-      :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
-      :disposition => "attachment; filename=ctdb_#{Date.today.strftime('%Y%m%d')}.csv"
+    send_zip(@observations, 'corals.csv')
+      
+
+    #send_data csv_string, 
+    #  :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
+    #  :disposition => "attachment; filename=ctdb_#{Date.today.strftime('%Y%m%d')}.csv"
           
   end
 
@@ -70,11 +51,16 @@ class CoralsController < ApplicationController
     @vfiles = Dir.glob("app/assets/images/veron/*")
     @hfiles = Dir.glob("app/assets/images/hughes/*")
     
-    @coral = Coral.find(params[:id])
+    @coral = @item if @item
+    @coral = Coral.find(params[:id]) if params[:id]
+    
+
 
 
     if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
-      @observations = Observation.where(['observations.coral_id IS ? AND observations.private IS ?', @coral.id, false])
+      #@observations = Observation.where(['observations.coral_id IS ? AND observations.private IS ?', @coral.id, false])
+      # just a better approach to find active `
+      @observations = @coral.observations.where(private: false)
     end
     
     if signed_in? && current_user.contributor?
@@ -88,38 +74,25 @@ class CoralsController < ApplicationController
     respond_to do |format|
       format.html
       format.csv {
-        csv_string = CSV.generate do |csv|
-          csv << ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "precision", "precision_type", "precision_upper", "replicates"]
-          @observations.each do |obs|
-      	    obs.measurements.each do |mea|
-              if obs.location.present?
-                loc = obs.location.location_name
-                lat = obs.location.latitude
-                lon = obs.location.longitude
-                if obs.location.id == 1
-                  lat = ""
-                  lon = ""
-                end
-              else
-                loc = ""
-                lat = ""
-                lon = ""
-              end
-              if obs.private == true
-                acc = 0
-              else
-                acc = 1
-              end
-              csv << [obs.id, acc, obs.user_id, obs.coral.coral_name, loc, lat, lon, obs.resource_id, mea.id, mea.trait.trait_name, mea.standard.standard_unit, mea.value, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates]
-            end
-          end
+        
+        if request.url.include? 'resources.csv'
+          csv_string = get_resources_csv(@observations)
+          filename = 'resources.csv'
+        else
+          csv_string = get_main_csv(@observations)
+          filename = 'corals.csv'
         end
-    
+        
         send_data csv_string, 
           :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
-          :disposition => "attachment; filename=coral_#{Date.today.strftime('%Y%m%d')}.csv"
+          :disposition => "attachment; filename=#{filename}_#{Date.today.strftime('%Y%m%d')}.csv"
 
         }
+
+      format.zip{
+        send_zip(@observations, 'corals.csv')
+      }
+
     end
   end
 
@@ -164,6 +137,10 @@ class CoralsController < ApplicationController
     end
   end
 
+
+
+
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_coral
@@ -172,6 +149,10 @@ class CoralsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def coral_params
-      params.require(:coral).permit(:coral_name, :coral_description)
+      params.require(:coral).permit(:coral_name, :coral_description, :user_id)
     end
+
+    
+
+    
 end

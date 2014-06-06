@@ -84,11 +84,13 @@
 					</div>    
 	  
 					<div class="row">
-					  <div class="col-md-6">
-				      <strong>Value:</strong> <%= mea.value %>
+					  	<div class="col-md-6">
+				      		<strong>Value:</strong> <%= mea.value %>
 						</div>
+
 						<div class="col-md-6">
-				      (Original value: <%= mea.orig_value %>)
+							(Original value: <%=  mea.previous_version ? mea.previous_version.value : mea.orig_value %>)
+				      		
 						</div>
 					</div>
 					
@@ -115,7 +117,7 @@
 				      <strong>User:</strong> <%= mea.user_id %>
 						</div>
 						<div class="col-md-6">
-				      <strong>Original user:</strong> <%= mea.orig_user_id %>
+				      <strong>Original user:</strong> <%=  mea.previous_version ? mea.previous_version.user_id :  mea.orig_user_id  %>
 						</div>
 					</div>
 

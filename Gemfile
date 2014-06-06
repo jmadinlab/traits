@@ -9,7 +9,28 @@ gem 'will_paginate'#, '3.0.4'
 gem 'bootstrap-will_paginate'#, '0.0.9'
 gem "select2-rails"
 # gem 'select2-sass-bootstrap-rails'
-gem 'squeel', github: 'kiela/squeel'
+# gem 'squeel', github: 'kiela/squeel'
+
+# using paper_trail for versioning database
+gem 'paper_trail', '~> 3.0.1'
+
+# using google analytics gem
+gem 'google-analytics-rails'
+
+# using zip to send multiple csv files in one click (eg: corals.csv + resources.csv, observation.csv + resources.csv etc)
+gem 'rubyzip', '>= 1.0.0'
+gem 'zip-zip'
+
+# for prettifying the rails console output
+# Include the following code into ~/.irbrc file, so that everytime you start rails console, the hirb view is automatically loaded
+# require 'hirb'
+# View class needs to come before enable()
+# class Hirb::Helpers::Yaml; def self.render(output, options={}); output.to_yaml; end ;end
+# Hirb.enable :output=>{"Hash"=>{:class=>"Hirb::Helpers::Yaml"}}
+gem 'hirb'
+
+# for sharding database (main database and temporary database)
+#gem "ar-octopus", :git => "git://github.com/tchandy/octopus.git", :require => "octopus"
 
 group :development, :test do
   gem 'sqlite3'#, '1.3.8'

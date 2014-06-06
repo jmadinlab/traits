@@ -4,26 +4,25 @@
 	  $(document).ready(function() {
 			$('select#simple-example').select2();
 			$('select#traits_select').select2();
-	    $('#traits_select').change(function() {
+	    
+	    $('.my_trait').change(function() {
 	      $.ajax({
 	        url: "update_values",
 	        data: {
-						trait_id: $("#traits_select").val()
+	        			element_id: $(this).attr('id'),
+						trait_id: $(this).val()
+						
 					},
 	        dataType: "script"
 	      });
+	    
 	    });
-	    $('#traits_select').ready(function() {
-	      $.ajax({
-	        url: "update_values",
-	        data: {
-						trait_id: $("#traits_select").val()
-					},
-	        dataType: "script"
-	      });
-	    });
+	    
+
+
 	  });
 	</script>
+
 
   <div class="well">
 
@@ -34,7 +33,12 @@
 		  <div class="col-md-12">
 			  <div class="form-group">
 				  <%= f.label :trait %>
-					<br/><%= f.select :trait_id, Trait.all.map { |u| [u.trait_name, u.id] }, { include_blank: 'Choose trait...', class: "form-control" }, { id: 'traits_select' } %>
+				  <% @temp_var = @temp_var + 1 %>
+				  <% unique_trait_id = 'trait_select' + @temp_var.to_s %>
+				  <% unique_value_id = 'trait_value' + @temp_var.to_s %>
+				  <% unique_standard_id = 'trait_standard' + @temp_var.to_s %>
+
+					<br/><%= f.select :trait_id, Trait.all.map { |u| [u.trait_name, u.id] }, { include_blank: 'Choose trait...', class: "form-control" }, { id: unique_trait_id, class: "my_trait" } %>
 				</div>
 			</div>
 		</div>
@@ -53,7 +57,8 @@
 				  		<small class="pull-right">(originally entered as: <%= f.object.orig_value %>)</small>
 						<% end %>
 						<% if !f.object.id %>
-							<%= f.text_field :value, :placeholder => "Value", class: "form-control" %>
+							<%# f.text_field :value, :placeholder => "Value", class: "form-control" %>
+							<%= f.select :value, [], { include_blank: 'Choose Value', class: "form-control" }, {id: unique_value_id } %>
 							<%= f.hidden_field :orig_value, :value => params[:value] %>
 						<% else %>
 							<%= f.text_field :value, class: "form-control" %>
@@ -66,7 +71,9 @@
 		  <div class="col-md-12">
 			  <div class="form-group">
 				  <%= f.label :standard %>
-					<br/><%= f.select :standard_id, Standard.all.map { |u| ["#{u.standard_name} (#{u.standard_unit})", u.id] }, { include_blank: 'Choose standard...', class: "form-control" }, { id: 'simple-example' } %>
+					<br/>
+					<%#= f.select :standard_id, Standard.all.map { |u| ["#{u.standard_name} (#{u.standard_unit})", u.id] }, { include_blank: 'Choose standard...', class: "form-control" }, { id: 'simple-example' } %>
+					<%= f.select :standard_id, [], { include_blank: 'Choose standard...', class: "form-control" }, { id: unique_standard_id } %>
 				</div>
 			</div>
 		</div>    

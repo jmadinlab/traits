@@ -7,8 +7,8 @@
 
 		<p>Data can be accessed in a number of different ways.  You can download all data for a given coral species, trait or location by clicking the Download button on the relevant page.  The download will only contain what is visible on the page, and so if you want everything, you'll need to select "all" and Update before downloading.  You can download all data for multiple coral species or traits by checking which ones you want and Download from the coral and traits index pages.</p>
 
-		<p>You can pipe up-to-date data directly into your R code using the <code>read.csv()</code> function.  Every page in the daabase can be loaded as html or csv.  For example, <code>http://localhost:3000/traits/105</code> will return the html page for trait id=105 and <code>http://localhost:3000/traits/105.csv</code> will return the csv (trait 105 is growth form).  However, similar to direct downloading (above), you will only get the first 10 observations.  If you want all the data, you will need <code>http://localhost:3000/traits/105.csv?n=all</code>.  For R, this would be:</p>
-		<code>dat <- read.csv("http://localhost:3000/traits/105.csv?n=all")</code>
+		<p>You can pipe up-to-date data directly into your R code using the <code>read.csv()</code> function.  Every page in the daabase can be loaded as html or csv.  For example, <code>http://coraltraits.org/traits/105</code> will return the html page for trait id=105 and <code>http://coraltraits.org/traits/105.csv</code> will return the csv (trait 105 is growth form).  However, similar to direct downloading (above), you will only get the first 10 observations.  If you want all the data, you will need <code>http://coraltraits.org/traits/105.csv?n=all</code>.  For R, this would be:</p>
+		<code>dat <- read.csv("http://coraltraits.org/traits/105.csv?n=all")</code>
 
 		<p>Currently there is no bulk download for R.  We suggest that you create a list of trait or coral ids (which won't change) and either use a loop or preferably an apply function to download and combine the data you require for your analysis.</p>
 

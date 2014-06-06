@@ -11,6 +11,10 @@ class ObservationsController < ApplicationController
   def update_values
       @values = Trait.find(params[:trait_id]).value_range.split(',').map(&:strip)
       @standard = Standard.find(Trait.find(params[:trait_id]).standard_id)
+      @element_id = params[:element_id].split("trait_select")[-1]
+      puts 'trait id '
+      puts params[:trait_id]
+
   end
 
   def edit_multiple
@@ -56,32 +60,10 @@ class ObservationsController < ApplicationController
     respond_to do |format|
       format.html
       format.csv { 
-        csv_string = CSV.generate do |csv|
-          csv << ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "precision", "precision_type", "precision_upper", "replicates"]
-          @observations.each do |obs|
-      	    obs.measurements.each do |mea|
-              if obs.location.present?
-                loc = obs.location.location_name
-                lat = obs.location.latitude
-                lon = obs.location.longitude
-              else
-                loc = ""
-                lat = ""
-                lon = ""
-              end
-              if obs.private == 'f'
-                acc = 0
-              else
-                acc = 1
-              end
-              csv << [obs.id, acc, obs.user_id, obs.coral.coral_name, loc, lat, lon, obs.resource_id, mea.id, mea.trait.trait_name, mea.standard.standard_unit, mea.value, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates]
-            end
-          end
-        end
-    
+        csv_string = get_main_csv(@observations)
         send_data csv_string, 
           :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
-          :disposition => "attachment; observations=user_#{Date.today.strftime('%Y%m%d')}.csv"
+          :disposition => "attachment; filename=observations_#{Date.today.strftime('%Y%m%d')}.csv"
 
         }
     end
@@ -96,6 +78,7 @@ class ObservationsController < ApplicationController
   def new
     @observation = Observation.new
     @values = ""
+    @temp_var = 0
   end
 
   # GET /observations/1/edit

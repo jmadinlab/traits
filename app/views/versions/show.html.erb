@@ -1,0 +1,87 @@
+
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title"> Version <%= @version.id %> | <%= @version.item_type %></h3>
+      </div>
+      <div class = "panel-body">
+        
+        
+        
+        <!--
+          <pre><%= @version.changeset %></pre>
+        -->
+        <% keys = [] %>
+        
+        <% if @version.changeset.size > 0 %>
+          <table class="table">
+            <tr>
+              <th> Field </th>
+              <th> Original Value </th>
+              <th> Updated Value </th>
+
+            </tr>
+            
+            <% @version.changeset.each do |key, value| %>
+              <% if key != "updated_at" %>
+                
+                <% keys.append(key) %>
+                <tr>
+
+                  <td> <b> <%= key %> </b>  </td>
+                  <td><%= value[0] %> </td>
+                  <td><%= value[1] %> </td>
+                </tr>
+              <% end %>
+            <% end %>
+          </table>
+        <% end %>
+
+        <h4>Original Object </h4>
+        <table class="table table-striped table-hover">
+          <% if @object.size == 0 %>
+            Since this is a newly created object, its original object is not available.
+          <% else %>
+            <% @object.each do |field, value| %>
+              <% if keys.include? field %>
+                <tr class="danger"> 
+              <% else %>
+                <tr>
+              <% end %>
+
+                <td><b> <%= field  %> </b> </td>
+                <td> <%= value %>   </td>
+              </tr>
+            <% end %>
+          <% end %>
+      
+        </table>
+
+      
+
+      <div class="alert alert-danger">
+      <b>User:</b>
+      <% if @version.whodunnit && @version.whodunnit != 'Guest' %>
+        <% user = User.find_by_id(@version.whodunnit) %>
+        <% if user %>
+          <%= user.name %>
+          
+        <% end %>
+      <% else %>
+        Guest
+      <% end %>
+      
+     &nbsp;&nbsp;&nbsp;&nbsp;
+      
+      <b>Remote address:</b> <%= @version.ip %>
+&nbsp;          
+          <b>Target:</b> <%= @version.item_type %>
+          <small>(id: <%= @version.item_id %>)</small>; <b>action:</b> <%= @version.event %>;
+          &nbsp;          
+          <b>Date:</b> <%= l(@version.created_at, format: '%B %e at %l:%M %p') %> 
+          &nbsp;
+          <%= link_to 'Revert Back', "/revert/#{@version.id}" ,class: "btn btn-danger btn-md ", :method => :post%>
+            
+        </div>
+        </div>
+
+        </div> <!-- End panel -->
