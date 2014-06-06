@@ -5,7 +5,12 @@ Traits::Application.routes.draw do
   get '/history', to:'versions#index'
   get '/history/:version_id', to: 'versions#show'
   post '/revert/:version_id', to: 'versions#revert_back'
+  get '/corals/:id/resources', to: 'corals#show'
+  get '/traits/:id/resources', to: 'traits#show'
+  get '/locations/:id/resources', to: 'locations#show'
+  get '/resources/:id/resources', to: 'resources#show'
   
+
   resources :corals do
     post :export, :on => :collection
   end
@@ -56,4 +61,5 @@ Traits::Application.routes.draw do
   # dynamic pull-down for trait select
   # match '/update_values', to: 'measurements#update_values', via: 'get'
   
+
 end

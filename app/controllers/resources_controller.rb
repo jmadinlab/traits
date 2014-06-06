@@ -47,11 +47,17 @@ class ResourcesController < ApplicationController
     respond_to do |format|
       format.html
       format.csv { 
-        csv_string = get_main_csv(@observations)
-
+        if request.url.include? 'resources.csv'
+          csv_string = get_resources_csv(@observations)
+          filename = 'resources_extra.csv'
+        else
+          csv_string = get_main_csv(@observations)
+          filename = 'resources_main.csv'
+        end
+        
         send_data csv_string, 
           :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
-          :disposition => "attachment; filename=resource_#{Date.today.strftime('%Y%m%d')}.csv"
+          :disposition => "attachment; filename=#{filename}_#{Date.today.strftime('%Y%m%d')}.csv"
       }
 
       format.zip{
