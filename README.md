@@ -26,3 +26,17 @@ Several contextual constraints have been implemented in the Coral Trait Database
 
 The database was developed using Ruby on Rails and can be freely downloaded from Github.
 
+## Running in production
+
+`git clone git@github.com:jmadin/coraltraits.git`
+git pull master origin
+bundle update
+bundle exec rake db:migrate RAILS_ENV="production"
+rake tmp:clear
+bundle exec rake assets:precompile RAILS_ENV=production RAILS_GROUPS=assets
+rails s -e production -p 3009
+
+
+
+
+
