@@ -9,7 +9,7 @@
 
 */
 
-//$('#values_select').html("<%= escape_javascript(render 'values', :locals => {:value => @values, :standard => @standards}) %>");
+ // $('#values_select').html("<%= escape_javascript(render 'values', :locals => {:value => @values, :standard => @standards}) %>");
 
 // Variables to make the jquery selector neat
 
@@ -24,14 +24,16 @@ var standard = '#trait_standard'+ <%= @element_id %>
 // to select the options for standards
 var standard_option = standard + ' option'
 
+var suggested_standard_id = '#suggested_standard' + <%= @element_id %>
+
 // console.log('<%= @element_id %>');
 // console.log(val);
 // console.log(standard);
+ var suggested_standard = "<br/>Suggested standard: <b><%= @standard.standard_name %> (<%= @standard.standard_unit %>)</b>";
 
-
-
-$(standard_option).remove();
-$(standard).append('<option> Choose Standard</option>');
+$(suggested_standard_id).removeClass('hidden').html(suggested_standard);
+//$(standard_option).remove();
+// $(standard).append('<option> Choose Standard</option>');
 
 var name = $(val).attr('name');
 
@@ -57,11 +59,12 @@ var name = $(val).attr('name');
 		 
 	<% end %>
 <% end %>
+//
 
-var option = "<option value= <%= @standard.id %> ><%= @standard.standard_name %> ( <%= @standard.standard_unit %>)</option> ";
-$(standard).append(option)
-
-
+//var option = "<option value= <%= @standard.id %> ><%= @standard.standard_name %> ( <%= @standard.standard_unit %>)</option> ";
+//$(standard).append(option)
+//var option = "<option value= 'other' >Other</option> ";
+//$(standard).append(option)
 // Delete all the empty options <option></option>
 $("select option").each(function(){
       if($(this).text() == "")

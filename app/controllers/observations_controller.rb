@@ -9,6 +9,7 @@ class ObservationsController < ApplicationController
 
 
   def update_values
+      @temp_var = 0
       @values = Trait.find(params[:trait_id]).value_range.split(',').map(&:strip)
       @standard = Standard.find(Trait.find(params[:trait_id]).standard_id)
       @element_id = params[:element_id].split("trait_select")[-1]
@@ -83,6 +84,7 @@ class ObservationsController < ApplicationController
 
   # GET /observations/1/edit
   def edit
+    @temp_var = 0
     if (@observation.user_id != current_user.id) & !current_user.admin?
       flash[:danger] = 'You need to be the original contributor of an observation to edit it.'
       if params[:user].blank?
@@ -115,7 +117,8 @@ class ObservationsController < ApplicationController
 
   # PATCH/PUT /observations/1
   # PATCH/PUT /observations/1.json
-  def update    
+  def update
+    @temp_var = 0    
     @observation.measurements.each do |mea|
       if mea.orig_value.blank?
         mea.orig_value = mea.value

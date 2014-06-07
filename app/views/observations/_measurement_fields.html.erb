@@ -2,8 +2,8 @@
 
 	<script>
 	  $(document).ready(function() {
-			$('select#simple-example').select2();
-			$('select#traits_select').select2();
+			$('select.my_standard').select2();
+			$('select.my_trait').select2();
 	    
 	    $('.my_trait').change(function() {
 	      $.ajax({
@@ -37,8 +37,10 @@
 				  <% unique_trait_id = 'trait_select' + @temp_var.to_s %>
 				  <% unique_value_id = 'trait_value' + @temp_var.to_s %>
 				  <% unique_standard_id = 'trait_standard' + @temp_var.to_s %>
+				  <% unique_suggested_standard_id = 'suggested_standard' + @temp_var.to_s %>
 
 					<br/><%= f.select :trait_id, Trait.all.map { |u| [u.trait_name, u.id] }, { include_blank: 'Choose trait...', class: "form-control" }, { id: unique_trait_id, class: "my_trait" } %>
+
 				</div>
 			</div>
 		</div>
@@ -72,8 +74,10 @@
 			  <div class="form-group">
 				  <%= f.label :standard %>
 					<br/>
-					<%#= f.select :standard_id, Standard.all.map { |u| ["#{u.standard_name} (#{u.standard_unit})", u.id] }, { include_blank: 'Choose standard...', class: "form-control" }, { id: 'simple-example' } %>
-					<%= f.select :standard_id, [], { include_blank: 'Choose standard...', class: "form-control" }, { id: unique_standard_id } %>
+					<%= f.select :standard_id, Standard.all.map { |u| ["#{u.standard_name} (#{u.standard_unit})", u.id] }, { include_blank: 'Choose standard...', class: "form-control" }, { id: unique_standard_id, class: "my_standard" } %>
+					<%#= f.select :standard_id, [], { include_blank: 'Choose standard...', class: "form-control" }, { id: unique_standard_id } %>
+
+					<span id="<%= unique_suggested_standard_id %>" class="hidden"> Suggested standard: </span>
 				</div>
 			</div>
 		</div>    
