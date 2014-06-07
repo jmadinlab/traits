@@ -77,11 +77,12 @@ class ApplicationController < ActionController::Base
   # Return the resources csv
   def get_resources_csv(observations)
     resources_string = CSV.generate do |csv|
-        csv << ["observation_id", "enterer", "coral", "Resource ID", "Author", "Year", "Title", "Resource Type", "Resource ISBN", "Resource Journal", "Resource Volume Pages", "Resource Notes"]
-        observations.each do |obs|
-          if obs.resource
-            res = obs.resource
-            res_id = obs.resource.id
+        csv << ["resource_id", "author", "year", "title", "resource_type", "resource_ISBN", "resource_journal", "resource_volume_pages", "resource_notes"]
+
+        Resource.where(:id => observations.map(&:resource).uniq).each do |res|
+          # if obs.resource
+            # res = obs.resource
+            res_id = res.id
             res_author = res.author
             res_year = res.year
             res_title = res.title
@@ -91,8 +92,8 @@ class ApplicationController < ActionController::Base
             res_volume = res.volume_pages
             res_notes = res.resource_notes
 
-            csv << [obs.id, obs.user_id, obs.coral.coral_name, res_id, res_author, res_year, res_title, res_type, res_isbn, res_journal, res_volume, res_notes]
-          end
+            csv << [res_id, res_author, res_year, res_title, res_type, res_isbn, res_journal, res_volume, res_notes]
+          # end
         end
       end
 
@@ -131,7 +132,7 @@ class ApplicationController < ActionController::Base
     
     File.open(zipfile_name, 'r') do |f|
       send_data f.read, type: "application/zip", :stream => true,
-      :disposition => "attachment; filename = 'zippedfile.zip'"
+      :disposition => "attachment; filename = zippedfile.zip"
     end
     File.delete(zipfile_name)
     FileUtils.rm_f(file2_path)
