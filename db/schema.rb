@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140523013902) do
+ActiveRecord::Schema.define(version: 20140619051818) do
 
   create_table "citations", force: true do |t|
     t.integer  "trait_id"
@@ -62,6 +62,7 @@ ActiveRecord::Schema.define(version: 20140523013902) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "notes"
+    t.string   "value_type"
   end
 
   add_index "measurements", ["observation_id"], name: "index_measurements_on_observation_id"

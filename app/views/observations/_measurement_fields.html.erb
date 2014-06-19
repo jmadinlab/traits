@@ -52,7 +52,7 @@
 		</div>
 		
 		<div class="row">
-		  <div class="col-md-12">
+		  <div class="col-md-6">
 				<div class="form-group">
 						<%= f.label :value %>
 						<% if f.object.id %>
@@ -65,8 +65,17 @@
 						<% else %>
 							<%= f.text_field :value, class: "form-control" %>
 						<% end %>
+
 					</div>
-			</div>    
+			</div>
+
+			<div class="col-md-6">
+				<div class="form-group">
+						<%= f.label :value_type %>
+						<%= f.select :value_type, ['Raw Value', 'Aggregation (eg: mean)', 'Expert Opinion' , 'Group Opinion', 'Model Derived'], { include_blank: 'Choose Value Type' } %>
+				</div>
+			</div>
+
 		</div>
 		
 		<div class="row">
