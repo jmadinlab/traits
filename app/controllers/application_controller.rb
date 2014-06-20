@@ -140,7 +140,11 @@ class ApplicationController < ActionController::Base
 
   end
 
-
+  
+  def upload_csv
+    @name = params[:controller]
+    
+  end
 
 
   

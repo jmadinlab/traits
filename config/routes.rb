@@ -1,6 +1,10 @@
 Traits::Application.routes.draw do
+  get '/imports/:name', to: 'imports#new'
+  
+  resources :imports
   resources :citations
-
+  
+  
   
   get '/history', to:'versions#index'
   get '/history/:version_id', to: 'versions#show'
@@ -10,6 +14,12 @@ Traits::Application.routes.draw do
   get '/locations/:id/resources', to: 'locations#show'
   get '/resources/:id/resources', to: 'resources#show'
   
+
+  
+  resources :imports
+
+  
+
 
   resources :corals do
     post :export, :on => :collection

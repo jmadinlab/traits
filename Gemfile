@@ -11,6 +11,7 @@ gem "select2-rails"
 # gem 'select2-sass-bootstrap-rails'
 # gem 'squeel', github: 'kiela/squeel'
 
+gem 'roo'
 # using paper_trail for versioning database
 gem 'paper_trail', '~> 3.0.1'
 
