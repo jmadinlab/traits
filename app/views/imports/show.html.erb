@@ -1,0 +1,24 @@
+<h2> Files Uploaded </h2>
+<ul>
+	<% Dir["public/uploads/*.csv"].each do |file| %>
+			<% file_name = file.to_s %>
+			<% file_name = file_name.split("/").last %>
+			<% model_name = file_name.split(".").first.capitalize.singularize %>
+	  <li>
+	  	<%= link_to file_name.to_s, file[/\/.*/] %>
+	  	<%= link_to "Approve", approve_path(:approve => 'yes', :file => file, :model => model_name) %>
+
+	  </li>
+	<% end %>
+</ul>
+
+  <% if @product_import.errors.any? %>
+	    <div id="error_explanation">
+	      <h2><%= pluralize(@product_import.errors.count, "error") %> prohibited this import from completing:</h2>
+	      <ul>
+	      <% @product_import.errors.full_messages.each do |msg| %>
+	        <li><%= msg %></li>
+	      <% end %>
+	      </ul>
+	    </div>
+	  <% end %>
