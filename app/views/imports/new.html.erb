@@ -1,10 +1,12 @@
+<%# @product_import ||= product_import if product_import%>
+
 <h1>Upload <%= @model_name %> </h1>
 
 <p>A CSV or Excel file can be used to import records. The first row should be the column name. The following columns are allowed.</p>
 
 <p>If an <strong>id</strong> is supplied it will update the matching record instead of creating a new one.</p>
 
-<%= form_for @product_import do |f| %>
+<%= form_for @product_import, :url => upload_path do |f| %>
   <% if @product_import.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@product_import.errors.count, "error") %> prohibited this import from completing:</h2>

@@ -3,7 +3,7 @@ class ImportsController < ApplicationController
 	
 
 	def new
-		@product_import = Import.new
+		@product_import ||= Import.new
 		@model_name = request.original_url.split("/").last.singularize.capitalize
 		
 		begin
@@ -36,6 +36,8 @@ class ImportsController < ApplicationController
 			redirect_to root_url, notice: "Imported successfully"
 		else
 			render :new
+			#redirect_to request.referer , :@product_import => @product_import
+
 		end
 		
 	end

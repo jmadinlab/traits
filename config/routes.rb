@@ -1,4 +1,5 @@
 Traits::Application.routes.draw do
+  match '/imports/:name', to: 'imports#create', :via => :post, :as => :upload
   get '/imports/:name', to: 'imports#new'
   
   resources :imports

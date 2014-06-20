@@ -62,8 +62,13 @@ class Import
       row = Hash[[header, spreadsheet.row(i)].transpose]
       product = model_name.find_by_id(row["id"]) || model_name.new
       
-      
-      product.attributes = row.to_hash
+      begin
+        product.attributes = row.to_hash
+      rescue => error
+        product.errors[:base] << "The column headers do not match with fields..."
+        product.errors[:base] << error.message
+        false
+      end
       #puts "product attributes"
       #puts product.attributes["user_id"]
       validate_user(product, product.attributes["user_id"])
