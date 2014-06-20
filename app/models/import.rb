@@ -24,6 +24,9 @@ class Import
     puts "controller_name :"
     puts model_name
     
+
+    # First Check if there is any error in the items in the list
+    # If any errors are present, don't attempt to save. Just Return False
     imported_products.each do |product|
       if product.errors.any?
         imported_products.each_with_index do |product, index|
@@ -35,8 +38,10 @@ class Import
       end
 
     end
-
     
+    # If no validation errors, see if there is any mapping error
+    # If there is a mapping error, display it and then return
+    # If there is no any error, then save it
     if imported_products.map(&:valid?).all? 
       imported_products.each(&:save!)
       true
@@ -69,20 +74,21 @@ class Import
         product.errors[:base] << error.message
         false
       end
-      #puts "product attributes"
-      #puts product.attributes["user_id"]
+      
+      # Validate user_id
       validate_user(product, product.attributes["user_id"])
       
+      # Validate latitude
       if product.attributes["latitude"]
         validate_latitude(product, product.attributes["latitude"], "latitude", -90, 90)
       end
-
+      
+      # Validate longitude
       if product.attributes["longitude"]
         validate_latitude(product, product.attributes["longitude"], "longitude",  -180, 180)
       end
 
-      puts "product info: "
-      puts product
+      # Finally return the product
       product
     end
   end
@@ -97,7 +103,7 @@ class Import
   end
 
   def validate_user(product, user_id)
-    if User.where(id: user_id).nil?
+    if User.where(id: user_id).empty?
       product.errors[:base] << "Invalid user with id: " + user_id.to_s
     end
 
