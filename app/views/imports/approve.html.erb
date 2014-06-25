@@ -6,7 +6,7 @@
 			<% model_name = file_name.split(".").first.capitalize.singularize %>
 	  <li>
 	  	<%= link_to file_name.to_s, file[/\/.*/] %>
-	  	<%= link_to "Approve", approve_path(:approve => 'yes', :file => file, :model => model_name) %>
+	  	<%= link_to "Approve", approve_path(:approve => 'yes', :file => file, :model => model_name), method: :post %>
 
 	  </li>
 	<% end %>

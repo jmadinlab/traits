@@ -149,7 +149,7 @@ class CoralsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def coral_params
-      params.require(:coral).permit(:coral_name, :coral_description, :user_id)
+      params.require(:coral).permit(:coral_name, :coral_description, :user_id, :approval_status)
     end
 
     

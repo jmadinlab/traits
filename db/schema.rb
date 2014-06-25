@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140619051818) do
+ActiveRecord::Schema.define(version: 20140625232252) do
 
   create_table "citations", force: true do |t|
     t.integer  "trait_id"
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(version: 20140619051818) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
+    t.string   "approval_status"
   end
 
   add_index "citations", ["resource_id"], name: "index_citations_on_resource_id"
@@ -31,9 +32,22 @@ ActiveRecord::Schema.define(version: 20140619051818) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "approval_status"
   end
 
   add_index "corals", ["user_id"], name: "index_corals_on_user_id"
+
+  create_table "imports", force: true do |t|
+    t.string   "filename"
+    t.string   "email"
+    t.boolean  "status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "csv_file_file_name"
+    t.string   "csv_file_content_type"
+    t.integer  "csv_file_file_size"
+    t.datetime "csv_file_updated_at"
+  end
 
   create_table "locations", force: true do |t|
     t.string   "location_name"
@@ -43,6 +57,7 @@ ActiveRecord::Schema.define(version: 20140619051818) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "approval_status"
   end
 
   add_index "locations", ["user_id"], name: "index_locations_on_user_id"
@@ -97,6 +112,7 @@ ActiveRecord::Schema.define(version: 20140619051818) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "approval_status"
   end
 
   add_index "resources", ["user_id"], name: "index_resources_on_user_id"
@@ -109,6 +125,7 @@ ActiveRecord::Schema.define(version: 20140619051818) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "approval_status"
   end
 
   add_index "standards", ["user_id"], name: "index_standards_on_user_id"
@@ -122,6 +139,7 @@ ActiveRecord::Schema.define(version: 20140619051818) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "approval_status"
   end
 
   add_index "traits", ["standard_id"], name: "index_traits_on_standard_id"

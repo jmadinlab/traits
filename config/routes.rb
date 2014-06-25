@@ -1,6 +1,6 @@
 Traits::Application.routes.draw do
-  get '/imports/show', to: 'imports#show', :as => :show_imports
-  get '/imports/approve', to: 'imports#approve', :as => :approve
+  #get '/imports/show', to: 'imports#show', :as => :show_imports
+  match '/imports/approve', to: 'imports#approve', via: ['get', 'post'] , :as => :approve
   match '/imports/:name', to: 'imports#create', :via => :post, :as => :upload
   get '/imports/:name', to: 'imports#new'
   
