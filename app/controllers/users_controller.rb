@@ -5,7 +5,7 @@ class UsersController < ApplicationController
   before_action :admin_user,      only: :destroy
 
   def index
-    @users = User.all
+    @users = User.all.order( 'name DESC' )
   end
 
   def show
@@ -91,6 +91,11 @@ class UsersController < ApplicationController
 
     def user_params
       params.require(:user).permit(:name, :email, :password, :password_confirmation, :admin, :contributor, :editor)
+    end
+
+    def correct_user
+      @user = User.find(params[:id])
+      redirect_to(root_url) unless current_user?(@user)
     end
 
     # Before filters

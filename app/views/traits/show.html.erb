@@ -22,13 +22,13 @@
 		<% end %>
 
 		<p>
-		  <strong>Trait class:</strong>
+		  <strong>Class:</strong>
 		  <%= @trait.trait_class %>
 		</p>
 
 		<p>
-		  <strong>Trait description:</strong>
-			<% if @trait.value_range.present? %>
+		  <strong>Description:</strong>
+			<% if @trait.trait_description.present? %>
 			  <%= @trait.trait_description %>
 			<% else %>
 				Needs entering
@@ -36,7 +36,7 @@
 		</p>
 
 		<p>
-		  <strong>Trait editor:</strong>
+		  <strong>Editor:</strong>
 			<% if !@trait.user.blank? %>
 		  	<%= @trait.user.name %> (<%= mail_to @trait.user.email, "contact", {:subject => "Coral Trait enquiry"} %>)
 			<% end %>

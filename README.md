@@ -37,5 +37,8 @@ The database was developed using Ruby on Rails and can be freely downloaded from
 	$ rails s -e production -p 3009
 
 
+  $ rails generate migration add_editor_to_user editor:boolean
+  $ bundle exec rake db:migrate
+
 
 

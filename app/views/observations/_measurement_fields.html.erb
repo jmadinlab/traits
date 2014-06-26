@@ -18,8 +18,6 @@
 	    
 	    });
 	    
-
-
 	  });
 	</script>
 
@@ -72,7 +70,7 @@
 			<div class="col-md-6">
 				<div class="form-group">
 						<%= f.label :value_type %>
-						<%= f.select :value_type, ['Raw Value', 'Aggregation (eg: mean)', 'Expert Opinion' , 'Group Opinion', 'Model Derived'], { include_blank: 'Choose Value Type' } %>
+						<%= f.select :value_type, ['raw_value', 'aggregate', 'model_derived', 'expert_opinion' , 'group_opinion'], { include_blank: 'Choose...' }, class: "form-control" %>
 				</div>
 			</div>
 

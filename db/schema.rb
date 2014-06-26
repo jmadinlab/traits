@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20140626041609) do
-=======
-ActiveRecord::Schema.define(version: 20140625232252) do
->>>>>>> 9892aeb9841452bd41ad66b52c5dd69fe437fc69
 
   create_table "citations", force: true do |t|
     t.integer  "trait_id"
@@ -40,18 +36,6 @@ ActiveRecord::Schema.define(version: 20140625232252) do
   end
 
   add_index "corals", ["user_id"], name: "index_corals_on_user_id"
-
-  create_table "imports", force: true do |t|
-    t.string   "filename"
-    t.string   "email"
-    t.boolean  "status"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "csv_file_file_name"
-    t.string   "csv_file_content_type"
-    t.integer  "csv_file_file_size"
-    t.datetime "csv_file_updated_at"
-  end
 
   create_table "locations", force: true do |t|
     t.string   "location_name"

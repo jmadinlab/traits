@@ -58,6 +58,7 @@
 			      <th>Trait name</th>
 			      <th style="text-align:center;"><%= submit_tag "Download", class: "btn btn-success btn-sm" %></th>
 			      <th></th>
+			      <th></th>
 			    </tr>
 			  </thead>
 
@@ -94,6 +95,7 @@
 								<%= check_box_tag "checked[]", trait.id %>
 							</td>						
 						
+			        <td><%= Measurement.where(:trait_id => trait.id).size %></td>
 							
 						
 			        <td style="text-align:right; min-width: 170px;">

@@ -13,6 +13,9 @@
 			  <% if current_user.admin? %>
 	  	    <th style="text-align:center;">Admin</th>
 				<% end %>
+			  <% if current_user.editor? %>
+	  	    <th style="text-align:center;">Editor</th>
+				<% end %>
 		    <th></th>
 		  </tr>
 		</thead>
@@ -23,16 +26,28 @@
 					<tr>
 						<td><%= link_to user.name, user %></td>
 					  <td><%= user.email %></td>
+					  <td style="text-align:center;">
 					  <% if current_user.admin? %>
 						  <% if !user.admin? %>
-								<td style="color:red;text-align:center;"><span class="glyphicon glyphicon-remove-circle"></span></td>
+								<span class="glyphicon glyphicon-remove-circle red"></span>
 							<% else %>
-								<td style="color:green;text-align:center;"><span class="glyphicon glyphicon-ok-circle"></span></td>
+								<span class="glyphicon glyphicon-ok-circle green"></span>
 							<% end %>
 						<% end %>
+						</td>
+					  <td style="text-align:center;">
+					  <% if current_user.editor? %>
+						  <% if !user.editor? %>
+								<span class="glyphicon glyphicon-remove-circle red"></span>
+							<% else %>
+								<span class="glyphicon glyphicon-ok-circle green"></span>
+							<% end %>
+						<% end %>
+						</td>
 
 					  <td>      
 					  	<% if current_user.admin? && !current_user?(user) %>
+					    	<%= link_to "Edit", edit_user_path(user) %>
 					    	<%= link_to "Delete", user, method: :delete, data: { confirm: "You sure?" } %>
 							<% end %>
 						</td>
