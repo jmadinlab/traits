@@ -62,6 +62,7 @@ class Import
   def load_imported_products
 
     spreadsheet = open_spreadsheet
+    #spreadsheet = Roo::Spreadsheet.open(file)
     header = spreadsheet.row(1)
     (2..spreadsheet.last_row).map do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
@@ -89,6 +90,7 @@ class Import
       end
 
       # Finally return the product
+      product.approval_status = "pending"
       product
     end
   end
