@@ -63,7 +63,7 @@ class ObservationsController < ApplicationController
       format.csv { 
         csv_string = get_main_csv(@observations)
         send_data csv_string, 
-          :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
+          :type => 'text/csv; charset=WINDOWS-1252; header=present', :stream => true,
           :disposition => "attachment; filename=observations_#{Date.today.strftime('%Y%m%d')}.csv"
 
         }
