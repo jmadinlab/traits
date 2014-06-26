@@ -66,6 +66,7 @@ ActiveRecord::Schema.define(version: 20140626041609) do
     t.datetime "updated_at"
     t.text     "notes"
     t.string   "value_type"
+    t.string   "approval_status"
   end
 
   add_index "measurements", ["observation_id"], name: "index_measurements_on_observation_id"
@@ -81,6 +82,7 @@ ActiveRecord::Schema.define(version: 20140626041609) do
     t.boolean  "private"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "approval_status"
   end
 
   add_index "observations", ["coral_id"], name: "index_observations_on_coral_id"
