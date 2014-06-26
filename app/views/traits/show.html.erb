@@ -36,9 +36,9 @@
 		</p>
 
 		<p>
-		  <strong>Contributor:</strong>
+		  <strong>Trait editor:</strong>
 			<% if !@trait.user.blank? %>
-		  	<%= @trait.user.name %>
+		  	<%= @trait.user.name %> (<%= mail_to @trait.user.email, "contact", {:subject => "Coral Trait enquiry"} %>)
 			<% end %>
 		</p>
 
