@@ -40,5 +40,22 @@ The database was developed using Ruby on Rails and can be freely downloaded from
   $ rails generate migration add_editor_to_user editor:boolean
   $ bundle exec rake db:migrate
 
+  $ rails generate migration add_release_to_trait release_status:boolean
+  $ bundle exec rake db:migrate
+
+update measurements set value_type="raw_value" where trait_id=8;
+update measurements set value_type="expert_opinion" where trait_id=9;
+update measurements set trait_id=8 where trait_id=9;
+
+update measurements set value_type="raw_value" where trait_id=5;
+update measurements set value_type="expert_opinion" where trait_id=6;
+update measurements set trait_id=5 where trait_id=6;
+
+
+delete from observations where id IN (select id from observations where id NOT IN (select observation_id from measurements));
+
+
+
+
 
 
