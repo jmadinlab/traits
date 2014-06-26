@@ -11,7 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
+ActiveRecord::Schema.define(version: 20140626041609) do
+=======
 ActiveRecord::Schema.define(version: 20140625232252) do
+>>>>>>> 9892aeb9841452bd41ad66b52c5dd69fe437fc69
 
   create_table "citations", force: true do |t|
     t.integer  "trait_id"
@@ -154,6 +158,7 @@ ActiveRecord::Schema.define(version: 20140625232252) do
     t.string   "remember_token"
     t.boolean  "admin"
     t.boolean  "contributor"
+    t.boolean  "editor"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true
