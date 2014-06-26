@@ -22,3 +22,16 @@
 	      </ul>
 	    </div>
 	  <% end %>
+
+	  
+
+
+<% list = [ @corals , @locations, @traits, @standards, @resources ] %>
+<% list.each do |l| %>
+	<% if not l.empty? %>
+		<% items = l %>
+
+		<%= render partial: "approve_table" , :locals => { :items => items } %>
+	<% end %>
+
+<% end %>
