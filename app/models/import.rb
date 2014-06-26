@@ -65,11 +65,7 @@ class Import
       imported_products.each(&:save!)
       true
     else
-      imported_products.each_with_index do |product, index|
-        product.errors.full_messages.each do |message|
-          errors.add :base, "Row #{index+2}: #{message}"
-        end
-      end
+      errors.add :base, "Mapping Error"
       false
     end
   end
@@ -81,20 +77,16 @@ class Import
   def load_imported_products
 
     spreadsheet = open_spreadsheet
-    #spreadsheet = Roo::Spreadsheet.open(file)
+    
     header = spreadsheet.row(1)
-    #puts "printing header"
-    
-    #puts header
-    
     observation_csv_headers = ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "precision", "precision_type", "precision_upper", "replicates"]
 
     if header == observation_csv_headers
-      #puts "inside observation processing"
+      # Rename some headers to correspond the database fields
       header[header.index("observation_id")] = "id"
       header[header.index("access")] = "private"
       header[header.index("enterer")] = "user_id"
-      #header[header.index("coral")] = "coral_id"
+      
 
       (2..spreadsheet.last_row).map do |i|
 
@@ -105,6 +97,7 @@ class Import
         else
           row["private"] = false
         end
+
         coral_id = Coral.where(:coral_name => row["coral"]).take!.id
         
         begin
@@ -152,6 +145,7 @@ class Import
           measurement.errors[:base] << error.message
           false
         end
+        measurement.approval_status = "pending"
         $measurements.append(measurement)
 
         #observation.approval_status = "pending"
@@ -159,45 +153,46 @@ class Import
         puts "====================================="
         #puts observation
         #puts observation.attributes
+        observation.approval_status = "pending"
         observation
       end
+    else
+      (2..spreadsheet.last_row).map do |i|
+        row = Hash[[header, spreadsheet.row(i)].transpose]
+
+        product = model_name.find_by_id(row["id"]) || model_name.new
+        
+        begin
+          product.attributes = row.to_hash
+        rescue => error
+          product.errors[:base] << "The column headers do not match with fields..."
+          product.errors[:base] << error.message
+          false
+        end
+        
+        # Validate user_id
+        validate_user(product, product.attributes["user_id"])
+        
+        # Validate latitude
+        if product.attributes["latitude"]
+          validate_latitude(product, product.attributes["latitude"], "latitude", -90, 90)
+        end
+        
+        # Validate longitude
+        if product.attributes["longitude"]
+          validate_latitude(product, product.attributes["longitude"], "longitude",  -180, 180)
+        end
+
+        # Finally return the product
+        product.approval_status = "pending"
+        product
+      end
+
     end
+
   end
-    '''
-
-
-    (2..spreadsheet.last_row).map do |i|
-      row = Hash[[header, spreadsheet.row(i)].transpose]
-
-      product = model_name.find_by_id(row["id"]) || model_name.new
-      
-      begin
-        product.attributes = row.to_hash
-      rescue => error
-        product.errors[:base] << "The column headers do not match with fields..."
-        product.errors[:base] << error.message
-        false
-      end
-      
-      # Validate user_id
-      validate_user(product, product.attributes["user_id"])
-      
-      # Validate latitude
-      if product.attributes["latitude"]
-        validate_latitude(product, product.attributes["latitude"], "latitude", -90, 90)
-      end
-      
-      # Validate longitude
-      if product.attributes["longitude"]
-        validate_latitude(product, product.attributes["longitude"], "longitude",  -180, 180)
-      end
-
-      # Finally return the product
-      product.approval_status = "pending"
-      product
-    end
-
-    '''
+    
+    
   
 
   def open_spreadsheet

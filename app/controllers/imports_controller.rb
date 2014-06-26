@@ -58,6 +58,8 @@ class ImportsController < ApplicationController
 		@traits = Trait.where(:approval_status => "pending", :user_id => current_user.id)
 		@standards = Standard.where(:approval_status => "pending", :user_id => current_user.id)
 		@resources = Resource.where(:approval_status => "pending", :user_id => current_user.id)
+		@observations = Observation.where(:approval_status => "pending", :user_id => current_user.id)
+		@measurements = Measurement.where(:approval_status => "pending", :user_id => current_user.id)
 		
 		if params[:checked]
 			item_ids = params[:checked]
@@ -67,11 +69,11 @@ class ImportsController < ApplicationController
 				find_and_approve_item(@model_name, item_id)
 				i = i + 1
 			end
-			redirect_to approve_path, notice: "Items saved !"
+			redirect_to approve_path, notice: "Items Approved !"
 		elsif params[:item_id]
 			@model_name = get_model_name(params[:model])
 			find_and_approve_item(@model_name, params[:item_id])
-			redirect_to approve_path, notice: "Item saved !"
+			redirect_to approve_path, notice: "Item Approved !"
 
 		else
 			@product_import = Import.new
