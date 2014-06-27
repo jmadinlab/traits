@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140626211933) do
+ActiveRecord::Schema.define(version: 20140627015251) do
 
   create_table "citations", force: true do |t|
     t.integer  "trait_id"
@@ -79,12 +79,26 @@ ActiveRecord::Schema.define(version: 20140626211933) do
     t.text     "notes"
     t.string   "value_type"
     t.string   "approval_status"
+    t.integer  "methodology_id"
   end
 
+  add_index "measurements", ["methodology_id"], name: "index_measurements_on_methodology_id"
   add_index "measurements", ["observation_id"], name: "index_measurements_on_observation_id"
   add_index "measurements", ["standard_id"], name: "index_measurements_on_standard_id"
   add_index "measurements", ["trait_id"], name: "index_measurements_on_trait_id"
   add_index "measurements", ["user_id"], name: "index_measurements_on_user_id"
+
+  create_table "methodologies", force: true do |t|
+    t.string   "methodology_name"
+    t.text     "method_description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "methodologies_traits", id: false, force: true do |t|
+    t.integer "trait_id"
+    t.integer "methodology_id"
+  end
 
   create_table "observations", force: true do |t|
     t.integer  "user_id"

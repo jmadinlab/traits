@@ -8,6 +8,8 @@ class Trait < ActiveRecord::Base
 
   has_many :citations#, :dependent => true
   has_many :resources, :through => :citations
+  
+  has_and_belongs_to_many :methodologies
 
   def self.search(search)
       if search
