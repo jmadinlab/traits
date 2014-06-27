@@ -20,9 +20,11 @@
 		</thead>
 	
 		
-		
+		<%# @observations.sort_by{ |h| [h.measurements.first.trait.trait_class, h.measurements.first.trait.trait_name] }.each do |grp| %>    
+		<%#= @observations[9].measurements.first.trait.trait_name %>    
+
 		<% mark = "" %>
-	  <% @observations.sort_by{ |h| [h.measurements.first.trait.trait_class, h.measurements.first.trait.trait_name] }.each do |grp| %>    
+	  <% @observations.each do |grp| %>    
 	    <% grp.measurements.each do |mea| %>    
     
 				<tr>            
