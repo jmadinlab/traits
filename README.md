@@ -62,6 +62,7 @@ update measurements set trait_id=3 where trait_id=4;
 
 delete from observations where id IN (select id from observations where id NOT IN (select observation_id from measurements));
 
+select id from measurements where id NOT IN (select trait_id from measurements);
 
 .mode csv
 .import db/csf_obs.csv observations
