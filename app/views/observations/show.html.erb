@@ -66,9 +66,14 @@
 					
 					
 					<div class="row">
-					  <div class="col-md-12">
+					  <div class="col-md-8">
 				      <strong>Trait:</strong> 
 					  	<%= link_to Trait.find(mea.trait_id).trait_name, "/traits/#{Trait.find(mea.trait_id).id}" %>
+						</div>
+						<div class="col-md-4">
+							<% if mea.approval_status == "pending" %>
+								<span class="alert alert-danger"> Approval Pending </span>
+							<% end %>
 						</div>
 					</div>
 

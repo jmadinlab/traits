@@ -9,7 +9,7 @@ class ImportsController < ApplicationController
 		begin
 			@model = @model_name.classify.constantize
 		rescue
-			redirect_to root_path, flash: {danger:  "Corresponding Model Name could not be retrieved" }
+			redirect_to imports_path, flash: {danger:  "Corresponding Model Name could not be retrieved" }
 		end
 	end
 
@@ -39,7 +39,7 @@ class ImportsController < ApplicationController
 		"""
 
 		if @product_import.save
-			redirect_to request.referer, notice: "Imported successfully"
+			redirect_to request.referer, flash: {success: "Imported successfully" } 
 		else
 			render :new
 			#redirect_to request.referer , :@product_import => @product_import
@@ -58,8 +58,9 @@ class ImportsController < ApplicationController
 		@traits = Trait.where(:approval_status => "pending", :user_id => current_user.id)
 		@standards = Standard.where(:approval_status => "pending", :user_id => current_user.id)
 		@resources = Resource.where(:approval_status => "pending", :user_id => current_user.id)
-		@observations = Observation.where(:approval_status => "pending", :user_id => current_user.id)
-		@measurements = Measurement.where(:approval_status => "pending", :user_id => current_user.id)
+		@observations = Observation.includes(:measurements).where("measurements.approval_status" => "pending")
+
+		#@measurements = Measurement.where(:approval_status => "pending")
 		
 		if params[:checked]
 			item_ids = params[:checked]
@@ -67,13 +68,14 @@ class ImportsController < ApplicationController
 			item_ids.each do |item_id|
 				@model_name = get_model_name(params[:item_type][i])
 				find_and_approve_item(@model_name, item_id)
+
 				i = i + 1
 			end
-			redirect_to approve_path, notice: "Items Approved !"
+			redirect_to approve_path, flash: {success: "Items approved!!!" } 
 		elsif params[:item_id]
 			@model_name = get_model_name(params[:model])
 			find_and_approve_item(@model_name, params[:item_id])
-			redirect_to approve_path, notice: "Item Approved !"
+			redirect_to approve_path, flash: {success: "Item approved!!!" } 
 
 		else
 			@product_import = Import.new
@@ -97,7 +99,7 @@ class ImportsController < ApplicationController
 			begin
 				@model_name = name.classify.constantize
 			rescue
-				redirect_to root_path, notice: "Corresponding Model Name could not be retrieved"
+				redirect_to imports_path, flash: {danger: "Corresponding Model Name could not be retrieved" }
 			end
 
     end
@@ -106,6 +108,16 @@ class ImportsController < ApplicationController
     	@item = model_name.find_by_id(item_id)
 			@item.approval_status = "approved"
 			@item.save!
+			
+			puts "printing model name:"
+			puts model_name
+			if model_name.to_s == "Observation"
+				puts "processing measurements"
+				@item.measurements.each do |mea|
+					mea.approval_status = "approved"
+					mea.save!
+				end
+			end
 		
     end
 

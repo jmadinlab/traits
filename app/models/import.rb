@@ -42,6 +42,7 @@ class Import
   end
 
   def save
+    $measurements = []
     puts "controller_name :"
     puts model_name
     
@@ -61,13 +62,14 @@ class Import
     # If no validation errors, see if there is any mapping error
     # If there is a mapping error, display it and then return
     # If there is no any error, then save it
-    if imported_products.map(&:valid?).all? 
-      imported_products.each(&:save!)
-      true
-    else
-      errors.add :base, "Mapping Error"
-      false
-    end
+    #if imported_products.map(&:valid?).all? 
+    imported_products.each(&:save!)
+    $measurements.each(&:save!)
+    true
+    #else
+    #  errors.add :base, "Mapping Error"
+    #  false
+    #end
   end
 
   def imported_products
@@ -79,7 +81,7 @@ class Import
     spreadsheet = open_spreadsheet
     
     header = spreadsheet.row(1)
-    observation_csv_headers = ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "precision", "precision_type", "precision_upper", "replicates"]
+    observation_csv_headers = ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates"]
 
     if header == observation_csv_headers
       # Rename some headers to correspond the database fields
@@ -91,27 +93,53 @@ class Import
       (2..spreadsheet.last_row).map do |i|
 
         row = Hash[[header, spreadsheet.row(i)].transpose]
-        #puts row
-        if row["private"] == "0"
+        
+        # Instantiate or find observation and measurement in order to be able to add errors into them
+        observation = Observation.find_by_id(row["id"]) || Observation.new
+        measurement = Measurement.find_by_id(row["measurement_id"]) || Measurement.new
+        
+        # Start Validations
+
+        # 1. Convert 0 or 1 to true or false for private field
+        if row["private"] == "0" or row["private"].empty?
           row["private"] = true
         else
           row["private"] = false
         end
-
-        coral_id = Coral.where(:coral_name => row["coral"]).take!.id
         
+        # 2. Validate user_id and report error if user cannot be found
+        begin
+          user = User.find(row["user_id"])
+        rescue
+          observation.errors[:base] << "Cannot find user with the id : " + row["user_id"]
+        end
+
+        # 3. Validate coral_name
+        begin
+          coral_id = Coral.where(:coral_name => row["coral"]).take!.id
+        rescue
+          coral_id = nil
+          observation.errors[:base] << "Cannot find Coral with the name : " + row["coral"]
+        end
+        
+        # 4. Validate Location from location_name
         begin
           location_id = Location.where(:location_name => row["location_name"]).take!.id
         rescue
           location_id = nil
+          observation.errors[:base] << "Cannot find location with the name : " + row["location_name"]
         end
-
+        
+        # 5. Validate Trait from trait_name
         begin
           trait_id = Trait.where(:trait_name => row["trait_name"]).take!.id
         rescue
           trait_id = nil
+          observation.errors[:base] << "Cannot find Trait with the name : " + row["trait_name"] + "\nPlease add them to the database before you proceed with upload"
         end
-
+        
+        # 6. Validate Standard from standard_unit
+        # Beware of the encoding scheme
         begin
           standard_id = Standard.where(:standard_unit => row["standard_unit"]).take!.id
         rescue
@@ -119,16 +147,39 @@ class Import
           puts row["standard_unit"]
           puts row["id"]
           standard_id = nil
+          observation.errors[:base] << "Cannot find Standard with that unit : " + row["standard_unit"]
         end
 
+        # 7. Validate Resource id
+        begin
+          resource = Resource.where(:resource_id => row["resource_id"])
+        rescue
+          if row["resource_id"] == ''
+            row["resource_id"] = nil
+          else
+            observation.errors[:base] << "Cannot find Resource with that id : " + row["resource_id"]
+          end
+          
+        end
+
+        # 8. Validate Values based on the trait's value range
+        begin
+          if trait_id
+            trait = Trait.find(trait_id)
+            if not trait.value_range.include? row["value"] and not trait.value_range.empty?
+              observation.errors[:base] << "Invalid Value for the trait: " + row["trait_name"] + ".. Values should be within " + trait.value_range
+            end
+          end
+          
+        rescue
+          observation.errors[:base] << "Error with value"
+        end
+
+        # Create the actual rows to be sent into the database for observation and measurements
         observation_row = {"id" => row["id"], "user_id" => row["user_id"], "location_id" => location_id, "coral_id" => coral_id, "resource_id" => row["resource_id"], "private" => row["private"]}
-
-        observation = Observation.find_by_id(row["id"]) || Observation.new
-
-        measurement = Measurement.find_by_id(row["measurement_id"]) || Measurement.new
+        measurement_row = {"id" => row["measurement_id"], "user_id" => row["user_id"], "observation_id" => row["id"], "trait_id" => trait_id, "standard_id" => standard_id,  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "approval_status" => "pending"}
         
-        measurement_row = {"id" => row["measurement_id"], "user_id" => row["user_id"], "observation_id" => row["id"], "trait_id" => trait_id, "standard_id" => standard_id,  "value" => row["value"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"]}
-        
+        # Additionally check for any mapping errors
         begin
           observation.attributes = observation_row.to_hash
           measurement.attributes = measurement_row.to_hash
@@ -138,21 +189,11 @@ class Import
           false
         end
         
-        begin
-          measurement.attributes = measurement_row.to_hash
-        rescue => error
-          measurement.errors[:base] << "The column headers do not match with fields..."
-          measurement.errors[:base] << error.message
-          false
-        end
-        measurement.approval_status = "pending"
+        puts "printing measurement"
+        puts measurement.attributes
+        #measurement.approval_status = "pending"
         $measurements.append(measurement)
-
-        #observation.approval_status = "pending"
         
-        puts "====================================="
-        #puts observation
-        #puts observation.attributes
         observation.approval_status = "pending"
         observation
       end
