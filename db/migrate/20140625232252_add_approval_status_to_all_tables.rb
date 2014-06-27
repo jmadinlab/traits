@@ -6,7 +6,5 @@ class AddApprovalStatusToAllTables < ActiveRecord::Migration
   	add_column :standards, :approval_status, :string
   	add_column :resources, :approval_status, :string
   	add_column :citations, :approval_status, :string
-  	add_column :observations, :approval_status, :string
-  	add_column :measurements, :approval_status, :string
   end
 end

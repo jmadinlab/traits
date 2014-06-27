@@ -43,6 +43,10 @@ The database was developed using Ruby on Rails and can be freely downloaded from
   $ rails generate migration add_release_to_trait release_status:boolean
   $ bundle exec rake db:migrate
 
+  $ rails generate migration add_approval_status_to_observation_measurements approval_status:string
+  $ bundle exec rake db:migrate
+
+
 update measurements set value_type="raw_value" where trait_id=8;
 update measurements set value_type="expert_opinion" where trait_id=9;
 update measurements set trait_id=8 where trait_id=9;
@@ -59,7 +63,9 @@ update measurements set trait_id=3 where trait_id=4;
 delete from observations where id IN (select id from observations where id NOT IN (select observation_id from measurements));
 
 
-
+.mode csv
+.import db/csf_obs.csv observations
+.import db/csf_mea.csv measurements
 
 
 
