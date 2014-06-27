@@ -4,13 +4,14 @@
 	  $(document).ready(function() {
 			$('select.my_standard').select2();
 			$('select.my_trait').select2();
+			$('select.my_methodology').select2();
 	    
 	    $('.my_trait').change(function() {
 	      $.ajax({
 	        url: "update_values",
 	        data: {
 	        			element_id: $(this).attr('id'),
-						trait_id: $(this).val()
+								trait_id: $(this).val()
 						
 					},
 	        dataType: "script"
@@ -36,6 +37,7 @@
 				  <% unique_value_id = 'trait_value' + @temp_var.to_s %>
 				  <% unique_standard_id = 'trait_standard' + @temp_var.to_s %>
 				  <% unique_suggested_standard_id = 'suggested_standard' + @temp_var.to_s %>
+				  <% unique_methodology_id = 'trait_methodology' + @temp_var.to_s %>
 
 					<br/><%= f.select :trait_id, Trait.all.map { |u| [u.trait_name, u.id] }, { include_blank: 'Choose trait...', class: "form-control" }, { id: unique_trait_id, class: "my_trait" } %>
 
@@ -77,7 +79,7 @@
 		</div>
 		
 		<div class="row">
-		  <div class="col-md-12">
+		  <div class="col-md-6">
 			  <div class="form-group">
 				  <%= f.label :standard %>
 					<br/>
@@ -85,6 +87,13 @@
 					<%#= f.select :standard_id, [], { include_blank: 'Choose standard...', class: "form-control" }, { id: unique_standard_id } %>
 
 					<span id="<%= unique_suggested_standard_id %>" class="hidden"> Suggested standard: </span>
+				</div>
+			</div>
+			<div class="col-md-6">
+			  <div class="form-group">
+				  <%= f.label :methodolgy_id %> <br/>
+				  <%= f.select :methodology_id, [], { include_blank: 'Choose Methodology', class: "form-control" }, {id: unique_methodology_id , class: "my_methodology"} %>
+					<br/>
 				</div>
 			</div>
 		</div>    

@@ -9,10 +9,12 @@ class ObservationsController < ApplicationController
 
 
   def update_values
+      puts "processing update values"
       @temp_var = 0
       @values = Trait.find(params[:trait_id]).value_range.split(',').map(&:strip)
       @standard = Standard.find(Trait.find(params[:trait_id]).standard_id)
       @element_id = params[:element_id].split("trait_select")[-1]
+      @methodologies = Trait.find(params[:trait_id]).methodologies
       puts 'trait id '
       puts params[:trait_id]
 
@@ -171,6 +173,6 @@ class ObservationsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def observation_params
-      params.require(:observation).permit(:user_id, :location_id, :coral_id, :resource_id, :private, measurements_attributes: [:id, :user_id, :orig_user_id, :trait_id, :standard_id, :value, :value_type, :orig_value, :precision_type, :precision, :precision_upper, :replicates, :notes, :_destroy])
+      params.require(:observation).permit(:user_id, :location_id, :coral_id, :resource_id, :private, measurements_attributes: [:id, :user_id, :orig_user_id, :trait_id, :standard_id, :value, :value_type, :orig_value, :precision_type, :precision, :precision_upper, :replicates, :notes, :methodology_id, :_destroy])
     end
 end
