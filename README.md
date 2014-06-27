@@ -68,5 +68,8 @@ select id from measurements where id NOT IN (select trait_id from measurements);
 .import db/csf_obs.csv observations
 .import db/csf_mea.csv measurements
 
+select * from observations where id (IN (select observation_id from measurements where trait_id=5 and value_type="expert_opinion") and IN (select observation_id from measurements where trait_id=5 and value_type="raw_value"));
+
+(select observation_id from measurements where trait_id=5 and value_type="expert_opinion") and (select observation_id from measurements where trait_id=5 and value_type="raw_value")
 
 
