@@ -12,7 +12,7 @@
   </div>
   <div class="form-group">
     <%= f.label :trait_class %><br>
-	  <%= f.select :trait_class, ['', 'Taxonomic', 'Phylogenetic', 'Reproductive', 'Morphological', 'Physiological', 'Biomechanical', 'Ecological', 'Geographical', 'Conservation', 'Demographic', 'Environmental'], {include_blank: false}, class: "form-control" %>
+	  <%= f.select :trait_class, ['', 'Taxonomic', 'Phylogenetic', 'Reproductive', 'Morphological', 'Physiological', 'Biomechanical', 'Ecological', 'Geographical', 'Conservation', 'Demographic', 'Contextual'], {include_blank: false}, class: "form-control" %>
   </div>
   <div class="form-group">
     <%= f.label :value_range %><br>
@@ -31,7 +31,7 @@
   	
     <div class="form-group">
       <%= f.label :release_status %><br>
-      <%= f.select :release_status, ['ready', 'needs_work', 'data_deficient', 'online_only'], {include_blank: true}, class: "form-control" %>
+      <%= f.select :release_status, ['ready_for_release', 'needs_work_before_release', 'ready_online_only', 'data_deficient'], {include_blank: true}, class: "form-control" %>
     </div>
   <% end %>
 
