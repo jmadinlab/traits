@@ -10,13 +10,13 @@ class UserMailer < ActionMailer::Base
     @greeting = "Hi"
     @user = user
 
-    mail to: user.email, :subject => "Reset Password"
+    mail to: user.email, :subject => "Coraltraits : Reset Password"
   end
 
   def password_reset_confirmation(user)
     @greeting = "Hi"
     @user = user
 
-    mail to: user.email, :subject => "Password Reset Confirmation"
+    mail to: user.email, :subject => "Coraltraits : Password Reset Confirmation"
   end
 end
