@@ -72,4 +72,11 @@ select * from observations where id (IN (select observation_id from measurements
 
 (select observation_id from measurements where trait_id=5 and value_type="expert_opinion") and (select observation_id from measurements where trait_id=5 and value_type="raw_value")
 
+Emailer
+=========
+For the password reset as well as upload approval system, emails need to be sent out from the application. The configuration depends on environment variables for email authentication (username and password). Gmail's SMTP has been used for this. To enable email system, create a file named ``local_env.yml`` inside ``config`` directory. The content of the file must be in following format :
+
+GMAIL_USERNAME : email_address
+GMAIL_PASSWORD : password
+
 
