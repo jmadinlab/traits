@@ -22,6 +22,13 @@
 	  });
 	</script>
 
+	<script>
+		$(document).bind('cocoon:after-insert', function(e,inserted_item) {
+		    alert('Inserted!');
+		    console.log(inserted_item);
+		});
+	</script>
+
 
   <div class="well">
 
@@ -58,13 +65,22 @@
 						<% if f.object.id %>
 				  		<small class="pull-right">(originally entered as: <%= f.object.orig_value %>)</small>
 						<% end %>
-						<% if !f.object.id %>
+						<%# if !f.object.id %>
 							<%# f.text_field :value, :placeholder => "Value", class: "form-control" %>
-							<%= f.select :value, [], { include_blank: 'Choose Value', class: "form-control" }, {id: unique_value_id } %>
+							<% if !f.object.id %>
+								<%= f.select :value, [], { include_blank: 'Choose Value', class: "form-control" }, {id: unique_value_id } %>
+								
+							<% else %>
+								<% if not f.object.trait.value_range.empty? %>
+									<%= f.select :value, f.object.trait.value_range.split(','), { include_blank: 'Choose Value', class: "form-control" }, {id: unique_value_id } %>
+								<% else %>
+									<%= f.text_field :value, class: "form-control", id: unique_value_id %>	
+								<% end %>
+							<% end %>
 							<%= f.hidden_field :orig_value, :value => params[:value] %>
-						<% else %>
-							<%= f.text_field :value, class: "form-control" %>
-						<% end %>
+						<%# else %>
+							<%# f.text_field :value, class: "form-control" %>
+						<%# end %>
 
 					</div>
 			</div>
