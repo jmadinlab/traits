@@ -22,14 +22,7 @@
 	  });
 	</script>
 
-	<script>
-		$(document).bind('cocoon:after-insert', function(e,inserted_item) {
-		    alert('Inserted!');
-		    console.log(inserted_item);
-		});
-	</script>
-
-
+	
   <div class="well">
 
     <%= f.hidden_field :user_id, :value => current_user.id %>
@@ -108,7 +101,11 @@
 			<div class="col-md-6">
 			  <div class="form-group">
 				  <%= f.label :methodolgy_id %> <br/>
-				  <%= f.select :methodology_id, [], { include_blank: 'Choose Methodology', class: "form-control" }, {id: unique_methodology_id , class: "my_methodology"} %>
+				  <% if !f.object.id %>
+				  	<%= f.select :methodology_id, [], { include_blank: 'Choose Methodology', class: "form-control" }, {id: unique_methodology_id , class: "my_methodology"} %>
+				  <% else %>
+						<%= f.select :methodology_id, f.object.trait.methodologies.map { |m| [ m.methodology_name, m.id ]} , { include_blank: 'Choose Methodology', class: "form-control" }, {id: unique_methodology_id , class: "my_methodology"} %>
+				  <% end %>
 					<br/>
 				</div>
 			</div>
