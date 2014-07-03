@@ -37,3 +37,15 @@ function checkUncheckAll(theElement) {
 	} 
 }
 
+
+
+$(document).ready(function(){
+  $('.panel-body').hide();
+
+  $('.panel-heading').click(function(e){
+    e.preventDefault();
+    $(this).next('.panel-body').fadeToggle("slow");
+  });
+});
+
+

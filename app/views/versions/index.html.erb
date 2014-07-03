@@ -1,3 +1,5 @@
+
+
 <div class="container">
   <h1>History</h1>
     Filter by: <%= link_to "All", '/history' %>
@@ -19,17 +21,15 @@
 
     <div class="panel panel-info">
       <div class="panel-heading">
-        <h3 class="panel-title"> Version <%= version.id %> | <%= version.item_type %></h3>
+        <a href="#"><h3 class="panel-title"> Version <%= version.id %> | <%= version.item_type %> </h3></a>
       </div>
       <div class = "panel-body">
-        
-        
         
         <!--
           <pre><%= version.changeset %></pre>
         -->
         <% if version.changeset.size > 0 %>
-          <table class="table">
+          <table class="table table-condensed">
             <tr>
               <th> Field </th>
               <th> Original Value </th>
@@ -91,7 +91,7 @@
             -->
           
         
-        <hr/>
+        
     <% end %>
   </ul>
 </div>

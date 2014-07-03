@@ -8,5 +8,5 @@ Don't worry. Just enter your email address and we will send you a reset link to 
     <%= text_field_tag :email, params[:email], size: 50, placeholder: "Enter your email to send the password reset link" %>
   </div>
   <br/>
-  <div class="actions"><%= submit_tag "Reset Password" %></div>
+  <div class="actions"><%= submit_tag "Reset Password", class: "btn btn-primary btn-md"%></div>
 <% end %>
