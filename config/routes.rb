@@ -1,4 +1,6 @@
 Traits::Application.routes.draw do
+  get 'password_resets/new'
+
   #get '/imports/show', to: 'imports#show', :as => :show_imports
   match '/imports/approve', to: 'imports#approve', via: ['get', 'post'] , :as => :approve
   match '/imports/:name', to: 'imports#create', :via => :post, :as => :upload
@@ -21,7 +23,7 @@ Traits::Application.routes.draw do
   
   resources :imports
 
-  
+  resources :password_resets
 
 
   resources :corals do

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140627023333) do
+ActiveRecord::Schema.define(version: 20140703014926) do
 
   create_table "citations", force: true do |t|
     t.integer  "trait_id"
@@ -172,6 +172,8 @@ ActiveRecord::Schema.define(version: 20140627023333) do
     t.boolean  "admin"
     t.boolean  "contributor"
     t.boolean  "editor"
+    t.string   "password_reset_token"
+    t.datetime "password_reset_sent_at"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true
