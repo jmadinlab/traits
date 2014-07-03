@@ -6,6 +6,7 @@
 /db/*.sqlite3-journal
 /db/schema.rb
 #/db
+/config/local_env.yml
 
 # Ignore all logfiles and tempfiles.
 /log/*.log
