@@ -7,7 +7,7 @@ class UploadApprovalMailer < ActionMailer::Base
   #   en.upload_approval_mailer.approve.subject
   #
   def approve(user)
-    @greeting = "Hi. Database Upload."
+    @greeting = "Hi #{user.name}"
 
     mail to: user.email, subject: "Upload Approval"
   end
