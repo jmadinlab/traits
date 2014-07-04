@@ -9,9 +9,7 @@ class MethodologiesController < ApplicationController
 
   def create
   	@methodology = Methodology.new(methodology_params)
-  	puts "============"
   	trait_ids =  params[:methodology][:traits_attributes]
-  	puts trait_ids
   	trait_ids.keys().each do |k|
   		#puts id
   		#puts val
@@ -29,8 +27,8 @@ class MethodologiesController < ApplicationController
   end
 
   def index
-  	@methodologies = Methodology.all
-
+  	@methodologies = Methodology.search(params[:search])
+	#@corals = Coral.search(params[:search])
   	respond_to do |format|
       format.html
       format.csv { send_data @methodologies.to_csv }
@@ -47,6 +45,13 @@ class MethodologiesController < ApplicationController
   end
 
   def update
+    trait_ids =  params[:methodology][:traits_attributes]
+    trait_ids.keys().each do |k|
+      #puts id
+      #puts val
+      @methodology.traits << Trait.find(trait_ids[k]["id"])
+    end
+
     if @methodology.update(methodology_params)
       redirect_to @methodology, flash: {success: "Methodology was successfully updated." }
     else

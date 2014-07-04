@@ -45,6 +45,6 @@
 
 		<p>
 		<% if signed_in? && current_user.contributor? %>
-			<%= link_to 'Edit', edit_methodology_path(@methodology) %> |
+			<%= link_to 'Edit', edit_methodology_path(@methodology) , class: "btn btn-primary btn-md"%> 
 		<% end %>
-		<%= link_to 'Back', methodologies_path %></p>
+		<%= link_to 'Back', methodologies_path, class: "btn btn-primary btn-md" %></p>
