@@ -21,7 +21,11 @@ Traits::Application.routes.draw do
   
   resources :imports
 
-  
+  resources :methodologies
+  post '/methodology/:id/trait', to: 'methodologies#remove_trait', :as => :remove_methodology_trait
+  resources :methodologies do
+    post :export, :on => :collection
+  end
 
 
   resources :corals do
