@@ -3,8 +3,9 @@ class VersionsController < ApplicationController
   
   def index
 
-    @versions = PaperTrail::Version.order('created_at DESC')
-    @versions_by_item = params[:type] ? PaperTrail::Version.where(item_type: params[:type]) : @versions
+    @versions = PaperTrail::Version.order('created_at DESC').paginate(:page => params[:page], :per_page => 20)
+    
+    @versions_by_item = params[:type] ? PaperTrail::Version.where(item_type: params[:type]).paginate(:page=> params[:page], :per_page => 20) : @versions
     
   end
 

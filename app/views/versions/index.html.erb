@@ -1,35 +1,31 @@
+
+
 <div class="container">
   <h1>History</h1>
-    Filter by: <%= link_to "All", '/history' %>
-    <% types = [] %>
-    <% @versions.each do |version| %>
-      <% type = version.item_type %>
-      <% if not types.include? type %>
-        <% types.append(type) %>
-        | <%= link_to type, "/history?type=#{type}" %>
-      <% end %>
+  
+  <%= will_paginate @versions_by_item %> <br/>
 
-    <% end %>s
-    |
+    
+
+    Filter by: <%= link_to "All", '/history' %> |  <%= link_to "User", '/history?type=User' %> |  <%= link_to "Coral", '/history?type=Coral' %> | <%= link_to "Measurements", '/history?type=Measurement' %> |  <%= link_to "Trait", '/history?type=Trait' %> |  <%= link_to "Observation", '/history?type=Observation' %> |  <%= link_to "Location", '/history?type=Location' %> |  <%= link_to "Resource", '/history?type=Resource' %> |  
 
     <br/><br/>
+
   <ul>
     <% @versions_by_item.each do |version| %>
     
 
     <div class="panel panel-info">
       <div class="panel-heading">
-        <h3 class="panel-title"> Version <%= version.id %> | <%= version.item_type %></h3>
+        <a href="#"><h3 class="panel-title"> Version <%= version.id %> | <%= version.item_type %> </h3></a>
       </div>
       <div class = "panel-body">
-        
-        
         
         <!--
           <pre><%= version.changeset %></pre>
         -->
         <% if version.changeset.size > 0 %>
-          <table class="table">
+          <table class="table table-condensed">
             <tr>
               <th> Field </th>
               <th> Original Value </th>
@@ -91,7 +87,8 @@
             -->
           
         
-        <hr/>
+        
     <% end %>
   </ul>
+  <%= will_paginate @versions_by_item %>
 </div>

@@ -39,6 +39,8 @@ class ImportsController < ApplicationController
 		"""
 
 		if @product_import.save
+			# Todo : Change the user to the one responsible for that particular coral/trait/observation
+			UploadApprovalMailer.approve(current_user).deliver
 			redirect_to request.referer, flash: {success: "Imported successfully" } 
 		else
 			render :new

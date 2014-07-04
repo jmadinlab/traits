@@ -1,0 +1,27 @@
+<h4>Reset Password</h4>
+Fill up the following form to reset your password.
+<br/><br/>
+<%= form_for @user, :url => password_reset_path(params[:id]) do |f| %>
+  <% if @user.errors.any? %>
+    <div class="error_messages">
+      
+      <h4>Errors</h4>
+      <ul>
+        <% for message in @user.errors.full_messages %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  
+  <div class="field">
+    <%= f.password_field :password, placeholder: "Password" %>
+  </div> 
+  <br/>
+  <div class="field">
+    
+    <%= f.password_field :password_confirmation , placeholder: "Confirm Password" %>
+  </div>
+  <br/>
+  <div class="actions"><%= f.submit "Update Password", class: "btn btn-primary btn-md" %></div>
+<% end %>

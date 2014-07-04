@@ -12,3 +12,8 @@
  *= require select2
  *= require_tree .
  */
+
+
+.error_messages{
+	color: red;
+}
