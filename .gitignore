@@ -12,7 +12,7 @@
 /tmp
 /public/assets/
 /app/assets/images/
-
+/config/local_env.yml
 # Ignore other unneeded files.
 Gemfile.lock
 database.yml

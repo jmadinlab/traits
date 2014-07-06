@@ -1,0 +1,50 @@
+<% provide(:title, @methodology.methodology_name) %>
+
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+
+		<h3>
+		  Methodology: <%= @methodology.methodology_name.capitalize %>
+		</h3>
+		
+
+		<% if !@methodology.method_description.blank? %>
+		  <p>
+		    <strong>Description:</strong>
+		    	<%= @methodology.method_description %>
+		  </p>
+		<% end %>
+
+		
+		<% if not @methodology.traits.empty? %>
+			<h4> Associated Traits </h4>
+			<table class="table table-condensed">
+			  <thead>
+			    <tr>
+			      <th style="color: lightgrey;">ID</th>
+			      <th>Trait name</th>
+			      
+			    </tr>
+			  </thead>
+
+			  <tbody>
+				<% @methodology.traits.each do |trait| %>
+					<tr>
+				        <td style="color: lightgrey;"><%= trait.id %></td>
+				        <td><em><%= link_to trait.trait_name, trait %></em></td>
+				        <td><%= link_to "Remove", remove_methodology_trait_path(:trait_id => trait.id), :method => :post %>
+				    </tr>
+
+				<% end %>
+				</tbody>
+			</table>
+		<% else %>
+			<div class="alert alert-warning"> There are no any traits associated with this methodology </div>
+
+		<% end %>
+
+		<p>
+		<% if signed_in? && current_user.contributor? %>
+			<%= link_to 'Edit', edit_methodology_path(@methodology) , class: "btn btn-primary btn-md"%> 
+		<% end %>
+		<%= link_to 'Back', methodologies_path, class: "btn btn-primary btn-md" %></p>

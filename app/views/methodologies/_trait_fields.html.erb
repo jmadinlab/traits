@@ -1,0 +1,4 @@
+<div class="form-group">
+	
+	<%= f.select :id, Trait.all.map { |u| [u.trait_name, u.id] }, { include_blank: 'Choose trait...', class: "form-control" } %>
+</div>

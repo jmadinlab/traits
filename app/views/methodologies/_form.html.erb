@@ -1,0 +1,35 @@
+<%= form_for(@methodology) do |f| %>
+
+  <%= render 'shared/error_messages', object: f.object %>
+
+
+	<div class="form-group">
+		<%= f.label :methodology_name %><br>
+		<%= f.text_field :methodology_name, :placeholder => "Required...", class: "form-control" %>
+	</div>
+
+	<div class="form-group">
+		<%= f.label :method_description %><br>
+		<%= f.text_area :method_description, class: "form-control" %>
+	</div>
+	
+	<% if f.object.traits.blank? %>      
+    <% f.object.traits.build %>
+  <% end %>
+
+	<h3>Traits</h3>
+	  <div id = "traits">
+		  <%= f.fields_for :traits do |t| %>
+		  	<%= render "trait_fields", :f => t %>
+		  <% end %>
+		</div>
+	  <div class="links">
+	    <p><%= link_to_add_association "Add another trait", f, :traits %></p>
+	  </div>
+
+	
+
+	<%= f.submit "Submit", class: "btn btn-primary btn-md" %>
+	<%= link_to 'Back', methodologies_path, class: "btn btn-primary btn-md" %>
+
+<% end %>
