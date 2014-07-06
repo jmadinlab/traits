@@ -45,6 +45,7 @@ class CoralsController < ApplicationController
           
   end
 
+
   # GET /corals/1
   # GET /corals/1.json
   def show
@@ -53,9 +54,6 @@ class CoralsController < ApplicationController
     
     @coral = @item if @item
     @coral = Coral.find(params[:id]) if params[:id]
-    
-
-
 
     if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
       #@observations = Observation.where(['observations.coral_id IS ? AND observations.private IS ?', @coral.id, false])

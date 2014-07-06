@@ -68,8 +68,34 @@ select id from measurements where id NOT IN (select trait_id from measurements);
 .import db/csf_obs.csv observations
 .import db/csf_mea.csv measurements
 
-select * from observations where id (IN (select observation_id from measurements where trait_id=5 and value_type="expert_opinion") and IN (select observation_id from measurements where trait_id=5 and value_type="raw_value"));
+select value_type from measurements where observation_id IN (select id from observations where coral_id IN (select coral_id from observations where id IN (select observation_id from measurements where trait_id=5 and value_type="expert_opinion") INTERSECT select coral_id from observations where id IN (select observation_id from measurements where trait_id=5 and value_type="raw_value")));
 
 (select observation_id from measurements where trait_id=5 and value_type="expert_opinion") and (select observation_id from measurements where trait_id=5 and value_type="raw_value")
+
+select value from measurements where observation_id IN (select id from observations where resource_id=11) and trait_id=79;
+select value from measurements where observation_id IN (select id from observations where resource_id=273) and trait_id=79;
+
+update measurements set value_type="model_derived" where observation_id IN (select id from observations where resource_id=273) and trait_id=79;
+update measurements set value_type="group_opinion" where observation_id IN (select id from observations where resource_id=11) and trait_id=79;
+
+update measurements set value_type="group_opinion" where trait_id=81;
+
+update measurements set value_type="model_derived" where observation_id IN (select id from observations where resource_id=273) and trait_id=79;
+
+update measurements set value_type="group_opinion" where observation_id IN (select id from observations where resource_id=11) and trait_id=91;
+update measurements set value_type="raw_value" where observation_id NOT IN (select id from observations where resource_id=11) and trait_id=91;
+
+update measurements set value_type="group_opinion" where observation_id IN (select id from observations where resource_id=11) and trait_id=92;
+update measurements set value_type="raw_value" where observation_id NOT IN (select id from observations where resource_id=11) and trait_id=92;
+
+update measurements set value_type="expert_opinion" where trait_id=95;
+update measurements set value_type="group_opinion" where trait_id=96;
+update measurements set value_type="group_opinion" where trait_id=97;
+
+update measurements set value_type="group_opinion" where trait_id=33;
+589
+
+update observations set resource_id=589 where id IN (select observation_id from measurements where trait_id=33);
+
 
 

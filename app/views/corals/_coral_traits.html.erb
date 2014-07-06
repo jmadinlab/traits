@@ -20,8 +20,33 @@
 		</thead>
 	
 		
-		<%# @observations.sort_by{ |h| [h.measurements.first.trait.trait_class, h.measurements.first.trait.trait_name] }.each do |grp| %>    
-		<%#= @observations[9].measurements.first.trait.trait_name %>    
+		<%# Observations.last.measurements %>
+
+		<% Trait.all.each do |tra| %>
+			<% mea = Measurement.joins(:observation).where('measurements.trait_id IS ? AND observations.coral_id LIKE ?', tra.id, @coral.id) %>
+			<% if mea.present? %>
+				<% if mea.all? {|ss| ss == mea[0]} %>
+					<% if numeric?(mea[0].value) %>
+      			<p><%= tra.trait_name %> (n=<%= mea.size %>): <%= mea[0].value %></p>
+	     		<% else %>
+      			<p><%= tra.trait_name %> (n=<%= mea.size %>): <%= mea[0].value %></p>
+	     		<% end %>
+     		<% else %>
+					<% if numeric?(mea[0].value) %>
+	      		<p><%= tra.trait_name %> (n=<%= mea.size %>): <%= mea.map(&:value) %></p>
+	      		<%= image_tag Gchart.scatter(:data => [mea.collect { |i| i.value.to_f }, [1, 1]], :size => '200x50', :axis_with_labels => 'x') %>
+
+	     		<% else %>
+	      		<% cc=[]; ll=[] %>
+	      		<% mea.map(&:value).uniq.each do |i| %>
+	      			<% cc << mea.map(&:value).count(i) %><% ll << i %>
+	     			<% end %>
+						<p><%= tra.trait_name %> (n=<%= mea.size %>): <%= image_tag Gchart.pie(:data => cc, :size => '200x50', :labels => ll) %></p>
+	     		<% end %>
+	     	<% end %>
+     	<% end %>
+		<% end %>
+
 
 		<% mark = "" %>
 	  <% @observations.each do |grp| %>

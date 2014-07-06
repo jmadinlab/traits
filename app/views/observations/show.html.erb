@@ -105,7 +105,8 @@
 					</div>
 					<div class="row">
 					  	<div class="col-md-12">
-				      		<strong>Methodology Name:</strong> <%= mea.methodology.methodology_name %>
+				      		<strong>Methodology:</strong>
+				      		<% if mea.methodology.present? %><%= mea.methodology.methodology_name %><% end %>
 						</div>
 					</div>
 					

@@ -16,5 +16,8 @@ module ApplicationHelper
     direction = column == sort_column && sort_direction == "desc" ? "asc" : "desc"
     link_to title, {:sort => column, :direction => direction}, {:class => css_class}
   end
-    
+
+  def numeric?(object)
+    true if Float(object) rescue false
+  end    
 end
