@@ -96,6 +96,11 @@ update measurements set value_type="group_opinion" where trait_id=33;
 589
 
 update observations set resource_id=589 where id IN (select observation_id from measurements where trait_id=33);
+update observations set user_id=2 where id IN (select observation_id from measurements where trait_id=33);
 
+update measurements set value_type="expert_opinion" where trait_id=63;
 
+update observations set resource_id=589 where id IN (select observation_id from measurements where trait_id=42);
+update observations set location_id=1 where id IN (select observation_id from measurements where trait_id=42);
 
+update measurements set value_type="group_opinion" where trait_id=42;

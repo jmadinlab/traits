@@ -11,6 +11,7 @@ gem "select2-rails"
 # gem 'select2-sass-bootstrap-rails'
 # gem 'squeel', github: 'kiela/squeel'
 gem "googlecharts"
+gem "chartkick"
 
 gem 'roo'
 # using paper_trail for versioning database
