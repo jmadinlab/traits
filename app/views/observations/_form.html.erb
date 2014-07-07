@@ -1,5 +1,7 @@
-<%= form_for @observation, class: "form-group" do |f| %>
+<% @my_var = @temp_var %>
 
+<%= form_for @observation, class: "form-group" do |f| %>
+	
 	<script>
 		$(document).ready(function() {
 			$('select#simple-example').select2();
@@ -51,6 +53,7 @@
   <h3>Measurements</h3>
   <div id = "measurements">
 	  <%= f.fields_for :measurements do |mea| %>
+	  	
 	  	<%= render "measurement_fields", :f => mea %>
 	  <% end %>
 	</div>

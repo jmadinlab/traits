@@ -36,6 +36,8 @@ var methodology_option = form_methodology + ' option'
 // console.log(standard);
  var suggested_standard = "<br/>Suggested standard: <b><%= @standard.standard_name %> (<%= @standard.standard_unit %>)</b>";
 
+console.log('trying to manipulate');
+console.log(suggested_standard_id);
 $(suggested_standard_id).removeClass('hidden').html(suggested_standard);
 //$(standard_option).remove();
 // $(standard).append('<option> Choose Standard</option>');

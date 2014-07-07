@@ -48,4 +48,29 @@ $(document).ready(function(){
   });
 });
 
+var element_id = 1;
+
+$(document).bind('cocoon:after-insert', function(e,inserted_item) {
+   e.preventDefault();
+   setTimeout(function(){
+   	window.element_id = window.element_id + 1;
+   	custom_id = "trait_select" + element_id;
+   	$('#sur_trait').attr('id', custom_id);
+   	$('#sur_value').attr('id', 'trait_value' + element_id);
+   	$('#sur_methodology').attr('id', 'trait_methodology' + element_id);
+   	$('#sur_standard').attr('id', 'trait_standard' + element_id);
+   	//alert('success');
+   }, 2000);
+   
+
+});
+
+$(window).load(function(){
+	$('#sur_trait').attr('id', 'trait_select1');
+	$('#sur_value').attr('id', 'trait_value1');
+	$('#sur_methodology').attr('id', 'trait_methodology1');
+	$('#sur_standard').attr('id', 'trait_standard1');
+});
+
+
 
