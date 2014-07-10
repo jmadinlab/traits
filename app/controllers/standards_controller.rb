@@ -7,6 +7,7 @@ class StandardsController < ApplicationController
   # GET /standards
   # GET /standards.json
   def index
+    
     @standards = Standard.search(params[:search])
     
     respond_to do |format|

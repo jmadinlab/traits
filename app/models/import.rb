@@ -141,7 +141,9 @@ class Import
         # 6. Validate Standard from standard_unit
         # Beware of the encoding scheme
         begin
-          standard_id = Standard.where(:standard_unit => row["standard_unit"]).take!.id
+          # Remove an umlaut character introduced by Excel when opening a csv file
+          row["standard_unit"] = row["standard_unit"].delete! "Â"
+          standard_id = Standard.where(:standard_unit =>  row["standard_unit"]).take!.id
         rescue
           puts "standard error: "
           puts row["standard_unit"]
