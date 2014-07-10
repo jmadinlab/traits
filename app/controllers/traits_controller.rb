@@ -69,6 +69,8 @@ class TraitsController < ApplicationController
     if signed_in? && current_user.admin?
       @observations = Observation.includes(:coral).joins(:measurements).where('measurements.trait_id IS ? AND measurements.value LIKE ?', @trait.id, "%#{params[:search]}%").limit(n)
     end
+
+    
     
     respond_to do |format|
       format.html
@@ -109,6 +111,13 @@ class TraitsController < ApplicationController
   # POST /traits.json
   def create
     @trait = Trait.new(trait_params)
+    methodology_ids =  params[:trait][:methodologies_attributes]
+    methodology_ids.keys().each do |k|
+      #puts id
+      #puts val
+      @trait.methodologies << Methodology.find(methodology_ids[k]["id"])
+    end
+
 
     if @trait.save
       redirect_to @trait, flash: {success: "Trait was successfully created." }
@@ -145,7 +154,7 @@ class TraitsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def trait_params
-      params.require(:trait).permit(:trait_name, :trait_description, :trait_class, :value_range, :standard_id, :user_id, :approval_status, :release_status)
+      params.require(:trait).permit(:trait_name, :trait_description, :trait_class, :value_range, :standard_id, :user_id, :approval_status, :release_status, :methodologies)
     end
 end
 

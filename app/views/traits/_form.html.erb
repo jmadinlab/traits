@@ -22,7 +22,8 @@
     <%= f.label :default_standard %><br>
 		<%= f.select :standard_id, Standard.all.collect {|a| ["#{a.standard_name} (#{a.standard_unit})", a.id]}, {:include_blank => ""}, class: "form-control" %>
   </div>
-	
+
+
   <% if current_user.editor? %>
   	<div class="form-group">
   		<%= f.label :editor %>
@@ -34,6 +35,19 @@
       <%= f.select :release_status, ['ready_for_release', 'needs_work_before_release', 'ready_online_only', 'data_deficient'], {include_blank: true}, class: "form-control" %>
     </div>
   <% end %>
+
+  
+  <h4>Methodologies</h4>
+    <div id = "methodologies">
+      <%= f.fields_for :methodologies do |t| %>
+        <%= render "methodologies_fields", :f => t %>
+      <% end %>
+    </div>
+    <div class="links">
+      <p><%= link_to_add_association "Add a methodology", f, :methodologies %></p>
+    </div>
+
+
 
 	<%= f.submit "Submit", class: "btn btn-primary btn-md" %>
 

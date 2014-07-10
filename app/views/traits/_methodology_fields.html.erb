@@ -1,0 +1,4 @@
+<div class="form-group">
+	
+	<%= f.select :id, Methodology.all.map { |u| [u.methodology_name, u.id] }, { include_blank: 'Choose methodology...', class: "form-control" } %>
+</div>

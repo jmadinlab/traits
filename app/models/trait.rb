@@ -10,6 +10,7 @@ class Trait < ActiveRecord::Base
   has_many :resources, :through => :citations
   
   has_and_belongs_to_many :methodologies
+  accepts_nested_attributes_for :methodologies, :reject_if => :all_blank, :allow_destroy => true
 
   def self.search(search)
       if search
