@@ -8,10 +8,11 @@
 			$('select.my_standard').select2();
 			$('select.my_trait').select2();
 			$('select.my_methodology').select2();
-	    
+		
 	    $('.my_trait').change(function() {
 	      $.ajax({
-	        url: "update_values",
+	        url: "/observations/update_values",
+	        cache: false,
 	        data: {
 	        			element_id: $(this).attr('id'),
 						trait_id: $(this).val()
@@ -39,7 +40,7 @@
 	
   <div class="well">
 
-    <%= f.hidden_field :user_id, :value => current_user.id %>
+    <%# f.hidden_field :user_id, :value => current_user.id %>
 		
 
 		<div class="row">
@@ -47,7 +48,12 @@
 			  <div class="form-group">
 				  <%= f.label :trait %>
 				  <%= @my_var %>
-				  <% @temp_var = @temp_var + 1 %>
+				  <% if @temp_var %>
+				  	<% @temp_var = @temp_var + 1 %>
+
+				  <% else %>
+				  	<% @temp_var = 1 %>
+				  <% end %>
 				  <% unique_trait_id = 'trait_select' + @temp_var.to_s %>
 				  <% unique_value_id = 'trait_value' + @temp_var.to_s %>
 				  <% unique_standard_id = 'trait_standard' + @temp_var.to_s %>
