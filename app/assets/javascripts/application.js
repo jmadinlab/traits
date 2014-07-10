@@ -11,12 +11,12 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require jquery
+//= require jquery.turbolinks
 //= require jquery-ui
 //= require jquery_ujs
 //= require turbolinks
 //= require cocoon
 //= require bootstrap
-//= require jquery.turbolinks
 //= require select2
 //= require_tree .
 
@@ -65,7 +65,7 @@ $(document).bind('cocoon:after-insert', function(e,inserted_item) {
 
 });
 
-$(window).load(function(){
+$(window).on('load', function(){
 	$('#sur_trait').attr('id', 'trait_select1');
 	$('#sur_value').attr('id', 'trait_value1');
 	$('#sur_methodology').attr('id', 'trait_methodology1');

@@ -14,7 +14,7 @@
 	        url: "update_values",
 	        data: {
 	        			element_id: $(this).attr('id'),
-								trait_id: $(this).val()
+						trait_id: $(this).val()
 						
 					},
 	        dataType: "script"
@@ -54,8 +54,12 @@
 				  <% unique_suggested_standard_id = 'suggested_standard' + @temp_var.to_s %>
 				  <% unique_methodology_id = 'trait_methodology' + @temp_var.to_s %>
 
-					<br/><%= f.select :trait_id, Trait.all.map { |u| [u.trait_name, u.id] }, { include_blank: 'Choose trait...', class: "form-control" }, { id: "sur_trait", class: "my_trait" } %>
-
+					<br/>
+					<% if !f.object.id %>
+						<%= f.select :trait_id, Trait.all.map { |u| [u.trait_name, u.id] }, { include_blank: 'Choose trait...', class: "form-control" }, { id: "sur_trait", class: "my_trait" } %>
+					<% else %>
+						<%= f.select :trait_id, Trait.all.map { |u| [u.trait_name, u.id] }, { include_blank: 'Choose trait...', class: "form-control" }, { id: unique_trait_id, class: "my_trait" } %>
+					<% end %>
 				</div>
 			</div>
 		</div>

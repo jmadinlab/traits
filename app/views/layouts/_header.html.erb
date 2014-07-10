@@ -59,7 +59,7 @@
 
 				<ul class="nav navbar-nav navbar-left">
 					<% if signed_in? && current_user.contributor? %>
-						<li><%= link_to "New Observation", new_observation_path %></li>
+						<li><%= link_to "New Observation", new_observation_path, :data => { :no_turbolink => true } %></li>
 					<% end %>
 				</ul>
 
