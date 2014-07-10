@@ -1,2 +1,6 @@
 GMAIL_USERNAME: 'suren.coral@gmail.com'
 GMAIL_PASSWORD: 'coraltraits123'
+
+MANDRILL_USERNAME:	'coraltraits@gmail.com'
+MANDRILL_PASSWORD:	'wZWPB6SsJAj7NWWAyxnjLA'
+MANDRILL_API_KEY:	'wZWPB6SsJAj7NWWAyxnjLA'

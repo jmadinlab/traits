@@ -216,12 +216,12 @@ class Import
         
         # Validate latitude
         if product.attributes["latitude"]
-          validate_latitude(product, product.attributes["latitude"], "latitude", -90, 90)
+          validate_long_lat(product, product.attributes["latitude"], "latitude", -90, 90)
         end
         
         # Validate longitude
         if product.attributes["longitude"]
-          validate_latitude(product, product.attributes["longitude"], "longitude",  -180, 180)
+          validate_long_lat(product, product.attributes["longitude"], "longitude",  -180, 180)
         end
 
         # Finally return the product
@@ -252,7 +252,7 @@ class Import
 
   end
 
-  def validate_latitude(product, val, item, start, finish)
+  def validate_long_lat(product, val, item, start, finish)
     puts "validating #{item}"
     val = val.to_i
     if val < start or val > finish

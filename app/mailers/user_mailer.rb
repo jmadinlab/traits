@@ -11,6 +11,17 @@ class UserMailer < ActionMailer::Base
     @user = user
 
     mail to: user.email, :subject => "Coraltraits : Reset Password"
+
+    '''
+    mandrill_mail template: "password-reset",
+                  subject: "Coraltraits : Reset Password",
+                  to: user.email,
+                  vars: {
+                          "EMAIL" => user.email,
+                          "EDIT_LINK" => edit_password_reset_url(user.password_reset_token)
+                        }
+    '''
+                  
   end
 
   def password_reset_confirmation(user)

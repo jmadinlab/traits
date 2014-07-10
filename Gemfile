@@ -7,7 +7,8 @@ gem 'bcrypt-ruby'#, '3.1.2'
 gem 'cocoon'#, github: 'nathanvda/cocoon'
 gem 'will_paginate'#, '3.0.4'
 gem 'bootstrap-will_paginate'#, '0.0.9'
-gem "select2-rails"
+gem 'select2-rails'
+gem 'mandrill_mailer'
 # gem 'select2-sass-bootstrap-rails'
 # gem 'squeel', github: 'kiela/squeel'
 

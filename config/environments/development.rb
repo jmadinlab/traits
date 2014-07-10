@@ -18,7 +18,7 @@ Traits::Application.configure do
   config.action_mailer.raise_delivery_errors = true
   
   config.action_mailer.delivery_method = :smtp
-
+  
   config.action_mailer.smtp_settings = {
     address: "smtp.gmail.com",
     port: 587,
@@ -28,9 +28,21 @@ Traits::Application.configure do
     user_name: ENV["GMAIL_USERNAME"],
     password: ENV["GMAIL_PASSWORD"]
   }
+  '''
+  config.action_mailer.smtp_settings = {
+    address: "smtp.mandrillapp.com",
+    port: 587,
+    domain: "coraltraits.org",
+    user_name: ENV["MANDRILL_USERNAME"],
+    password: ENV["MANDRILL_PASSWORD"]
+  }
+  '''
 
   # specify what domain to use for mailer URLs
   config.action_mailer.default_url_options = { host: "localhost:3000" }
+
+  #config.mandrill_mailer.default_url_options = { :host => 'localhost' }
+  
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
@@ -42,4 +54,8 @@ Traits::Application.configure do
 
   # Google Analytics code
   GA.tracker = "UA-51287714-1"
+end
+
+MandrillMailer.configure do |config|
+  config.api_key = ENV['MANDRILL_API_KEY']
 end
