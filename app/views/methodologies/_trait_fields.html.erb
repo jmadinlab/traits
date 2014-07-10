@@ -1,4 +1,23 @@
-<div class="form-group">
-	
-	<%= f.select :id, Trait.all.map { |u| [u.trait_name, u.id] }, { include_blank: 'Choose trait...', class: "form-control" } %>
+<div class="nested-fields">
+	<script>
+	  
+	  $(document).ready(function() {
+	  		$('select.my_trait').select2();
+	  		// Surprisingly cocoon adds an extra hidden input field and so makes a problem.
+	  		// For this I manually removed the id myself.. Need a better way to do it.
+			$( "input[name*='traits_attributes'][name*='id'" ).remove();
+			
+		});
+	</script>
+	<div class="row">
+		<div class="col-md-9">
+			<div class="form-group">
+				<%= f.select :id, Trait.all.map { |u| [u.trait_name, u.id] }, { include_blank: 'Choose trait...', class: "form-control"}, { class: "my_trait" } %>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<%= link_to_remove_association "remove", f %>
+		</div>
+
+	</div>
 </div>

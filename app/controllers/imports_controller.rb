@@ -52,15 +52,22 @@ class ImportsController < ApplicationController
 	
 	def approve
 
-		puts 'current user id : '
-		puts current_user.id
+		if not current_user.admin?
+			@corals = Coral.where(:approval_status => "pending", :user_id => current_user.id )
+			@locations = Location.where(:approval_status => "pending", :user_id => current_user.id)
+			@traits = Trait.where(:approval_status => "pending", :user_id => current_user.id)
+			@standards = Standard.where(:approval_status => "pending", :user_id => current_user.id)
+			@resources = Resource.where(:approval_status => "pending", :user_id => current_user.id)
+			@observations = Observation.includes(:measurements).where("measurements.approval_status" => "pending")
+		else
+			@corals = Coral.where(:approval_status => "pending")
+			@locations = Location.where(:approval_status => "pending")
+			@traits = Trait.where(:approval_status => "pending")
+			@standards = Standard.where(:approval_status => "pending")
+			@resources = Resource.where(:approval_status => "pending")
+			@observations = Observation.includes(:measurements).where("measurements.approval_status" => "pending")
+		end
 
-		@corals = Coral.where(:approval_status => "pending", :user_id => current_user.id)
-		@locations = Location.where(:approval_status => "pending", :user_id => current_user.id)
-		@traits = Trait.where(:approval_status => "pending", :user_id => current_user.id)
-		@standards = Standard.where(:approval_status => "pending", :user_id => current_user.id)
-		@resources = Resource.where(:approval_status => "pending", :user_id => current_user.id)
-		@observations = Observation.includes(:measurements).where("measurements.approval_status" => "pending")
 
 		#@measurements = Measurement.where(:approval_status => "pending")
 		

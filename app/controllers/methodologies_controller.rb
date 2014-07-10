@@ -9,11 +9,12 @@ class MethodologiesController < ApplicationController
 
   def create
   	@methodology = Methodology.new(methodology_params)
-  	trait_ids =  params[:methodology][:traits_attributes]
+  	
+    trait_ids =  params[:methodology][:traits_attributes]
   	trait_ids.keys().each do |k|
   		#puts id
   		#puts val
-  		@methodology.traits << Trait.find(trait_ids[k]["id"])
+  		@methodology.traits << Trait.find(trait_ids[k]["id"]) if trait_ids[k]["_destroy"] != 1
   	end
 
   	#@traits = Trait.find(methodology_params[:traits_attributes])
@@ -46,10 +47,14 @@ class MethodologiesController < ApplicationController
 
   def update
     trait_ids =  params[:methodology][:traits_attributes]
+    @methodology.traits.delete_all()
+
     trait_ids.keys().each do |k|
       #puts id
       #puts val
-      @methodology.traits << Trait.find(trait_ids[k]["id"])
+      if trait_ids[k]["_destroy"] == "false"
+        @methodology.traits << Trait.find(trait_ids[k]["id"]) 
+      end
     end
 
     if @methodology.update(methodology_params)
@@ -100,6 +105,6 @@ class MethodologiesController < ApplicationController
     end
   	
   	def methodology_params
-  		params.require(:methodology).permit(:methodology_name, :method_description, :traits)
+  		params.require(:methodology).permit(:methodology_name, :method_description, :traits_attributes)
   	end
 end
