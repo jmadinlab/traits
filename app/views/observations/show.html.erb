@@ -81,7 +81,7 @@
 					  <div class="col-md-12">
 				      <strong>Standard:</strong> 
 							<% if mea.standard.present? %>
-					  		<%= link_to Standard.find(mea.standard_id).standard_name, "/standards/#{Standard.find(mea.standard_id).id}" %>
+					  		<%= link_to Standard.find(mea.standard_id).standard_name, "/standards/#{Standard.find(mea.standard_id).id}" %> (<%= Standard.find(mea.standard_id).standard_unit %>)
 								<% else %>
 									No record
 								<% end %>
@@ -94,7 +94,7 @@
 						</div>
 
 						<div class="col-md-6">
-							(Original value: <%=  mea.previous_version ? mea.previous_version.value : mea.orig_value %>)
+							<!-- (Original value: <%#=  mea.previous_version ? mea.previous_version.value : mea.orig_value %>) -->
 				      		
 						</div>
 					</div>

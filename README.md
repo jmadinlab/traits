@@ -59,10 +59,18 @@ update measurements set value_type="raw_value" where trait_id=3;
 update measurements set value_type="expert_opinion" where trait_id=4;
 update measurements set trait_id=3 where trait_id=4;
 
+update observations set resource_id=278 where resource_id=521;
 
+
+# Purge observations table
+select id from observations where id NOT IN (select observation_id from measurements);
 delete from observations where id IN (select id from observations where id NOT IN (select observation_id from measurements));
 
-select id from measurements where id NOT IN (select trait_id from measurements);
+# Purge citations table
+select id from citations where trait_id NOT IN (select id from traits);
+delete from citations where id IN (select id from citations where trait_id NOT IN (select id from traits));
+
+#select id from measurements where id NOT IN (select trait_id from measurements);
 
 .mode csv
 .import db/csf_obs.csv observations

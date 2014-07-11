@@ -5,7 +5,7 @@
 			<tr>
 				<th style="text-align: right;">Coral</th>
 				<th>Location</th>
-				<th>Resource</th>
+				<th>Contributor</th>
 				<th>Trait</th>
 				<th>Value</th>
 				<th>Access</th>
@@ -43,8 +43,8 @@
 		  			</td>
 
 							<td style="text-align:center;">
-								<% if !grp.resource_id.blank? && grp.resource_id != 0 %>
-								<%= link_to "", "/resources/" + grp.resource_id.to_s, class: "glyphicon glyphicon-book" %>
+								<% if !grp.user_id.blank? && grp.user_id != 0 %>
+								<%= link_to "", "/users/" + grp.user_id.to_s, class: "glyphicon glyphicon-user" %>
 								<% end %>
 							</td>
 
