@@ -17,7 +17,8 @@ class MethodologiesController < ApplicationController
     	trait_ids.keys().each do |k|
     		#puts id
     		#puts val
-    		@methodology.traits << Trait.find(trait_ids[k]["id"]) if trait_ids[k]["_destroy"] != 1
+        trait = Trait.find(trait_ids[k]["id"]) 
+    		@methodology.traits << trait if trait_ids[k]["_destroy"] != 1 and not @methodology.traits.include? trait
     	end
     end
 
@@ -89,9 +90,10 @@ class MethodologiesController < ApplicationController
     trait_ids.keys().each do |k|
       #puts id
       #puts val
-      if trait_ids[k]["_destroy"] == "false"
-        @methodology.traits << Trait.find(trait_ids[k]["id"]) 
-      end
+      
+        trait = Trait.find(trait_ids[k]["id"]) 
+        @methodology.traits << trait if trait_ids[k]["_destroy"] != 1 and not @methodology.traits.include? trait
+      
     end
 
     if @methodology.update(methodology_params)
