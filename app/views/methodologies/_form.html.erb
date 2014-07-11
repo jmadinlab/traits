@@ -24,7 +24,8 @@
 		  <% end %>
 		</div>
 	  <div class="links">
-	    <p><%= link_to_add_association "Add another trait", f, :traits %></p>
+	    <p><%= link_to_add_association "Add another trait", f, :traits,
+	    		'data-association-insertion-method' => "append" %></p>
 	  </div>
 
 	

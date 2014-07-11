@@ -3,8 +3,8 @@ class Import
   extend ActiveModel::Model
   include ActiveModel::Conversion
   include ActiveModel::Validations
-	
-	require 'roo'
+
+  require 'roo'
 
   # Declare a global variable measurements to store all the measurement objects
   $measurements = []

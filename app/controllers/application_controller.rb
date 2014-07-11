@@ -43,7 +43,7 @@ class ApplicationController < ActionController::Base
   # Return the main csv string depending upon the model (corals data / traits data / lcation data etc)
   def get_main_csv(observations)
       csv_string = CSV.generate do |csv|
-          csv << ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "precision", "precision_type", "precision_upper", "replicates"]
+          csv << ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "methodology_name", "standard_unit",  "value", "precision", "precision_type", "precision_upper", "replicates"]
           observations.each do |obs|
             obs.measurements.each do |mea|
               if obs.location.present?
@@ -64,7 +64,7 @@ class ApplicationController < ActionController::Base
               else
                 acc = 1
               end
-              csv << [obs.id, acc, obs.user_id, obs.coral.coral_name, loc, lat, lon, obs.resource_id, mea.id, mea.trait.trait_name, mea.standard.standard_unit, mea.value, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates]
+              csv << [obs.id, acc, obs.user_id, obs.coral.coral_name, loc, lat, lon, obs.resource_id, mea.id, mea.trait.trait_name, mea.methodology.methodology_name, mea.standard.standard_unit, mea.value, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates]
             end
           end
         end

@@ -9,12 +9,18 @@ class MethodologiesController < ApplicationController
 
   def create
   	@methodology = Methodology.new(methodology_params)
-  	trait_ids =  params[:methodology][:traits_attributes]
-  	trait_ids.keys().each do |k|
-  		#puts id
-  		#puts val
-  		@methodology.traits << Trait.find(trait_ids[k]["id"])
-  	end
+  	
+    trait_ids =  params[:methodology][:traits_attributes]
+    puts "testing methodologies"
+    puts trait_ids["0"]["id"]
+    if trait_ids["0"]["id"] != ""
+    	trait_ids.keys().each do |k|
+    		#puts id
+    		#puts val
+        trait = Trait.find(trait_ids[k]["id"]) 
+    		@methodology.traits << trait if trait_ids[k]["_destroy"] != 1 and not @methodology.traits.include? trait
+    	end
+    end
 
   	#@traits = Trait.find(methodology_params[:traits_attributes])
 
@@ -37,7 +43,40 @@ class MethodologiesController < ApplicationController
   end
 
   def show
+    if params[:n].blank?
+      params[:n] = 10
+    end
+    
+    n = params[:n]
+    
+    if params[:n] == "all"
+      n = 9999999
+    end
 
+    @observations = Observation.where(:id => @methodology.measurements.map(&:observation_id)).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").uniq.limit(n)
+
+    respond_to do |format|
+      format.html
+      format.csv { 
+
+        if request.url.include? 'resources.csv'
+          csv_string = get_resources_csv(@observations)
+          filename = 'resources.csv'
+        else
+          csv_string = get_main_csv(@observations)
+          filename = 'methodologies.csv'
+        end
+        
+        send_data csv_string, 
+          :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
+          :disposition => "attachment; filename=#{filename}_#{Date.today.strftime('%Y%m%d')}.csv"
+
+      }
+
+      format.zip{
+        send_zip(@observations, 'methodologies.csv')
+      }
+    end
   end
 
 
@@ -46,10 +85,15 @@ class MethodologiesController < ApplicationController
 
   def update
     trait_ids =  params[:methodology][:traits_attributes]
+    @methodology.traits.delete_all()
+
     trait_ids.keys().each do |k|
       #puts id
       #puts val
-      @methodology.traits << Trait.find(trait_ids[k]["id"])
+      
+        trait = Trait.find(trait_ids[k]["id"]) 
+        @methodology.traits << trait if trait_ids[k]["_destroy"] != 1 and not @methodology.traits.include? trait
+      
     end
 
     if @methodology.update(methodology_params)
@@ -100,6 +144,6 @@ class MethodologiesController < ApplicationController
     end
   	
   	def methodology_params
-  		params.require(:methodology).permit(:methodology_name, :method_description, :traits)
+  		params.require(:methodology).permit(:methodology_name, :method_description, :traits_attributes)
   	end
 end
