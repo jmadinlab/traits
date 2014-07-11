@@ -59,6 +59,7 @@ $(document).bind('cocoon:after-insert', function(e,inserted_item) {
    	$('#sur_value').attr('id', 'trait_value' + element_id);
    	$('#sur_methodology').attr('id', 'trait_methodology' + element_id);
    	$('#sur_standard').attr('id', 'trait_standard' + element_id);
+    $('#sur_suggested_standard').attr('id', 'suggested_standard' + element_id) ;
    	//alert('success');
    }, 2000);
    
@@ -70,6 +71,8 @@ $(window).on('load', function(){
 	$('#sur_value').attr('id', 'trait_value1');
 	$('#sur_methodology').attr('id', 'trait_methodology1');
 	$('#sur_standard').attr('id', 'trait_standard1');
+  $('#sur_suggested_standard').attr('id', 'suggested_standard1');
+  
 });
 
 
