@@ -82,12 +82,13 @@ class Import
     
     header = spreadsheet.row(1)
     observation_csv_headers = ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates"]
-
-    if header == observation_csv_headers
+    new_observation_csv_headers = ["observation_id",  "access",  "user_id", "coral_id"  ,"location_id", "resource_id", "trait_id",  "standard_id",  "method_id" ,"value" ,"value_type",  "precision" ,"precision_type" , "precision_upper" ,"replicates"]
+    
+    if header == new_observation_csv_headers
       # Rename some headers to correspond the database fields
       header[header.index("observation_id")] = "id"
       header[header.index("access")] = "private"
-      header[header.index("enterer")] = "user_id"
+      # header[header.index("enterer")] = "user_id"
       
 
       (2..spreadsheet.last_row).map do |i|
@@ -96,7 +97,8 @@ class Import
         
         # Instantiate or find observation and measurement in order to be able to add errors into them
         observation = Observation.find_by_id(row["id"]) || Observation.new
-        measurement = Measurement.find_by_id(row["measurement_id"]) || Measurement.new
+        #measurement = Measurement.find_by_id(row["measurement_id"]) || Measurement.new
+        measurement = Measurement.new
         
         # Start Validations
 
@@ -114,9 +116,16 @@ class Import
           observation.errors[:base] << "Cannot find user with the id : " + row["user_id"]
         end
 
+
+        coral_id = row["coral_id"]
+        location_id = row["location_id"]
+
+        '''
+
         # 3. Validate coral_name
         begin
-          coral_id = Coral.where(:coral_name => row["coral"]).take!.id
+          
+          coral_id = Coral.where(:coral_name => row["coral_id"]).take!.id
         rescue
           coral_id = nil
           observation.errors[:base] << "Cannot find Coral with the name : " + row["coral"]
@@ -163,8 +172,10 @@ class Import
           end
           
         end
+        '''
 
-        # 8. Validate Values based on the trait's value range
+        trait_id = row["trait_id"]
+        # 8. Validate Values based on the traits value range
         begin
           if trait_id
             trait = Trait.find(trait_id)
@@ -177,9 +188,13 @@ class Import
           observation.errors[:base] << "Error with value"
         end
 
+
+        
+
+        # new_observation_csv_headears = ["observation_id",  "access",  "user_id", "coral_id"  ,"location_id", "resource_id", "trait_id",  "standard_id",  "method_id" ,"value" ,"value_type",  "precision" ,"precision_type" , "precision_upper" ,"replicates"]
         # Create the actual rows to be sent into the database for observation and measurements
         observation_row = {"id" => row["id"], "user_id" => row["user_id"], "location_id" => location_id, "coral_id" => coral_id, "resource_id" => row["resource_id"], "private" => row["private"]}
-        measurement_row = {"id" => row["measurement_id"], "user_id" => row["user_id"], "observation_id" => row["id"], "trait_id" => trait_id, "standard_id" => standard_id,  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "approval_status" => "pending"}
+        measurement_row = {"user_id" => row["user_id"], "observation_id" => row["id"], "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "approval_status" => "pending"}
         
         # Additionally check for any mapping errors
         begin
