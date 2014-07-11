@@ -23,7 +23,7 @@ class ResourcesController < ApplicationController
   def show
 
     if params[:n].blank?
-      params[:n] = 10
+      params[:n] = 100
     end
     
     n = params[:n]
