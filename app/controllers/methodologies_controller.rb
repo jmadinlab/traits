@@ -11,11 +11,13 @@ class MethodologiesController < ApplicationController
   	@methodology = Methodology.new(methodology_params)
   	
     trait_ids =  params[:methodology][:traits_attributes]
-  	trait_ids.keys().each do |k|
-  		#puts id
-  		#puts val
-  		@methodology.traits << Trait.find(trait_ids[k]["id"]) if trait_ids[k]["_destroy"] != 1
-  	end
+    if trait_ids["0"]["id"] != ""
+    	trait_ids.keys().each do |k|
+    		#puts id
+    		#puts val
+    		@methodology.traits << Trait.find(trait_ids[k]["id"]) if trait_ids[k]["_destroy"] != 1
+    	end
+    end
 
   	#@traits = Trait.find(methodology_params[:traits_attributes])
 
