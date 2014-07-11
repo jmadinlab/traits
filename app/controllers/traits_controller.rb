@@ -116,7 +116,9 @@ class TraitsController < ApplicationController
       methodology_ids.keys().each do |k|
         #puts id
         #puts val
-        @trait.methodologies << Methodology.find(methodology_ids[k]["id"])
+        methodology = Methodology.find(methodology_ids[k]["id"])
+        @trait.methodologies << methodology if methodology_ids[k]["_destroy"] != 1 and not @trait.methodologies.include? methodology
+        
       end
     end
 
@@ -130,6 +132,16 @@ class TraitsController < ApplicationController
   # PATCH/PUT /traits/1
   # PATCH/PUT /traits/1.json
   def update
+    methodology_ids =  params[:trait][:methodologies_attributes]
+    @trait.methodologies.delete_all()
+    
+    methodology_ids.keys().each do |k|
+      method = Methodology.find(methodology_ids[k]["id"])
+      @trait.methodologies << method if ((methodology_ids[k]["_destroy"] != "1") and (not @trait.methodologies.include? method))
+      
+    end
+
+
     if @trait.update(trait_params)
       redirect_to @trait, flash: {success: "Trait was successfully updated." }
     else

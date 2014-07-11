@@ -18,7 +18,7 @@ class MethodologiesController < ApplicationController
     		#puts id
     		#puts val
         trait = Trait.find(trait_ids[k]["id"]) 
-    		@methodology.traits << trait if trait_ids[k]["_destroy"] != 1 and not @methodology.traits.include? trait
+    		@methodology.traits << trait if trait_ids[k]["_destroy"] != "1" and not @methodology.traits.include? trait
     	end
     end
 
@@ -92,7 +92,7 @@ class MethodologiesController < ApplicationController
       #puts val
       
         trait = Trait.find(trait_ids[k]["id"]) 
-        @methodology.traits << trait if trait_ids[k]["_destroy"] != 1 and not @methodology.traits.include? trait
+        @methodology.traits << trait if trait_ids[k]["_destroy"] != "1" and not @methodology.traits.include? trait
       
     end
 
