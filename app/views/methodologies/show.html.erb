@@ -1,50 +1,77 @@
 <% provide(:title, @methodology.methodology_name) %>
 
+
+
+
+
+
+
+<% provide(:title, @methodology.methodology_name) %>
+
 <div class="row">
   <div class="col-md-10 col-md-offset-1">
-
-		<h3>
+  		<h3>
 		  Methodology: <%= @methodology.methodology_name.capitalize %>
 		</h3>
-		
-
-		<% if !@methodology.method_description.blank? %>
-		  <p>
-		    <strong>Description:</strong>
-		    	<%= @methodology.method_description %>
-		  </p>
-		<% end %>
 
 		
-		<% if not @methodology.traits.empty? %>
-			<h4> Associated Traits </h4>
-			<table class="table table-condensed">
-			  <thead>
-			    <tr>
-			      <th style="color: lightgrey;">ID</th>
-			      <th>Trait name</th>
-			      
-			    </tr>
-			  </thead>
 
-			  <tbody>
-				<% @methodology.traits.each do |trait| %>
-					<tr>
-				        <td style="color: lightgrey;"><%= trait.id %></td>
-				        <td><em><%= link_to trait.trait_name, trait %></em></td>
-				        <td><%= link_to "Remove", remove_methodology_trait_path(:trait_id => trait.id), :method => :post %>
-				    </tr>
-
+		<div class="row">
+		  <div class="col-md-6">
+				<% if !@methodology.method_description.blank? %>
+				  <p>
+				    <strong>Description:</strong>
+				    	<%= @methodology.method_description %>
+				  </p>
 				<% end %>
-				</tbody>
-			</table>
-		<% else %>
-			<div class="alert alert-warning"> There are no any traits associated with this methodology </div>
 
-		<% end %>
 
-		<p>
-		<% if signed_in? && current_user.contributor? %>
-			<%= link_to 'Edit', edit_methodology_path(@methodology) , class: "btn btn-primary btn-md"%> 
-		<% end %>
-		<%= link_to 'Back', methodologies_path, class: "btn btn-primary btn-md" %></p>
+				<p>
+				<% if signed_in? && current_user.contributor? %>
+					<%= link_to 'Edit', edit_methodology_path(@methodology) %> |
+				<% end %>
+				<%= link_to 'Back', methodologies_path %></p>
+				
+			</div>
+
+		  
+		</div>
+
+		<br/>
+		<h3>Observations from <%= @methodology.methodology_name.capitalize %></h3>
+
+		<% if @observations.empty? %>
+			<p class="alert alert-danger">No records available.</p>
+		
+	    <% end %>
+
+			<div class="well">
+					
+				<%= form_tag methodology_path, :method => 'get' do %>
+					<div class="row">
+					  <div class="col-lg-6">
+					    <div class="input-group">
+					      <%= text_field_tag :search, params[:search], :placeholder => "Search by value...", class: "form-control" %>
+					      <span class="input-group-btn">
+							    <%= submit_tag "Update", :name => nil, class: "btn btn-default" %>
+									<%= link_to 'Reset', methodology_path, class: "btn btn-default" %>
+					      </span>
+					    </div>
+					  </div>
+						Return: <%= select_tag :n, options_for_select([10, 100, 1000, "all"], params[:n]) %> records.
+					</div>
+				<% end %>
+			
+				<% if @observations.size > 0 %>
+				
+					<br/>
+			
+					<%= link_to "Download", methodology_path(format: "csv", search: params[:search], n: params[:n]), class: "btn btn-success btn-md" %> currently displayed data.
+				<% end %>
+			</div>	
+
+
+			<%= render "methodology_observations" %>
+		
+	</div>
+</div>

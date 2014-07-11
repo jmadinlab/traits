@@ -112,12 +112,13 @@ class TraitsController < ApplicationController
   def create
     @trait = Trait.new(trait_params)
     methodology_ids =  params[:trait][:methodologies_attributes]
-    methodology_ids.keys().each do |k|
-      #puts id
-      #puts val
-      @trait.methodologies << Methodology.find(methodology_ids[k]["id"])
+    if not methodology_ids.nil?
+      methodology_ids.keys().each do |k|
+        #puts id
+        #puts val
+        @trait.methodologies << Methodology.find(methodology_ids[k]["id"])
+      end
     end
-
 
     if @trait.save
       redirect_to @trait, flash: {success: "Trait was successfully created." }

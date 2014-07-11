@@ -38,7 +38,40 @@ class MethodologiesController < ApplicationController
   end
 
   def show
+    if params[:n].blank?
+      params[:n] = 10
+    end
+    
+    n = params[:n]
+    
+    if params[:n] == "all"
+      n = 9999999
+    end
 
+    @observations = Observation.where(:id => @methodology.measurements.map(&:observation_id)).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").uniq.limit(n)
+
+    respond_to do |format|
+      format.html
+      format.csv { 
+
+        if request.url.include? 'resources.csv'
+          csv_string = get_resources_csv(@observations)
+          filename = 'resources.csv'
+        else
+          csv_string = get_main_csv(@observations)
+          filename = 'methodologies.csv'
+        end
+        
+        send_data csv_string, 
+          :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
+          :disposition => "attachment; filename=#{filename}_#{Date.today.strftime('%Y%m%d')}.csv"
+
+      }
+
+      format.zip{
+        send_zip(@observations, 'methodologies.csv')
+      }
+    end
   end
 
 
