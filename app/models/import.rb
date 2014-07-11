@@ -8,7 +8,7 @@ class Import
 
   # Declare a global variable measurements to store all the measurement objects
   $measurements = []
-  
+  $observation_id_map = {}
   attr_accessor :file, :model_name
 
   def initialize(attributes = {})
@@ -63,7 +63,7 @@ class Import
     # If there is a mapping error, display it and then return
     # If there is no any error, then save it
     #if imported_products.map(&:valid?).all? 
-    imported_products.each(&:save!)
+    #imported_products.each(&:save!)
     $measurements.each(&:save!)
     true
     #else
@@ -73,6 +73,20 @@ class Import
   end
 
   def imported_products
+    spreadsheet = open_spreadsheet
+    header = spreadsheet.row(1)
+    (2..spreadsheet.last_row).map do |i|
+      row = Hash[[header, spreadsheet.row(i)].transpose]
+      if not $observation_id_map.keys().include? row["observation_id"]
+        o = Observation.new(:user_id => row["user_id"], :location_id => row["location_id"], :coral_id => row["location_id"], :approval_status => "pending")
+        o.save!
+        $observation_id_map[row["observation_id"]] = o.id
+
+      end
+
+    end
+    
+
     @imported_products ||= load_imported_products
   end
 
@@ -84,19 +98,23 @@ class Import
     observation_csv_headers = ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates"]
     new_observation_csv_headers = ["observation_id",  "access",  "user_id", "coral_id"  ,"location_id", "resource_id", "trait_id",  "standard_id",  "method_id" ,"value" ,"value_type",  "precision" ,"precision_type" , "precision_upper" ,"replicates"]
     
+
+
     if header == new_observation_csv_headers
       # Rename some headers to correspond the database fields
       header[header.index("observation_id")] = "id"
       header[header.index("access")] = "private"
       # header[header.index("enterer")] = "user_id"
       
+      observation_id_list = []
 
       (2..spreadsheet.last_row).map do |i|
 
         row = Hash[[header, spreadsheet.row(i)].transpose]
         
         # Instantiate or find observation and measurement in order to be able to add errors into them
-        observation = Observation.find_by_id(row["id"]) || Observation.new
+        
+        observation = Observation.find_by_id($observation_id_map[row["id"]])
         #measurement = Measurement.find_by_id(row["measurement_id"]) || Measurement.new
         measurement = Measurement.new
         
