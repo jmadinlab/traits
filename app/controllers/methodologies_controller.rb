@@ -11,6 +11,8 @@ class MethodologiesController < ApplicationController
   	@methodology = Methodology.new(methodology_params)
   	
     trait_ids =  params[:methodology][:traits_attributes]
+    puts "testing methodologies"
+    puts trait_ids["0"]["id"]
     if trait_ids["0"]["id"] != ""
     	trait_ids.keys().each do |k|
     		#puts id
