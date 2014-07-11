@@ -159,7 +159,7 @@
 		<% end %>
 
 
-		<p><%= link_to 'Edit', edit_observation_path(@observation) %> |
+		<p><%= link_to 'Edit', edit_observation_path(@observation), :data => { :no_turbolink => true }  %> |
     <%= link_to 'Back', user_path(current_user) %></p>
 
 
