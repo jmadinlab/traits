@@ -61,6 +61,7 @@ update measurements set trait_id=3 where trait_id=4;
 
 update observations set resource_id=278 where resource_id=521;
 
+update measurements set value_type="mean" where value_type="aggregate";
 
 # Purge observations table
 select id from observations where id NOT IN (select observation_id from measurements);
