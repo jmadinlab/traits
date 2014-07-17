@@ -64,7 +64,13 @@ class ApplicationController < ActionController::Base
               else
                 acc = 1
               end
-              csv << [obs.id, acc, obs.user_id, obs.coral.coral_name, loc, lat, lon, obs.resource_id, mea.id, mea.trait.trait_name, mea.methodology.methodology_name, mea.standard.standard_unit, mea.value, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates]
+
+              method = ""
+              if mea.methodology.present?
+                method = mea.methodology.methodology_name
+              end
+
+              csv << [obs.id, acc, obs.user_id, obs.coral.coral_name, loc, lat, lon, obs.resource_id, mea.id, mea.trait.trait_name, method, mea.standard.standard_unit, mea.value, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates]
             end
           end
         end
