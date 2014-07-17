@@ -38,14 +38,12 @@
 	<div class="form-group">
 		<% if current_user.admin? %>
 				<%= f.label :user %>
-				<%= f.select :user_id, User.all.collect {|a| [a.name, a.id]}, {:selected => @observation.user_id}, class: "form-control" %>
+				<%= f.select :user_id, User.where(:contributor => true).collect {|a| [a.name, a.id]}, {:selected => @observation.user_id}, class: "form-control" %>
 		<% else %>
 			<%= f.label :user %>: <%= current_user.name %>
 		  <%= f.hidden_field :user_id, :value => current_user.id %>
 		<% end %>
 	</div>
-
-
 
   <% if f.object.measurements.blank? %>      
     <% f.object.measurements.build %>
