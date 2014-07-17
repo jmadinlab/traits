@@ -127,7 +127,7 @@
 				  <td><%= Measurement.where(:trait_id => trait.id).size %></td>
 				  <td><%= trait.standard.standard_name %> (<%= trait.standard.standard_unit %>)</td>
 				  <td><%= trait.value_range %></td>
-				  <td><%= Measurement.where(:trait_id => trait.id).map(&:value_type).uniq.sort.join(",\n") %></td>
+				  <td><%= Measurement.where(:trait_id => trait.id).map(&:value_type).uniq.join(",\n") %></td>
 				  <td></td>
 				  <td><%= Observation.where(:id => Measurement.where(:trait_id => trait.id).map(&:observation_id)).map(&:resource_id).uniq.sort.join(",\n") %></td>
 				  <td><%= link_to 'Edit', edit_trait_path(trait), class: "btn btn-default btn-xs" %></td>
