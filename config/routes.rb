@@ -56,6 +56,9 @@ Traits::Application.routes.draw do
 
       get :update_values, :on => :collection
       get :update_values, :on => :member
+      get :update_random, :on => :collection
+      get :update_random, :on => :member
+
   end
 
   #match ':controller(/:action(/:id))', via: 'get'
