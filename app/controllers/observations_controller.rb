@@ -13,12 +13,19 @@ class ObservationsController < ApplicationController
       @temp_var = 0
       @values = Trait.find(params[:trait_id]).value_range.split(',').map(&:strip)
       @standard = Standard.find(Trait.find(params[:trait_id]).standard_id)
-      @element_id = params[:element_id].split("trait_select")[-1]
+      @element_id = params[:element_id]
+      @element_id.slice! "_trait_id"
+      @element_id.to_s
+      puts "element id"
+      puts @element_id
       @methodologies = Trait.find(params[:trait_id]).methodologies
       puts 'trait id '
       puts params[:trait_id]
+      
 
   end
+  
+  
 
   def edit_multiple
     @observations = Observation.find(params[:obs_ids])

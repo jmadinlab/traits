@@ -15,9 +15,10 @@
 //= require jquery-ui
 //= require jquery_ujs
 //= require turbolinks
-//= require cocoon
+
 //= require bootstrap
 //= require select2
+//= require cocoon
 //= require_tree .
 
 
@@ -48,6 +49,7 @@ $(document).ready(function(){
   });
 });
 
+/*
 var element_id = 1;
 
 $(document).bind('cocoon:after-insert', function(e,inserted_item) {
@@ -76,4 +78,4 @@ $(window).on('load', function(){
 });
 
 
-
+*/
