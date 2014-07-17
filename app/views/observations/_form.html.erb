@@ -5,6 +5,8 @@
 	<script>
 		$(document).ready(function() {
 			$('select#simple-example').select2();
+
+			 
 		});
 
 		
@@ -53,12 +55,11 @@
   <h3>Measurements</h3>
   <div id = "measurements">
 	  <%= f.fields_for :measurements do |mea| %>
-	  	
-	  	<%= render "measurement_fields", :f => mea %>
+	  	<% render :partial => "measurement_fields", :locals => { :f => mea } %>
 	  <% end %>
 	</div>
   <div class="links">
-    <p><%= link_to_add_association "Add another measurement", f, :measurements %></p>
+    <p><%= link_to_add_association "Add another measurement", f, :measurements, :wrap_object => Proc.new { |item| item = Measurement.new } %></p>
   </div>
 
   <%= f.submit 'Save', class: "btn btn-primary btn-lg" %>
