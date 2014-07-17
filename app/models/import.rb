@@ -1,14 +1,24 @@
 class Import
-  # switch to ActiveModel::Model in Rails 4
   extend ActiveModel::Model
   include ActiveModel::Conversion
   include ActiveModel::Validations
 
   require 'roo'
 
+  """
+    Upload the csv into the database
+    Csv will contain a number of measurements grouped together by observation group number
+    Each observation group contains a number of measurements
+    For each observation group, only one observation is created
+    Each row in csv represents a new measurement
+  """
+
   # Declare a global variable measurements to store all the measurement objects
   $measurements = []
+  # Map the observation group number in csv spreadsheet to a newly created observation id
+  # Format : { '1' : 90613, '2': 90614 }
   $observation_id_map = {}
+  
   attr_accessor :file, :model_name
 
   def initialize(attributes = {})

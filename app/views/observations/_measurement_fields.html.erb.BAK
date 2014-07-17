@@ -1,6 +1,4 @@
-
 <div class="nested-fields">
-<% rand_num = rand(50).to_s %>
 
 	<script>
 	  var a = 0;
@@ -16,7 +14,7 @@
 	        url: "/observations/update_values",
 	        cache: false,
 	        data: {
-	        			element_id: $(this).attr('data-custom-id'),
+	        			element_id: $(this).attr('id'),
 								trait_id: $(this).val()
 						
 					},
@@ -25,6 +23,17 @@
 	      });
 	    
 	    });
+
+	    $('.add_fields').click(function(e){
+	    	 /*
+	    	 e.preventDefault();
+	    	 window.a = window.a + 1;
+ 		    console.log(window.a);
+ 		    var new_id = "my_trait" + window.a;
+ 		    $('#sur_trait').attr('id', new_id);
+ 		    */
+	    });
+	    
 	  });
 	</script>
 
@@ -39,12 +48,24 @@
 		  <div class="col-md-12">
 			  <div class="form-group">
 				  <%= f.label :trait %>
-				  
+				  <%= @my_var %>
+				  <% if @temp_var %>
+				  	<% @temp_var = @temp_var + 1 %>
+
+				  <% else %>
+				  	<% @temp_var = 1 %>
+				  <% end %>
+				  <% unique_trait_id = 'trait_select' + @temp_var.to_s %>
+				  <% unique_value_id = 'trait_value' + @temp_var.to_s %>
+				  <% unique_standard_id = 'trait_standard' + @temp_var.to_s %>
+				  <% unique_suggested_standard_id = 'suggested_standard' + @temp_var.to_s %>
+				  <% unique_methodology_id = 'trait_methodology' + @temp_var.to_s %>
+
 					<br/>
 					<% if !f.object.id %>
-						<%= f.select :trait_id, Trait.all.map { |u| [u.trait_name, u.id] }, { include_blank: 'Choose trait...', class: "form-control" }, { :"data-custom-id" => "trait"+ rand_num, class: "my_trait" } %>
+						<%= f.select :trait_id, Trait.all.map { |u| [u.trait_name, u.id] }, { include_blank: 'Choose trait...', class: "form-control" }, { id: "sur_trait", class: "my_trait" } %>
 					<% else %>
-						<%= f.select :trait_id, Trait.all.map { |u| [u.trait_name, u.id] }, { include_blank: 'Choose trait...', class: "form-control" }, {:"data-custom-id" => "trait"+ rand_num, class: "my_trait" } %>
+						<%= f.select :trait_id, Trait.all.map { |u| [u.trait_name, u.id] }, { include_blank: 'Choose trait...', class: "form-control" }, { id: unique_trait_id, class: "my_trait" } %>
 					<% end %>
 				</div>
 			</div>
@@ -66,16 +87,16 @@
 						<%# if !f.object.id %>
 							<%# f.text_field :value, :placeholder => "Value", class: "form-control" %>
 							<% if !f.object.id %>
-								<%= f.select :value, [], { include_blank: 'Choose Value', class: "form-control" }, {:"data-custom-id" => "value"+ rand_num } %>
+								<%= f.select :value, [], { include_blank: 'Choose Value', class: "form-control" }, {id: "sur_value" } %>
 								
 							<% else %>
 								<% if not f.object.trait.value_range.empty? %>
-									<%= f.select :value, f.object.trait.value_range.split(','), { include_blank: 'Choose Value', class: "form-control" }, {:"data-custom-id" => "value"+ rand_num } %>
+									<%= f.select :value, f.object.trait.value_range.split(','), { include_blank: 'Choose Value', class: "form-control" }, {id: unique_value_id } %>
 								<% else %>
-									<%= f.text_field :value, class: "form-control", :"data-custom-id" => "value"+ rand_num %>	
+									<%= f.text_field :value, class: "form-control", id: unique_value_id %>	
 								<% end %>
 							<% end %>
-							<%= f.hidden_field :orig_value, :value => params[:value], :"data-custom-id" => "orig_value"+ rand_num %>
+							<%= f.hidden_field :orig_value, :value => params[:value] %>
 						<%# else %>
 							<%# f.text_field :value, class: "form-control" %>
 						<%# end %>
@@ -97,19 +118,19 @@
 			  <div class="form-group">
 				  <%= f.label :standard %>
 					<br/>
-					<%= f.select :standard_id, Standard.all.map { |u| ["#{u.standard_name} (#{u.standard_unit})", u.id] }, { include_blank: 'Choose standard...', class: "form-control" }, { :"data-custom-id" => "standard"+ rand_num, class: "my_standard" } %>
+					<%= f.select :standard_id, Standard.all.map { |u| ["#{u.standard_name} (#{u.standard_unit})", u.id] }, { include_blank: 'Choose standard...', class: "form-control" }, { id: "sur_standard", class: "my_standard" } %>
 					<%#= f.select :standard_id, [], { include_blank: 'Choose standard...', class: "form-control" }, { id: unique_standard_id } %>
 
-					<span id = <%= "suggested_standard"+ rand_num %> class="hidden"> Suggested standard: </span>
+					<span id="sur_suggested_standard" class="hidden"> Suggested standard: </span>
 				</div>
 			</div>
 			<div class="col-md-6">
 			  <div class="form-group">
 				  <%= f.label :methodolgy_id %> <br/>
 				  <% if !f.object.id %>
-				  	<%= f.select :methodology_id, [], { include_blank: 'Choose Methodology', class: "form-control" }, {:"data-custom-id" => "methodology"+ rand_num , class: "my_methodology"} %>
+				  	<%= f.select :methodology_id, [], { include_blank: 'Choose Methodology', class: "form-control" }, {id: "sur_methodology" , class: "my_methodology"} %>
 				  <% else %>
-						<%= f.select :methodology_id, f.object.trait.methodologies.map { |m| [ m.methodology_name, m.id ]} , { include_blank: 'Choose Methodology', class: "form-control" }, {:"data-custom-id" => "methodology"+ rand_num , class: "my_methodology"} %>
+						<%= f.select :methodology_id, f.object.trait.methodologies.map { |m| [ m.methodology_name, m.id ]} , { include_blank: 'Choose Methodology', class: "form-control" }, {id: "sur_methodology" , class: "my_methodology"} %>
 				  <% end %>
 					<br/>
 				</div>

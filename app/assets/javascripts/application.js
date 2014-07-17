@@ -48,6 +48,7 @@ $(document).ready(function(){
   });
 });
 
+/*
 var element_id = 1;
 
 $(document).bind('cocoon:after-insert', function(e,inserted_item) {
@@ -76,4 +77,4 @@ $(window).on('load', function(){
 });
 
 
-
+*/
