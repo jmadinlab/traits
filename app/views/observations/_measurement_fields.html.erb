@@ -120,14 +120,14 @@
       
 		<div class="row">
 		  <div class="col-md-6">
-			  <div class="form-group">
+			  <div class="form-group precision">
 				  <%= f.label :precision_type %>
 				  <%#= f.text_field :precision_type, class: "form-control" %>
 					<%= f.select :precision_type, ['standard_error', 'standard_deviation', '95_ci', 'range'], {:include_blank => "Choose if applicable..."}, class: "form-control" %>
 				</div>
 			</div>
 			<div class="col-md-6">
-			  <div class="form-group">
+			  <div class="form-group precision">
 				  <%= f.label :precision %>
 				  	<%= f.text_field :precision, class: "form-control" %>
 				</div>
@@ -136,13 +136,13 @@
 		
 		<div class="row">
 		  <div class="col-md-6">
-			  <div class="form-group">
+			  <div class="form-group precision">
 				  <%= f.label :precision_upper %>
 				  	<%= f.text_field :precision_upper, class: "form-control" %>
 				</div>
 			</div>
 			<div class="col-md-6">
-			  <div class="form-group">
+			  <div class="form-group precision">
 				  <%= f.label :replicates %>
 				  	<%= f.text_field :replicates, class: "form-control" %>
 				</div>

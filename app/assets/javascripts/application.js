@@ -47,6 +47,12 @@ $(document).ready(function(){
     e.preventDefault();
     $(this).next('.panel-body').fadeToggle("slow");
   });
+
+  var selected_value_type = $('[id*=_value_type]').val() ;
+  if ( selected_value_type =="" || selected_value_type == "raw_value")
+    $('.precision').hide();
+  else 
+    $('.precision').show();
 });
 
 /*
