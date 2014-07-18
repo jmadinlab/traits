@@ -71,7 +71,7 @@
 								
 							<% else %>
 								<% if not f.object.trait.value_range.empty? %>
-									<%= f.select :value, f.object.trait.value_range.split(','), { include_blank: 'Choose Value', class: "form-control" }, {:"data-custom-id" => "value"+ @random_number } %>
+									<%= f.select :value, f.object.trait.value_range.split(',').map(&:strip), { include_blank: 'Choose Value', class: "form-control" }, {:"data-custom-id" => "value"+ @random_number } %>
 								<% else %>
 									<%= f.text_field :value, class: "form-control", :"data-custom-id" => "value"+ @random_number %>	
 								<% end %>

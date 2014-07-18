@@ -134,11 +134,12 @@ class TraitsController < ApplicationController
   def update
     methodology_ids =  params[:trait][:methodologies_attributes]
     @trait.methodologies.delete_all()
-    
-    methodology_ids.keys().each do |k|
-      method = Methodology.find(methodology_ids[k]["id"])
-      @trait.methodologies << method if ((methodology_ids[k]["_destroy"] != "1") and (not @trait.methodologies.include? method))
-      
+    if not methodology_ids.nil?
+      methodology_ids.keys().each do |k|
+        method = Methodology.find(methodology_ids[k]["id"])
+        @trait.methodologies << method if ((methodology_ids[k]["_destroy"] != "1") and (not @trait.methodologies.include? method))
+        
+      end
     end
 
 

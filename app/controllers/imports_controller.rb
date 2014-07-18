@@ -70,21 +70,25 @@ class ImportsController < ApplicationController
 
 
 		#@measurements = Measurement.where(:approval_status => "pending")
-		
+		reject = params[:reject]
+		reject ? message = "Item/s Rejected!!!" : message = "Item/s approved!!!"
+			
+
 		if params[:checked]
 			item_ids = params[:checked]
 			i = 0
 			item_ids.each do |item_id|
 				@model_name = get_model_name(params[:item_type][i])
-				find_and_approve_item(@model_name, item_id)
+				
+				find_and_approve_item(@model_name, item_id,reject)
 
 				i = i + 1
 			end
-			redirect_to approve_path, flash: {success: "Items approved!!!" } 
+			redirect_to approve_path, flash: {success: message } 
 		elsif params[:item_id]
 			@model_name = get_model_name(params[:model])
-			find_and_approve_item(@model_name, params[:item_id])
-			redirect_to approve_path, flash: {success: "Item approved!!!" } 
+			find_and_approve_item(@model_name, params[:item_id], reject)
+			redirect_to approve_path, flash: {success: message } 
 
 		else
 			@product_import = Import.new
@@ -113,21 +117,26 @@ class ImportsController < ApplicationController
 
     end
 
-    def find_and_approve_item(model_name, item_id)
+    def find_and_approve_item(model_name, item_id, reject)
     	@item = model_name.find_by_id(item_id)
-			@item.approval_status = "approved"
-			@item.save!
-			
-			puts "printing model name:"
-			puts model_name
-			if model_name.to_s == "Observation"
-				puts "processing measurements"
-				@item.measurements.each do |mea|
-					mea.approval_status = "approved"
-					mea.save!
+    	if not reject
+				@item.approval_status = "approved"
+				@item.save!
+				
+				puts "printing model name:"
+				puts model_name
+				if model_name.to_s == "Observation"
+					puts "processing measurements"
+					@item.measurements.each do |mea|
+						mea.approval_status = "approved"
+						mea.save!
+					end
 				end
+			else
+				
+					@item.destroy!
+				
 			end
-		
     end
 
 

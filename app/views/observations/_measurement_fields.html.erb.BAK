@@ -91,7 +91,7 @@
 								
 							<% else %>
 								<% if not f.object.trait.value_range.empty? %>
-									<%= f.select :value, f.object.trait.value_range.split(','), { include_blank: 'Choose Value', class: "form-control" }, {id: unique_value_id } %>
+									<%= f.select :value, f.object.trait.value_range.split(',').map(&:strip), { include_blank: 'Choose Value', class: "form-control" }, {id: unique_value_id } %>
 								<% else %>
 									<%= f.text_field :value, class: "form-control", id: unique_value_id %>	
 								<% end %>
