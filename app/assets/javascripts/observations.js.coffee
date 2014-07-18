@@ -49,17 +49,3 @@
 # 	    $('#standard_id').val ui.item.value
 # 
 
-# Hide the precision fields when raw_value is selected
-jQuery ->
-	$("[id*=_value_type]").change ->
-	  selected_value = $(this).val()
-	  if selected_value is "raw_value"
-	    
-	    $(".precision").children("select").val ""
-    	$(".precision").children().val ""
-    	$(".precision").hide()
-
-	  else
-	  	$(".precision").show()
-	  return
-

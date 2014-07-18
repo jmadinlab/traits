@@ -87,7 +87,7 @@
 			<div class="col-md-6">
 				<div class="form-group">
 						<%= f.label :value_type %>
-						<%= f.select :value_type, ['raw_value', 'mean', 'median', 'maximum', 'minimum', 'model_derived', 'expert_opinion' , 'group_opinion'], { include_blank: 'Choose...' }, class: "form-control" %>
+						<%= f.select :value_type, ['raw_value', 'mean', 'median', 'maximum', 'minimum', 'model_derived', 'expert_opinion' , 'group_opinion'], { include_blank: 'Choose...' , class: "form-control"}, {class: "value_type"} %>
 				</div>
 			</div>
 
@@ -162,5 +162,4 @@
 
 	</div>
 </div>
-
 

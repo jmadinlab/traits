@@ -99,3 +99,17 @@ $("select option").each(function(){
          $(this).remove();
      });
 
+
+  $(".value_type").on("change", function() {
+    var selected_value;
+    selected_value = $(this).val();
+    alert("test");
+    if (selected_value === "raw_value") {
+      $(this).parents(".nested-fields").find(".precision").children().val("");
+      $(this).parents(".nested-fields").find(".precision").hide();
+    } else {
+      $(this).parents(".nested-fields").find(".precision").show();
+    }
+  });
+
+
