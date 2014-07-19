@@ -73,9 +73,11 @@ class Import
     # If there is a mapping error, display it and then return
     # If there is no any error, then save it
     #if imported_products.map(&:valid?).all? 
+
     imported_products.each do |product|
       product.save! if not Observation.all.include? product
     end
+
     $measurements.each(&:save!)
     true
     #else

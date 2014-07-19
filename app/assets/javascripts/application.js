@@ -47,6 +47,10 @@ $(document).ready(function(){
     e.preventDefault();
     $(this).next('.panel-body').fadeToggle("slow");
   });
+
+  
+  process_precision()
+  
 });
 
 /*
@@ -79,3 +83,36 @@ $(window).on('load', function(){
 
 
 */
+
+
+function process_precision()
+{
+  // Process the precision fields while document loads for first time (new / edit)
+  var selected_value_type = $('[id*=_value_type]');
+  selected_value_type.each(function(){
+    if ( $(this).val() =="" || $(this).val()== "raw_value")
+      $(this).parents(".nested-fields").find(".precision").hide();
+    else 
+      $(this).parents(".nested-fields").find(".precision").show();
+  });
+
+  // Add event listener for on change in value_type
+  $(".value_type").on("change", function() {
+      var selected_value;
+      selected_value = $(this).val();
+      if (selected_value === "raw_value" || selected_value == "") {
+        $(this).parents(".nested-fields").find(".precision").children().val("");
+        $(this).parents(".nested-fields").find(".precision").hide();
+      } else {
+        $(this).parents(".nested-fields").find(".precision").show();
+      }
+    });
+  
+}
+
+$(document).bind('cocoon:after-insert', function(e,inserted_item) {
+  
+    process_precision()
+});
+
+
