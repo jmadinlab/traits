@@ -19,6 +19,10 @@ class Import
   # Format : { '1' : 90613, '2': 90614 }
   $observation_id_map = {}
   
+  $email_list = []
+
+  $ignore_row = []
+  
   attr_accessor :file, :model_name
 
   def initialize(attributes = {})
@@ -51,12 +55,47 @@ class Import
     return flag
   end
 
+  def save_unique_observations
+    spreadsheet = open_spreadsheet
+    header = spreadsheet.row(1)
+    $observation_id_map = {}
+
+    (2..spreadsheet.last_row).map do |i|
+      row = Hash[[header, spreadsheet.row(i)].transpose]
+      if not $observation_id_map.keys().include? row["observation_id"]
+        o = Observation.new(:user_id => row["user_id"], :location_id => row["location_id"], :coral_id => row["coral_id"], :resource_id => row["resource_id"], :approval_status => "pending")
+        measurement_row = {"user_id" => row["user_id"],   "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["method_id"],  "approval_status" => "pending"}
+        m = Measurement.new
+        m.attributes = measurement_row.to_hash
+        o.measurements << m
+        puts "saving observation"
+        puts o.id
+        o.save!
+        $observation_id_map[row["observation_id"]] = o.id
+        
+        $ignore_row.append(i)
+
+      end
+
+    end
+  end
+
   def save
     $measurements = []
     puts "controller_name :"
     puts model_name
     
-    any_error = check_add_errors(imported_products)
+    save_unique_observations
+
+    imp_products = imported_products.compact
+    puts "imported products"
+    puts imported_products
+
+    puts "imported product map"
+    puts $observation_id_map
+    
+    any_error = check_add_errors(imp_products)
+    puts "no error in imported_products"
     # If there's any error, dont override its value
     # If there's no any error, check if error is present in measurements
     if not $measurements.empty?
@@ -74,7 +113,7 @@ class Import
     # If there is no any error, then save it
     #if imported_products.map(&:valid?).all? 
 
-    imported_products.each do |product|
+    imp_products.each do |product|
       product.save! if not Observation.all.include? product
     end
 
@@ -89,16 +128,7 @@ class Import
   def imported_products
     spreadsheet = open_spreadsheet
     header = spreadsheet.row(1)
-    (2..spreadsheet.last_row).map do |i|
-      row = Hash[[header, spreadsheet.row(i)].transpose]
-      if not $observation_id_map.keys().include? row["observation_id"]
-        o = Observation.new(:user_id => row["user_id"], :location_id => row["location_id"], :coral_id => row["coral_id"], :resource_id => row["resource_id"], :approval_status => "pending")
-        o.save!
-        $observation_id_map[row["observation_id"]] = o.id
 
-      end
-
-    end
     
 
     @imported_products ||= load_imported_products
@@ -123,12 +153,18 @@ class Import
       observation_id_list = []
 
       (2..spreadsheet.last_row).map do |i|
-
         row = Hash[[header, spreadsheet.row(i)].transpose]
+        if $ignore_row.include? i
+          next
+        end
+        
+
         
         # Instantiate or find observation and measurement in order to be able to add errors into them
         
         observation = Observation.find_by_id($observation_id_map[row["id"]])
+        puts "finding observation"
+        puts $observation_id_map[row["id"]]
         #measurement = Measurement.find_by_id(row["measurement_id"]) || Measurement.new
         measurement = Measurement.new
         
@@ -214,6 +250,9 @@ class Import
             if not trait.value_range.include? row["value"] and not trait.value_range.empty?
               observation.errors[:base] << "Invalid Value for the trait: " + row["trait_name"] + ".. Values should be within " + trait.value_range
             end
+
+            $email_list.append(trait.user.email) if ((not $email_list.include? trait.user.email) && trait.user.editor)
+
           end
           
         rescue
@@ -226,7 +265,7 @@ class Import
         # new_observation_csv_headears = ["observation_id",  "access",  "user_id", "coral_id"  ,"location_id", "resource_id", "trait_id",  "standard_id",  "method_id" ,"value" ,"value_type",  "precision" ,"precision_type" , "precision_upper" ,"replicates"]
         # Create the actual rows to be sent into the database for observation and measurements
         observation_row = {"id" => row["id"], "user_id" => row["user_id"], "location_id" => location_id, "coral_id" => coral_id, "resource_id" => row["resource_id"], "private" => row["private"]}
-        measurement_row = {"user_id" => observation.user_id, "observation_id" => observation.id,  "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["method_id"],  "approval_status" => "pending"}
+        measurement_row = {"user_id" => row["user_id"], "observation_id" => observation.id,  "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["method_id"],  "approval_status" => "pending"}
         
         # Additionally check for any mapping errors
         begin
@@ -281,7 +320,10 @@ class Import
     end
 
   end
-    
+  
+  def get_email_list
+    return $email_list.uniq
+  end
     
   
 

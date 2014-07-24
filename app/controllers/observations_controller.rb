@@ -102,11 +102,14 @@ class ObservationsController < ApplicationController
   # POST /observations.json
   def create
     @observation = Observation.new(observation_params)
+    @observation.approval_status = "pending"
     @observation.measurements.each do |mea|
       mea.orig_value = mea.value
+      mea.approval_status = "pending"
     end
     
     if @observation.save
+      UploadApprovalMailer.approve(current_user).deliver
       redirect_to @observation, flash: {success: "Observation was successfully created." }
     else
       render action: 'new'
@@ -169,7 +172,7 @@ class ObservationsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def observation_params
-      params.require(:observation).permit(:user_id, :location_id, :coral_id, :resource_id, :private, measurements_attributes: [:id, :user_id, :orig_user_id, :trait_id, :standard_id, :value, :value_type, :orig_value, :precision_type, :precision, :precision_upper, :replicates, :notes, :methodology_id, :_destroy])
+      params.require(:observation).permit(:user_id, :location_id, :coral_id, :resource_id, :private, :approval_status, measurements_attributes: [:id, :user_id, :orig_user_id, :trait_id, :standard_id, :value, :value_type, :orig_value, :precision_type, :precision, :precision_upper, :replicates, :notes, :methodology_id, :approval_status, :_destroy])
     end
 
 

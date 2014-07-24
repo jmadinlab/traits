@@ -1,4 +1,5 @@
 <div class="nested-fields">
+	<% @random_number = rand(50).to_s %>
 
 	<script>
 	  var a = 0;
@@ -16,13 +17,12 @@
 								trait_id: $(this).val(),
 								measurement_id: $(this).parents('.nested-fields').find('.measurement_id').attr("value")
 					},
-			    dataType: "script"
+	        dataType: "script"
+
 	      });
 	    });
 	  });
 	</script>
-
-	<% @random_number = rand(50).to_s %>	
 	<span class="measurement_id hidden" value="<%= f.object.id if f.object.id %>" > </span>
   <div class="well">
 		<div class="row">
@@ -52,11 +52,12 @@
 						
 					<% else %>
 						<% if not f.object.trait.traitvalues.empty? %>
-							<%= f.select :value, f.object.trait.traitvalues.map { |v| [ v.value_name, v.id ]} , { include_blank: 'Choose Value', class: "form-control" }, { class: "my_traitvalue"} %>
+							<%= f.select :value, f.object.trait.traitvalues.map { |v| [ v.value_name, v.id ]} , { include_blank: 'Choose Value' }, {class: "form-control", class: "my_traitvalue"} %>
 					  
 						<% else %>
 							<%= f.text_field :value, class: "form-control", :"data-custom-id" => "value"+ @random_number %>	
 						<% end %>
+
 					<% end %>
 					<%= f.hidden_field :orig_value, :value => params[:value], :"data-custom-id" => "orig_value"+ @random_number %>
 				</div>

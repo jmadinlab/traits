@@ -12,6 +12,7 @@ class Observation < ActiveRecord::Base
   validates :user, presence: true
   validates :location, :presence => true
   validates :coral, :presence => true
+  validates :measurements, :presence => true
   #validates :resource, :presence => true
     
   has_many :measurements, :dependent => :destroy

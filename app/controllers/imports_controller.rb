@@ -25,6 +25,7 @@ class ImportsController < ApplicationController
 		
 		@product_import.set_model_name(@model_name)
 		
+
 		"""
 		# Save the actual file in the server
 		uploaded_io = params[:import][:file]
@@ -40,7 +41,9 @@ class ImportsController < ApplicationController
 
 		if @product_import.save
 			# Todo : Change the user to the one responsible for that particular coral/trait/observation
-			UploadApprovalMailer.approve(current_user).deliver
+			UploadApprovalMailer.approve_all(@product_import.get_email_list).deliver
+
+			
 			redirect_to request.referer, flash: {success: "Imported successfully" } 
 		else
 			render :new
@@ -65,6 +68,7 @@ class ImportsController < ApplicationController
 			@traits = Trait.where(:approval_status => "pending")
 			@standards = Standard.where(:approval_status => "pending")
 			@resources = Resource.where(:approval_status => "pending")
+			""" To do  : Show only the observation with measurements which contain traits that a user is editor of """
 			@observations = Observation.includes(:measurements).where("measurements.approval_status" => "pending")
 		end
 
