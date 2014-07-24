@@ -2,6 +2,7 @@ class ObservationsController < ApplicationController
   before_action :signed_in_user
   before_action :contributor
   before_action :set_observation, only: [:show, :edit, :update, :destroy]
+  
 
   # autocomplete :location, :name, :full => true
   # autocomplete :coral, :name, :full => true
@@ -9,33 +10,25 @@ class ObservationsController < ApplicationController
 
 
   def update_values
-      puts "processing update values"
-      @temp_var = 0
-      @values = Trait.find(params[:trait_id]).value_range.split(',').map(&:strip)
-      @standard = Standard.find(Trait.find(params[:trait_id]).standard_id)
-      @element_id = params[:element_id]
-      @element_id.slice! "_trait_id"
-      @element_id.to_s
-      puts "element id"
-      puts @element_id
-      @methodologies = Trait.find(params[:trait_id]).methodologies
-      puts 'trait id '
-      puts params[:trait_id]
-      
-
+    @values = Trait.find(params[:trait_id]).traitvalues.map(&:id)
+    @standard = Standard.find(Trait.find(params[:trait_id]).standard_id)
+    @element_id = params[:element_id]
+    @element_id.slice! "_trait_id"
+    @element_id.to_s
+    @methodologies = Trait.find(params[:trait_id]).methodologies
+    meas = Measurement.find(params[:measurement_id]) if params[:measurement_id] != ""
+    puts 'printing form obs controller'
+    #puts meas.value
+    #meas.value = ""
   end
-  
-  
 
   def edit_multiple
     @observations = Observation.find(params[:obs_ids])
   end
 
   def update_multiple
-
     Observation.where(:user_id => params[:con_id], :id => params[:all_ids]).update_all(:private => false)
     Observation.where(:user_id => params[:con_id], :id => params[:pri_ids]).update_all(:private => true)
-    
     # flash[:notice] = "Updated observations!"
     redirect_to user_path(params[:con_id], :page => @page, :search => @search), flash: {success: "Privacy updated." }
   end
@@ -87,13 +80,10 @@ class ObservationsController < ApplicationController
   # GET /observations/new
   def new
     @observation = Observation.new
-    @values = ""
-    @temp_var = 0
   end
 
   # GET /observations/1/edit
   def edit
-    @temp_var = 0
     if (@observation.user_id != current_user.id) & !current_user.admin?
       flash[:danger] = 'You need to be the original contributor of an observation to edit it.'
       if params[:user].blank?
@@ -106,7 +96,6 @@ class ObservationsController < ApplicationController
         redirect_to user_path(@observation.user_id)
       end
     end
-    @values = ""
   end
 
   # POST /observations
@@ -127,11 +116,11 @@ class ObservationsController < ApplicationController
   # PATCH/PUT /observations/1
   # PATCH/PUT /observations/1.json
   def update
-    @temp_var = 0    
     @observation.measurements.each do |mea|
       if mea.orig_value.blank?
         mea.orig_value = mea.value
       end
+      
     end
     
       if @observation.update(observation_params)
@@ -182,4 +171,6 @@ class ObservationsController < ApplicationController
     def observation_params
       params.require(:observation).permit(:user_id, :location_id, :coral_id, :resource_id, :private, measurements_attributes: [:id, :user_id, :orig_user_id, :trait_id, :standard_id, :value, :value_type, :orig_value, :precision_type, :precision, :precision_upper, :replicates, :notes, :methodology_id, :_destroy])
     end
+
+
 end

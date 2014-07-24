@@ -1,0 +1,13 @@
+class Traitvalue < ActiveRecord::Base
+	has_and_belongs_to_many :traits, :dependent => :destroy
+  has_many :measurements
+  accepts_nested_attributes_for :traits, :reject_if => :all_blank, :allow_destroy => true
+
+	def self.search(search)
+      if search
+        where('value_name LIKE ?', "%#{search}%")
+      else
+        all
+      end
+  end  
+end

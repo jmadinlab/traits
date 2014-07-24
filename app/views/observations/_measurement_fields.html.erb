@@ -1,11 +1,8 @@
-
 <div class="nested-fields">
-		<% @random_number = rand(50).to_s %>
+
 	<script>
 	  var a = 0;
-
 	  $(document).ready(function() {
-	  	
 	  	$('select.my_standard').select2();
 			$('select.my_trait').select2();
 			$('select.my_methodology').select2();
@@ -15,32 +12,23 @@
 	        url: "/observations/update_values",
 	        cache: false,
 	        data: {
-	        			//element_id: $(this).attr('data-custom-id'),
 	        			element_id: $(this).attr('id'),
-								trait_id: $(this).val()
-						
+								trait_id: $(this).val(),
+								measurement_id: $(this).parents('.nested-fields').find('.measurement_id').attr("value")
 					},
-					
-	        dataType: "script"
+			    dataType: "script"
 	      });
-	    
 	    });
 	  });
 	</script>
 
-	
-	
+	<% @random_number = rand(50).to_s %>	
+	<span class="measurement_id hidden" value="<%= f.object.id if f.object.id %>" > </span>
   <div class="well">
-	
-    <%# f.hidden_field :user_id, :value => current_user.id %>
-		
-
 		<div class="row">
 		  <div class="col-md-12">
 			  <div class="form-group">
-
 				  <%= f.label :trait %>
-				  
 					<br/>
 					<% if !f.object.id %>
 						<%= f.select :trait_id, Trait.all.map { |u| [u.trait_name, u.id] }, { include_blank: 'Choose trait...', class: "form-control" }, { :"data-custom-id" => "trait"+ @random_number, class: "my_trait" } %>
@@ -49,49 +37,38 @@
 					<% end %>
 				</div>
 			</div>
-		</div>
+		</div><!-- End ROW -->
 
-		<div class="row">
-		  <div class="col-md-12" id="values_select">
-				<%#= render 'values' %>
-			</div>    
-		</div>
-		
 		<div class="row">
 		  <div class="col-md-6">
 				<div class="form-group">
-						<%= f.label :value %>
-						<% if f.object.id %>
-				  		<small class="pull-right">(originally entered as: <%= f.object.orig_value %>)</small>
+					<%= f.label :value %>
+					<% if f.object.id %>
+			  		<small class="pull-right">(originally entered as: <%= f.object.orig_value %>)</small>
+					<% end %>
+				
+					<% if !f.object.id %>
+						<%= f.select :value, [], { include_blank: 'Choose Value', class: "form-control" } %>
+						
+					<% else %>
+						<% if not f.object.trait.traitvalues.empty? %>
+							<%= f.select :value, f.object.trait.traitvalues.map { |v| [ v.value_name, v.id ]} , { include_blank: 'Choose Value', class: "form-control" }, { class: "my_traitvalue"} %>
+					  
+						<% else %>
+							<%= f.text_field :value, class: "form-control", :"data-custom-id" => "value"+ @random_number %>	
 						<% end %>
-						<%# if !f.object.id %>
-							<%# f.text_field :value, :placeholder => "Value", class: "form-control" %>
-							<% if !f.object.id %>
-								<%= f.select :value, [], { include_blank: 'Choose Value', class: "form-control" }, {:"data-custom-id" => "value"+ @random_number } %>
-								
-							<% else %>
-								<% if not f.object.trait.value_range.empty? %>
-									<%= f.select :value, f.object.trait.value_range.split(',').map(&:strip), { include_blank: 'Choose Value', class: "form-control" }, {:"data-custom-id" => "value"+ @random_number } %>
-								<% else %>
-									<%= f.text_field :value, class: "form-control", :"data-custom-id" => "value"+ @random_number %>	
-								<% end %>
-							<% end %>
-							<%= f.hidden_field :orig_value, :value => params[:value], :"data-custom-id" => "orig_value"+ @random_number %>
-						<%# else %>
-							<%# f.text_field :value, class: "form-control" %>
-						<%# end %>
-
-					</div>
+					<% end %>
+					<%= f.hidden_field :orig_value, :value => params[:value], :"data-custom-id" => "orig_value"+ @random_number %>
+				</div>
 			</div>
 
 			<div class="col-md-6">
 				<div class="form-group">
-						<%= f.label :value_type %>
-						<%= f.select :value_type, ['raw_value', 'mean', 'median', 'maximum', 'minimum', 'model_derived', 'expert_opinion' , 'group_opinion'], { include_blank: 'Choose...' , class: "form-control"}, {class: "value_type"} %>
+					<%= f.label :value_type %>
+					<%= f.select :value_type, ['raw_value', 'mean', 'median', 'maximum', 'minimum', 'model_derived', 'expert_opinion' , 'group_opinion'], { include_blank: 'Choose...' , class: "form-control"}, {class: "value_type"} %>
 				</div>
 			</div>
-
-		</div>
+		</div> <!-- End ROW -->
 		
 		<div class="row">
 		  <div class="col-md-6">
@@ -115,7 +92,7 @@
 					<br/>
 				</div>
 			</div>
-		</div>    
+		</div><!-- End ROW -->
 	  
       
 		<div class="row">
@@ -132,7 +109,7 @@
 				  	<%= f.text_field :precision, class: "form-control" %>
 				</div>
 			</div>
-		</div>
+		</div><!-- End ROW -->
 		
 		<div class="row">
 		  <div class="col-md-6">
@@ -147,7 +124,7 @@
 				  	<%= f.text_field :replicates, class: "form-control" %>
 				</div>
 			</div>
-		</div>
+		</div><!-- End ROW -->
 
 		<div class="row">
 		  <div class="col-md-12">
@@ -156,10 +133,10 @@
 				  	<%= f.text_area :notes, class: "form-control" %>
 				</div>
 			</div>
-		</div>
+		</div><!-- End ROW -->
 
 		<%= link_to_remove_association "remove", f %>
 
-	</div>
-</div>
+	</div> <!-- End Well -->
+</div> <!-- End Nested-fields -->
 

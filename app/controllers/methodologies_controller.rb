@@ -34,7 +34,7 @@ class MethodologiesController < ApplicationController
 
   def index
   	@methodologies = Methodology.search(params[:search])
-	#@corals = Coral.search(params[:search])
+	 #@corals = Coral.search(params[:search])
   	respond_to do |format|
       format.html
       format.csv { send_data @methodologies.to_csv }

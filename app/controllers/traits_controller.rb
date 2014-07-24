@@ -112,12 +112,21 @@ class TraitsController < ApplicationController
   def create
     @trait = Trait.new(trait_params)
     methodology_ids =  params[:trait][:methodologies_attributes]
+    traitvalue_ids =  params[:trait][:traitvalues_attributes]
+
     if not methodology_ids.nil?
       methodology_ids.keys().each do |k|
-        #puts id
-        #puts val
         methodology = Methodology.find(methodology_ids[k]["id"])
-        @trait.methodologies << methodology if methodology_ids[k]["_destroy"] != 1 and not @trait.methodologies.include? methodology
+        @trait.methodologies << methodology if methodology_ids[k]["_destroy"] != "1" and not @trait.methodologies.include? methodology
+      end
+    end
+
+    if not traitvalue_ids.nil?
+      traitvalue_ids.keys().each do |k|
+        traitvalue = Traitvalue.where(:value_name => traitvalue_ids[k]["value_name"]) 
+        traitvalue = (not traitvalue.empty? ) ?  traitvalue.first  : Traitvalue.new(:value_name => traitvalue_ids[k]["value_name"] ) 
+        traitvalue.save! if not Traitvalue.all.include? traitvalue
+        @trait.traitvalues << traitvalue if traitvalue_ids[k]["_destroy"] != "1" and not @trait.traitvalues.include? traitvalue
         
       end
     end
@@ -133,11 +142,25 @@ class TraitsController < ApplicationController
   # PATCH/PUT /traits/1.json
   def update
     methodology_ids =  params[:trait][:methodologies_attributes]
+    traitvalue_ids =  params[:trait][:traitvalues_attributes]
+
     @trait.methodologies.delete_all()
+    @trait.traitvalues.delete_all()
+
     if not methodology_ids.nil?
       methodology_ids.keys().each do |k|
         method = Methodology.find(methodology_ids[k]["id"])
         @trait.methodologies << method if ((methodology_ids[k]["_destroy"] != "1") and (not @trait.methodologies.include? method))
+        
+      end
+    end
+
+    if not traitvalue_ids.nil?
+      traitvalue_ids.keys().each do |k|
+        traitvalue = Traitvalue.where(:value_name => traitvalue_ids[k]["value_name"]) 
+        traitvalue = (not traitvalue.empty? ) ?  traitvalue.first  : Traitvalue.new(:value_name => traitvalue_ids[k]["value_name"] ) 
+        traitvalue.save! if not Traitvalue.all.include? traitvalue
+        @trait.traitvalues << traitvalue if traitvalue_ids[k]["_destroy"] != "1" and not @trait.traitvalues.include? traitvalue
         
       end
     end
@@ -168,7 +191,7 @@ class TraitsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def trait_params
-      params.require(:trait).permit(:trait_name, :trait_description, :trait_class, :value_range, :standard_id, :user_id, :approval_status, :release_status, :methodologies)
+      params.require(:trait).permit(:trait_name, :trait_description, :trait_class, :value_range, :standard_id, :user_id, :approval_status, :release_status, :methodologies, :traitvalues)
     end
 end
 

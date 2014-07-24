@@ -4,6 +4,7 @@ class Measurement < ActiveRecord::Base
   belongs_to :trait
   belongs_to :standard
   belongs_to :methodology
+  #belongs_to :traitvalue
 
   has_paper_trail
   
@@ -11,9 +12,19 @@ class Measurement < ActiveRecord::Base
   
   validates :trait, :presence => true
   validates :standard, :presence => true
-  validates :value, :presence => true
+  #validate :has_value
+  #validates :traitvalue, :presence => true
   #validates :value_type, :presence => true
   # validates :orig_value, :presence => true
 
   
+'''
+  def has_value
+    errors.add(:base, "Measurement value should not be blank") if self.value.blank? and self.traitvalue_id.blank?
+  end
+'''
+
+
+  
+
 end

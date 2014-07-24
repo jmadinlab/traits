@@ -16,13 +16,13 @@
 // to select ids like #trait_value1, #trait_value2
 var val = '#<%= @element_id %>_value';
 console.log(val);
-
+var text_val = '#<%= @element_id %>_value';
 
 // to assign the id to select dropdown and text box for values (id = "trait_value1")
 var val_id = '<%= @element_id %>_value';
 // to select options related to the values dropdown
 var val_option = val + ' option';
-
+var text_val_id = '<%= @element_id %>_value';
 
 // to select ids like #trait_standard1, #trait_standard2
 var standard = '#<%= @element_id %>_standard_id';
@@ -43,16 +43,20 @@ var suggested_standard = "<br/>Suggested standard: <b><%= @standard.standard_nam
 // $(suggested_standard_id).removeClass('hidden').html(suggested_standard);
 //$(standard_option).remove();
 // $(standard).append('<option> Choose Standard</option>');
+var name;
+name = $(val).attr('name');
+/*
+if ($(val).length)
+	name = $(val).attr('name');
+else
+	name = $(text_val).attr('name');
+*/
 
-var name = $(val).attr('name');
-
-console.log(val);
-console.log("standardid : <%= @standard.id %>");
 $(standard).select2("val", "<%= @standard.id %>");
 
 // if the values are 0, show a text box instead of drop down
 <% if @values.size == 0 %>
-	
+	//name = name.replace( 'traitvalue_id', 'value');
 	var input_box = '<input type="text" id="' + val_id + '" name="' + name + '" />' ;
 	$(val).replaceWith(input_box);
 	
@@ -64,11 +68,17 @@ $(standard).select2("val", "<%= @standard.id %>");
   //$(val).append('<option> Choose Value</option>');
 
 	// to handle the situation where text box is first shown and later need to show dropdown
+	//name = name.replace('value', 'traitvalue_id');
 	var select_box = '<select id="' + val_id + '" name="' + name + '" ><option> Choose Value..<option></select>' ;
+	
+	
 	$(val).replaceWith(select_box);
+	
+	
 
 	<% @values.each do |value| %>
-		var option ="<option value= <%= value %> ><%= value %></option> ";
+		console.log("<%= value %>")
+		var option ="<option value= <%= value %> ><%= Traitvalue.find(value).value_name %></option> ";
 		$(val).append(option);
 		 
 	<% end %>
