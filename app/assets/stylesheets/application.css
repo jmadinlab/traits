@@ -17,3 +17,7 @@
 .error_messages{
 	color: red;
 }
+
+h3.coloured{
+	color: #d9534f;
+}
