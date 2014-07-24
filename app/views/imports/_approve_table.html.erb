@@ -1,3 +1,5 @@
+<h3 class="coloured"><%= items.first.class.name.pluralize %></h3>
+
 <%= form_tag approve_path do %>
 	<table class="table table-condensed">
 	  <thead>
@@ -7,27 +9,22 @@
 	      <th style="text-align:center;">
 	      	<%= submit_tag "Approve", class: "btn btn-success btn-sm" %>
 	      	<%= submit_tag "Reject", class: "btn btn-danger btn-sm", name: "reject['true']" %>
-
 	      </th>
-
-	      <th></th>
+				<th></th>
 	    </tr>
 	  </thead>
-
 	  <tbody>
 	    <% items.each do |item| %>
 	      <tr>
 	        <td style="color: lightgrey;"><%= item.id %></td>
-	        
 	        <% name = item.class.name.downcase + "_name" %>
 	        <td><em><%= link_to item[name], item %></em></td>
-
 				 	<td style="text-align:center;">
 						<%= check_box_tag "checked[]", item.id %>
 						<%= hidden_field_tag "item_type[]", item.class.name %>
 					</td>						
-
 	        <td style="text-align:right; min-width: 150px;">
+	        	<%= link_to "Show", item %> |
 						<% if signed_in? && current_user.admin? %>
 		        	<%= link_to 'Approve', approve_path(:item_id => item.id, :model => item.class.name ), method: :post %> | <%= link_to 'Reject', approve_path(:item_id => item.id, :model => item.class.name, :reject => true ), method: :post %> 
 						<% end %>
@@ -36,6 +33,6 @@
 	    <% end %>
 	  </tbody>
 	</table>
-
-
 <% end %>
+
+<br/>
