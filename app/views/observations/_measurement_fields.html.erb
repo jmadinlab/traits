@@ -48,25 +48,25 @@
 					<% end %>
 				
 					<% if !f.object.id %>
-						<%= f.select :value, [], { include_blank: 'Choose Value', class: "form-control" } %>
+						<%= f.select :value, [], {include_blank: 'Choose Value' }, { class: "form-control" }%>
 						
 					<% else %>
 						<% if not f.object.trait.traitvalues.empty? %>
-							<%= f.select :value, f.object.trait.traitvalues.map { |v| [ v.value_name, v.id ]} , { include_blank: 'Choose Value' }, {class: "form-control", class: "my_traitvalue"} %>
+							<%= f.select :value, f.object.trait.traitvalues.map { |v| [ v.value_name, v.id ]} , { include_blank: 'Choose Value' }, { class: "form-control"} %>
 					  
 						<% else %>
-							<%= f.text_field :value, class: "form-control", :"data-custom-id" => "value"+ @random_number %>	
+							<%= f.text_field :value, { class: "form-control" } %>	
 						<% end %>
 
 					<% end %>
-					<%= f.hidden_field :orig_value, :value => params[:value], :"data-custom-id" => "orig_value"+ @random_number %>
+					<%= f.hidden_field :orig_value, :value => params[:value]%>
 				</div>
 			</div>
 
 			<div class="col-md-6">
 				<div class="form-group">
 					<%= f.label :value_type %>
-					<%= f.select :value_type, ['raw_value', 'mean', 'median', 'maximum', 'minimum', 'model_derived', 'expert_opinion' , 'group_opinion'], { include_blank: 'Choose...' , class: "form-control"}, {class: "value_type"} %>
+					<%= f.select :value_type, ['raw_value', 'mean', 'median', 'maximum', 'minimum', 'model_derived', 'expert_opinion' , 'group_opinion'], { include_blank: 'Choose...' }, { class: "form-control" } %>
 				</div>
 			</div>
 		</div> <!-- End ROW -->
