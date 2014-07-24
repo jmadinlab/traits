@@ -6,9 +6,10 @@ class UploadApprovalMailer < ActionMailer::Base
   #
   #   en.upload_approval_mailer.approve.subject
   #
-  def approve(user)
-    @greeting = "Hi #{user.name}"
-
-    mail to: user.email, subject: "Upload Approval"
+  def approve(users)
+    #@greeting = "Hi #{user.name}"
+    puts users
+    cc_users = (users.length > 1 ) ?  users[0..-1] : [""]
+    mail(to: users[0], cc: cc_users, subject: "Upload Approval")
   end
 end
