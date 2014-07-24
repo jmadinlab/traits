@@ -6,7 +6,13 @@ class UploadApprovalMailer < ActionMailer::Base
   #
   #   en.upload_approval_mailer.approve.subject
   #
-  def approve(users)
+  def approve(user)
+    @greeting = "Hi #{user.name}"
+    
+    mail(to: user.email,  subject: "Upload Approval")
+  end
+
+  def approve_all(users)
     #@greeting = "Hi #{user.name}"
     puts users
     cc_users = (users.length > 1 ) ?  users[0..-1] : [""]
