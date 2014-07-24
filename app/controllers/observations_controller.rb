@@ -122,11 +122,13 @@ class ObservationsController < ApplicationController
     @observation.measurements.each do |mea|
       if mea.orig_value.blank?
         mea.orig_value = mea.value
+        mea.approval_status = "pending"
       end
       
     end
     
       if @observation.update(observation_params)
+        UploadApprovalMailer.approve(current_user).deliver
         redirect_to @observation, flash: {success: "Observation was successfully updated." }
       else
         render action: 'edit'
