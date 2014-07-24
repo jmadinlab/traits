@@ -65,6 +65,7 @@ class ImportsController < ApplicationController
 			@traits = Trait.where(:approval_status => "pending")
 			@standards = Standard.where(:approval_status => "pending")
 			@resources = Resource.where(:approval_status => "pending")
+			""" To do  : Show only the observation with measurements which contain traits that a user is editor of """
 			@observations = Observation.includes(:measurements).where("measurements.approval_status" => "pending")
 		end
 

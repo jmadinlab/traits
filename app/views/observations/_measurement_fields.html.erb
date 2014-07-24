@@ -67,11 +67,11 @@
 						<%# if !f.object.id %>
 							<%# f.text_field :value, :placeholder => "Value", class: "form-control" %>
 							<% if !f.object.id %>
-								<%= f.select :value, [], { include_blank: 'Choose Value', class: "form-control" }, {:"data-custom-id" => "value"+ @random_number } %>
+								<%= f.select :value, [], { include_blank: 'Choose Value' }, { class: "form-control", :"data-custom-id" => "value"+ @random_number } %>
 								
 							<% else %>
 								<% if not f.object.trait.value_range.empty? %>
-									<%= f.select :value, f.object.trait.value_range.split(',').map(&:strip), { include_blank: 'Choose Value', class: "form-control" }, {:"data-custom-id" => "value"+ @random_number } %>
+									<%= f.select :value, f.object.trait.value_range.split(',').map(&:strip), { include_blank: 'Choose Value' }, {  class: "form-control", :"data-custom-id" => "value"+ @random_number } %>
 								<% else %>
 									<%= f.text_field :value, class: "form-control", :"data-custom-id" => "value"+ @random_number %>	
 								<% end %>
@@ -87,7 +87,7 @@
 			<div class="col-md-6">
 				<div class="form-group">
 						<%= f.label :value_type %>
-						<%= f.select :value_type, ['raw_value', 'mean', 'median', 'maximum', 'minimum', 'model_derived', 'expert_opinion' , 'group_opinion'], { include_blank: 'Choose...' , class: "form-control"}, {class: "value_type"} %>
+						<%= f.select :value_type, ['raw_value', 'mean', 'median', 'maximum', 'minimum', 'model_derived', 'expert_opinion' , 'group_opinion'], { include_blank: 'Choose...' }, { class: "value_type form-control"} %>
 				</div>
 			</div>
 

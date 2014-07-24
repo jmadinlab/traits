@@ -18,6 +18,7 @@ class Import
   # Map the observation group number in csv spreadsheet to a newly created observation id
   # Format : { '1' : 90613, '2': 90614 }
   $observation_id_map = {}
+  $email_list = []
   
   attr_accessor :file, :model_name
 
@@ -214,6 +215,9 @@ class Import
             if not trait.value_range.include? row["value"] and not trait.value_range.empty?
               observation.errors[:base] << "Invalid Value for the trait: " + row["trait_name"] + ".. Values should be within " + trait.value_range
             end
+
+            $email_list.append(trait.user.email) if not $email_list.include? trait.user.email && trait.user.editor
+
           end
           
         rescue

@@ -53,7 +53,7 @@ $(standard).select2("val", "<%= @standard.id %>");
 // if the values are 0, show a text box instead of drop down
 <% if @values.size == 0 %>
 	
-	var input_box = '<input type="text" id="' + val_id + '" name="' + name + '" />' ;
+	var input_box = '<input type="text" class="form-control" id="' + val_id + '" name="' + name + '" />' ;
 	$(val).replaceWith(input_box);
 	
 
@@ -64,7 +64,7 @@ $(standard).select2("val", "<%= @standard.id %>");
   //$(val).append('<option> Choose Value</option>');
 
 	// to handle the situation where text box is first shown and later need to show dropdown
-	var select_box = '<select id="' + val_id + '" name="' + name + '" ><option> Choose Value..<option></select>' ;
+	var select_box = '<select class="form-control" id="' + val_id + '" name="' + name + '" ><option> Choose Value..<option></select>' ;
 	$(val).replaceWith(select_box);
 
 	<% @values.each do |value| %>
