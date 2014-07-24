@@ -64,7 +64,7 @@ $(standard).select2("val", "<%= @standard.id %>");
   //$(val).append('<option> Choose Value</option>');
 
 	// to handle the situation where text box is first shown and later need to show dropdown
-	var select_box = '<select class="form-control" id="' + val_id + '" name="' + name + '" ><option> Choose Value..<option></select>' ;
+	var select_box = '<select class="form-control" id="' + val_id + '" name="' + name + '" ><option value=""> Choose Value..<option></select>' ;
 	$(val).replaceWith(select_box);
 
 	<% @values.each do |value| %>
