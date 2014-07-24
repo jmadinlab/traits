@@ -78,7 +78,7 @@ $(standard).select2("val", "<%= @standard.id %>");
 
 	<% @values.each do |value| %>
 		console.log("<%= value %>")
-		var option ="<option value= <%= value %> ><%= Traitvalue.find(value).value_name %></option> ";
+		var option ="<option value= <%= Traitvalue.find(value).value_name %> ><%= Traitvalue.find(value).value_name %></option> ";
 		$(val).append(option);
 		 
 	<% end %>

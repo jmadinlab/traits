@@ -52,7 +52,7 @@
 						
 					<% else %>
 						<% if not f.object.trait.traitvalues.empty? %>
-							<%= f.select :value, f.object.trait.traitvalues.map { |v| [ v.value_name, v.id ]} , { include_blank: 'Choose Value' }, { class: "form-control"} %>
+							<%= f.select :value, f.object.trait.traitvalues.map { |v| [ v.value_name, v.value_name ]} , { include_blank: 'Choose Value' }, { class: "form-control"} %>
 					  
 						<% else %>
 							<%= f.text_field :value, { class: "form-control" } %>	
