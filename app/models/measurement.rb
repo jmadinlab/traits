@@ -12,6 +12,7 @@ class Measurement < ActiveRecord::Base
   
   validates :trait, :presence => true
   validates :standard, :presence => true
+  validates :value, :presence => true
   #validate :has_value
   #validates :traitvalue, :presence => true
   #validates :value_type, :presence => true

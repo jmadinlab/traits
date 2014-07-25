@@ -14,13 +14,19 @@
 			<% end %>
 		</p>
 
-		<% if @trait.value_range.present? %>
-			<p>
-				<strong>Value range:</strong>
-				<%= @trait.value_range %>
-			</p>
-		<% end %>
-
+		<div class="row">
+			<div class="col-md-6 col-md-offset-0">
+				<% if @trait.traitvalues.present? %>
+					<table class="table table-condensed">
+						<tr><th>Value options:</th><th>Description:</th></tr>
+						<% @trait.traitvalues.each do |tv| %>
+							<tr><td><%= tv.value_name %></td><td><%= tv.value_description %></td></tr>
+						<% end %>
+					</table>
+				<% end %>
+			</div>
+		</div>
+		
 		<p>
 			<strong>Class:</strong>
 			<%= @trait.trait_class %>
