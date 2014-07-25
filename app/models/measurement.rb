@@ -17,14 +17,4 @@ class Measurement < ActiveRecord::Base
   #validates :value_type, :presence => true
   # validates :orig_value, :presence => true
 
-  
-'''
-  def has_value
-    errors.add(:base, "Measurement value should not be blank") if self.value.blank? and self.traitvalue_id.blank?
-  end
-'''
-
-
-  
-
 end
