@@ -37,18 +37,6 @@ ActiveRecord::Schema.define(version: 20140718042620) do
 
   add_index "corals", ["user_id"], name: "index_corals_on_user_id"
 
-  create_table "imports", force: true do |t|
-    t.string   "filename"
-    t.string   "email"
-    t.boolean  "status"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "csv_file_file_name"
-    t.string   "csv_file_content_type"
-    t.integer  "csv_file_file_size"
-    t.datetime "csv_file_updated_at"
-  end
-
   create_table "locations", force: true do |t|
     t.string   "location_name"
     t.decimal  "latitude"
@@ -78,8 +66,8 @@ ActiveRecord::Schema.define(version: 20140718042620) do
     t.datetime "updated_at"
     t.text     "notes"
     t.string   "value_type"
-    t.integer  "methodology_id"
     t.string   "approval_status"
+    t.integer  "methodology_id"
   end
 
   add_index "measurements", ["methodology_id"], name: "index_measurements_on_methodology_id"
@@ -161,6 +149,11 @@ ActiveRecord::Schema.define(version: 20140718042620) do
 
   add_index "traits", ["standard_id"], name: "index_traits_on_standard_id"
   add_index "traits", ["user_id"], name: "index_traits_on_user_id"
+
+  create_table "traits_traitvalues", id: false, force: true do |t|
+    t.integer "trait_id"
+    t.integer "traitvalue_id"
+  end
 
   create_table "traitvalues", force: true do |t|
     t.string   "value_name"
