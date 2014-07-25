@@ -1,19 +1,15 @@
 <div class="nested-fields">
-	<script>
-	  
-	  $(document).ready(function() {
-	  		// Surprisingly cocoon adds an extra hidden input field and so makes a problem.
-	  		// For this I manually removed the id myself.. Need a better way to do it.
-			$( "input[name*='traitvalues_attributes'][name*='id'" ).remove();
-			
-		});
-	</script>
-
 	<div class="row">
-		<div class="col-md-9">
+		<div class="col-md-3">
 	
 			<div class="form-group">
 				<%= f.text_field :value_name, class: "form-control" %>	
+			</div>
+		</div>
+		<div class="col-md-6">
+	
+			<div class="form-group">
+				<%= f.text_field :value_description, class: "form-control" %>	
 			</div>
 		</div>
 		<div class="col-md-3">

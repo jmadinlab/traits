@@ -32,6 +32,7 @@ var standard_option = standard + ' option' ;
 var suggested_standard_id = '#<%= @element_id %>_suggested_standard' ;
 
 var form_methodology ='#<%= @element_id %>_methodology_id';
+var methodology_id = '<%= @element_id %>_methodology_id';
 console.log(form_methodology);
 var methodology_option = form_methodology + ' option';
 
@@ -78,14 +79,18 @@ $(standard).select2("val", "<%= @standard.id %>");
 
 	<% @values.each do |value| %>
 		console.log("<%= value %>")
-		var option ="<option value= <%= value %> ><%= Traitvalue.find(value).value_name %></option> ";
+		var option ="<option value= <%= Traitvalue.find(value).value_name %> ><%= Traitvalue.find(value).value_name %></option> ";
 		$(val).append(option);
 		 
 	<% end %>
 <% end %>
 
+// Update Methodoloy field
 <% if @methodologies.size > 0 %>
 	$(methodology_option).remove();
+	var methodogy_field_name = $(form_methodology).attr('name');
+	var methodology_select_box = '<select class="form-control" id="' + methodology_id + '" name="' + methodogy_field_name + '" class="my_methodology"><option value="">Choose Methodology.. </option></select>'
+	$(form_methodology).replaceWith(methodology_select_box);
 
 	<% @methodologies.each do |methodology| %>
 		var option = "<option value= <%= methodology.id %> > <%= methodology.methodology_name %> </option> ";
@@ -94,8 +99,6 @@ $(standard).select2("val", "<%= @standard.id %>");
 <% else %>
 	$(methodology_option).remove();
 	
-	
-
 <% end %>
 //
 

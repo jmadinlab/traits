@@ -14,8 +14,8 @@
 	        cache: false,
 	        data: {
 	        			element_id: $(this).attr('id'),
-								trait_id: $(this).val(),
-								measurement_id: $(this).parents('.nested-fields').find('.measurement_id').attr("value")
+								trait_id: $(this).val()
+								//measurement_id: $(this).parents('.nested-fields').find('.measurement_id').attr("value")
 					},
 	        dataType: "script"
 
@@ -52,7 +52,7 @@
 						
 					<% else %>
 						<% if not f.object.trait.traitvalues.empty? %>
-							<%= f.select :value, f.object.trait.traitvalues.map { |v| [ v.value_name, v.id ]} , { include_blank: 'Choose Value' }, { class: "form-control"} %>
+							<%= f.select :value, f.object.trait.traitvalues.map { |v| [ v.value_name, v.value_name ]} , { include_blank: 'Choose Value' }, { class: "form-control"} %>
 					  
 						<% else %>
 							<%= f.text_field :value, { class: "form-control" } %>	
@@ -86,7 +86,7 @@
 			  <div class="form-group">
 				  <%= f.label :methodolgy_id %> <br/>
 				  <% if !f.object.id %>
-				  	<%= f.select :methodology_id, [], { include_blank: 'Choose Methodology', class: "form-control" }, {:"data-custom-id" => "methodology"+ @random_number , class: "my_methodology"} %>
+				  	<%= f.select :methodology_id, [], { include_blank: 'Choose Methodology'}, {class: "form-control" }%>
 				  <% else %>
 						<%= f.select :methodology_id, f.object.trait.methodologies.map { |m| [ m.methodology_name, m.id ]} , { include_blank: 'Choose Methodology', class: "form-control" }, {:"data-custom-id" => "methodology"+ @random_number , class: "my_methodology"} %>
 				  <% end %>

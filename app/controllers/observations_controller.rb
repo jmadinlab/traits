@@ -16,8 +16,8 @@ class ObservationsController < ApplicationController
     @element_id.slice! "_trait_id"
     @element_id.to_s
     @methodologies = Trait.find(params[:trait_id]).methodologies
-    meas = Measurement.find(params[:measurement_id]) if params[:measurement_id] != ""
-    puts 'printing form obs controller'
+    #meas = Measurement.find(params[:measurement_id]) if params[:measurement_id] != ""
+    #puts 'printing form obs controller'
     #puts meas.value
     #meas.value = ""
   end
@@ -109,7 +109,8 @@ class ObservationsController < ApplicationController
     end
     
     if @observation.save
-      UploadApprovalMailer.approve(current_user).deliver
+      # Todo: Uncomment following line in production
+      #UploadApprovalMailer.approve(current_user).deliver
       redirect_to @observation, flash: {success: "Observation was successfully created." }
     else
       render action: 'new'
@@ -122,11 +123,14 @@ class ObservationsController < ApplicationController
     @observation.measurements.each do |mea|
       if mea.orig_value.blank?
         mea.orig_value = mea.value
+        
       end
-      
+      mea.approval_status = "pending"
     end
     
       if @observation.update(observation_params)
+        # Todo: Uncomment following line in production
+        #UploadApprovalMailer.approve(current_user).deliver
         redirect_to @observation, flash: {success: "Observation was successfully updated." }
       else
         render action: 'edit'

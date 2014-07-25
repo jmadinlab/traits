@@ -11,6 +11,6 @@ class TraitvaluesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def measurement_params
-      params.require(:traitvalue).permit(:value_name)
+      params.require(:traitvalue).permit(:value_name, :value_description)
     end
 end
