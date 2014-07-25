@@ -162,13 +162,10 @@ ActiveRecord::Schema.define(version: 20140718042620) do
   add_index "traits", ["standard_id"], name: "index_traits_on_standard_id"
   add_index "traits", ["user_id"], name: "index_traits_on_user_id"
 
-  create_table "traits_traitvalues", id: false, force: true do |t|
-    t.integer "trait_id"
-    t.integer "traitvalue_id"
-  end
-
   create_table "traitvalues", force: true do |t|
     t.string   "value_name"
+    t.integer  "trait_id"
+    t.text     "value_description"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
