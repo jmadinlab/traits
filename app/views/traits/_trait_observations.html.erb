@@ -85,12 +85,14 @@
 
 		  <% if grp.id != mark1 %>
 
-  			<td style="text-align:right; min-width: 150px;">
-  				<% if signed_in? && current_user.contributor? %>
-  					<%= link_to 'Show', observation_path(grp, :trait => mea.trait_id) %> |
-  	    		<%= link_to 'Edit', edit_observation_path(grp, :trait => mea.trait_id) %> |
-  	    		<%= link_to 'Delete', observation_path(grp, :trait => mea.trait_id), method: :delete, data: { confirm: 'Are you sure?' } %>
-  				<% end %>
+  			<td style="text-align:right; min-width: 200px;">
+      		<div class="btn-group">				
+	  				<% if signed_in? && current_user.contributor? %>
+	  					<%= link_to 'Show', observation_path(grp, :trait => mea.trait_id), class: "btn btn-sm btn-default" %>
+	  	    		<%= link_to 'Edit', edit_observation_path(grp, :trait => mea.trait_id), class: "btn btn-sm btn-default" %>
+	  	    		<%= link_to 'Delete', observation_path(grp, :trait => mea.trait_id), method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-sm btn-danger" %>
+	  				<% end %>
+  				</div>
   			</td>
         <% end %>
 		</tr>

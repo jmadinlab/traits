@@ -1,7 +1,7 @@
 <% provide(:title, 'Traits') %>
 
 <div class="row">
-  <div class="col-md-8 col-md-offset-2">
+  <div class="col-md-10 col-md-offset-1">
 
 		<h3>Traits</h3>
 
@@ -12,7 +12,7 @@
 		  <div class="col-md-3">
 				<p><span class="glyphicon glyphicon-ok-circle" style="color:green;"></span> All data public<br/>
 				<span class="glyphicon glyphicon-record" style="color:orange;"></span> Some data public<br/>
-				<span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> No data public</p>
+				<span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> No data public yet</p>
 			</div>
 		</div>
 	
@@ -83,7 +83,7 @@
 						
 						 	<td style="text-align:center;">
 								<% access = Observation.select(:private).joins(:measurements).where(:measurements => {:trait_id => trait.id}) %>
-								<% if access.where(:private == false).size == 0 %>
+								<% if access.where(:private => false).size == 0 %>
 									<span class="glyphicon glyphicon-remove-circle" style="color:red;">
 								<% else %>
 									<% if access.where(:private => false).size == access.size %>
