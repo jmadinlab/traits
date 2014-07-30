@@ -38,6 +38,10 @@ Traits::Application.routes.draw do
     post :export, :on => :collection
   end
 
+  resources :corals do
+    resources :traits
+  end
+
   resources :locations do
     post :export, :on => :collection
   end

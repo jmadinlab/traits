@@ -1,27 +1,29 @@
 <% provide(:title, 'Corals') %>
 
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-md-10 col-md-offset-1">
 
-		<h3>Listing corals</h3>
+		<h3>Listing coral species</h3>
 
 		<p>Data for each of the corals listed below can be downloaded by selecting them using the checkbox and clicking <code style="color:green;">Download</code>.  Only public trait data will be downloaded for each coral.</p>
 		
 		<div class="well">
-			<% if signed_in? && current_user.contributor? %>	
-				<%= link_to 'New Coral', new_coral_path, class: "btn btn-primary btn-md pull-right" %>
-			<% end %>
 			
 			<div class="row">
-			  <div class="col-lg-6">
+			  <div class="col-md-6">
 					<%= form_tag corals_path, :method => 'get' do %>
 				    <div class="input-group">
-				      <%= text_field_tag :search, params[:search], :placeholder => "Search corals...", class: "form-control" %>
+				      <%= text_field_tag :search, params[:search], :placeholder => "Search species...", class: "form-control" %>
 				      <span class="input-group-btn">
 						    <%= submit_tag "Search", :name => nil, class: "btn btn-default" %>
 								<%= link_to 'Reset', corals_path, class: "btn btn-default" %>
 				      </span>
 				    </div>
+					<% end %>
+			  </div>
+			  <div class="col-md-6">
+					<% if signed_in? && current_user.contributor? %>	
+						<%= link_to 'New Species', new_coral_path, class: "btn btn-primary btn-md pull-right" %>
 					<% end %>
 			  </div>
 			</div>
@@ -37,8 +39,9 @@
 			  <thead>
 			    <tr>
 			      <th style="color: lightgrey;">ID</th>
-			      <th>Coral name</th>
+			      <th>Species name</th>
 			      <th style="text-align:center;"><%= submit_tag "Download", class: "btn btn-success btn-sm" %></th>
+			      <th style="text-align:center;">Observations</th>
 			      <th></th>
 			    </tr>
 			  </thead>
@@ -51,14 +54,16 @@
 
 						 	<td style="text-align:center;">
 								<%= check_box_tag "checked[]", coral.id %>
-							</td>						
+							</td>
+
+			        <td style="text-align:center;"><%= Observation.where(:coral_id => coral).size %></td>
 
 			        <td style="text-align:right; min-width: 150px;">
-								<% if signed_in? && current_user.contributor? %>
-				        	<%= link_to 'Edit', edit_coral_path(coral) %>
-								<% end %>
-							  <% if signed_in? && current_user.admin? %> |
-				        	<%= link_to 'Delete', coral, method: :delete, data: { confirm: 'Are you sure?' } %>
+							  <% if signed_in? && current_user.admin? %>
+						      <div class="btn-group">
+				        	<%= link_to 'Edit', edit_coral_path(coral), class: "btn btn-sm btn-default" %>
+				        	<%= link_to 'Delete', coral, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-sm btn-danger" %>
+				        	</div>
 								<% end %>
 							</td>
 			      </tr>

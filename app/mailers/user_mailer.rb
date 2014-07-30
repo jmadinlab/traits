@@ -10,7 +10,7 @@ class UserMailer < ActionMailer::Base
     @greeting = "Hi"
     @user = user
 
-    mail to: user.email, :subject => "Coraltraits : Reset Password"
+    mail to: user.email, :subject => "Coral Trait Database: password reset"
 
     '''
     mandrill_mail template: "password-reset",
@@ -28,6 +28,6 @@ class UserMailer < ActionMailer::Base
     @greeting = "Hi"
     @user = user
 
-    mail to: user.email, :subject => "Coraltraits : Password Reset Confirmation"
+    mail to: user.email, :subject => "Coral Trait Database: password reset confirmation"
   end
 end

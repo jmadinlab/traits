@@ -14,7 +14,11 @@
 
 		<p>
 		  <strong>Year:</strong>
-		  <%= @resource.year %>
+			<% if @resource.year.present? %>
+		  	<%= @resource.year %>
+			<% else %>
+				<font style="color:lightgrey;">Not entered</font>
+			<% end %>
 		</p>
 
 		<p>
@@ -24,31 +28,47 @@
 
 		<p>
 		  <strong>Resource type:</strong>
-		  <%= @resource.resource_type %>
+			<% if @resource.resource_type.present? %>
+		  	<%= @resource.resource_type %>
+			<% else %>
+				<font style="color:lightgrey;">Not entered</font>
+			<% end %>
 		</p>
 
 		<p>
 		  <strong>Doi isbn:</strong>
 			<% if @resource.doi_isbn.present? %>
-		  	<%= link_to "Link", @resource.doi_isbn, :target => "_blank" %>
+		  	<%= link_to @resource.doi_isbn, "http://dx.doi.org/" + @resource.doi_isbn, :target => "_blank" %>
 			<% else %>
-				No record
+				<font style="color:lightgrey;">Not entered</font>
 			<% end %>
 		</p>
 
 		<p>
 		  <strong>Journal:</strong>
-		  <%= @resource.journal %>
+			<% if @resource.journal.present? %>
+		  	<%= @resource.journal %>
+			<% else %>
+				<font style="color:lightgrey;">Not entered</font>
+			<% end %>
 		</p>
 
 		<p>
 		  <strong>Volume pages:</strong>
-		  <%= @resource.volume_pages %>
+			<% if @resource.volume_pages.present? %>
+		  	<%= @resource.volume_pages %>
+			<% else %>
+				<font style="color:lightgrey;">Not entered</font>
+			<% end %>
 		</p>
 
 		<p>
 		  <strong>Resource notes:</strong>
-		  <%= @resource.resource_notes %>
+			<% if @resource.resource_notes.present? %>
+		  	<%= @resource.resource_notes %>
+			<% else %>
+				<font style="color:lightgrey;">Not entered</font>
+			<% end %>
 		</p>
 
 		<% if @resource.user.present? %>

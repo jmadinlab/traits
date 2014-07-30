@@ -44,7 +44,7 @@ class TraitsController < ApplicationController
   # GET /traits/1
   # GET /traits/1.json
   def show
-    @files = Dir.glob("app/assets/images/traits/*")
+    # @files = Dir.glob("app/assets/images/traits/*")
 
     if params[:n].blank?
       params[:n] = 100
@@ -66,16 +66,24 @@ class TraitsController < ApplicationController
       @observations = Observation.where(['observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?)', false, current_user.id, true]).includes(:coral).joins(:measurements).where('measurements.trait_id IS ? AND measurements.value LIKE ?', @trait.id, "%#{params[:search]}%").limit(n)
     end
 
-    if signed_in? && current_user.admin?
-      @observations = Observation.includes(:coral).joins(:measurements).where('measurements.trait_id IS ? AND measurements.value LIKE ?', @trait.id, "%#{params[:search]}%").limit(n)
-    end
+    # if signed_in? && current_user.admin?
+    #   @observations = Observation.includes(:coral).joins(:measurements).where('measurements.trait_id IS ? AND measurements.value LIKE ?', @trait.id, "%#{params[:search]}%").limit(n)
+    # end
 
-    
+    if signed_in? && current_user.admin?
+      if params[:coral_id]
+        @coral = Coral.find(params[:coral_id])
+        @observations = Observation.includes(:coral).joins(:measurements).where('observations.coral_id IS ? AND measurements.trait_id IS ?', @coral.id, @trait.id)
+      else
+        @observations = Observation.includes(:coral).joins(:measurements).where('measurements.trait_id IS ?', @trait.id)
+      end
+    end
     
     respond_to do |format|
-      format.html
+      format.html {
+        @observations = @observations.limit(n)
+      }
       format.csv {
-
         if request.url.include? 'resources.csv'
           csv_string = get_resources_csv(@observations)
           filename = 'resources.csv'
@@ -83,11 +91,9 @@ class TraitsController < ApplicationController
           csv_string = get_main_csv(@observations)
           filename = 'traits.csv'
         end
-        
         send_data csv_string, 
           :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
           :disposition => "attachment; filename=#{filename}_#{Date.today.strftime('%Y%m%d')}.csv"
-
       }
 
       format.zip{

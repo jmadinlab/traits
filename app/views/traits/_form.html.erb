@@ -15,9 +15,7 @@
 	  <%= f.select :trait_class, ['', 'Taxonomic', 'Phylogenetic', 'Reproductive', 'Morphological', 'Physiological', 'Biomechanical', 'Ecological', 'Geographical', 'Conservation', 'Demographic', 'Contextual'], {include_blank: false}, class: "form-control" %>
   </div>
 
-  <%# f.label :value_range %><br>
-  <%# f.text_field :value_range, class: "form-control" %>
-  <h5>Value Range</h5>
+  <%= f.label :trait_values %><br>
   <div id = "traitvalues">
     <%= f.fields_for :traitvalues do |t| %>
       <%= render "traitvalue_fields", :f => t %>

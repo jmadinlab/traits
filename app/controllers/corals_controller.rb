@@ -55,8 +55,6 @@ class CoralsController < ApplicationController
     @coral = Coral.find(params[:id]) if params[:id]
     
 
-
-
     if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
       #@observations = Observation.where(['observations.coral_id IS ? AND observations.private IS ?', @coral.id, false])
       # just a better approach to find active `

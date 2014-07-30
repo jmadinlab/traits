@@ -13,7 +13,7 @@ class UsersController < ApplicationController
 
     if signed_in? && current_user.contributor?
       if params[:n].blank?
-        params[:n] = 10
+        params[:n] = 100
       end
     
       n = params[:n]
