@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140718042620) do
+ActiveRecord::Schema.define(version: 20140731014427) do
 
   create_table "citations", force: true do |t|
     t.integer  "trait_id"
@@ -33,6 +33,9 @@ ActiveRecord::Schema.define(version: 20140718042620) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "approval_status"
+    t.string   "major_clade"
+    t.string   "family_molecules"
+    t.string   "family_morphology"
   end
 
   add_index "corals", ["user_id"], name: "index_corals_on_user_id"
@@ -133,6 +136,16 @@ ActiveRecord::Schema.define(version: 20140718042620) do
   end
 
   add_index "standards", ["user_id"], name: "index_standards_on_user_id"
+
+  create_table "synonyms", force: true do |t|
+    t.integer  "coral_id"
+    t.string   "synonym_name"
+    t.text     "synonym_notes"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "synonyms", ["coral_id"], name: "index_synonyms_on_coral_id"
 
   create_table "traits", force: true do |t|
     t.string   "trait_name"
