@@ -21,7 +21,8 @@
 <% end %>
 
 <% if not @observations.empty? %>
-<%= render "import_observations" %>
+  <% item_present = true %>
+  <%= render "import_observations" %>
 
 <% end %>
 
