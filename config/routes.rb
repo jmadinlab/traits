@@ -9,7 +9,8 @@ Traits::Application.routes.draw do
   resources :imports
   resources :citations
   
-  
+  resources :synonyms
+
   
   get '/history', to:'versions#index'
   get '/history/:version_id', to: 'versions#show'

@@ -4,12 +4,35 @@
 
 
 	<div class="form-group">
-		<%= f.label :coral_name %><br>
+		<%= f.label :coral_species_name %><br>
 		<%= f.text_field :coral_name, :placeholder => "Required...", class: "form-control" %>
 	</div>
 
 	<div class="form-group">
-		<%= f.label :coral_description %><br>
+		<%= f.label :synonyms %>
+	  <%= f.fields_for :synonyms do |syn| %>
+	  	<% render :partial => "synonym_fields", :locals => { :f => syn } %>
+	  <% end %>
+  <p><%= link_to_add_association "Add synonym", f, :synonyms %></p>
+	</div>
+
+	<div class="form-group">
+		<%= f.label :major_clade %><br>
+		<%= f.text_field :major_clade, class: "form-control" %>
+	</div>
+
+	<div class="form-group">
+		<%= f.label :family_molecules %><br>
+		<%= f.text_field :family_molecules, class: "form-control" %>
+	</div>
+
+	<div class="form-group">
+		<%= f.label :family_morphology %><br>
+		<%= f.text_field :family_morphology, class: "form-control" %>
+	</div>
+
+	<div class="form-group">
+		<%= f.label :notes %><br>
 		<%= f.text_area :coral_description, class: "form-control" %>
 	</div>
 
