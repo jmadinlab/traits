@@ -13,7 +13,7 @@ class CoralsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.csv { send_data @corals.to_csv }
+      format.csv { send_data get_coral_csv(@corals) }
       
     end    
   end
@@ -147,7 +147,7 @@ class CoralsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def coral_params
-      params.require(:coral).permit(:coral_name, :coral_description, :user_id, :approval_status, synonyms_attributes: [:id, :synonym_name, :synonym_notes, :_destroy])
+      params.require(:coral).permit(:coral_name, :coral_description, :user_id, :approval_status, :major_clade, :family_molecules, :family_morphology, synonyms_attributes: [:id, :synonym_name, :synonym_notes, :_destroy])
     end
 
     
