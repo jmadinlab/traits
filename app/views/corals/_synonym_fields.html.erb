@@ -1,17 +1,17 @@
 <div class="nested-fields">
 
 	<div class="row">
-	  <div class="col-md-3">
+	  <div class="col-sm-4">
 		  <div class="form-group precision">
-		  	<%= f.text_field :synonym_name, class: "form-control" %>
+		  	<%= f.text_field :synonym_name, placeholder: "Synonym...", class: "form-control" %>
 			</div>
 		</div>
-		<div class="col-md-6">
+		<div class="col-sm-6">
 		  <div class="form-group precision">
-		  	<%= f.text_field :synonym_notes, class: "form-control" %>
+		  	<%= f.text_field :synonym_notes, placeholder: "Notes...", class: "form-control" %>
 			</div>
 		</div>
-		<div class="col-md-3">
+		<div class="col-sm-2">
 			<%= link_to_remove_association "remove", f %>
 		</div>
 	</div>
