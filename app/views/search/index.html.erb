@@ -26,9 +26,16 @@
 <div class="col-md-9">
 	<h3> Search Results... </h3>
 
-	<% if not @result_present %>
+	<% if not defined?(@result_present) %>
+		Welcome to Generic Search Area.
+	
+	<% end %>
+	
+	<% if (defined?(@result_present) ) && (not @result_present )%>
 		Sorry, Your query did not match any result
 	<% end %>
+	
+
 
 	<% if @coral_search  %>
 		<% if not @coral_search.results.blank? %>
@@ -37,7 +44,10 @@
 		<% end %>
 		<% @coral_search.results.each do |s| %>
 			
-			<%= link_to s.coral_name, s %> <br/>
+			<%= link_to s.coral_name, s %> 
+			<span class="pull-right">
+				<%= link_to "Show", s %> | <%= link_to "Edit", edit_coral_path(s) %>
+			</span>
 			<hr/>
 		<% end %>
 
@@ -51,11 +61,10 @@
 		<% end %>
 		<% @trait_search.results.each do |s| %>
 			
-			<b><%= link_to s.trait_name, s %> </b><br/>
+			<b><%= link_to s.trait_name, s %> </b>
 			<span class="pull-right">
 				<%= link_to "Show", s %> | <%= link_to "Edit", edit_trait_path(s) %>
 			</span>
-			<br/>
 			<hr/>
 		<% end %>
 
@@ -93,8 +102,12 @@
 
 			<% s.measurements.each do |mea| %>
 				
-				<%= link_to "Observation #{mea.observation.id}", mea.observation %> <br/>
+				<b><%= link_to "Observation #{mea.observation.id}", mea.observation %> </b> <br/>
 				Value : <%= mea.value %> | Orig value: <%= mea.orig_value %>
+				<span class="pull-right">
+					<%= link_to "Show", s %> | <%= link_to "Edit", edit_observation_path(s) %>
+				</span>
+
 				<hr/>
 			<% end %>
 			

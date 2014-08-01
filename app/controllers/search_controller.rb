@@ -1,6 +1,7 @@
 class SearchController < ApplicationController
 	def index
-		if params[:search] 
+		
+		if params[:search] && params[:search] != ""
 			if not params[:model_name]
 				params[:model_name] = ['Location', 'Coral', 'Trait', 'Resource', 'Standard', 'Observation']
 			end
