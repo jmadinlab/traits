@@ -4,7 +4,7 @@
 <div class="list-group col-md-3">
 	
   <a href="#" class="list-group-item active">
-    Search Bar
+    Search Form
   </a>
   	<%= form_tag search_index_path, :method => :get do %>
   	<br>
@@ -15,7 +15,7 @@
 			    
 			    <b>Models to Search </b> <br/>
 			    <i><small>( You can select multiple models by holding command/control key and clicking the items) </small></i><br/><br/>
-			    <%= select_tag 'model_name', options_for_select(['Coral', 'Trait', 'Observation', 'Resource', 'Standard', 'Location']), { :multiple => true, :size =>10, class: "form-control"} %> <br/><br/>
+			    <%= select_tag 'model_name', options_for_select(['Coral', 'Trait', 'Observation', 'Resource', 'Standard', 'Location']), { :multiple => true, :size =>7, class: "form-control"} %> <br/><br/>
 			    <%= submit_tag "Search", class: "btn btn-primary ", :name => nil %>
 			<% end %>
 </div>
@@ -32,7 +32,7 @@
 
 	<% if @coral_search  %>
 		<% if not @coral_search.results.blank? %>
-			<h4>Corals</h4>
+			<h4 class="coloured">Corals</h4>
 			<hr/>
 		<% end %>
 		<% @coral_search.results.each do |s| %>
@@ -46,12 +46,16 @@
 
 	<% if @trait_search %>
 		<% if not @trait_search.results.blank? %>
-			<h4>Traits</h4>
+			<h4 class="coloured">Traits</h4>
 			<hr/>
 		<% end %>
 		<% @trait_search.results.each do |s| %>
 			
-			<%= link_to s.trait_name, s %> <br/>
+			<b><%= link_to s.trait_name, s %> </b><br/>
+			<span class="pull-right">
+				<%= link_to "Show", s %> | <%= link_to "Edit", edit_trait_path(s) %>
+			</span>
+			<br/>
 			<hr/>
 		<% end %>
 
@@ -61,12 +65,18 @@
 
 	<% if @standard_search %>
 		<% if not @standard_search.results.blank? %>
-			<h4>Standards</h4>
+			<h4 class="coloured">Standards</h4>
 			<hr/>
 		<% end %>
 		<% @standard_search.results.each do |s| %>
 			
-			<%= link_to s.standard_name, s %> <br/>
+			<b><%= link_to s.standard_name, s %> </b><br/>
+			Standard Unit: <%= s.standard_unit %>
+
+			<span class="pull-right">
+				<%= link_to "Show", s %> | <%= link_to "Edit", edit_standard_path(s) %>
+			</span>
+
 			<hr/>
 			
 		<% end %>
@@ -76,7 +86,7 @@
 
 	<% if @observation_search %>
 		<% if not @observation_search.results.blank? %>
-			<h4>Observations</h4>
+			<h4 class="coloured">Observations</h4>
 			<hr/>
 		<% end %>
 		<% @observation_search.results.each do |s| %>
@@ -96,11 +106,16 @@
 
 	<% if @location_search %>
 		<% if not @location_search.results.blank? %>
-			<h4>Locations</h4>
+			<h4 class="coloured">Locations</h4>
 			<hr/>
 		<% end %>
 		<% @location_search.results.each do |s| %>
-			<%= link_to s.location_name, s %> <br/>
+			<b><%= link_to s.location_name, s %> </b><br/>
+			Longitude: <%= s.longitude %> | Latitude: <%= s.latitude %>
+			<span class="pull-right">
+				<%= link_to "Show", s %> | <%= link_to "Edit", edit_location_path(s) %>
+			</span>
+			<hr/>	
 			
 		<% end %>
 
