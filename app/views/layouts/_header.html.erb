@@ -27,7 +27,12 @@
 						 <li><%#= link_to "Download", download_path %></li>
 						 <li><%= link_to "About", about_path %></li>
 						 <li><%= link_to "Help", help_path %></li>
-						 <li><%= link_to "Metadata", meta_path %></li>
+						 
+		         <% if signed_in? && current_user.contributor? %>
+		         	<li><%= link_to "Metadata", meta_path %></li>
+						 <% else %>
+			         <li><%= link_to "Metadata", "", style:"color:grey;" %></li>
+						 <% end %>
 		       </ul>
 		     </li>
 				</ul>
@@ -39,7 +44,7 @@
 			         Data<b class="caret"></b>
 			       </a>
 			       <ul class="dropdown-menu" style="text-align: left;">
-			         <li><%= link_to "Corals", corals_path %></li>
+			         <li><%= link_to "Coral species", corals_path %></li>
 			         <li><%= link_to "Traits", traits_path %></li>
 			         <li><%= link_to "Methodologies", methodologies_path %></li>
 			         <li><%= link_to "Locations", locations_path %></li>
@@ -51,7 +56,11 @@
 				         <li><%= link_to "Citation Manager", "", style:"color:grey;" %></li>
 							 <% end %>
 							<li class="divider"></li>
-							 <li><%= link_to "Upload Data", imports_path %></li>
+			         <% if signed_in? && current_user.contributor? %>
+			         	<li><%= link_to "Upload Data", imports_path %></li>
+							 <% else %>
+				         <li><%= link_to "Upload Data", "", style:"color:grey;" %></li>
+							 <% end %>
 			       </ul>
 			     </li>
 					</ul>

@@ -8,8 +8,9 @@ Traits::Application.routes.draw do
   
   resources :imports
   resources :citations
-  
-  
+  resources :searches  
+  resources :synonyms
+
   
   get '/history', to:'versions#index'
   get '/history/:version_id', to: 'versions#show'
@@ -36,6 +37,10 @@ Traits::Application.routes.draw do
 
   resources :corals do
     post :export, :on => :collection
+  end
+
+  resources :corals do
+    resources :traits
   end
 
   resources :locations do

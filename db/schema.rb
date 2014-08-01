@@ -11,8 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140703014926) do
-
+ActiveRecord::Schema.define(version: 20140731014427) do
   create_table "citations", force: true do |t|
     t.integer  "trait_id"
     t.integer  "resource_id"
@@ -33,21 +32,12 @@ ActiveRecord::Schema.define(version: 20140703014926) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "approval_status"
+    t.string   "major_clade"
+    t.string   "family_molecules"
+    t.string   "family_morphology"
   end
 
   add_index "corals", ["user_id"], name: "index_corals_on_user_id"
-
-  create_table "imports", force: true do |t|
-    t.string   "filename"
-    t.string   "email"
-    t.boolean  "status"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "csv_file_file_name"
-    t.string   "csv_file_content_type"
-    t.integer  "csv_file_file_size"
-    t.datetime "csv_file_updated_at"
-  end
 
   create_table "locations", force: true do |t|
     t.string   "location_name"
@@ -78,8 +68,8 @@ ActiveRecord::Schema.define(version: 20140703014926) do
     t.datetime "updated_at"
     t.text     "notes"
     t.string   "value_type"
-    t.integer  "methodology_id"
     t.string   "approval_status"
+    t.integer  "methodology_id"
   end
 
   add_index "measurements", ["methodology_id"], name: "index_measurements_on_methodology_id"
@@ -145,6 +135,16 @@ ActiveRecord::Schema.define(version: 20140703014926) do
   end
 
   add_index "standards", ["user_id"], name: "index_standards_on_user_id"
+
+  create_table "synonyms", force: true do |t|
+    t.integer  "coral_id"
+    t.string   "synonym_name"
+    t.text     "synonym_notes"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "synonyms", ["coral_id"], name: "index_synonyms_on_coral_id"
 
   create_table "traits", force: true do |t|
     t.string   "trait_name"

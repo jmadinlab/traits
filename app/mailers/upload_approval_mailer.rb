@@ -9,13 +9,13 @@ class UploadApprovalMailer < ActionMailer::Base
   def approve(user)
     @greeting = "Hi #{user.name}"
     
-    mail(to: user.email,  subject: "Upload Approval")
+    mail(to: user.email,  subject: "Coral Trait Database change approval")
   end
 
   def approve_all(users)
     #@greeting = "Hi #{user.name}"
     puts users
     cc_users = (users.length > 1 ) ?  users[0..-1] : [""]
-    mail(to: users[0], cc: cc_users, subject: "Upload Approval")
+    mail(to: users[0], cc: cc_users, subject: "Coral Trait Database change approval")
   end
 end

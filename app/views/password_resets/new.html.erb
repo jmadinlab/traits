@@ -1,12 +1,13 @@
-<h4>Forgot Your Password?</h4>
-Don't worry. Just enter your email address and we will send you a reset link to reset your password.
+<div class="row">
+	<div class="col-md-6 col-md-offset-3">
+		<h1>Password reset</h1>
 
-<br/><br/>
-<%= form_tag password_resets_path, :method => :post do %>
-  <div class="field">
-    
-    <%= text_field_tag :email, params[:email], size: 50, placeholder: "Enter your email to send the password reset link" %>
-  </div>
-  <br/>
-  <div class="actions"><%= submit_tag "Reset Password", class: "btn btn-primary btn-md"%></div>
-<% end %>
+		<%= form_tag password_resets_path, :method => :post do %>
+  		<div class="form-group">
+		    <%= text_field_tag :email, params[:email], size: 50, placeholder: "Enter your email", class: "form-control"  %>
+		  </div>
+
+		  <div class="actions"><%= submit_tag "Send password reset link", class: "btn btn-primary btn-md"%></div>
+		<% end %>
+	</div>
+</div>    

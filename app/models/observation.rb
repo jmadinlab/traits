@@ -26,4 +26,5 @@ class Observation < ActiveRecord::Base
       end
   end  
   
+  
 end

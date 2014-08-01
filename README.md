@@ -37,50 +37,6 @@ The database was developed using Ruby on Rails and can be freely downloaded from
 	$ rails s -e production -p 3009
 
 
-  $ rails generate migration add_editor_to_user editor:boolean
-  $ bundle exec rake db:migrate
-
-  $ rails generate migration add_release_to_trait release_status:boolean
-  $ bundle exec rake db:migrate
-
-  $ rails generate migration add_approval_status_to_observation_measurements approval_status:string
-  $ bundle exec rake db:migrate
-
-
-update measurements set value_type="raw_value" where trait_id=8;
-update measurements set value_type="expert_opinion" where trait_id=9;
-update measurements set trait_id=8 where trait_id=9;
-
-update measurements set value_type="raw_value" where trait_id=5;
-update measurements set value_type="expert_opinion" where trait_id=6;
-update measurements set trait_id=5 where trait_id=6;
-
-update measurements set value_type="raw_value" where trait_id=3;
-update measurements set value_type="expert_opinion" where trait_id=4;
-update measurements set trait_id=3 where trait_id=4;
-
-update observations set resource_id=278 where resource_id=521;
-
-update measurements set value_type="mean" where value_type="aggregate";
-
-# Purge observations table
-select id from observations where id NOT IN (select observation_id from measurements);
-delete from observations where id IN (select id from observations where id NOT IN (select observation_id from measurements));
-
-# Purge citations table
-select id from citations where trait_id NOT IN (select id from traits);
-delete from citations where id IN (select id from citations where trait_id NOT IN (select id from traits));
-
-#select id from measurements where id NOT IN (select trait_id from measurements);
-
-.mode csv
-.import db/csf_obs.csv observations
-.import db/csf_mea.csv measurements
-
-select * from observations where id (IN (select observation_id from measurements where trait_id=5 and value_type="expert_opinion") and IN (select observation_id from measurements where trait_id=5 and value_type="raw_value"));
-
-(select observation_id from measurements where trait_id=5 and value_type="expert_opinion") and (select observation_id from measurements where trait_id=5 and value_type="raw_value")
-
 Emailer
 =========
 For the password reset as well as upload approval system, emails need to be sent out from the application. The configuration depends on environment variables for email authentication (username and password). Gmail's SMTP has been used for this. To enable email system, create a file named ``local_env.yml`` inside ``config`` directory. The content of the file must be in following format :

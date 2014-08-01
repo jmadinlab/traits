@@ -9,6 +9,8 @@ gem 'will_paginate'#, '3.0.4'
 gem 'bootstrap-will_paginate'#, '0.0.9'
 gem 'select2-rails'
 gem 'mandrill_mailer'
+gem 'sunspot_rails'
+gem 'progress_bar'
 
 # gem 'select2-sass-bootstrap-rails'
 # gem 'squeel', github: 'kiela/squeel'
@@ -37,6 +39,7 @@ gem 'hirb'
 
 group :development, :test do
   gem 'sqlite3'#, '1.3.8'
+  gem 'sunspot_solr'
   # gem 'rspec-rails', '2.13.1'
   # The following optional lines are part of the advanced setup.
   # gem 'guard-rspec', '2.5.0'

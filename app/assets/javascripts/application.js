@@ -86,7 +86,9 @@ $(window).on('load', function(){
 
 
 function process_precision()
+
 {
+
   // Process the precision fields while document loads for first time (new / edit)
   var selected_value_type = $('[id*=_value_type]');
   selected_value_type.each(function(){
@@ -97,7 +99,7 @@ function process_precision()
   });
 
   // Add event listener for on change in value_type
-  $(".value_type").on("change", function() {
+  $("[id*=_value_type]").on("change", function() {
       var selected_value;
       selected_value = $(this).val();
       if (selected_value === "raw_value" || selected_value == "") {

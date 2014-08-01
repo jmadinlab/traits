@@ -9,13 +9,16 @@ class Location < ActiveRecord::Base
   validates :longitude, :presence => true
 
   # default_scope -> { order('latitude ASC') }
-
-  def self.search(search)
-      if search
-        where('location_name LIKE ?', "%#{search}%")
-      else
-        all
-      end
-  end  
+  searchable do
+    text :location_name  
+  end
+  
+  #def self.search(search)
+  #    if search
+  #      where('location_name LIKE ?', "%#{search}%")
+  #    else
+  #      all
+  #    end
+  #end  
 
 end

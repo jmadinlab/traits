@@ -33,9 +33,12 @@ class Import
     false
   end
 
-  # Function to set the model name for further processing
-  # Can be called by the controller to pass model name
-  # Important to let this same import functionality for all the models
+  """ 
+  Function to set the model name for further processing
+  Can be called by the controller to pass model name
+  Important to let this same import functionality for all the models
+  
+  """
   def set_model_name(model_name)
     self.model_name = model_name
   end
@@ -88,11 +91,11 @@ class Import
     save_unique_observations
 
     imp_products = imported_products.compact
-    puts "imported products"
-    puts imported_products
+    # puts "imported products"
+    # puts imported_products
 
-    puts "imported product map"
-    puts $observation_id_map
+    # puts "imported product map"
+    # puts $observation_id_map
     
     any_error = check_add_errors(imp_products)
     puts "no error in imported_products"
@@ -128,9 +131,6 @@ class Import
   def imported_products
     spreadsheet = open_spreadsheet
     header = spreadsheet.row(1)
-
-    
-
     @imported_products ||= load_imported_products
   end
 
@@ -142,8 +142,6 @@ class Import
     observation_csv_headers = ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates"]
     new_observation_csv_headers = ["observation_id",  "access",  "user_id", "coral_id"  ,"location_id", "resource_id", "trait_id",  "standard_id",  "method_id" ,"value" ,"value_type",  "precision" ,"precision_type" , "precision_upper" ,"replicates"]
     
-
-
     if header == new_observation_csv_headers
       # Rename some headers to correspond the database fields
       header[header.index("observation_id")] = "id"
@@ -187,49 +185,42 @@ class Import
 
         coral_id = row["coral_id"]
         location_id = row["location_id"]
-
-        '''
-
+      
         # 3. Validate coral_name
         begin
-          
-          coral_id = Coral.where(:coral_name => row["coral_id"]).take!.id
+          coral = Coral.find(row["coral_id"])
+          #coral_id = Coral.where(:coral_name => row["coral_id"]).take!.id
         rescue
-          coral_id = nil
-          observation.errors[:base] << "Cannot find Coral with the name : " + row["coral"]
+          # coral_id = nil
+          observation.errors[:base] << "Cannot find Coral with the id : " + row["coral_id"]
         end
         
         # 4. Validate Location from location_name
         begin
-          location_id = Location.where(:location_name => row["location_name"]).take!.id
+          location = Location.find(location_id)
+          #location_id = Location.where(:location_name => row["location_name"]).take!.id
         rescue
-          location_id = nil
-          observation.errors[:base] << "Cannot find location with the name : " + row["location_name"]
+          # location_id = nil
+          observation.errors[:base] << "Cannot find location with the id : " + row["location_id"]
         end
         
-        # 5. Validate Trait from trait_name
-        begin
-          trait_id = Trait.where(:trait_name => row["trait_name"]).take!.id
-        rescue
-          trait_id = nil
-          observation.errors[:base] << "Cannot find Trait with the name : " + row["trait_name"] + "\nPlease add them to the database before you proceed with upload"
-        end
         
-        # 6. Validate Standard from standard_unit
+        # 5. Validate Standard from standard_unit
         # Beware of the encoding scheme
         begin
           # Remove an umlaut character introduced by Excel when opening a csv file
-          row["standard_unit"] = row["standard_unit"].delete! "Â"
-          standard_id = Standard.where(:standard_unit =>  row["standard_unit"]).take!.id
+          standard = Standard.find(row["standard_id"])
+          #row["standard_unit"] = row["standard_unit"].delete! "Â"
+          #standard_id = Standard.where(:standard_unit =>  row["standard_unit"]).take!.id
         rescue
-          puts "standard error: "
-          puts row["standard_unit"]
-          puts row["id"]
-          standard_id = nil
+          #puts "standard error: "
+          #puts row["standard_unit"]
+          #puts row["id"]
+          #standard_id = nil
           observation.errors[:base] << "Cannot find Standard with that unit : " + row["standard_unit"]
         end
 
-        # 7. Validate Resource id
+        # 6. Validate Resource id
         begin
           resource = Resource.where(:resource_id => row["resource_id"])
         rescue
@@ -240,7 +231,7 @@ class Import
           end
           
         end
-        '''
+        
 
         trait_id = row["trait_id"]
         # 8. Validate Values based on the traits value range
