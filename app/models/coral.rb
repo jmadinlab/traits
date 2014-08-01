@@ -12,6 +12,7 @@ class Coral < ActiveRecord::Base
     text :coral_name  
   end
   
+  
   '''
   def self.search(search)
       if search

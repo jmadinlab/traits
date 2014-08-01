@@ -7,7 +7,17 @@ class CoralsController < ApplicationController
   # GET /corals
   # GET /corals.json
   def index
-    @corals = Coral.search(params[:search])
+    # @corals = Coral.search(params[:search])
+    
+    @search = Coral.search do
+      fulltext params[:search]
+    end
+    
+    if params[:search]
+      @corals = @search.results
+    else
+      @corals = Coral.all
+    end
     
     @corals = PaperTrail::Version.find(params[:version]).reify if params[:version]
 

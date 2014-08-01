@@ -9,7 +9,17 @@ class ResourcesController < ApplicationController
   # GET /resources
   # GET /resources.json
   def index
-    @resources = Resource.order(sort_column + " " + sort_direction).search(params[:search])
+    @search = Resource.search do
+      fulltext params[:search]
+    end
+    
+    if params[:search]
+      @resources = @search.results
+    else
+      @resources = Resource.order(sort_column + " " + sort_direction)
+    end
+
+    #@resources = Resource.order(sort_column + " " + sort_direction).search(params[:search])
     # @resources = @resources.paginate(page: params[:page])
     
     respond_to do |format|

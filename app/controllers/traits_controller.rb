@@ -8,7 +8,16 @@ class TraitsController < ApplicationController
   # GET /traits
   # GET /traits.json
   def index
-    @traits = Trait.search(params[:search])
+    # @traits = Trait.search(params[:search])
+    @search = Trait.search do
+      fulltext params[:search]
+    end
+    
+    if params[:search]
+      @traits = @search.results
+    else
+      @traits = Trait.all
+    end
 
     respond_to do |format|
       format.html
