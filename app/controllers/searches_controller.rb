@@ -1,6 +1,10 @@
 class SearchesController < ApplicationController
 	def index
-		if params[:search]
+		if params[:search] 
+			if not params[:model_name]
+				params[:model_name] = ['Location', 'Coral', 'Trait', 'Resource', 'Standard']
+			end
+			@result_present = false
 			params[:model_name].each do |m|
 				@model = m.classify.constantize
 				name = m.downcase + '_search'
@@ -9,6 +13,10 @@ class SearchesController < ApplicationController
 				
 				search_result = @model.search do
 					fulltext params[:search]
+				end
+
+				if not search_result.results.blank?
+					@result_present = true
 				end
 				instance_variable_set("@#{name}", search_result)
 			end

@@ -1,50 +1,84 @@
 
+<div class="row">
 
-<%= form_tag searches_path, :method => :get do %>
-  <p>
-    <%= text_field_tag :search, params[:search] %> <br/>
-    Models: <br/>
-    <%= select_tag 'model_name', options_for_select(['Coral', 'Trait', 'Observation', 'Resource', 'Standard', 'Location']), { :multiple => true, :size =>10 } %> <br/>
-    <%= submit_tag "Search", :name => nil %>
-<% end %>
-<!-- rest of view omitted -->
-<% if @coral_search %>
-	<h3>Corals</h3>
-	<% @coral_search.results.each do |s| %>
-		<%= s.coral_name %> <br/>
+<div class="list-group col-md-3">
+	
+  <a href="#" class="list-group-item active">
+    Search Bar
+  </a>
+  	<%= form_tag searches_path, :method => :get do %>
+  	<br>
+			  <p>
+
+			  	<b>Search Query</b> <br/>
+			    <%= text_field_tag :search, params[:search],  { class: "form-control" }   %> <br/><br/>
+			    
+			    <b>Models to Search</b><br/>
+			    <%= select_tag 'model_name', options_for_select(['Coral', 'Trait', 'Observation', 'Resource', 'Standard', 'Location']), { :multiple => true, :size =>10, class: "form-control"} %> <br/><br/>
+			    <%= submit_tag "Search", class: "btn btn-primary ", :name => nil %>
+			<% end %>
+</div>
+
 		
+
+
+<div class="col-md-9">
+	<h3> Search Results... </h3>
+
+	<% if not @result_present %>
+		Sorry, Your query did not match any result
 	<% end %>
 
-<% end %>
+	<% if @coral_search  %>
+		<% if not @coral_search.results.blank? %>
+			<h4>Corals</h4>
+		<% end %>
+		<% @coral_search.results.each do |s| %>
+			
+			<%= link_to s.coral_name, s %> <br/>
+			
+		<% end %>
 
-
-<% if @trait_search %>
-	<h3>Trait</h3>
-	<% @trait_search.results.each do |s| %>
-		<%= s.trait_name %> <br/>
-		
 	<% end %>
 
-<% end %>
 
+	<% if @trait_search %>
+		<% if not @trait_search.results.blank? %>
+			<h4>Traits</h4>
+		<% end %>
+		<% @trait_search.results.each do |s| %>
+			
+			<%= link_to s.trait_name, s %> <br/>
+		<% end %>
 
-
-<% if @standard_search %>
-	<h3>Standards</h3>
-	<% @standard_search.results.each do |s| %>
-		<%= s.standard_name %> <br/>
-		
 	<% end %>
 
-<% end %>
 
 
+	<% if @standard_search %>
+		<% if not @standard_search.results.blank? %>
+			<h4>Standards</h4>
+		<% end %>
+		<% @standard_search.results.each do |s| %>
+			
+			<%= link_to s.standard_name, s %> <br/>
+			
+		<% end %>
 
-<% if @location_search %>
-	<h3>Location</h3>
-	<% @location_search.results.each do |s| %>
-		<%= s.location_name %> <br/>
-		
 	<% end %>
 
-<% end %>
+
+
+	<% if @location_search %>
+		<% if not @location_search.results.blank? %>
+			<h4>Locations</h4>
+		<% end %>
+		<% @location_search.results.each do |s| %>
+			<%= link_to s.location_name, s %> <br/>
+			
+		<% end %>
+
+	<% end %>
+
+</div>
+</div>

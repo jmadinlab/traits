@@ -12,6 +12,7 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema.define(version: 20140731014427) do
+
   create_table "citations", force: true do |t|
     t.integer  "trait_id"
     t.integer  "resource_id"
@@ -171,7 +172,6 @@ ActiveRecord::Schema.define(version: 20140731014427) do
   end
 
   add_index "traitvalues", ["trait_id"], name: "index_traitvalues_on_trait_id"
-
 
   create_table "users", force: true do |t|
     t.string   "name"
