@@ -18,6 +18,16 @@ class Observation < ActiveRecord::Base
   has_many :measurements, :dependent => :destroy
   accepts_nested_attributes_for :measurements, :reject_if => :all_blank, :allow_destroy => true
   
+
+  searchable do
+    text :measurements do
+      measurements.map{ |measurement| measurement.value }
+      measurements.map{ |measurement| measurement.orig_value }
+    end
+    
+  end
+  
+  '''
   def self.search(search)
       if search
         joins(:measurements).where("value LIKE ? OR orig_value LIKE ?", "%#{search}%", "%#{search}%")
@@ -25,6 +35,8 @@ class Observation < ActiveRecord::Base
         all
       end
   end  
+
+  '''
   
   
 end

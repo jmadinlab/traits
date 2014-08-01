@@ -9,7 +9,10 @@ class Coral < ActiveRecord::Base
   default_scope -> { order('coral_name ASC') }
   
   searchable do
-    text :coral_name  
+    text :coral_name
+    text :synonyms do
+      synonyms.map{ |synonym| synonym.synonym_name }
+    end
   end
   
   

@@ -13,7 +13,8 @@
 			  	<b>Search Query</b> <br/>
 			    <%= text_field_tag :search, params[:search],  { class: "form-control" }   %> <br/><br/>
 			    
-			    <b>Models to Search</b><br/>
+			    <b>Models to Search </b> <br/>
+			    <i><small>( You can select multiple models by holding command/control key and clicking the items) </small></i><br/><br/>
 			    <%= select_tag 'model_name', options_for_select(['Coral', 'Trait', 'Observation', 'Resource', 'Standard', 'Location']), { :multiple => true, :size =>10, class: "form-control"} %> <br/><br/>
 			    <%= submit_tag "Search", class: "btn btn-primary ", :name => nil %>
 			<% end %>
@@ -32,11 +33,12 @@
 	<% if @coral_search  %>
 		<% if not @coral_search.results.blank? %>
 			<h4>Corals</h4>
+			<hr/>
 		<% end %>
 		<% @coral_search.results.each do |s| %>
 			
 			<%= link_to s.coral_name, s %> <br/>
-			
+			<hr/>
 		<% end %>
 
 	<% end %>
@@ -45,10 +47,12 @@
 	<% if @trait_search %>
 		<% if not @trait_search.results.blank? %>
 			<h4>Traits</h4>
+			<hr/>
 		<% end %>
 		<% @trait_search.results.each do |s| %>
 			
 			<%= link_to s.trait_name, s %> <br/>
+			<hr/>
 		<% end %>
 
 	<% end %>
@@ -58,10 +62,31 @@
 	<% if @standard_search %>
 		<% if not @standard_search.results.blank? %>
 			<h4>Standards</h4>
+			<hr/>
 		<% end %>
 		<% @standard_search.results.each do |s| %>
 			
 			<%= link_to s.standard_name, s %> <br/>
+			<hr/>
+			
+		<% end %>
+
+	<% end %>
+
+
+	<% if @observation_search %>
+		<% if not @observation_search.results.blank? %>
+			<h4>Observations</h4>
+			<hr/>
+		<% end %>
+		<% @observation_search.results.each do |s| %>
+
+			<% s.measurements.each do |mea| %>
+				
+				<%= link_to "Observation #{mea.observation.id}", mea.observation %> <br/>
+				Value : <%= mea.value %> | Orig value: <%= mea.orig_value %>
+				<hr/>
+			<% end %>
 			
 		<% end %>
 
@@ -72,6 +97,7 @@
 	<% if @location_search %>
 		<% if not @location_search.results.blank? %>
 			<h4>Locations</h4>
+			<hr/>
 		<% end %>
 		<% @location_search.results.each do |s| %>
 			<%= link_to s.location_name, s %> <br/>

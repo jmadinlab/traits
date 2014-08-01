@@ -2,7 +2,7 @@ class SearchController < ApplicationController
 	def index
 		if params[:search] 
 			if not params[:model_name]
-				params[:model_name] = ['Location', 'Coral', 'Trait', 'Resource', 'Standard']
+				params[:model_name] = ['Location', 'Coral', 'Trait', 'Resource', 'Standard', 'Observation']
 			end
 			@result_present = false
 			params[:model_name].each do |m|
