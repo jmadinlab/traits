@@ -7,6 +7,14 @@
 		  <em><%= @coral.coral_name %></em>
 		</h3>
 		
+		<% if !@coral.synonyms.blank? %>
+		  <p>
+		    <strong>Other names:</strong>
+				<% @coral.synonyms.each do |s| %>
+		    	<br><%= s.synonym_name %>
+				<% end %>
+		  </p>
+		<% end %>
 
 		<% if !@coral.coral_description.blank? %>
 		  <p>
@@ -14,6 +22,21 @@
 		    	<%= @coral.coral_description %>
 		  </p>
 		<% end %>
+
+	  <p>
+	    <strong>Major clade:</strong>
+	    	<%= @coral.major_clade %>
+	  </p>
+
+	  <p>
+	    <strong>Family molecules:</strong>
+	    	<%= @coral.family_molecules %>
+	  </p>
+
+	  <p>
+	    <strong>Family morphology:</strong>
+	    	<%= @coral.family_morphology %>
+	  </p>
 
 		<p>
 	    <div class="btn-group">
@@ -47,7 +70,7 @@
 
  -->		
  		<div class="well">
-			<p>External resources for this species:</p>
+			<p><strong>External resources for this species:</strong></p>
 			<ul>
 				<li>
 					<% fac = Measurement.where("observation_id IN (?) AND trait_id=?", @observations.map(&:id), 139).first  %>
