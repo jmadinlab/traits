@@ -8,7 +8,7 @@ Traits::Application.routes.draw do
   
   resources :imports
   resources :citations
-  
+  resources :searches  
   resources :synonyms
 
   

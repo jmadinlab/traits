@@ -1,0 +1,50 @@
+
+
+<%= form_tag searches_path, :method => :get do %>
+  <p>
+    <%= text_field_tag :search, params[:search] %> <br/>
+    Models: <br/>
+    <%= select_tag 'model_name', options_for_select(['Coral', 'Trait', 'Observation', 'Resource', 'Standard', 'Location']), { :multiple => true, :size =>10 } %> <br/>
+    <%= submit_tag "Search", :name => nil %>
+<% end %>
+<!-- rest of view omitted -->
+<% if @coral_search %>
+	<h3>Corals</h3>
+	<% @coral_search.results.each do |s| %>
+		<%= s.coral_name %> <br/>
+		
+	<% end %>
+
+<% end %>
+
+
+<% if @trait_search %>
+	<h3>Trait</h3>
+	<% @trait_search.results.each do |s| %>
+		<%= s.trait_name %> <br/>
+		
+	<% end %>
+
+<% end %>
+
+
+
+<% if @standard_search %>
+	<h3>Standards</h3>
+	<% @standard_search.results.each do |s| %>
+		<%= s.standard_name %> <br/>
+		
+	<% end %>
+
+<% end %>
+
+
+
+<% if @location_search %>
+	<h3>Location</h3>
+	<% @location_search.results.each do |s| %>
+		<%= s.location_name %> <br/>
+		
+	<% end %>
+
+<% end %>
