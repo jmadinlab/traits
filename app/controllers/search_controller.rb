@@ -1,4 +1,4 @@
-class SearchesController < ApplicationController
+class SearchController < ApplicationController
 	def index
 		if params[:search] 
 			if not params[:model_name]
