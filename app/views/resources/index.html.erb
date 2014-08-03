@@ -49,11 +49,15 @@
 		        <td><%= resource.year %></td>
 		        <td style="max-width: 250px;overflow:hidden;"><%= resource.title %></td>
 		        <td><%= Observation.where(:resource_id => resource).size %></td>
-		        <td style="text-align:right; "><%= link_to 'Show', resource %>
-		        <% if signed_in? && current_user.admin? %> |
-		        	<%= link_to 'Edit', edit_resource_path(resource) %> |
-		        	<%= link_to 'Delete', resource, method: :delete, data: { confirm: 'Are you sure?' } %>
-		        <% end %></td>
+						<td style="text-align:right; ">
+							<div class="btn-group">
+				        <%= link_to 'Show', resource, class: "btn btn-sm btn-default" %>
+				        <% if signed_in? && current_user.admin? %>
+				        	<%= link_to 'Edit', edit_resource_path(resource), class: "btn btn-sm btn-default" %>
+				        	<%= link_to 'Delete', resource, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-sm btn-danger" %>
+				        <% end %>
+							</div>
+		        </td>
 		      </tr>
 		    <% end %>
 		  </tbody>

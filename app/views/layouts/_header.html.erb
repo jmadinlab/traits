@@ -73,8 +73,12 @@
 					<% end %>
 				</ul>
 
-	
-	
+		  	<%= form_tag search_index_path, class: "navbar-form navbar-left", :method => :get do %>
+				  <div class="form-group">
+				    <%= text_field_tag :search, params[:search], { class: "form-control", placeholder: "Search..." }   %>
+	        </div>
+				<% end %>
+		
 				<ul class="nav navbar-nav navbar-right">
 					<% if signed_in? %>
 					  <li id="fat-menu" class="dropdown" style="text-align: left;">

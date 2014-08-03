@@ -79,11 +79,14 @@
 		<% end %>
 
 		<p>
-		<% if signed_in? && current_user.contributor? %>
-			<%= link_to 'Edit', edit_resource_path(@resource) %> |
-		<% end %>
-		<%= link_to 'Back', resources_path %></p>
-		
+			<div class="btn-group">
+				<% if signed_in? && current_user.contributor? %>
+					<%= link_to 'Edit', edit_resource_path(@resource), class: "btn btn-sm btn-default" %>
+				<% end %>
+				<%= link_to 'Back', resources_path, class: "btn btn-sm btn-default" %>
+			</div>
+		</p>
+				
 		<% if @resource.traits %>
 			<div class="well">
 				<p>Used as primary resource for following traits:</p>

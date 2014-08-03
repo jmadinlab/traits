@@ -31,93 +31,117 @@
 
 				<% if @coral_search  %>
 					<% if not @coral_search.results.blank? %>
-						<hr>
 						<h4 class="coloured">Corals</h4>
 					<% end %>
-					<% @coral_search.results.each do |s| %>
-						<hr>
-						<strong><%= link_to s.coral_name, s %></strong>
-			     	<div class="btn-group pull-right">							
-							<%= link_to "Show", s, class: "btn btn-sm btn-default" %><%= link_to "Edit", edit_coral_path(s), class: "btn btn-sm btn-default" %>
-						</div>
-					<% end %>
+					<ul class="list-group">
+						<% @coral_search.results.each do |s| %>
+				     	<li class="list-group-item">							
+								<%= link_to s.coral_name, s %>
+			     			<div class="btn-group pull-right">							
+									<%= link_to "Show", s, class: "btn btn-xs btn-default" %><%#= link_to "Edit", edit_coral_path(s), class: "btn btn-xs btn-default" %>
+								</div>
+							</li>
+						<% end %>
+					</ul>
 				<% end %>
 
 				<% if @trait_search %>
 					<% if not @trait_search.results.blank? %>
-						<hr>
 						<h4 class="coloured">Traits</h4>
 					<% end %>
-					<% @trait_search.results.each do |s| %>
-						<hr>
-						<strong><%= link_to s.trait_name, s %> </strong>
-			     	<div class="btn-group pull-right">							
-							<%= link_to "Show", s, class: "btn btn-sm btn-default" %><%= link_to "Edit", edit_trait_path(s), class: "btn btn-sm btn-default" %>
-						</div>
-					<% end %>
+					<ul class="list-group">
+						<% @trait_search.results.each do |s| %>
+				     	<li class="list-group-item">							
+								<%= link_to s.trait_name, s %>
+			     			<div class="btn-group pull-right">							
+									<%= link_to "Show", s, class: "btn btn-xs btn-default" %>
+								</div>
+							</li>
+						<% end %>
+					</ul>
 				<% end %>
 
 				<% if @standard_search %>
 					<% if not @standard_search.results.blank? %>
-						<hr>
 						<h4 class="coloured">Standards</h4>
 					<% end %>
-					<% @standard_search.results.each do |s| %>
-						<hr>
-						<strong><%= link_to s.standard_name, s %> </strong><br/>
-						Standard Unit: <%= s.standard_unit %>
-			     	<div class="btn-group pull-right">							
-							<%= link_to "Show", s, class: "btn btn-sm btn-default" %><%= link_to "Edit", edit_standard_path(s), class: "btn btn-sm btn-default" %>
-						</div>
-					<% end %>
+					<ul class="list-group">
+						<% @standard_search.results.each do |s| %>
+				     	<li class="list-group-item">							
+								<%= link_to s.standard_name, s %>
+								<% if s.standard_unit %>
+									(<%= s.standard_unit %>)
+								<% end %>
+			     			<div class="btn-group pull-right">							
+									<%= link_to "Show", s, class: "btn btn-xs btn-default" %>
+								</div>
+							</li>
+						<% end %>
+					</ul>
 				<% end %>
 
 
 				<% if @observation_search %>
 					<% if not @observation_search.results.blank? %>
-						<hr>
 						<h4 class="coloured">Observations</h4>
 					<% end %>
-					<% @observation_search.results.each do |s| %>
-						<% s.measurements.each do |mea| %>				
-							<hr>
-							<strong><%= link_to "Observation #{mea.observation.id}", mea.observation %> </strong> <br/>
-							Value : <%= mea.value %> | Orig value: <%= mea.orig_value %>
-				     	<div class="btn-group pull-right">							
-								<%= link_to "Show", s, class: "btn btn-sm btn-default" %><%= link_to "Edit", edit_observation_path(s), class: "btn btn-sm btn-default" %>
-							</div>
-						<% end %>						
-					<% end %>
+					<ul class="list-group">
+						<% @observation_search.results.each do |s| %>
+							<% s.measurements.each do |m| %>				
+					     	<li class="list-group-item">							
+									<%= link_to "Observation #{s.id}", s %><br>
+									<em><%= link_to s.coral.coral_name, coral_path(s.coral) %></em>
+									<% if s.location %>
+										| <%= link_to s.location.location_name, location_path(s.location) %>
+									<% end %>
+									| <%= link_to m.trait.trait_name, trait_path(m.trait) %> | <%= m.value %>
+									<% if m.standard.standard_unit %>
+										(<%= m.standard.standard_unit %>)
+									<% end %>
+				     			<div class="btn-group pull-right">							
+										<%= link_to "Show", s, class: "btn btn-xs btn-default" %>
+									</div>
+								</li>
+							<% end %>
+						<% end %>
+					</ul>
 				<% end %>
 
 				<% if @location_search %>
 					<% if not @location_search.results.blank? %>
-						<hr>
 						<h4 class="coloured">Locations</h4>
 					<% end %>
-					<% @location_search.results.each do |s| %>
-						<hr>
-						<strong><%= link_to s.location_name, s %> </strong><br/>
-						Longitude: <%= s.longitude %> | Latitude: <%= s.latitude %>
-			     	<div class="btn-group pull-right">							
-							<%= link_to "Show", s, class: "btn btn-sm btn-default" %><%= link_to "Edit", edit_location_path(s), class: "btn btn-sm btn-default" %>
-						</div>
-					<% end %>
+					<ul class="list-group">
+						<% @location_search.results.each do |s| %>
+				     	<li class="list-group-item">							
+								<%= link_to s.location_name, s %><br>
+								Latitude: <%= s.latitude %> | Longitude: <%= s.longitude %>
+			     			<div class="btn-group pull-right">							
+									<%= link_to "Show", s, class: "btn btn-xs btn-default" %>
+								</div>
+							</li>
+						<% end %>
+					</ul>
 				<% end %>
 
 				<% if @resource_search %>
 					<% if not @resource_search.results.blank? %>
-						<hr>
 						<h4 class="coloured">Resources</h4>
 					<% end %>
-					<% @resource_search.results.each do |s| %>
-						<hr>
-						<strong><%= link_to s.title, s %> </strong><br/>
-						Year: <%= s.year %> | Author: <%= s.author %>
-			     	<div class="btn-group pull-right">							
-							<%= link_to "Show", s, class: "btn btn-sm btn-default" %><%= link_to "Edit", edit_resource_path(s), class: "btn btn-sm btn-default" %>
-						</div>
-					<% end %>
+					<ul class="list-group">
+						<% @resource_search.results.each do |s| %>
+				     	<li class="list-group-item">							
+								<%= link_to s.title, s %><br>
+								Year: <%= s.year %> | Author: <%= s.author %>
+								<% if s.journal %>
+									| <em><%= s.journal %></em>
+								<% end %>
+			     			<div class="btn-group pull-right">							
+									<%= link_to "Show", s, class: "btn btn-xs btn-default" %>
+								</div>
+							</li>
+						<% end %>
+					</ul>
 				<% end %>
 
 			</div>
