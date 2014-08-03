@@ -1,138 +1,126 @@
-
 <div class="row">
+  <div class="col-md-10 col-md-offset-1">
 
-<div class="list-group col-md-3">
-	
-  <a href="#" class="list-group-item active">
-    Search Form
-  </a>
-  	<%= form_tag search_index_path, :method => :get do %>
-  	<br>
-			  <p>
+		<div class="row">
+			<div class="list-group col-md-3">
 
-			  	<b>Search Query</b> <br/>
-			    <%= text_field_tag :search, params[:search],  { class: "form-control" }   %> <br/><br/>
+				<h3>Search database</h3>			
+		  	<%= form_tag search_index_path, :method => :get do %>
+					<div class="form-group">
+				    <%= text_field_tag :search, params[:search],  { class: "form-control", placeholder: "Search..." }   %>
+					</div>
 			    
-			    <b>Models to Search </b> <br/>
-			    <i><small>( You can select multiple models by holding command/control key and clicking the items) </small></i><br/><br/>
-			    <%= select_tag 'model_name', options_for_select(['Coral', 'Trait', 'Observation', 'Resource', 'Standard', 'Location']), { :multiple => true, :size =>7, class: "form-control"} %> <br/><br/>
-			    <%= submit_tag "Search", class: "btn btn-primary ", :name => nil %>
-			<% end %>
-</div>
+					<div class="form-group">
+				    <strong>Limit to (optional):</strong>
+				    <%= select_tag 'model_name', options_for_select(['Coral', 'Trait', 'Observation', 'Resource', 'Standard', 'Location']), { :multiple => true, :size =>7, class: "form-control"} %>
+					</div>
 
-		
+			    <%= submit_tag "Search", class: "btn btn-primary" %>
+				<% end %>
+			</div>
 
+			<div class="col-md-9">
 
-<div class="col-md-9">
-	<h3> Search Results... </h3>
-
-	<% if not defined?(@result_present) %>
-		Welcome to Generic Search Area.
-	
-	<% end %>
-	
-	<% if (defined?(@result_present) ) && (not @result_present )%>
-		Sorry, Your query did not match any result
-	<% end %>
-	
-
-
-	<% if @coral_search  %>
-		<% if not @coral_search.results.blank? %>
-			<h4 class="coloured">Corals</h4>
-			<hr/>
-		<% end %>
-		<% @coral_search.results.each do |s| %>
-			
-			<%= link_to s.coral_name, s %> 
-			<span class="pull-right">
-				<%= link_to "Show", s %> | <%= link_to "Edit", edit_coral_path(s) %>
-			</span>
-			<hr/>
-		<% end %>
-
-	<% end %>
-
-
-	<% if @trait_search %>
-		<% if not @trait_search.results.blank? %>
-			<h4 class="coloured">Traits</h4>
-			<hr/>
-		<% end %>
-		<% @trait_search.results.each do |s| %>
-			
-			<b><%= link_to s.trait_name, s %> </b>
-			<span class="pull-right">
-				<%= link_to "Show", s %> | <%= link_to "Edit", edit_trait_path(s) %>
-			</span>
-			<hr/>
-		<% end %>
-
-	<% end %>
-
-
-
-	<% if @standard_search %>
-		<% if not @standard_search.results.blank? %>
-			<h4 class="coloured">Standards</h4>
-			<hr/>
-		<% end %>
-		<% @standard_search.results.each do |s| %>
-			
-			<b><%= link_to s.standard_name, s %> </b><br/>
-			Standard Unit: <%= s.standard_unit %>
-
-			<span class="pull-right">
-				<%= link_to "Show", s %> | <%= link_to "Edit", edit_standard_path(s) %>
-			</span>
-
-			<hr/>
-			
-		<% end %>
-
-	<% end %>
-
-
-	<% if @observation_search %>
-		<% if not @observation_search.results.blank? %>
-			<h4 class="coloured">Observations</h4>
-			<hr/>
-		<% end %>
-		<% @observation_search.results.each do |s| %>
-
-			<% s.measurements.each do |mea| %>
+				<% if defined?(@result_present) %>
+					<h3>Results...</h3>
+				<% end %>
 				
-				<b><%= link_to "Observation #{mea.observation.id}", mea.observation %> </b> <br/>
-				Value : <%= mea.value %> | Orig value: <%= mea.orig_value %>
-				<span class="pull-right">
-					<%= link_to "Show", s %> | <%= link_to "Edit", edit_observation_path(s) %>
-				</span>
+				<% if (defined?(@result_present) ) && (not @result_present )%>
+					<div class="alert alert-danger">Your query did not result any results.</div>
+				<% end %>
 
-				<hr/>
-			<% end %>
-			
-		<% end %>
+				<% if @coral_search  %>
+					<% if not @coral_search.results.blank? %>
+						<hr>
+						<h4 class="coloured">Corals</h4>
+					<% end %>
+					<% @coral_search.results.each do |s| %>
+						<hr>
+						<strong><%= link_to s.coral_name, s %></strong>
+			     	<div class="btn-group pull-right">							
+							<%= link_to "Show", s, class: "btn btn-sm btn-default" %><%= link_to "Edit", edit_coral_path(s), class: "btn btn-sm btn-default" %>
+						</div>
+					<% end %>
+				<% end %>
 
-	<% end %>
+				<% if @trait_search %>
+					<% if not @trait_search.results.blank? %>
+						<hr>
+						<h4 class="coloured">Traits</h4>
+					<% end %>
+					<% @trait_search.results.each do |s| %>
+						<hr>
+						<strong><%= link_to s.trait_name, s %> </strong>
+			     	<div class="btn-group pull-right">							
+							<%= link_to "Show", s, class: "btn btn-sm btn-default" %><%= link_to "Edit", edit_trait_path(s), class: "btn btn-sm btn-default" %>
+						</div>
+					<% end %>
+				<% end %>
+
+				<% if @standard_search %>
+					<% if not @standard_search.results.blank? %>
+						<hr>
+						<h4 class="coloured">Standards</h4>
+					<% end %>
+					<% @standard_search.results.each do |s| %>
+						<hr>
+						<strong><%= link_to s.standard_name, s %> </strong><br/>
+						Standard Unit: <%= s.standard_unit %>
+			     	<div class="btn-group pull-right">							
+							<%= link_to "Show", s, class: "btn btn-sm btn-default" %><%= link_to "Edit", edit_standard_path(s), class: "btn btn-sm btn-default" %>
+						</div>
+					<% end %>
+				<% end %>
 
 
+				<% if @observation_search %>
+					<% if not @observation_search.results.blank? %>
+						<hr>
+						<h4 class="coloured">Observations</h4>
+					<% end %>
+					<% @observation_search.results.each do |s| %>
+						<% s.measurements.each do |mea| %>				
+							<hr>
+							<strong><%= link_to "Observation #{mea.observation.id}", mea.observation %> </strong> <br/>
+							Value : <%= mea.value %> | Orig value: <%= mea.orig_value %>
+				     	<div class="btn-group pull-right">							
+								<%= link_to "Show", s, class: "btn btn-sm btn-default" %><%= link_to "Edit", edit_observation_path(s), class: "btn btn-sm btn-default" %>
+							</div>
+						<% end %>						
+					<% end %>
+				<% end %>
 
-	<% if @location_search %>
-		<% if not @location_search.results.blank? %>
-			<h4 class="coloured">Locations</h4>
-			<hr/>
-		<% end %>
-		<% @location_search.results.each do |s| %>
-			<b><%= link_to s.location_name, s %> </b><br/>
-			Longitude: <%= s.longitude %> | Latitude: <%= s.latitude %>
-			<span class="pull-right">
-				<%= link_to "Show", s %> | <%= link_to "Edit", edit_location_path(s) %>
-			</span>
-			<hr/>	
-			
-		<% end %>
+				<% if @location_search %>
+					<% if not @location_search.results.blank? %>
+						<hr>
+						<h4 class="coloured">Locations</h4>
+					<% end %>
+					<% @location_search.results.each do |s| %>
+						<hr>
+						<strong><%= link_to s.location_name, s %> </strong><br/>
+						Longitude: <%= s.longitude %> | Latitude: <%= s.latitude %>
+			     	<div class="btn-group pull-right">							
+							<%= link_to "Show", s, class: "btn btn-sm btn-default" %><%= link_to "Edit", edit_location_path(s), class: "btn btn-sm btn-default" %>
+						</div>
+					<% end %>
+				<% end %>
 
-	<% end %>
+				<% if @resource_search %>
+					<% if not @resource_search.results.blank? %>
+						<hr>
+						<h4 class="coloured">Resources</h4>
+					<% end %>
+					<% @resource_search.results.each do |s| %>
+						<hr>
+						<strong><%= link_to s.title, s %> </strong><br/>
+						Year: <%= s.year %> | Author: <%= s.author %>
+			     	<div class="btn-group pull-right">							
+							<%= link_to "Show", s, class: "btn btn-sm btn-default" %><%= link_to "Edit", edit_resource_path(s), class: "btn btn-sm btn-default" %>
+						</div>
+					<% end %>
+				<% end %>
 
-</div>
+			</div>
+		</div>
+	</div>
 </div>

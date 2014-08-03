@@ -12,7 +12,7 @@ class Resource < ActiveRecord::Base
   searchable do
     text :author
     text :title
-    #integer :year,
+    text :year
     text :journal
   end
 
