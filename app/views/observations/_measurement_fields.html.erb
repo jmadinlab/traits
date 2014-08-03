@@ -6,8 +6,9 @@
 	  $(document).ready(function() {
 	  	$('select.my_standard').select2();
 			$('select.my_trait').select2();
-			$('select.my_methodology').select2();
-		
+			//$('select.my_methodology').select2();
+
+
 	    $('.my_trait').change(function() {
 	      $.ajax({
 	        url: "/observations/update_values",
@@ -48,8 +49,11 @@
 					<% end %>
 				
 					<% if !f.object.id %>
-						<%= f.select :value, [], {include_blank: 'Choose Value' }, { class: "form-control" }%>
-						
+						<% if f.object.trait.nil? %>
+							<%= f.select :value, [], {include_blank: 'Choose Value' }, { class: "form-control" }%>
+						<% else %>
+							<%= f.select :value, f.object.trait.traitvalues.map { |v| [ v.value_name, v.value_name ]} , { include_blank: 'Choose Value' }, { class: "form-control"} %>
+						<% end %>
 					<% else %>
 						<% if not f.object.trait.traitvalues.empty? %>
 							<%= f.select :value, f.object.trait.traitvalues.map { |v| [ v.value_name, v.value_name ]} , { include_blank: 'Choose Value' }, { class: "form-control"} %>
@@ -86,9 +90,13 @@
 			  <div class="form-group">
 				  <%= f.label :methodolgy_id %> <br/>
 				  <% if !f.object.id %>
-				  	<%= f.select :methodology_id, [], { include_blank: 'Choose Methodology'}, {class: "form-control" }%>
+				  	<% if f.object.trait.nil? %>
+				  		<%= f.select :methodology_id, [], { include_blank: 'Choose Methodology'}, {class: "form-control" }%>
+				  	<% else %>
+				  		<%= f.select :methodology_id, f.object.trait.methodologies.map { |m| [ m.methodology_name, m.id ]} , { include_blank: 'Choose Methodology'}, {class: "form-control" } %>
+				  		<% end %>
 				  <% else %>
-						<%= f.select :methodology_id, f.object.trait.methodologies.map { |m| [ m.methodology_name, m.id ]} , { include_blank: 'Choose Methodology', class: "form-control" }, {:"data-custom-id" => "methodology"+ @random_number , class: "my_methodology"} %>
+						<%= f.select :methodology_id, f.object.trait.methodologies.map { |m| [ m.methodology_name, m.id ]} , { include_blank: 'Choose Methodology'}, {class: "form-control" } %>
 				  <% end %>
 					<br/>
 				</div>

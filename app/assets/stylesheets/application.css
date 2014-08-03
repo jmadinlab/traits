@@ -18,6 +18,6 @@
 	color: red;
 }
 
-h3.coloured {
+h3.coloured, h4.coloured{
 	color: #d9534f;
 }

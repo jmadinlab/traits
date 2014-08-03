@@ -9,7 +9,16 @@ class LocationsController < ApplicationController
   # GET /locations
   # GET /locations.json
   def index
-    @locations = Location.order(sort_column + " " + sort_direction).search(params[:search])
+    #@locations = Location.order(sort_column + " " + sort_direction).search(params[:search])
+    @search = Location.search do
+      fulltext params[:search]
+    end
+    
+    if params[:search]
+      @locations = @search.results
+    else
+      @locations = Location.order(sort_column + " " + sort_direction)
+    end
     # @locations = @locations.paginate(page: params[:page])
 
     respond_to do |format|

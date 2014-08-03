@@ -8,7 +8,16 @@ class StandardsController < ApplicationController
   # GET /standards.json
   def index
     
-    @standards = Standard.search(params[:search])
+    # @standards = Standard.search(params[:search])
+    @search = Standard.search do
+      fulltext params[:search]
+    end
+    
+    if params[:search]
+      @standards = @search.results
+    else
+      @standards = Standard.all
+    end
     
     respond_to do |format|
       format.html

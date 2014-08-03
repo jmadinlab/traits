@@ -7,16 +7,25 @@ class Coral < ActiveRecord::Base
   accepts_nested_attributes_for :synonyms, :reject_if => :all_blank, :allow_destroy => true
 
   default_scope -> { order('coral_name ASC') }
-
+  
+  searchable do
+    text :coral_name
+    text :synonyms do
+      synonyms.map{ |synonym| synonym.synonym_name }
+    end
+  end
+  
+  
+  '''
   def self.search(search)
       if search
-        (where('coral_name LIKE ?', "%#{search}%") +
-        joins(:synonyms).where('synonyms.synonym_name LIKE ?', "%#{search}%")).uniq
+        (where("coral_name LIKE ?", "%#{search}%") +
+        joins(:synonyms).where("synonyms.synonym_name LIKE ?", "%#{search}%")).uniq
       else
         all
       end
   end  
-
+  '''
 end
 
 

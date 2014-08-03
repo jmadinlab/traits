@@ -1,4 +1,4 @@
-class ObservationsController < ApplicationController
+ class ObservationsController < ApplicationController
   before_action :signed_in_user
   before_action :contributor
   before_action :set_observation, only: [:show, :edit, :update, :destroy]
