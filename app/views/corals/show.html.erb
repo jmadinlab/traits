@@ -73,25 +73,36 @@
 			<p><strong>External resources for this species:</strong></p>
 			<ul>
 				<li>
-					<% fac = Measurement.where("observation_id IN (?) AND trait_id=?", @observations.map(&:id), 139).first  %>
+					<%= link_to "World Register of Marine Species", "http://www.marinespecies.org/aphia.php?p=taxlist&tName=" + @coral.coral_name.to_s, target: "_blank" %>
+				</li>
+
+				<li>
+					<% fac = Measurement.where("observation_id IN (?) AND trait_id=?", @observations.map(&:id), 139)  %>
 					<% if !fac.blank? %>
-						<%= link_to "AIMS factsheet and images", "http://coral.aims.gov.au/factsheet.jsp?speciesCode=" + fac.value.to_s.rjust(4, '0') %>
+						AIMS factsheet and images:
+						<% fac.each do |f| %>
+							<%= link_to f.value, "http://coral.aims.gov.au/factsheet.jsp?speciesCode=" + f.value.to_s.rjust(4, '0'), target: "_blank" %>
+						<% end %>
 					<% else %>
 						AIMS factsheet and images (not available)
 					<% end %>
 				</li>
+
 				<li>
-					<% pal = Measurement.where("observation_id IN (?) AND trait_id=?", @observations.map(&:id), 140).first %>
+					<% pal = Measurement.where("observation_id IN (?) AND trait_id=?", @observations.map(&:id), 140) %>
 					<% if !pal.blank? %>
-						<%= link_to "PaleoDB fossil records", "http://paleodb.org/bridge.pl?a=checkTaxonInfo&taxon_no=" + pal.value.to_s %>
+						PaleoDB fossil records:
+						<% pal.each do |p| %>
+							<%= link_to p.value, "http://paleodb.org/bridge.pl?a=checkTaxonInfo&taxon_no=" + p.value.to_s, target: "_blank" %>
+						<% end %>
 					<% else %>
 						PaleoDB fossil records (not available)
 						<% end %>
 				</li>
-				<li><%= link_to "OBIS observation records", "http://iobis.org/mapper/?taxon=" + @coral.coral_name.to_s %></li>
+				<li><%= link_to "OBIS observation records", "http://iobis.org/mapper/?taxon=" + @coral.coral_name.to_s, target: "_blank" %></li>
 			</ul>
 		
-			<p><small>Note: The OBIS link will search for the species, which might not return any records.  If OBIS records do exist, they can be downloaded by selecting <code>Show results</code>, then <code>Download</code>, and then choosing <code>Points</code>. This functionality is not immediately obvious.</small></p>
+			<!-- <p><small>Note: The OBIS link will search for the master species name, which might not return any records and doens't include alternate species names.  If OBIS records do exist, they can be downloaded by selecting <code>Show results</code>, then <code>Download</code>, and then choosing <code>Points</code>. This functionality is not immediately obvious.</small></p> -->
 			
 <!-- 			<hr/>
 			<%#= link_to "Download", coral_path(format: "zip"), class: "btn btn-success btn-md" %> data for this species as a CSV file.
@@ -99,7 +110,7 @@
 		</div>
 
 
-		<%#= render "coral_observations" %>
-		<%= render "coral_traits" %>
+		<%= render "coral_observations" %>
+		<%#= render "coral_traits" %>
 	</div>
 </div>

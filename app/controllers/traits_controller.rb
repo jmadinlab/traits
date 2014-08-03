@@ -59,7 +59,13 @@ class TraitsController < ApplicationController
       # @observations = Observation.where(:private == false).includes(:coral).joins(:measurements).where(:measurements => {:trait_id => @trait.id}).where('value LIKE ?', "%#{params[:search]}%").limit(n) 
 
     if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
-      @observations = Observation.where(['observations.private IS ?', false]).includes(:coral).joins(:measurements).where('measurements.trait_id IS ? AND measurements.value LIKE ?', @trait.id, "%#{params[:search]}%").limit(n)
+      if params[:coral_id]
+        @coral = Coral.find(params[:coral_id])
+        # @observations = Observation.includes(:coral).joins(:measurements).where('observations.coral_id IS ? AND measurements.trait_id IS ?', @coral.id, @trait.id)
+        @observations = Observation.where(['observations.private IS ?', false]).includes(:coral).joins(:measurements).where('observations.coral_id IS ? AND measurements.trait_id IS ?', @coral.id, @trait.id).limit(n)
+      else
+        @observations = Observation.where(['observations.private IS ?', false]).includes(:coral).joins(:measurements).where('measurements.trait_id IS ? AND measurements.value LIKE ?', @trait.id, "%#{params[:search]}%").limit(n)
+      end
     end
     
     if signed_in? && current_user.contributor?
@@ -75,7 +81,7 @@ class TraitsController < ApplicationController
         @coral = Coral.find(params[:coral_id])
         @observations = Observation.includes(:coral).joins(:measurements).where('observations.coral_id IS ? AND measurements.trait_id IS ?', @coral.id, @trait.id)
       else
-        @observations = Observation.includes(:coral).joins(:measurements).where('measurements.trait_id IS ?', @trait.id)
+        @observations = Observation.joins(:measurements).where('measurements.trait_id IS ?', @trait.id)
       end
     end
     

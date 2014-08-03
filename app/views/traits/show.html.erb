@@ -17,18 +17,17 @@
 			<% end %>
 		</p>
 
-		<div class="row">
-			<div class="col-md-6 col-md-offset-0">
-				<% if @trait.traitvalues.present? %>
-					<table class="table table-condensed">
-						<tr><th>Value options:</th><th>Description:</th></tr>
-						<% @trait.traitvalues.each do |tv| %>
-							<tr><td><%= tv.value_name %></td><td><%= tv.value_description %></td></tr>
-						<% end %>
-					</table>
+		<% if @trait.traitvalues.present? %>
+			<p>
+				<strong>Trait values:</strong>
+				<% @trait.traitvalues.each do |tv| %>
+					<%= tv.value_name %>
+					<% if tv.value_description.present? %>
+						(<%= tv.value_description %>)
+					<% end %>
 				<% end %>
-			</div>
-		</div>
+			</p>
+		<% end %>
 		
 		<p>
 		  <strong>Class:</strong>

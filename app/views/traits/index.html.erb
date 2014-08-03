@@ -43,77 +43,113 @@
 		<%= form_tag export_traits_path do %>
 		
 			<div class="row">
-			  <div class="col-md-12 col-md-offset-7">
-					<p><input type="checkbox", name="ancillary" /> Download ancillary data as well?
+			  <div class="col-md-12 col-md-offset-6">
+					<%= submit_tag "Check trait and download", class: "btn btn-success btn-sm" %>
+					<p><input type="checkbox", name="ancillary" /> Download contexual data?
 					<br/><input type="checkbox", name="global" /> Download global estimates only?</p>
 				</div>
 			</div>
 			
 
 			<table class="table table-condensed">
-			  <thead>
-			    <tr>
-			      <th></th>
-			      <th style="color: lightgrey;">ID</th>
-			      <th>Trait name</th>
-			      <th style="text-align:center;"><%= submit_tag "Download", class: "btn btn-success btn-sm" %></th>
-			      <th></th>
-			      <th></th>
-			    </tr>
-			  </thead>
 
 			  <tbody>
 					<% temp = [] %>
 					<% @traits.sort_by{ |h| [h[:trait_class] || "z", h[:trait_name]] }.each do |trait| %>
-						<tr>
-						<% if temp != trait.trait_class %>
+						<% if trait.trait_class != "Contextual" %>
+							<% if temp != trait.trait_class %>
 								<% temp = trait.trait_class %>
-								<td><b>
-								<% if trait.trait_class.blank? %>
-									Unclassified
-								<% else %>
-									<%= trait.trait_class %>
-								<% end %>
-								</b></td>
-							<% else %>
-					    	<td style="border:none;"></td>
-							<% end %>
-					    <td style="color: lightgrey;"><%= trait.id %></td>
-					    <td><%= link_to trait.trait_name, trait %></td>
-						
-						 	<td style="text-align:center;">
-								<% access = Observation.select(:private).joins(:measurements).where(:measurements => {:trait_id => trait.id}) %>
-								<% if access.where(:private => false).size == 0 %>
-									<span class="glyphicon glyphicon-remove-circle" style="color:red;">
-								<% else %>
-									<% if access.where(:private => false).size == access.size %>
-										<span class="glyphicon glyphicon-ok-circle" style="color:green;">
+								<tr><td colspan="5"><b>
+									<% if trait.trait_class.blank? %>
+										Unclassified
 									<% else %>
-										<span class="glyphicon glyphicon-record" style="color:orange;">
+										<%= trait.trait_class %>
 									<% end %>
-								<% end %>
-								<%= check_box_tag "checked[]", trait.id %>
-							</td>						
-						
-			        <td><%= Measurement.where(:trait_id => trait.id).size %></td>
-							
-						
-			        <td style="text-align:right; min-width: 170px;">
-							<% if signed_in? && current_user.contributor? %>
-				        <%= link_to 'Edit', edit_trait_path(trait) %>
+								</b></td></tr>								
 							<% end %>
-							<% if signed_in? && current_user.admin? %> |
-				        <%= link_to 'Delete', trait, method: :delete, data: { confirm: 'Are you sure?' } %>
-							<% end %>
-							</td>
-					  </tr>
 
+							<tr>
+						    <td style="color: lightgrey;"><%= trait.id %></td>
+						    <td><%= link_to trait.trait_name, trait %></td>
+							
+							 	<td style="text-align:center;">
+									<% access = Observation.select(:private).joins(:measurements).where(:measurements => {:trait_id => trait.id}) %>
+									<% if access.where(:private => false).size == 0 %>
+										<span class="glyphicon glyphicon-remove-circle" style="color:red;">
+									<% else %>
+										<% if access.where(:private => false).size == access.size %>
+											<span class="glyphicon glyphicon-ok-circle" style="color:green;">
+										<% else %>
+											<span class="glyphicon glyphicon-record" style="color:orange;">
+										<% end %>
+									<% end %>
+									<%= check_box_tag "checked[]", trait.id %>
+								</td>						
+							
+				        <td><%= Measurement.where(:trait_id => trait.id).size %></td>
+								
+					       <td style="text-align:right;">
+						     	<div class="btn-group">							
+										<% if signed_in? && current_user.contributor? %>
+							        <%= link_to 'Edit', edit_trait_path(trait), class: "btn btn-sm btn-default" %>
+										<% end %>
+										<% if signed_in? && current_user.admin? %>
+							        <%= link_to 'Delete', trait, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-sm btn-danger" %>
+										<% end %>
+				        	</div>
+								</td>
+						  </tr>
+
+			    	<% end %>
 
 			    <% end %>
 			  </tbody>
 			</table>
 
 		<% end %>
+
+		<h3>Contextual Traits</h3>
+
+			<table class="table table-condensed">
+
+		  <tbody>
+				<% @traits.where(:trait_class => "Contextual").sort_by{ |h| h[:trait_name] }.each do |trait| %>
+					<tr>
+				    <td style="color: lightgrey;"><%= trait.id %></td>
+				    <td><%= link_to trait.trait_name, trait %></td>
+					
+					 	<td style="text-align:center;">
+							<% access = Observation.select(:private).joins(:measurements).where(:measurements => {:trait_id => trait.id}) %>
+							<% if access.where(:private => false).size == 0 %>
+								<span class="glyphicon glyphicon-remove-circle" style="color:red;">
+							<% else %>
+								<% if access.where(:private => false).size == access.size %>
+									<span class="glyphicon glyphicon-ok-circle" style="color:green;">
+								<% else %>
+									<span class="glyphicon glyphicon-record" style="color:orange;">
+								<% end %>
+							<% end %>
+						</td>						
+					
+		        <td><%= Measurement.where(:trait_id => trait.id).size %></td>						
+					
+			       <td style="text-align:right;">
+				     	<div class="btn-group">							
+								<% if signed_in? && current_user.contributor? %>
+					        <%= link_to 'Edit', edit_trait_path(trait), class: "btn btn-sm btn-default" %>
+								<% end %>
+								<% if signed_in? && current_user.admin? %>
+					        <%= link_to 'Delete', trait, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-sm btn-danger" %>
+								<% end %>
+		        	</div>
+						</td>
+				  </tr>
+
+
+		    <% end %>
+		  </tbody>
+		</table>
+
 
 	</div>
 </div>

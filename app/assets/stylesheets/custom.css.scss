@@ -1,4 +1,9 @@
+@import "bootstrap-sprockets";
 @import "bootstrap";
+
+.top-buffer { 
+  margin-top:10px; 
+}
 
 .red {
   color: red;
@@ -55,11 +60,11 @@ input {
   }
 }
 
-.field_with_errors {
+/*.field_with_errors {
   @extend .control-group;
   @extend .error;
 }
-
+*/
 /* Flexible iFrame */
 
 .map-container {

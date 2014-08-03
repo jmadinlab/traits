@@ -171,7 +171,7 @@ class ApplicationController < ActionController::Base
 
   def get_coral_csv(corals)
       csv_string = CSV.generate do |csv|
-          csv << ["coral_id", "master_species", "major_clade", "family_molecules", "family_morphology", "synonym_species", "notes"]
+          csv << ["coral_id", "master_species", "major_clade", "family_molecules", "family_morphology", "synonym_species", "coral_notes"]
           corals.each do |cor|
             syn_vec = []
             cor.synonyms.each do |syn|

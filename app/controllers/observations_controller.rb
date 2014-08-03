@@ -140,7 +140,7 @@ class ObservationsController < ApplicationController
   # DELETE /observations/1
   # DELETE /observations/1.json
   def destroy
-    if @observation.user_id == current_user.id
+    if (@observation.user_id == current_user.id) | current_user.admin?
       @observation.destroy
       flash[:success] = 'Observation was successfully deleted.'
       if params[:user].blank?
