@@ -18,25 +18,6 @@
 					<li><%= link_to "Home", root_path %></li>
 				</ul>
 
-				<ul class="nav navbar-nav navbar-left">
-		    <li id="fat-menu" class="dropdown">
-		       <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-		         Information<b class="caret"></b>
-		       </a>
-		       <ul class="dropdown-menu" style="text-align: left;">
-						 <li><%#= link_to "Download", download_path %></li>
-						 <li><%= link_to "About", about_path %></li>
-						 <li><%= link_to "Help", help_path %></li>
-						 
-		         <% if signed_in? && current_user.contributor? %>
-		         	<li><%= link_to "Metadata", meta_path %></li>
-						 <% else %>
-			         <li><%= link_to "Metadata", "", style:"color:grey;" %></li>
-						 <% end %>
-		       </ul>
-		     </li>
-				</ul>
-
 			  <%# if signed_in? %>
 					<ul class="nav navbar-nav navbar-left">
 			    <li id="fat-menu" class="dropdown">
@@ -73,11 +54,13 @@
 					<% end %>
 				</ul>
 
-		  	<%= form_tag search_index_path, class: "navbar-form navbar-left", :method => :get do %>
-				  <div class="form-group">
-				    <%= text_field_tag :search, params[:search], { class: "form-control", placeholder: "Search..." }   %>
-	        </div>
-				<% end %>
+				<ul class="nav navbar-nav navbar-left">
+			  	<%= form_tag search_index_path, class: "navbar-form", :method => :get do %>
+					  <div class="form-group">
+					    <%= text_field_tag :search, params[:search], { class: "form-control", placeholder: "Search..." }   %>
+		        </div>
+					<% end %>
+				</ul>
 		
 				<ul class="nav navbar-nav navbar-right">
 					<% if signed_in? %>
@@ -113,6 +96,28 @@
 				<ul class="nav navbar-nav navbar-right">
 					<li><%= image_tag "beta.png", :style => "border:0px;margin:10px;height:30px;" %></li>
 				</ul>
+
+				<ul class="nav navbar-nav navbar-right">
+		    <li id="fat-menu" class="dropdown">
+		       <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+		         Information<b class="caret"></b>
+		       </a>
+		       <ul class="dropdown-menu" style="text-align: left;">
+						 <li><%#= link_to "Download", download_path %></li>
+						 <li><%= link_to "About", about_path %></li>
+						 <li><%= link_to "Help", help_path %></li>
+						 
+		         <% if signed_in? && current_user.contributor? %>
+		         	<li><%= link_to "Metadata", meta_path %></li>
+						 <% else %>
+			         <li><%= link_to "Metadata", "", style:"color:grey;" %></li>
+						 <% end %>
+		       </ul>
+		     </li>
+				</ul>
+
+
+
 			</div>
 		</div>
 	</nav>

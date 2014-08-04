@@ -151,38 +151,21 @@ class ApplicationController < ActionController::Base
     @name = params[:controller]  
   end
 
-  # create_table "corals", force: true do |t|
-  #   t.string   "coral_name"
-  #   t.text     "coral_description"
-  #   t.integer  "user_id"
-  #   t.datetime "created_at"
-  #   t.datetime "updated_at"
-  #   t.string   "approval_status"
-  #   t.string   "major_clade"
-  #   t.string   "family_molecules"
-  #   t.string   "family_morphology"
-  # end
-
-    # t.integer  "coral_id"
-    # t.string   "synonym_name"
-    # t.text     "synonym_notes"
-    # t.datetime "created_at"
-    # t.datetime "updated_at"
 
   def get_coral_csv(corals)
-      csv_string = CSV.generate do |csv|
-          csv << ["coral_id", "master_species", "major_clade", "family_molecules", "family_morphology", "synonym_species", "coral_notes"]
-          corals.each do |cor|
-            syn_vec = []
-            cor.synonyms.each do |syn|
-              syn_vec << syn.synonym_name
-            end
-            csv << [cor.id, cor.coral_name, cor.major_clade, cor.family_molecules, cor.family_morphology, syn_vec.join(", "), cor.coral_description]
+    csv_string = CSV.generate do |csv|
+        csv << ["coral_id", "master_species", "major_clade", "family_molecules", "family_morphology", "synonym_species", "coral_notes"]
+        corals.each do |cor|
+          syn_vec = []
+          cor.synonyms.each do |syn|
+            syn_vec << syn.synonym_name
           end
+          csv << [cor.id, cor.coral_name, cor.major_clade, cor.family_molecules, cor.family_morphology, syn_vec.join(", "), cor.coral_description]
         end
-    
-     return csv_string
-    end
+      end
+  
+   return csv_string
+  end
 
   
 end

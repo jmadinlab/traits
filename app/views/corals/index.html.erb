@@ -1,9 +1,9 @@
 <% provide(:title, 'Corals') %>
 
 <div class="row">
-  <div class="col-md-10 col-md-offset-1">
+  <div class="col-md-8 col-md-offset-2">
 
-		<h3>Listing coral species</h3>
+		<h1>Corals</h1>
 
 		<p>Data for each of the corals listed below can be downloaded by selecting them using the checkbox and clicking <code style="color:green;">Download</code>.  Only public trait data will be downloaded for each coral.</p>
 		
@@ -34,46 +34,51 @@
 
 
 		<%= form_tag export_corals_path do %>
+			<div class="row">
+			  <div class="col-md-12 col-md-offset-5">
+					<p><input type="checkbox", name="contextual" /> Download contexual data?
+					<br/><input type="checkbox", name="global" /> Download global estimates only?</p>
+					<p><%= submit_tag "Download", class: "btn btn-success btn-sm" %></p>
+				</div>
+      </div>
 
-			<table class="table table-condensed">
-			  <thead>
-			    <tr>
-			      <th style="color: lightgrey;">ID</th>
-			      <th>Species name</th>
-			      <th style="text-align:center;"><%= submit_tag "Download", class: "btn btn-success btn-sm" %></th>
-			      <th style="text-align:center;">Observations</th>
-			      <th></th>
-			    </tr>
-			  </thead>
+			<div class="row">
+			  <div class="col-md-12">
+					<ul class="list-group">
+				    <% @corals.each do |coral| %>
+						  <li class="list-group-item">							
+								<div class="row">
+					        <div class="col-sm-1" style="color: lightgrey;">
+					        	<%= coral.id %>
+					        </div>
+					        <div class="col-sm-4">
+					        	<em><%= link_to coral.coral_name, coral %></em>
+					        </div>
 
-			  <tbody>
-			    <% @corals.each do |coral| %>
-			      <tr>
-			        <td style="color: lightgrey;"><%= coral.id %></td>
-			        <td><em><%= link_to coral.coral_name, coral %></em></td>
+								 	<div class="col-sm-1">
+										<%= check_box_tag "checked[]", coral.id %>
+									</div>
 
-						 	<td style="text-align:center;">
-								<%= check_box_tag "checked[]", coral.id %>
-							</td>
+									<div class="col-sm-3">
+						        <span class="badge"><%= Observation.where(:coral_id => coral).size %></span> observations
+									</div>
 
-			        <td style="text-align:center;"><%= Observation.where(:coral_id => coral).size %></td>
-
-			        <td style="text-align:right; min-width: 150px;">
-							  <% if signed_in? && current_user.admin? %>
-						      <div class="btn-group">
-				        	<%= link_to 'Edit', edit_coral_path(coral), class: "btn btn-sm btn-default" %>
-				        	<%= link_to 'Delete', coral, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-sm btn-danger" %>
-				        	</div>
-								<% end %>
-							</td>
-			      </tr>
-			    <% end %>
-			  </tbody>
-			</table>
-
-		
+					        <div class="col-sm-3">
+								    <div class="btn-group pull-right">
+								     	<%= link_to 'Show', coral_path(coral), class: "btn btn-xs btn-default" %>
+										  <% if signed_in? && current_user.admin? %>
+							        	<%= link_to 'Edit', edit_coral_path(coral), class: "btn btn-xs btn-default" %>
+							        	<%= link_to 'Delete', coral, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
+											<% end %>
+						        </div>
+									</div>
+								</div>
+							</li>
+				    <% end %>		
+			    </ul>
+				</div>
+			</div>
 		<% end %>
-
 	</div>
 </div>
 

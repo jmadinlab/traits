@@ -14,6 +14,7 @@ class SearchController < ApplicationController
 				
 				search_result = @model.search do
 					fulltext params[:search]
+					paginate :page => 1, :per_page => 100
 				end
 
 				if not search_result.results.blank?
