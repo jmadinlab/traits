@@ -1,7 +1,7 @@
 class TraitsController < ApplicationController
 
   # before_action :signed_in_user
-  before_action :contributor, except: [:index, :show, :export]
+  before_action :editor, except: [:index, :show, :export]
   before_action :set_trait, only: [:show, :edit, :update, :destroy]
   before_action :admin_user, only: :destroy
 
@@ -53,45 +53,24 @@ class TraitsController < ApplicationController
   # GET /traits/1
   # GET /traits/1.json
   def show
-    # @files = Dir.glob("app/assets/images/traits/*")
 
-    if params[:n].blank?
-      params[:n] = 100
-    end
-    
+    params[:n] = 100 if params[:n].blank?
     n = params[:n]
-    
-    if params[:n] == "all"
-      n = 9999999
-    end
+    n = 9999999 if params[:n] == "all"
 
-      # @observations = Observation.where(:private == false).includes(:coral).joins(:measurements).where(:measurements => {:trait_id => @trait.id}).where('value LIKE ?', "%#{params[:search]}%").limit(n) 
-
-    if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
-      if params[:coral_id]
-        @coral = Coral.find(params[:coral_id])
-        # @observations = Observation.includes(:coral).joins(:measurements).where('observations.coral_id IS ? AND measurements.trait_id IS ?', @coral.id, @trait.id)
-        @observations = Observation.where(['observations.private IS ?', false]).includes(:coral).joins(:measurements).where('observations.coral_id IS ? AND measurements.trait_id IS ?', @coral.id, @trait.id).limit(n)
-      else
-        @observations = Observation.where(['observations.private IS ?', false]).includes(:coral).joins(:measurements).where('measurements.trait_id IS ? AND measurements.value LIKE ?', @trait.id, "%#{params[:search]}%").limit(n)
-      end
+    if params[:coral_id]
+      @coral = Coral.find(params[:coral_id])
+      @observations = Observation.includes(:coral).joins(:measurements).where('observations.coral_id IS ? AND measurements.trait_id IS ?', @coral.id, @trait.id)
+    else
+      @observations = Observation.joins(:measurements).where('measurements.trait_id IS ?', @trait.id)
     end
-    
-    if signed_in? && current_user.contributor?
-      @observations = Observation.where(['observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?)', false, current_user.id, true]).includes(:coral).joins(:measurements).where('measurements.trait_id IS ? AND measurements.value LIKE ?', @trait.id, "%#{params[:search]}%").limit(n)
-    end
-
-    # if signed_in? && current_user.admin?
-    #   @observations = Observation.includes(:coral).joins(:measurements).where('measurements.trait_id IS ? AND measurements.value LIKE ?', @trait.id, "%#{params[:search]}%").limit(n)
-    # end
 
     if signed_in? && current_user.admin?
-      if params[:coral_id]
-        @coral = Coral.find(params[:coral_id])
-        @observations = Observation.includes(:coral).joins(:measurements).where('observations.coral_id IS ? AND measurements.trait_id IS ?', @coral.id, @trait.id)
-      else
-        @observations = Observation.joins(:measurements).where('measurements.trait_id IS ?', @trait.id)
-      end
+    elsif signed_in? && current_user.editor?
+    elsif signed_in? && current_user.contributor?
+      @observations = @observations.where(['observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?)', false, current_user.id, true])
+    else
+      @observations = @observations.where(['observations.private IS ?', false])
     end
     
     respond_to do |format|

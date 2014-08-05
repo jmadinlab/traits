@@ -1,9 +1,15 @@
 <% provide(:title, 'Resources') %>
 
 <div class="row">
-  <div class="col-md-10 col-md-offset-1">
+  <div class="col-md-8 col-md-offset-2">
 
-		<h3>Resources</h3>
+		<h1>Resources</h1>
+
+		<div class="row">
+		  <div class="col-md-12">
+				<p>Data for each of the resources listed below can be downloaded by selecting them using the checkbox and clicking <code style="color:green;">Download</code>.  Only public trait data will be downloaded for each location.</p>
+			</div>
+		</div>
 
 		<div class="well">
 			<div class="row">
@@ -16,10 +22,12 @@
 								<%= link_to 'Reset', resources_path, class: "btn btn-default" %>
 				      </span>
 				    </div>
+						Sort by: <%= select_tag :sort, options_for_select(["id", "author", "year", "title"], params[:sort]), onchange: "$(this).parent('form').submit();" %>
+						Order: <%= select_tag :order, options_for_select(["ascending", "descending"], params[:order]), onchange: "$(this).parent('form').submit();" %>
 					<% end %>
 			  </div>
 			  <div class="col-md-6">
-			  	<% if signed_in? %>	
+			  	<% if signed_in? && current_user.contributor? %>	
 						<%= link_to 'New Resource', new_resource_path, class: "btn btn-primary btn-md pull-right" %>
 					<% end %>
 			  </div>
@@ -29,39 +37,57 @@
 
 		</div>
 
-		<table class="table table-condensed">
-		  <thead>
-		    <tr>
-		      <th style="color: lightgrey;"><%= sortable "id", "ID" %></th>
-		      <th><%= sortable "author", "Author" %></th>
-		      <th><%= sortable "year", "Year" %></th>
-		      <th><%= sortable "title", "Title" %></th>
-		      <th>Obs</th>
-		      <th></th>
-		    </tr>
-		  </thead>
+		<%= form_tag export_resources_path do %>
+			<div class="row">
+			  <div class="col-md-12 col-md-offset-7">
+					<p><input type="checkbox", name="contextual" /> Download contexual data?
+					<br/><input type="checkbox", name="global" /> Download global estimates only?</p>
+					<p><%= submit_tag "Download", class: "btn btn-success btn-sm" %></p>
+				</div>
+      </div>
 
-		  <tbody>
-		    <% @resources.each do |resource| %>
-		      <tr>
-		        <td style="color: lightgrey;"><%= resource.id %></td>
-		        <td style="max-width: 150px;overflow:hidden;"><%= resource.author %></td>
-		        <td><%= resource.year %></td>
-		        <td style="max-width: 250px;overflow:hidden;"><%= resource.title %></td>
-		        <td><%= Observation.where(:resource_id => resource).size %></td>
-						<td style="text-align:right; ">
-							<div class="btn-group">
-				        <%= link_to 'Show', resource, class: "btn btn-sm btn-default" %>
-				        <% if signed_in? && current_user.admin? %>
-				        	<%= link_to 'Edit', edit_resource_path(resource), class: "btn btn-sm btn-default" %>
-				        	<%= link_to 'Delete', resource, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-sm btn-danger" %>
-				        <% end %>
-							</div>
-		        </td>
-		      </tr>
-		    <% end %>
-		  </tbody>
-		</table>
+			<div class="row">
+			  <div class="col-md-12">
+					<ul class="list-group">
+			    	<% @resources.each do |resource| %>
+						  <li class="list-group-item">							
+								<div class="row">
+					        <div class="col-sm-1" style="color: lightgrey;">
+					        	<%= resource.id %>
+					        </div>
 
+					        <div class="col-sm-6">
+					        	<%= resource.author %>
+					        	<% if resource.year %>
+						        	(<%= resource.year %>)
+				    				<% end %>		
+					        	<%= resource.title %>
+					        </div>
+
+								 	<div class="col-sm-1">
+										<%= check_box_tag "checked[]", resource.id %>
+									</div>
+
+									<div class="col-sm-1">
+						        <span class="label label-success"><span class="glyphicon glyphicon-ok-circle" style="color:white;"></span> <%= Observation.where(:resource_id => resource).where(:private => false).size %></span>
+						        <span class="label label-danger"><span class="glyphicon glyphicon-remove-circle" style="color:white;"></span> <%= Observation.where(:resource_id => resource).where(:private => true).size %></span>
+									</div>
+
+					        <div class="col-sm-3">
+								    <div class="btn-group pull-right">
+								     	<%= link_to 'Show', resource_path(resource), class: "btn btn-xs btn-default" %>
+										  <% if signed_in? && current_user.admin? %>
+							        	<%= link_to 'Edit', edit_resource_path(resource), class: "btn btn-xs btn-default" %>
+							        	<%= link_to 'Delete', resource, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
+											<% end %>
+						        </div>
+									</div>
+								</div>
+							</li>
+				    <% end %>		
+			    </ul>
+				</div>
+			</div>
+    <% end %>
 	</div>
 </div>

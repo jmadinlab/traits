@@ -3,7 +3,7 @@
 <div class="row">
   <div class="col-md-8 col-md-offset-2">
 
-		<h3>Locations</h3>
+		<h1>Locations</h1>
 
 		<div class="row">
 		  <div class="col-md-4">
@@ -17,10 +17,6 @@
 		<br/>
 		
 		<div class="well">
-			<% if signed_in? %>	
-				<%= link_to 'New Location', new_location_path, class: "btn btn-primary btn-md pull-right" %>
-			<% end %>
-			
 			<div class="row">
 			  <div class="col-lg-6">
 					<%= form_tag locations_path, :method => 'get' do %>
@@ -31,6 +27,12 @@
 								<%= link_to 'Reset', locations_path, class: "btn btn-default" %>
 				      </span>
 				    </div>
+						Sort by: <%= select_tag :sort, options_for_select(["id", "name", "latitude", "longitude"], params[:sort]), onchange: "$(this).parent('form').submit();" %>
+					<% end %>
+			  </div>
+			  <div class="col-md-6">
+					<% if signed_in? && current_user.contributor? %>	
+						<%= link_to 'New Location', new_location_path, class: "btn btn-primary btn-md pull-right" %>
 					<% end %>
 			  </div>
 			</div>
@@ -40,41 +42,53 @@
 		</div>
 
 		<%= form_tag export_locations_path do %>
+			<div class="row">
+			  <div class="col-md-12 col-md-offset-6">
+					<p><input type="checkbox", name="contextual" /> Download contexual data?
+					<br/><input type="checkbox", name="global" /> Download global estimates only?</p>
+					<p><%= submit_tag "Download", class: "btn btn-success btn-sm" %></p>
+				</div>
+      </div>
 
-			<table class="table table-condensed">
-			  <thead>
-			    <tr>
-			      <th style="color: lightgrey;"><%= sortable "id", "ID" %></th>
-			      <th><%= sortable "location_name", "Location name" %></th>
-			      <th><%= sortable "latitude", "Latitude" %></th>
-			      <th><%= sortable "longitude", "Longitude" %></th>
-			      <th style="text-align:center;"><%= submit_tag "Download", class: "btn btn-success btn-sm" %></th>
-			      <th>Obs</th>
-			      <th></th>
-			    </tr>
-			  </thead>
+			<div class="row">
+			  <div class="col-md-12">
+					<ul class="list-group">
+			    	<% @locations.each do |location| %>
+						  <li class="list-group-item">							
+								<div class="row">
+					        <div class="col-sm-1" style="color: lightgrey;">
+					        	<%= location.id %>
+					        </div>
 
-			  <tbody>
-			    <% @locations.each do |location| %>
-			      <tr>
-			        <td style="color: lightgrey;"><%= location.id %></td>
-			        <td><%= link_to location.location_name, location, 'data-no-turbolink' => true %></td>
-			        <td><%= location.latitude.round(4) %></td>
-			        <td><%= location.longitude.round(4) %></td>
-						 	<td style="text-align:center;">
-								<%= check_box_tag "checked[]", location.id %>
-							</td>						
-			        <td><%= Observation.where(:location_id => location).size %></td>
-			        <td style="text-align:right; min-width: 170px;">
-							<% if signed_in? && current_user.admin? %> 
-			        	<%= link_to 'Edit', edit_location_path(location) %> |
-			        	<%= link_to 'Delete', location, method: :delete, data: { confirm: 'Are you sure?' } %>
-			        <% end %></td>
-			      </tr>
-			    <% end %>
-			  </tbody>
-			</table>
-	   <% end %>
+					        <div class="col-sm-5">
+					        	<%= link_to location.location_name, location, 'data-no-turbolink' => true %>
+			        			<small>(<%= location.latitude.round(3) %>,
+			        			<%= location.longitude.round(3) %>)</small>
+					        </div>
+
+								 	<div class="col-sm-1">
+										<%= check_box_tag "checked[]", location.id %>
+									</div>
+
+									<div class="col-sm-2">
+									</div>
+
+					        <div class="col-sm-3">
+								    <div class="btn-group pull-right">
+								     	<%= link_to 'Show', location_path(location), 'data-no-turbolink' => true, class: "btn btn-xs btn-default" %>
+										  <% if signed_in? && current_user.admin? %>
+							        	<%= link_to 'Edit', edit_location_path(location), class: "btn btn-xs btn-default" %>
+							        	<%= link_to 'Delete', location, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
+											<% end %>
+						        </div>
+									</div>
+								</div>
+							</li>
+				    <% end %>		
+			    </ul>
+				</div>
+			</div>
+	  <% end %>
 	</div>
 </div>
 

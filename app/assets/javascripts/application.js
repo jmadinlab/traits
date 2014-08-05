@@ -29,7 +29,9 @@
 // 
 
 
-
+$(document).ready(function(){
+    $('span').tooltip();
+});
 
 function checkUncheckAll(theElement) { 
 	var theForm = theElement.form, z = 0; 

@@ -8,7 +8,8 @@ class Location < ActiveRecord::Base
   validates :latitude, :presence => true
   validates :longitude, :presence => true
 
-  # default_scope -> { order('latitude ASC') }
+  default_scope -> { order('location_name ASC') }
+
   searchable do
     text :location_name  
   end

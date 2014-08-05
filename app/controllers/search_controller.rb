@@ -20,7 +20,8 @@ class SearchController < ApplicationController
 				if not search_result.results.blank?
 					@result_present = true
 				end
-					instance_variable_set("@#{name}", search_result)
+				
+				instance_variable_set("@#{name}", search_result)
 			end
 		else
 			@location_search = nil

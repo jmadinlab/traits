@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
 
   def correct_user
     @user = User.find(params[:id])
-    redirect_to(root_url) unless current_user?(@user)
+    redirect_to(root_url) unless (current_user?(@user) || current_user.admin?)
   end
 
   def admin_user
@@ -25,9 +25,20 @@ class ApplicationController < ActionController::Base
   def contributor
       redirect_to(
         root_url,flash: {danger: "You need to be a contributor to access this area of the database." }
-      ) unless (signed_in? && (current_user.contributor? || current_user.admin?))
-      
+      ) unless (signed_in? && (current_user.contributor? || current_user.admin?))  
   end
+
+  def editor
+      redirect_to(
+        root_url,flash: {danger: "You need to be a editor to access this area of the database." }
+      ) unless (signed_in? && (current_user.editor? || current_user.admin?))      
+  end
+
+  def enterer
+    @observation = Observation.find(params[:id])
+    redirect_to(root_url, flash: { danger: "You can't edit or delete other peoples' observations." }) unless (signed_in? && (@observation.user_id == current_user.id))      
+  end
+
 
   # get ip of the user for versioning database
   def info_for_paper_trail

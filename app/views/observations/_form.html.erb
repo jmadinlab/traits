@@ -25,7 +25,11 @@
 		<br/><%= f.select :resource_id, Resource.all.map { |u| ["#{u.author} (#{u.year})", u.id] }, { include_blank: "Choose resource..." }, { id: 'simple-example' } %> <%= link_to 'Add', new_resource_path, class: "label label-default pull-right" %>
 	</div>
 
-  <%= f.label :private %>? <%= f.check_box :private %></p>
+  <div class="form-group">
+  	<strong>Keep this observation and measurement/s private?</strong>
+  	<br/><%= f.check_box :private %>
+	</div>
+
   <%#= f.label :user %> <%#= current_user.name %></p>
   <%#= f.hidden_field :user_id, :value => current_user.id %>
 

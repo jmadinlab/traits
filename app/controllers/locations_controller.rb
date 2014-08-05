@@ -9,7 +9,7 @@ class LocationsController < ApplicationController
   # GET /locations
   # GET /locations.json
   def index
-    #@locations = Location.order(sort_column + " " + sort_direction).search(params[:search])
+
     @search = Location.search do
       fulltext params[:search]
     end
@@ -17,9 +17,13 @@ class LocationsController < ApplicationController
     if params[:search]
       @locations = @search.results
     else
-      @locations = Location.order(sort_column + " " + sort_direction)
+      @locations = Location.all
     end
-    # @locations = @locations.paginate(page: params[:page])
+
+    @locations = @locations.sort_by{|l| l[:latitude]} if params[:sort] == "latitude"
+    @locations = @locations.sort_by{|l| l[:longitude]} if params[:sort] == "longitude"
+    @locations = @locations.sort_by{|l| l[:id]} if params[:sort] == "id"
+    @locations = @locations.sort_by{|l| l[:location_name]} if params[:sort] == "name"
 
     respond_to do |format|
       format.html
@@ -57,31 +61,24 @@ class LocationsController < ApplicationController
   # GET /locations/1.json
   def show
 
-    if params[:n].blank?
-      params[:n] = 100
-    end
-    
+    params[:n] = 100 if params[:n].blank?
     n = params[:n]
-    
-    if params[:n] == "all"
-      n = 9999999
-    end
+    n = 9999999 if params[:n] == "all"
 
-    if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
-    @observations = Observation.where(['observations.location_id IS ? AND observations.private IS ?', @location.id, false]).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").uniq.limit(n)
-    end
-    
-    if signed_in? && current_user.contributor?
-      @observations = Observation.where(['observations.location_id IS ? AND (observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?))', @location.id, false, current_user.id, true]).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").uniq.limit(n)
-    end
+    @observations = Observation.where('location_id IS ?', @location.id)
 
     if signed_in? && current_user.admin?
-      @observations = Observation.where(:location_id => @location.id).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").uniq.limit(n)
+    elsif signed_in? && current_user.editor?
+    elsif signed_in? && current_user.contributor?
+      @observations = @observations.where(['observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?)', false, current_user.id, true])
+    else
+      @observations = @observations.where(['observations.private IS ?', false])
     end
 
-
     respond_to do |format|
-      format.html
+      format.html { 
+        @observations = @observations.limit(n)
+      }
       format.csv { 
 
         if request.url.include? 'resources.csv'
@@ -103,25 +100,6 @@ class LocationsController < ApplicationController
         }
     end
 
-
-
-
-    # 
-    # 
-    # 
-    # 
-    # if signed_in?
-    #   if current_user.admin?
-    #     # @observations = Observation.find(:all, :conditions => ["location_id=?", @location.id])
-    #         @observations = Observation.includes(:coral, :resource, :location, :user).where("location_id=?", @location.id)
-    #     # @measurements = Measurement.includes(:trait, :standard).where("observation_id=?", grp.id)
-    #       else
-    #     @observations = Observation.find(:all, :conditions => ["location_id=? AND (private=? OR (user_id=? AND private=?))", @location.id, false, current_user.id, true])
-    #   end
-    # else
-    #   @observations = Observation.find(:all, :conditions => ["location_id=? AND private=?", @location.id, false])
-    #   flash[:success] = "You are not signed in. You will only see publicly accessable data."
-    # end
   end
 
   # GET /locations/new

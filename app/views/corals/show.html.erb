@@ -6,9 +6,9 @@
 		<div class="row">
 		  <div class="col-md-6">
 
-				<h3>
-				  <em><%= @coral.coral_name %></em>
-				</h3>
+		    <div class="page-header">
+		      <h1><em><%= @coral.coral_name %></em></h1>
+		    </div>
 				
 				<% if !@coral.synonyms.blank? %>
 				  <p>
@@ -43,7 +43,7 @@
 
 				<p>
 			    <div class="btn-group">
-				  	<% if signed_in? && current_user.contributor? %>
+				  	<% if signed_in? && current_user.admin? %>
 							<%= link_to 'Edit', edit_coral_path(@coral), class: "btn btn-sm btn-default" %>
 						<% end %>
 						<%= link_to 'Back', corals_path, class: "btn btn-sm btn-default" %>

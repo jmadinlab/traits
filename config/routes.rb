@@ -47,7 +47,9 @@ Traits::Application.routes.draw do
     post :export, :on => :collection
   end
 
-  resources :resources
+  resources :resources do
+    post :export, :on => :collection
+  end
 
   resources :standards
 

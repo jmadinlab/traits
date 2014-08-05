@@ -22,9 +22,7 @@ class Observation < ActiveRecord::Base
   searchable do
     text :measurements do
       measurements.map{ |measurement| measurement.value }
-      measurements.map{ |measurement| measurement.orig_value }
     end
-    
   end
   
   '''

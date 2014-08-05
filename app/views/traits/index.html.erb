@@ -72,16 +72,6 @@
 								<div class="row">
 	    						<div class="col-sm-1" style="color:lightgrey;"><%= trait.id %></div>
 									<div class="col-sm-4">
-										<% access = Observation.select(:private).joins(:measurements).where(:measurements => {:trait_id => trait.id}) %>
-										<% if access.where(:private => false).size == 0 %>
-											<span class="glyphicon glyphicon-remove-circle" style="color:red;">
-										<% else %>
-											<% if access.where(:private => false).size == access.size %>
-												<span class="glyphicon glyphicon-ok-circle" style="color:green;">
-											<% else %>
-												<span class="glyphicon glyphicon-record" style="color:orange;">
-											<% end %>
-										<% end %></span>
 							    	<%= link_to trait.trait_name, trait %>
 									</div>
 								
@@ -90,13 +80,14 @@
 									</div>
 								
 									<div class="col-sm-3">
-					        	<span class="badge"><%= Measurement.where(:trait_id => trait.id).size %></span> measurements
-									</div>
+<!-- 						        <span class="label label-success"><span class="glyphicon glyphicon-ok-circle" style="color:white;"></span> <%#= Observation.where(:id => Measurement.where(:trait_id => trait.id).map(&:observation_id)).where(:private => false).size %></span>
+						        <span class="label label-danger"><span class="glyphicon glyphicon-remove-circle" style="color:white;"></span> <%#= Observation.where(:id => Measurement.where(:trait_id => trait.id).map(&:observation_id)).where(:private => true).size %></span>
+ -->									</div>
 
 			  					<div class="col-sm-3">
 							     	<div class="btn-group pull-right">
 							     		<%= link_to 'Show', trait_path(trait), class: "btn btn-xs btn-default" %>					
-											<% if signed_in? && current_user.contributor? %>
+											<% if signed_in? && current_user.editor? %>
 								        <%= link_to 'Edit', edit_trait_path(trait), class: "btn btn-xs btn-default" %>
 											<% end %>
 											<% if signed_in? && current_user.admin? %>

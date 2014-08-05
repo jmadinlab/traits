@@ -1,6 +1,7 @@
  class ObservationsController < ApplicationController
-  before_action :signed_in_user
+
   before_action :contributor
+  before_action :enterer, only: [:edit, :update, :destroy]
   before_action :set_observation, only: [:show, :edit, :update, :destroy]
   
 
@@ -37,15 +38,9 @@
   # GET /observations.json
   def index
 
-    if params[:n].blank?
-      params[:n] = 10
-    end
-    
+    params[:n] = 100 if params[:n].blank?
     n = params[:n]
-    
-    if params[:n] == "all"
-      n = 9999999
-    end
+    n = 9999999 if params[:n] == "all"
 
     if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
       @observations = Observation.where(['observations.private IS ?', false]).includes(:coral).joins(:measurements).where('measurements.value LIKE ?', "%#{params[:search]}%").limit(n)

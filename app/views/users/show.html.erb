@@ -1,59 +1,78 @@
 <% provide(:title, @user.name) %>
 
 <div class="row">
-  <div class="col-md-10 col-md-offset-1">
+  <div class="col-md-8 col-md-offset-2">
 
-		<h3>
-		  <%= @user.name %>
-		</h3>
+		<div class="page-header">
+			<h1>
+			  <%= @user.name %>
+			</h1>
+		</div>
 
-		<p>
-		  <strong>Email:</strong>
-		  <%= @user.email %>
-		</p>
+	<div class="row">
+		<div class="col-md-8">
+			<p>
+			  <strong>Email:</strong>
+			  <%= @user.email %>
+			</p>
 
-		<% if current_user.contributor %>
 			<p>Observations that entered by <%= @user.name %> are listed below.  These are original/new observations only (i.e., not  observations that have been modified/edited). Displayed data can be downloaded by clicking <code style="color:green;">Download</code>.  Use the search filter and number of measurements to be returned (above) to limit or expand your download.  You will only see (and be able to download) public <span class="glyphicon glyphicon-ok-circle" style="color:green;"></span> observations as well as the private <span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> observations that you entered.  If these are your observations, then you can also control their access.</p>
 
-			<% if @observations.blank? %>
-				<div class="alert alert-danger">No records available.</div>
-			<% else %>
+		</div>
 
-				<% if @observations.size < Observation.where(:user_id => @user.id).size %>
-			    <div class="alert alert-danger">Not all of <%= @user.name %>'s observations are currently displayed.</div>
-			  <% else %>
-			  	<div class="alert alert-success">All of <%= @user.name %>'s observations are displayed.</div>
-			  <% end %>
-		
-				<div class="well">
-					
-					<%= form_tag user_path, :method => 'get' do %>
-						<div class="row">
-						  <div class="col-lg-6">
-						    <div class="input-group">
-						      <%= text_field_tag :search, params[:search], :placeholder => "Search by value...", class: "form-control" %>
-						      <span class="input-group-btn">
-								    <%= submit_tag "Update", :name => nil, class: "btn btn-default" %>
-										<%= link_to 'Reset', user_path, class: "btn btn-default" %>
-						      </span>
-						    </div>
-						  </div>
-							Return: <%= select_tag :n, options_for_select([10, 100, 1000, "all"], params[:n]) %> measurements.  Keep in mind that very large data sets may take a while to load.
-						</div>
-					<% end %>
+	  <div class="col-md-4">
+			<div class="well">
+				<span class="glyphicon glyphicon-globe"></span> Global estimate<br/>
+				<span class="glyphicon glyphicon-map-marker"></span> Location specific<br/>
+				<span class="glyphicon glyphicon-book"></span> Resource<br/>
+				<span class="glyphicon glyphicon-user"></span> Contributor<br/>
+				<span class="glyphicon glyphicon-eye-open"></span> Context included<br/>
+				<span class="glyphicon glyphicon-asterisk"></span> Pending approval<br/>
+				<span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> Not public<br/>
+				<span class="glyphicon glyphicon-ok-circle" style="color:green;"></span> Public
+			</div>
+		</div>
+	</div>
 
-					<% if @observations.size > 0 %>
-				
-						<br/>
-			
-						<%= link_to "Download", user_path(format: "csv", search: params[:search], n: params[:n]), class: "btn btn-success btn-md" %> currently displayed data as CSV file
-			    <% end %>
+		<h3>Observations</h3>
+		<p>
+			<strong>Access: </strong>
+			<span class="label label-success"><span class="glyphicon glyphicon-ok-circle" style="color:white;"></span> <%= Observation.where(:user_id => @user.id).where(:private => false).size %></span>
+			<span class="label label-danger"><span class="glyphicon glyphicon-remove-circle" style="color:white;"></span> <%= Observation.where(:user_id => @user.id).where(:private => true).size %></span>
+		</p>
 
-				<!-- </div> -->
-				<%= render "user_observations" %>
-			
-			<% end %>	
+		<% if @observations.blank? %>
+			<div class="alert alert-danger">No records available.</div>
+		<% else %>
+	
+			<div class="well">
+				<div class="row">
+				  <div class="col-md-6">
+						<%= form_tag user_path, :method => 'get' do %>
+							Showing <%= select_tag :n, options_for_select([10, 100, 1000, "all"], params[:n]), onchange: "$(this).parent('form').submit();" %> observations
+						<% end %>
+					 </div>
+					<div class="col-md-6">
+						<%= link_to "Download all user observations", user_path(format: "csv", n: params[:n]), class: "btn btn-success btn-sm pull-right" %>
+					</div>
+				</div>
+			</div>
+
 		<% end %>
+
+		<%#= render "user_observations" %>
+		<%= form_tag update_multiple_observations_path do %>
+			<%= hidden_field_tag "con_id", @user.id %>
+
+			<% if (@user.id == current_user.id || current_user.admin?) && !@observations.blank? %>
+				<%= submit_tag "Update Access", class: "btn btn-danger btn-md", style: "margin-right: 5px;" %>
+				<input type="checkbox", name="checkall", onclick="checkUncheckAll(this);" /> Check/uncheck access for all
+			<% end %>
+
+
+			<%= render "shared/observations" %>
+			
+		<% end %>	
 
 	</div>
 </div>

@@ -16,12 +16,16 @@ class ResourcesController < ApplicationController
     if params[:search]
       @resources = @search.results
     else
-      @resources = Resource.order(sort_column + " " + sort_direction)
+      @resources = Resource.all
     end
 
-    #@resources = Resource.order(sort_column + " " + sort_direction).search(params[:search])
-    # @resources = @resources.paginate(page: params[:page])
-    
+
+    @resources = @resources.sort_by{|l| l[:id]} if params[:sort] == "id"
+    @resources = @resources.sort_by{|l| l[:author]} if params[:sort] == "author"
+    @resources = @resources.sort_by{|l| l[:year] || 0 } if params[:sort] == "year"
+    @resources = @resources.sort_by{|l| l[:title]} if params[:sort] == "title"
+    @resources = @resources.reverse if params[:order] == "descending"
+
     respond_to do |format|
       format.html
       format.csv { send_data @resources.to_csv }
@@ -32,30 +36,25 @@ class ResourcesController < ApplicationController
   # GET /resources/1.json
   def show
 
-    if params[:n].blank?
-      params[:n] = 100
-    end
-    
+    params[:n] = 100 if params[:n].blank?
     n = params[:n]
-    
-    if params[:n] == "all"
-      n = 9999999
-    end
+    n = 9999999 if params[:n] == "all"
 
-    if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
-    @observations = Observation.where(['observations.resource_id IS ? AND observations.private IS ?', @resource.id, false]).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").uniq.limit(n)
-    end
-    
-    if signed_in? && current_user.contributor?
-      @observations = Observation.where(['observations.resource_id IS ? AND (observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?))', @resource.id, false, current_user.id, true]).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").uniq.limit(n)
-    end
+    @observations = Observation.where('resource_id IS ?', @resource.id)
 
     if signed_in? && current_user.admin?
-      @observations = Observation.where(:resource_id => @resource.id).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").uniq.limit(n)
+    elsif signed_in? && current_user.editor?
+    elsif signed_in? && current_user.contributor?
+      @observations = @observations.where(['observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?)', false, current_user.id, true])
+    else
+      @observations = @observations.where(['observations.private IS ?', false])
     end
-    
+
     respond_to do |format|
-      format.html
+      format.html { 
+        @observations = @observations.limit(n)
+      }
+
       format.csv { 
         if request.url.include? 'resources.csv'
           csv_string = get_resources_csv(@observations)
@@ -75,16 +74,6 @@ class ResourcesController < ApplicationController
       }
     end
 
-    # if signed_in?
-    #   if current_user.admin?
-    #         @observations = Observation.find(:all, :conditions => ["resource_id=?", @resource.id])
-    #       else
-    #     @observations = Observation.find(:all, :conditions => ["resource_id=? AND (private=? OR (user_id=? AND private=?))", @resource.id, false, current_user.id, true])
-    #   end
-    # else
-    #   @observations = Observation.find(:all, :conditions => ["resource_id=? AND private=?", @resource.id, false])
-    #   flash[:success] = "You are not signed in. You will only see publicly accessable data."
-    # end
   end
 
   # GET /resources/new
@@ -126,6 +115,31 @@ class ResourcesController < ApplicationController
       format.html { redirect_to resources_url }
       format.json { head :no_content }
     end
+  end
+
+  def export
+    checked = params[:checked]
+      
+    if signed_in? && current_user.contributor?
+      if current_user.admin?
+        #@observations = Observation.where{location_id.in my{params[:checked]}}
+        @observations = Observation.where(:resource_id => params[:checked])
+      else
+        #@observations = Observation.where{ (private == 'f') | ((user_id == my{current_user.id}) & (private == 't')) }.        
+        #where{location_id.in my{params[:checked]}}
+        @observations = Observation.where(" (private = 'f' or (private = 't' and user_id = ? )) ", current_user.id).where(:resource_id => params[:checked])
+
+      end
+    else
+      @observations = Observation.where(:private => false).where(:resource_id => params[:checked])        
+    end        
+    
+    csv_string = get_main_csv(@observations)
+
+    send_data csv_string, 
+      :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
+      :disposition => "attachment; filename=ctdb_#{Date.today.strftime('%Y%m%d')}.csv"
+          
   end
 
   private

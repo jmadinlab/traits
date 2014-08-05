@@ -3,15 +3,17 @@
 <div class="row">
 	<div class="col-md-8 col-md-offset-2">
 
-		<h3>
-			<%= @trait.trait_name %>
-			<% if @coral %>
-				(<em><%= link_to @coral.coral_name, coral_path(@coral) %></em>)
-			<% end %>
-		</h3>
+		<div class="page-header">
+			<h1>
+				<%= @trait.trait_name %>
+				<% if @coral %>
+					(<em><%= link_to @coral.coral_name, coral_path(@coral) %></em>)
+				<% end %>
+			</h1>
+		</div>
 
 		<div class="row">
-		  <div class="col-md-9">
+		  <div class="col-md-8">
 				<p>
 					<strong>Default standard:</strong>
 					<% if !@trait.standard.blank? %>
@@ -72,16 +74,9 @@
 					<% end %>
 				</p>
 
-				<%# img = "#{@trait.trait_name.downcase.tr(" ", "_")}.png" %>
-				<%# @temp = @files.find_all{|item| item.include? img }.last %>
-
-		<!-- 		<%# if !@temp.nil? %>
-					<p style="text-align:left;"><%#= image_tag "traits/#{@trait.trait_name.downcase.tr(" ", "_")}.png", :style => "border:0px;", class:  "img-responsive" %></p>
-				<%# end %>
-		 -->
 				<p>
 		      <div class="btn-group">
-						<% if signed_in? && current_user.contributor? %>
+						<% if signed_in? && current_user.editor? %>
 							<%= link_to 'Edit', edit_trait_path(@trait), class: "btn btn-sm btn-default" %>
 						<% end %>
 						<%= link_to 'Back', traits_path, class: "btn btn-sm btn-default" %>
@@ -90,19 +85,28 @@
 				</p>
 			</div>
 
-		  <div class="col-md-3">
-				<p><span class="glyphicon glyphicon-globe"></span> Global estimate<br/>
-				<span class="glyphicon glyphicon-map-marker"></span> Location data<br/>
-				<span class="glyphicon glyphicon-book"></span> Resource available<br/>
-				<span class="glyphicon glyphicon-user"></span> Contributor details<br/>
-				<span class="glyphicon glyphicon-eye-open"></span> Context included<br/>
-				<span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> Not public<br/>
-				<span class="glyphicon glyphicon-ok-circle" style="color:green;"></span> Public</p>
+		  <div class="col-md-4">
+				<div class="well">
+					<span class="glyphicon glyphicon-globe"></span> Global estimate<br/>
+					<span class="glyphicon glyphicon-map-marker"></span> Location specific<br/>
+					<span class="glyphicon glyphicon-book"></span> Resource<br/>
+					<span class="glyphicon glyphicon-user"></span> Contributor<br/>
+					<span class="glyphicon glyphicon-eye-open"></span> Context included<br/>
+					<span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> Not public<br/>
+					<span class="glyphicon glyphicon-ok-circle" style="color:green;"></span> Public
+				</div>
 			</div>
 		</div>
 
 		
 		<h3>Observations</h3>
+
+		<p>
+			<strong>Access: </strong>
+			<span class="label label-success"><span class="glyphicon glyphicon-ok-circle" style="color:white;"></span> <%= @observations.where(:private => false).size %></span>
+			<span class="label label-danger"><span class="glyphicon glyphicon-remove-circle" style="color:white;"></span> <%= @observations.where(:private => true).size %></span>
+		</p>
+		
 		<div class="well">
 			<div class="row">
 			<div class="col-md-6">
@@ -132,6 +136,6 @@
 			<div class="alert alert-success">All observations for this trait are now displayed.</div>
 		<%# end %>
  -->		
-		<%= render "trait_observations" %>
+		<%= render "shared/observations" %>
 	</div>
 </div>

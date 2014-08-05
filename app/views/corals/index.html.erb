@@ -3,7 +3,9 @@
 <div class="row">
   <div class="col-md-8 col-md-offset-2">
 
-		<h1>Corals</h1>
+    <div class="page-header">
+      <h1>Corals</h1>
+    </div>
 
 		<p>Data for each of the corals listed below can be downloaded by selecting them using the checkbox and clicking <code style="color:green;">Download</code>.  Only public trait data will be downloaded for each coral.</p>
 		
@@ -23,7 +25,7 @@
 			  </div>
 			  <div class="col-md-6">
 					<% if signed_in? && current_user.contributor? %>	
-						<%= link_to 'New Species', new_coral_path, class: "btn btn-primary btn-md pull-right" %>
+						<%= link_to 'New Coral', new_coral_path, class: "btn btn-primary btn-md pull-right" %>
 					<% end %>
 			  </div>
 			</div>
@@ -60,8 +62,9 @@
 									</div>
 
 									<div class="col-sm-3">
-						        <span class="badge"><%= Observation.where(:coral_id => coral).size %></span> observations
-									</div>
+<!-- 						        <span class="label label-success"><span class="glyphicon glyphicon-ok-circle" style="color:white;"></span> <%#= Observation.where(:coral_id => coral).where(:private => false).size %></span>
+						        <span class="label label-danger"><span class="glyphicon glyphicon-remove-circle" style="color:white;"></span> <%#= Observation.where(:coral_id => coral).where(:private => true).size %></span>
+ -->									</div>
 
 					        <div class="col-sm-3">
 								    <div class="btn-group pull-right">
