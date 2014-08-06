@@ -8,7 +8,7 @@
     </div>
 
 		<div class="row">
-		  <div class="col-md-6">
+		  <div class="col-md-7">
 
 				
 				<% if !@coral.synonyms.blank? %>
@@ -52,7 +52,7 @@
 				</p>
 
 		  </div>
-		  <div class="col-md-6">
+		  <div class="col-md-5">
 		 		<div class="well">
 					<p><strong>External resources for this species:</strong></p>
 					<ul>
@@ -80,7 +80,7 @@
 									<%= link_to p.value, "http://paleodb.org/bridge.pl?a=checkTaxonInfo&taxon_no=" + p.value.to_s, target: "_blank" %>
 								<% end %>
 							<% else %>
-								PaleoDB fossil records (not available)
+								PaleoDB records (not available)
 								<% end %>
 						</li>
 						<li><%= link_to "OBIS observation records", "http://iobis.org/mapper/?taxon=" + @coral.coral_name.to_s, target: "_blank" %></li>

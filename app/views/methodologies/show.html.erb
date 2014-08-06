@@ -8,7 +8,7 @@
     </div>
 		
 		<div class="row">
-		  <div class="col-md-12">
+		  <div class="col-md-9">
 				<% if !@methodology.method_description.blank? %>
 				  <p>
 				    <strong>Description:</strong>
@@ -35,6 +35,9 @@
 					</div>
 				</p>
 				
+			</div>
+		  <div class="col-md-3">
+			  <%= render "shared/symbol_key" %>
 			</div>
 		</div>
 

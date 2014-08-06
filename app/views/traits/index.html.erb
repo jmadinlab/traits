@@ -37,14 +37,7 @@
 
 		<%= form_tag export_traits_path do %>
 		
-			<div class="row">
-			  <div class="col-md-12 col-md-offset-5">
-					<p><input type="checkbox", name="contextual" /> Include contexual data?
-					<br/><input type="checkbox", name="global" /> Global estimates only?</p>
-					<%= submit_tag "Download", class: "btn btn-success btn-md" %>
-				</div>
-			</div>
-			
+			<%= render "shared/download_options" %>			
 
 			<div class="row">
 			  <div class="col-md-12">
@@ -66,7 +59,7 @@
 				  		<li class="list-group-item">							
 								<div class="row">
 	    						<div class="col-sm-1" style="color:lightgrey;"><%= trait.id %></div>
-									<div class="col-sm-4">
+									<div class="col-sm-5">
 							    	<%= link_to trait.trait_name, trait %>
 									</div>
 								
@@ -74,7 +67,7 @@
 										<%= check_box_tag "checked[]", trait.id %>
 									</div>
 								
-									<div class="col-sm-3">
+									<div class="col-sm-2">
 										<%= render "shared/access_counts", :acc => Observation.where(:id => Measurement.where(:trait_id => trait).map(&:observation_id)) %>
 									</div>
 

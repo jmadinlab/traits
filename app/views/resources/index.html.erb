@@ -38,13 +38,8 @@
 		</div>
 
 		<%= form_tag export_resources_path do %>
-			<div class="row">
-			  <div class="col-sm-12 col-sm-offset-7">
-					<p><input type="checkbox", name="contextual" /> Download contexual data?
-					<br/><input type="checkbox", name="global" /> Download global estimates only?</p>
-					<p><%= submit_tag "Download", class: "btn btn-success btn-sm" %></p>
-				</div>
-      </div>
+
+			<%= render "shared/download_options" %>			
 
 			<div class="row">
 			  <div class="col-sm-12">
@@ -56,8 +51,8 @@
 					        	<%= resource.id %>
 					        </div>
 
-					        <div class="col-sm-6">
-					        	<%= resource.author %>
+					        <div class="col-sm-5">
+					        	<%= link_to resource.author, resource %>
 					        	<% if resource.year %>
 						        	(<%= resource.year %>)
 				    				<% end %>		
@@ -68,7 +63,7 @@
 										<%= check_box_tag "checked[]", resource.id %>
 									</div>
 
-									<div class="col-sm-1">
+									<div class="col-sm-2">
 						        <%= render "shared/access_counts", :acc => Observation.where(:resource_id => resource) %>
 									</div>
 

@@ -42,13 +42,8 @@
 		</div>
 
 		<%= form_tag export_locations_path do %>
-			<div class="row">
-			  <div class="col-md-12 col-md-offset-6">
-					<p><input type="checkbox", name="contextual" /> Download contexual data?
-					<br/><input type="checkbox", name="global" /> Download global estimates only?</p>
-					<p><%= submit_tag "Download", class: "btn btn-success btn-sm" %></p>
-				</div>
-      </div>
+
+			<%= render "shared/download_options" %>			
 
 			<div class="row">
 			  <div class="col-md-12">
