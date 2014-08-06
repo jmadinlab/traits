@@ -1,0 +1,95 @@
+/*
+	This file is used to dynamically populate the options for values and standards in New Observation Form
+
+	1. First a normal form is presented to the user
+	2. On selecting a trait, an ajax call is made passing the trait_id and element_id
+	3. The controller finds the values and standards associated with that trait_id and returns this view
+	4. This view then populates the new values into the value and standard fields.
+	
+
+*/
+
+ // $('#values_select').html("<%= escape_javascript(render 'values', :locals => {:value => @values, :standard => @standards}) %>");
+
+// Variables to make the jquery selector neat
+
+// to select ids like #trait_value1, #trait_value2
+var val = '*[data-custom-id="value' + <%= @element_id %> + '"]'
+// to assign the id to select dropdown and text box for values (id = "trait_value1")
+var val_id = 'value' + <%= @element_id %>
+// to select options related to the values dropdown
+var val_option = val + ' option'
+
+
+// to select ids like #trait_standard1, #trait_standard2
+var standard = '*[data-custom-id="standard' + <%= @element_id %> + '"]'
+// to select the options for standards
+var standard_option = standard + ' option'
+
+var suggested_standard_id = '*[data-custom-id="suggested_standard' + <%= @element_id %> + '"]'
+
+var form_methodology ='*[data-custom-id="methodology' + <%= @element_id %> + '"]'
+var methodology_option = form_methodology + ' option'
+
+// console.log('<%= @element_id %>');
+// console.log(val);
+// console.log(standard);
+var suggested_standard = "<br/>Suggested standard: <b><%= @standard.standard_name %> (<%= @standard.standard_unit %>)</b>";
+
+$(suggested_standard_id).removeClass('hidden').html(suggested_standard);
+//$(standard_option).remove();
+// $(standard).append('<option> Choose Standard</option>');
+
+var name = $(val).attr('name');
+
+console.log(val);
+
+// if the values are 0, show a text box instead of drop down
+<% if @values.size == 0 %>
+	
+	var input_box = '<input type="text" data-custom-id="' + val_id + '" name="' + name + '" />' ;
+	$(val).replaceWith(input_box);
+	
+
+<% else %>
+
+  // Remove any prefilled values before populating with the new ones
+  $(val_option).remove();
+  //$(val).append('<option> Choose Value</option>');
+
+	// to handle the situation where text box is first shown and later need to show dropdown
+	var select_box = '<select data-custom-id="' + val_id + '" name="' + name + '" ><option> Choose Value..<option></select>' ;
+	$(val).replaceWith(select_box);
+
+	<% @values.each do |value| %>
+		var option ="<option value= <%= value %> ><%= value %></option> ";
+		$(val).append(option);
+		 
+	<% end %>
+<% end %>
+
+<% if @methodologies.size > 0 %>
+	$(methodology_option).remove();
+
+	<% @methodologies.each do |methodology| %>
+		var option = "<option value= <%= methodology.id %> > <%= methodology.methodology_name %> </option> ";
+		$(form_methodology).append(option);
+	<% end %>
+<% else %>
+	$(methodology_option).remove();
+	
+	
+
+<% end %>
+//
+
+//var option = "<option value= <%= @standard.id %> ><%= @standard.standard_name %> ( <%= @standard.standard_unit %>)</option> ";
+//$(standard).append(option)
+//var option = "<option value= 'other' >Other</option> ";
+//$(standard).append(option)
+// Delete all the empty options <option></option>
+$("select option").each(function(){
+      if($(this).text() == "")
+         $(this).remove();
+     });
+

@@ -1,40 +1,29 @@
+@import "bootstrap-sprockets";
 @import "bootstrap";
 
-/* mixins, variables, etc. */
-
-/*@mixin box_sizing {
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
+.top-buffer { 
+  margin-top:5px; 
 }
-*/
-/* universal */
 
-//body { padding-top: 80px; }
-//
-//@media screen and (max-width: 768px) {
-//    body { padding-top: 300px; }
-//}
+.red {
+  color: red;
+}
+
+.orange {
+  color: orange;
+}
+
+.green {
+  color: green;
+}
 
 /* links */
 a {
-	color: #666;
+  color: #666;
 }
-
 
 /* forms */
 
-/*input, textarea, select, .uneditable-input {
-  border: 1px solid #bbb;
-  width: 100%;
-  margin-bottom: 15px;
-  @include box_sizing;
-}
-
-input {
-  height: auto !important;
-}
-*/
 #error_explanation {
   color: #f00;
   ul {
@@ -43,16 +32,11 @@ input {
   }
 }
 
-.field_with_errors {
-  @extend .control-group;
-  @extend .error;
-}
-
 /* Flexible iFrame */
 
 .map-container {
     position: relative;
-    padding-bottom: 26.25%;
+    padding-bottom: 36.25%;
     padding-top: 30px;
     height: 0;
     overflow: hidden;
@@ -66,4 +50,12 @@ input {
     left: 0;
     width: 100%;
     height: 100%;
+}
+
+.error_messages {
+  color: red;
+}
+
+h3.coloured, h4.coloured{
+  color: #d9534f;
 }

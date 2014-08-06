@@ -7,13 +7,18 @@ class Standard < ActiveRecord::Base
   
   validates :standard_name, :presence => true
   validates :standard_class, :presence => true
-
+  
+  searchable do
+    text :standard_name  
+  end
+  
+  '''
   def self.search(search)
       if search
-        where('standard_name LIKE ? OR standard_class LIKE ? OR standard_unit LIKE ?', "%#{search}%", "%#{search}%", "%#{search}%")
+        where("standard_name LIKE ? OR standard_class LIKE ? OR standard_unit LIKE ?", "%#{search}%", "%#{search}%", "%#{search}%")
       else
         all
       end
   end  
-
+  '''
 end

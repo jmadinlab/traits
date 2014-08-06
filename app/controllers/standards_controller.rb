@@ -7,7 +7,17 @@ class StandardsController < ApplicationController
   # GET /standards
   # GET /standards.json
   def index
-    @standards = Standard.search(params[:search])
+    
+    # @standards = Standard.search(params[:search])
+    @search = Standard.search do
+      fulltext params[:search]
+    end
+    
+    if params[:search]
+      @standards = @search.results
+    else
+      @standards = Standard.all
+    end
     
     respond_to do |format|
       format.html
@@ -70,6 +80,6 @@ class StandardsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def standard_params
-      params.require(:standard).permit(:standard_name, :standard_unit, :standard_class, :standard_description, :user_id)
+      params.require(:standard).permit(:standard_name, :standard_unit, :standard_class, :standard_description, :user_id, :approval_status)
     end
 end

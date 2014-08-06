@@ -1,97 +1,66 @@
-
 <% if @observations.empty? %>
 	<p class="alert alert-danger">No public records.</p>
 <% else %>
 
-	<% temp = "" %>
-	<table class="table table-condensed">
-		<thead>
-			<tr>
-
-		  	<th></th>
-		  	<th>Location</th>
-		  	<th>Resource</th>
-		  	<th>Contributor</th>
-		  	<th>Access</th>
-		  	<th>Trait</th>
-				<th>Value (unit)</th>
-				<th></th>
-			</tr>
-		</thead>
-	
+	<% temp = [] %>
 		
-		
-		<% mark = "" %>
-	  <% @observations.sort_by{ |h| [h.measurements.first.trait.trait_class, h.measurements.first.trait.trait_name] }.each do |grp| %>    
-	    <% grp.measurements.each do |mea| %>    
-    
-				<tr>            
-					<% if temp != grp.measurements.first.trait.trait_class %>
-						<% temp = grp.measurements.first.trait.trait_class %>
-						<td><b><%= grp.measurements.first.trait.trait_class %></b></td>
-					<% else %>
-						<td style="border:none;"></td>
-					<% end %>
+	<div class="row">
+	  <div class="col-md-12">
+			<% mark = "" %>
+		  <% Trait.all.sort_by{ |t| [t.trait_class, t.trait_name] }.each do |trait| %>    
+		    
+				<% if trait.trait_class != "Contextual" %>
 
-				  <% if grp.id != mark %>
+					<% if @observations.joins(:measurements).where("measurements.trait_id IS ?", trait.id).size > 0 %>
 
-		  			
-						<td style="text-align:center;">
-		  				<% if !grp.location_id.blank? && grp.location_id != 0 %>
-		  				  <% if grp.location_id == 1 %>
-		  			      <%= link_to "Global", "/locations/" + grp.location_id.to_s %>
-		  				  <% else %> 
-		  			      <%= link_to "", "/locations/" + grp.location_id.to_s, class: "glyphicon glyphicon-globe", 'data-no-turbolink' => true %>
-		  				  <% end %> 
-		  				<% end %> 
-		  			</td>
-		  			<td style="text-align:center;">
-		  				<% if !grp.resource_id.blank? && grp.resource_id != 0 %>
-		  					<%= link_to "", "/resources/" + grp.resource_id.to_s, class: "glyphicon glyphicon-book" %>
-		  				<% end %> 
-		  			</td>        
-		  			<td style="text-align:center;">
-		  				<% if !grp.user_id.blank? && grp.user_id != 0 %>
-		  					<%= link_to "", "/users/" + grp.user_id.to_s, class: "glyphicon glyphicon-user" %>
-		  				<% end %>
-		  			</td>
+						<% grp = @observations.joins(:measurements).where("measurements.trait_id IS ?", trait.id) %>
 
-						<% if grp.private == true %>
-							<td style="color:red;text-align:center;"><span class="glyphicon glyphicon-remove-circle"></span></td>
-						<% else %>
-							<td style="color:green;text-align:center;"><span class="glyphicon glyphicon-ok-circle"></span></td>
+						
+						<% if temp != grp.first.measurements.first.trait.trait_class %>
+							<% temp = grp.first.measurements.first.trait.trait_class %>
+								<% if trait.trait_class.blank? %>
+									<h4>Miscellaneous</h4>
+									<ul class="list-group">
+								<% else %>
+		    					</ul>
+									<h4><%= grp.first.measurements.first.trait.trait_class %></h4>
+									<ul class="list-group">
+								<% end %>
 						<% end %>
 
-				  <% else %> 
-		        <td colspan=4 style="border:none;"></td>
-				  <% end %> 
-      
-		      <td>
-  					<%= link_to mea.trait.trait_name, "/traits/" + mea.trait_id.to_s %>
-		      </td>
-					
-		      <td>
-		        <%= mea.value %>
-						<% if !mea.standard.blank? %>
-							(<%= mea.standard.standard_unit %>)
-						<% end %> 
-		      </td>
-    
-				  <% if grp.id != mark %>
+				  	<li class="list-group-item">							
+							<div class="row">
+				        <div class="col-sm-1" style="color: lightgrey;">
+				        	<%= trait.id %>
+				        </div>
+								<div class="col-sm-4">
+									<%= link_to grp.first.measurements.first.trait.trait_name, "/traits/" + grp.first.measurements.first.trait_id.to_s %>
+								</div>
 
-		  			<td style="text-align:right; min-width: 150px;">
-		  				<% if signed_in? && current_user.contributor? %>
-		  					<%= link_to 'Show', observation_path(grp, :coral => grp.coral_id) %> |
-		  	    		<%= link_to 'Edit', edit_observation_path(grp, :coral => grp.coral_id) %> |
-		  	    		<%= link_to 'Delete', observation_path(grp, :coral => grp.coral_id), method: :delete, data: { confirm: 'Are you sure?' } %>
-		  				<% end %>
-		  			</td>
+								<div class="col-sm-6">
+									<% if grp.size > 1 %>
+										<%= render "shared/access_counts", :acc => grp %> observations
+									<% else %>
+										<% if grp.first.measurements.first.standard.standard_class == "Nominal class" || grp.first.measurements.first.standard.standard_class == "Ordered class" %>
+											<span class="label label-primary"><%= grp.first.measurements.first.value %></span>
+										<% else %> 
+						        	<%= grp.first.measurements.first.value %>
+											<% if !grp.first.measurements.first.standard.blank? %>
+												(<%= grp.first.measurements.first.standard.standard_unit %>)
+											<% end %> 
+										<% end %> 
+									<% end %>
+								</div>
+				  			<div class="col-sm-1">
+				          <div class="btn-group pull-right">
+				            <%= link_to 'Show', coral_trait_path(:coral_id => grp.first.coral_id, :id => trait.id), class: "btn btn-xs btn-default" %>
+				          </div>
+				  			</div>
+				  		</div>
+						</li>
 					<% end %>
-				</tr>
-    
-				<% mark=grp.id %>
-   
+				<% end %>
 			<% end %>
-		<% end %>
-	</table>
+		</div>
+	</div>
 <% end %>

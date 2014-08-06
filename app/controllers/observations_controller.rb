@@ -1,7 +1,9 @@
-class ObservationsController < ApplicationController
-  before_action :signed_in_user
+ class ObservationsController < ApplicationController
+
   before_action :contributor
+  before_action :enterer, only: [:edit, :update, :destroy]
   before_action :set_observation, only: [:show, :edit, :update, :destroy]
+  
 
   # autocomplete :location, :name, :full => true
   # autocomplete :coral, :name, :full => true
@@ -9,13 +11,16 @@ class ObservationsController < ApplicationController
 
 
   def update_values
-      @temp_var = 0
-      @values = Trait.find(params[:trait_id]).value_range.split(',').map(&:strip)
-      @standard = Standard.find(Trait.find(params[:trait_id]).standard_id)
-      @element_id = params[:element_id].split("trait_select")[-1]
-      puts 'trait id '
-      puts params[:trait_id]
-
+    @values = Trait.find(params[:trait_id]).traitvalues.map(&:id)
+    @standard = Standard.find(Trait.find(params[:trait_id]).standard_id)
+    @element_id = params[:element_id]
+    @element_id.slice! "_trait_id"
+    @element_id.to_s
+    @methodologies = Trait.find(params[:trait_id]).methodologies
+    #meas = Measurement.find(params[:measurement_id]) if params[:measurement_id] != ""
+    #puts 'printing form obs controller'
+    #puts meas.value
+    #meas.value = ""
   end
 
   def edit_multiple
@@ -23,10 +28,8 @@ class ObservationsController < ApplicationController
   end
 
   def update_multiple
-
     Observation.where(:user_id => params[:con_id], :id => params[:all_ids]).update_all(:private => false)
     Observation.where(:user_id => params[:con_id], :id => params[:pri_ids]).update_all(:private => true)
-    
     # flash[:notice] = "Updated observations!"
     redirect_to user_path(params[:con_id], :page => @page, :search => @search), flash: {success: "Privacy updated." }
   end
@@ -35,15 +38,9 @@ class ObservationsController < ApplicationController
   # GET /observations.json
   def index
 
-    if params[:n].blank?
-      params[:n] = 10
-    end
-    
+    params[:n] = 100 if params[:n].blank?
     n = params[:n]
-    
-    if params[:n] == "all"
-      n = 9999999
-    end
+    n = 9999999 if params[:n] == "all"
 
     if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
       @observations = Observation.where(['observations.private IS ?', false]).includes(:coral).joins(:measurements).where('measurements.value LIKE ?', "%#{params[:search]}%").limit(n)
@@ -63,7 +60,7 @@ class ObservationsController < ApplicationController
       format.csv { 
         csv_string = get_main_csv(@observations)
         send_data csv_string, 
-          :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
+          :type => 'text/csv; charset=WINDOWS-1252; header=present', :stream => true,
           :disposition => "attachment; filename=observations_#{Date.today.strftime('%Y%m%d')}.csv"
 
         }
@@ -78,13 +75,10 @@ class ObservationsController < ApplicationController
   # GET /observations/new
   def new
     @observation = Observation.new
-    @values = ""
-    @temp_var = 0
   end
 
   # GET /observations/1/edit
   def edit
-    @temp_var = 0
     if (@observation.user_id != current_user.id) & !current_user.admin?
       flash[:danger] = 'You need to be the original contributor of an observation to edit it.'
       if params[:user].blank?
@@ -97,18 +91,21 @@ class ObservationsController < ApplicationController
         redirect_to user_path(@observation.user_id)
       end
     end
-    @values = ""
   end
 
   # POST /observations
   # POST /observations.json
   def create
     @observation = Observation.new(observation_params)
+    @observation.approval_status = "pending"
     @observation.measurements.each do |mea|
       mea.orig_value = mea.value
+      mea.approval_status = "pending"
     end
     
     if @observation.save
+      # Todo: Uncomment following line in production
+      #UploadApprovalMailer.approve(current_user).deliver
       redirect_to @observation, flash: {success: "Observation was successfully created." }
     else
       render action: 'new'
@@ -118,14 +115,17 @@ class ObservationsController < ApplicationController
   # PATCH/PUT /observations/1
   # PATCH/PUT /observations/1.json
   def update
-    @temp_var = 0    
     @observation.measurements.each do |mea|
       if mea.orig_value.blank?
         mea.orig_value = mea.value
+        
       end
+      mea.approval_status = "pending"
     end
     
       if @observation.update(observation_params)
+        # Todo: Uncomment following line in production
+        #UploadApprovalMailer.approve(current_user).deliver
         redirect_to @observation, flash: {success: "Observation was successfully updated." }
       else
         render action: 'edit'
@@ -135,7 +135,7 @@ class ObservationsController < ApplicationController
   # DELETE /observations/1
   # DELETE /observations/1.json
   def destroy
-    if @observation.user_id == current_user.id
+    if (@observation.user_id == current_user.id) | current_user.admin?
       @observation.destroy
       flash[:success] = 'Observation was successfully deleted.'
       if params[:user].blank?
@@ -171,6 +171,8 @@ class ObservationsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def observation_params
-      params.require(:observation).permit(:user_id, :location_id, :coral_id, :resource_id, :private, measurements_attributes: [:id, :user_id, :orig_user_id, :trait_id, :standard_id, :value, :value_type, :orig_value, :precision_type, :precision, :precision_upper, :replicates, :notes, :_destroy])
+      params.require(:observation).permit(:user_id, :location_id, :coral_id, :resource_id, :private, :approval_status, measurements_attributes: [:id, :user_id, :orig_user_id, :trait_id, :standard_id, :value, :value_type, :orig_value, :precision_type, :precision, :precision_upper, :replicates, :notes, :methodology_id, :approval_status, :_destroy])
     end
+
+
 end

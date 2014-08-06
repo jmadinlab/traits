@@ -1,0 +1,41 @@
+
+<% if @observations.empty? %>
+	<p class="alert alert-danger">No public records.</p>
+<% else %>
+
+	<table class="table table-condensed">
+		<thead>
+			<tr>
+		  	<th></th>
+				<th>Trait</th>
+				<th>Observations</th>
+				<th></th>
+			</tr>
+		</thead>
+	
+		
+
+	 	<% @measurements = Measurement.where(:observation_id => Observation.where(:coral_id => @coral.id).map(&:id)) %>
+		<% temp = "" %>
+		<% @measurements.sort_by{ |h| [h.trait.trait_class, h.trait.trait_name]}.map(&:trait_id).uniq.each do |t| %>
+			<% if Trait.where(:id => t).last.trait_class != "Contextual" %>   
+				<tr>
+					<% if temp != Trait.where(:id => t).last.trait_class %>
+						<% temp = Trait.where(:id => t).last.trait_class %>
+						<td><b><%= temp %></b></td>
+					<% else %>
+						<td style="border:none;"></td>
+					<% end %>
+
+					<td><%= Trait.where(:id => t).last.trait_name %></td>
+					<td><%= @measurements.where(:trait_id => t).count %></td>
+	  			<td>
+	          <div class="btn-group">
+	            <%= link_to 'Show', coral_trait_path(:coral_id => @coral.id, :id => t), class: "btn btn-xs btn-default" %>
+	          </div>
+	  			</td>
+				</tr>
+			<% end %>
+		<% end %>
+	</table>
+<% end %>

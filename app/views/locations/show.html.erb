@@ -1,12 +1,14 @@
 <% provide(:title, @location.location_name) %>
 
 <div class="row">
-  <div class="col-md-10 col-md-offset-1">
+  <div class="col-md-8 col-md-offset-2">
 
-		<h3><%= @location.location_name %></h3>
+    <div class="page-header">
+      <h1><%= @location.location_name %></h1>
+    </div>
 
 		<div class="row">
-		  <div class="col-md-6">
+		  <div class="col-md-4">
 				<p>
 				  <strong>Latitude:</strong>
 				  <%= @location.latitude.round(4) %>
@@ -31,15 +33,15 @@
 					<% end %>
 				</p>
 
-				<p>
-				<% if signed_in? && current_user.contributor? %>
-					<%= link_to 'Edit', edit_location_path(@location) %> |
-				<% end %>
-				<%= link_to 'Back', locations_path %></p>
-				
+		    <div class="btn-group">
+			  	<% if signed_in? && current_user.editor? %>
+						<%= link_to 'Edit', edit_location_path(@location), class: "btn btn-sm btn-default" %>
+					<% end %>
+					<%= link_to 'Back', locations_path, class: "btn btn-sm btn-default" %>
+				</div>
 			</div>
 
-		  <div class="col-md-6">
+		  <div class="col-md-8">
 				<div id="map-canvas" class="map-container"></div> 
 			</div>
 
@@ -49,47 +51,29 @@
 		<h3>Observations from <%= @location.location_name %></h3>
 
 		<% if @observations.empty? %>
-			<p class="alert alert-danger">No records available.</p>
+			<p class="alert alert-danger">No observations available.</p>
 		<% else %>
 		
-			<% if @observations.size < Observation.where(:location_id => @location.id).size %>
-	      <div class="alert alert-danger">Not all records for this location are currently displayed.</div>
-	    <% else %>
-	    	<div class="alert alert-success">All records for this location are displayed.</div>
-	    <% end %>
-
 			<div class="well">
-					
-				<%= form_tag location_path, :method => 'get' do %>
-					<div class="row">
-					  <div class="col-lg-6">
-					    <div class="input-group">
-					      <%= text_field_tag :search, params[:search], :placeholder => "Search by value...", class: "form-control" %>
-					      <span class="input-group-btn">
-							    <%= submit_tag "Update", :name => nil, class: "btn btn-default" %>
-									<%= link_to 'Reset', location_path, class: "btn btn-default" %>
-					      </span>
-					    </div>
-					  </div>
-						Return: <%= select_tag :n, options_for_select([10, 100, 1000, "all"], params[:n]) %> records.
+				<div class="row">
+					<div class="col-md-5">
+						Access: <%= render "shared/access_counts", :acc => Observation.where(:location_id => @location.id) %> observations
 					</div>
-				<% end %>
-			
-				<% if @observations.size > 0 %>
-				
-					<br/>
-			
-					<%= link_to "Download", location_path(format: "csv", search: params[:search], n: params[:n]), class: "btn btn-success btn-md" %> currently displayed data.
-					<% end %>
-			</div>	
+					<div class="col-md-4">
+						<%= form_tag location_path, :method => 'get' do %>
+								Displaying: <%= select_tag :n, options_for_select([10, 100, 1000, "all"], params[:n]), onchange: "$(this).parent('form').submit();" %> observations
+						<% end %>
+					</div>
+					<div class="col-md-3">
+						<%= link_to "Download", location_path(format: "csv", n: params[:n]), class: "btn btn-default btn-xs pull-right" %>
+					</div>
+				</div>
+			</div>  
 
-
-			<%= render "location_observations" %>
+			<%= render "shared/observations" %>
 		<% end %>
 	</div>
 </div>
-
-
 
 
 <script type="text/javascript"> 
@@ -106,14 +90,9 @@
 		  position: myLatlng,
 		  map: map
 		});
-	
 	}
 	google.maps.event.addDomListener(window, 'load', initialize);
 </script> 
-
-
-
-
 
 
 

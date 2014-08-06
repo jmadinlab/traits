@@ -1,0 +1,173 @@
+<% provide(:title, 'Meta') %>
+<small>
+<div class="row">
+  <div class="col-md-12 col-md-offset-0">
+
+		<h3>Ready to go, talk about in database paper</h3>
+
+		<table class="table table-condensed">
+			<tr style="background-color:#9DBB5E">
+			  <th>Trait Name</th>
+			  <th>Class</th>
+			  <th style="width:200px;">Description</th>
+			  <th>Editor</th>
+			  <th>Measurements</th>
+			  <th>Standard</th>
+			  <th>Value range</th>
+			  <th>Value type</th>
+			  <th>Methods</th>
+			  <th style="width:200px;">Resources</th>
+			  <th></th>
+			</tr>
+			<% @traits.where(:release_status => "ready_for_release").sort_by{ |h| h[:trait_name] }.each do |trait| %>
+				<tr>
+				  <td><%= link_to trait.trait_name, "/traits/" + trait.id.to_s %></td>
+				  <td><%= trait.trait_class %></td>
+				  <td><%= trait.trait_description %></td>
+				  <td><%= trait.user.name %></td>
+				  <td><%= Measurement.where(:trait_id => trait.id).size %></td>
+				  <td><%= trait.standard.standard_name %> (<%= trait.standard.standard_unit %>)</td>
+				  <td><%= trait.value_range %></td>
+				  <td><%= Measurement.where(:trait_id => trait.id).map(&:value_type).uniq.sort.join(",\n") %></td>
+				  <td></td>
+				  <td><%= Observation.where(:id => Measurement.where(:trait_id => trait.id).map(&:observation_id)).map(&:resource_id).uniq.sort.join(",\n") %></td>
+				  <td><%= link_to 'Edit', edit_trait_path(trait), class: "btn btn-default btn-xs" %></td>
+				</tr>
+			<% end %>
+		</table>
+
+		<h3>Release online, not needed to highlight in database paper</h3>
+
+		<table class="table table-condensed">
+			<tr style="background-color:#9DBB5E">
+			  <th>Trait Name</th>
+			  <th>Class</th>
+			  <th style="width:200px;">Description</th>
+			  <th>Editor</th>
+			  <th>Measurements</th>
+			  <th>Standard</th>
+			  <th>Value range</th>
+			  <th>Value type</th>
+			  <th>Methods</th>
+			  <th style="width:200px;">Resources</th>
+			  <th></th>
+			</tr>
+			<% @traits.where(:release_status => "ready_online_only").sort_by{ |h| h[:trait_name] }.each do |trait| %>
+				<tr>
+				  <td><%= link_to trait.trait_name, "/traits/" + trait.id.to_s %></td>
+				  <td><%= trait.trait_class %></td>
+				  <td><%= trait.trait_description %></td>
+				  <td><%= trait.user.name %></td>
+				  <td><%= Measurement.where(:trait_id => trait.id).size %></td>
+				  <td><%= trait.standard.standard_name %> (<%= trait.standard.standard_unit %>)</td>
+				  <td><%= trait.value_range %></td>
+				  <td><%= Measurement.where(:trait_id => trait.id).map(&:value_type).uniq.sort.join(",\n") %></td>
+				  <td></td>
+				  <td><%= Observation.where(:id => Measurement.where(:trait_id => trait.id).map(&:observation_id)).map(&:resource_id).uniq.sort.join(",\n") %></td>
+				  <td><%= link_to 'Edit', edit_trait_path(trait), class: "btn btn-default btn-xs" %></td>
+				</tr>
+			<% end %>
+		</table>
+
+		<h3>Needs work before release</h3>
+
+		<table class="table table-condensed">
+			<tr style="background-color:#FFFE33">
+			  <th>Trait Name</th>
+			  <th>Class</th>
+			  <th style="width:200px;">Description</th>
+			  <th>Editor</th>
+			  <th>Measurements</th>
+			  <th>Standard</th>
+			  <th>Value range</th>
+			  <th>Value type</th>
+			  <th>Methods</th>
+			  <th style="width:200px;">Resources</th>
+			  <th></th>
+			</tr>
+			<% @traits.where(:release_status => "needs_work_before_release").sort_by{ |h| h[:trait_name] }.each do |trait| %>
+				<tr>
+				  <td><%= link_to trait.trait_name, "/traits/" + trait.id.to_s %></td>
+				  <td><%= trait.trait_class %></td>
+				  <td><%= trait.trait_description %></td>
+				  <td><%= trait.user.name %></td>
+				  <td><%= Measurement.where(:trait_id => trait.id).size %></td>
+				  <td><%= trait.standard.standard_name %> (<%= trait.standard.standard_unit %>)</td>
+				  <td><%= trait.value_range %></td>
+				  <td><%= Measurement.where(:trait_id => trait.id).map(&:value_type).uniq.sort.join(",\n") %></td>
+				  <td></td>
+				  <td><%= Observation.where(:id => Measurement.where(:trait_id => trait.id).map(&:observation_id)).map(&:resource_id).uniq.sort.join(",\n") %></td>
+				  <td><%= link_to 'Edit', edit_trait_path(trait), class: "btn btn-default btn-xs" %></td>
+				</tr>
+			<% end %>
+		</table>
+
+		<h3>On website, encourage people to get more data</h3>
+
+		<table class="table table-condensed">
+			<tr style="background-color:#D7E3BE">
+			  <th>Trait Name</th>
+			  <th>Class</th>
+			  <th style="width:200px;">Description</th>
+			  <th>Editor</th>
+			  <th>Measurements</th>
+			  <th>Standard</th>
+			  <th>Value range</th>
+			  <th>Value type</th>
+			  <th>Methods</th>
+			  <th style="width:200px;">Resources</th>
+			  <th></th>
+			</tr>
+			<% @traits.where(:release_status => "data_deficient").sort_by{ |h| h[:trait_name] }.each do |trait| %>
+				<tr>
+				  <td><%= link_to trait.trait_name, "/traits/" + trait.id.to_s %></td>
+				  <td><%= trait.trait_class %></td>
+				  <td><%= trait.trait_description %></td>
+				  <td><%= trait.user.name %></td>
+				  <td><%= Measurement.where(:trait_id => trait.id).size %></td>
+				  <td><%= trait.standard.standard_name %> (<%= trait.standard.standard_unit %>)</td>
+				  <td><%= trait.value_range %></td>
+				  <td><%= Measurement.where(:trait_id => trait.id).map(&:value_type).uniq.join(",\n") %></td>
+				  <td></td>
+				  <td><%= Observation.where(:id => Measurement.where(:trait_id => trait.id).map(&:observation_id)).map(&:resource_id).uniq.sort.join(",\n") %></td>
+				  <td><%= link_to 'Edit', edit_trait_path(trait), class: "btn btn-default btn-xs" %></td>
+				</tr>
+			<% end %>
+		</table>
+
+		<h3>Not categorised</h3>
+
+		<table class="table table-condensed">
+			<tr style="background-color:red">
+			  <th>Trait Name</th>
+			  <th>Class</th>
+			  <th style="width:200px;">Description</th>
+			  <th>Editor</th>
+			  <th>Measurements</th>
+			  <th>Standard</th>
+			  <th>Value range</th>
+			  <th>Value type</th>
+			  <th>Methods</th>
+			  <th style="width:200px;">Resources</th>
+			  <th></th>
+			</tr>
+			<% @traits.where(:release_status => "").sort_by{ |h| h[:trait_name] }.each do |trait| %>
+				<tr>
+				  <td><%= link_to trait.trait_name, "/traits/" + trait.id.to_s %></td>
+				  <td><%= trait.trait_class %></td>
+				  <td><%= trait.trait_description %></td>
+				  <td><%= trait.user.name %></td>
+				  <td><%= Measurement.where(:trait_id => trait.id).size %></td>
+				  <td><%= trait.standard.standard_name %> (<%= trait.standard.standard_unit %>)</td>
+				  <td><%= trait.value_range %></td>
+				  <td><%= Measurement.where(:trait_id => trait.id).map(&:value_type).uniq.sort.join(",\n") %></td>
+				  <td></td>
+				  <td><%= Observation.where(:id => Measurement.where(:trait_id => trait.id).map(&:observation_id)).map(&:resource_id).uniq.sort.join(",\n") %></td>
+				  <td><%= link_to 'Edit', edit_trait_path(trait), class: "btn btn-default btn-xs" %></td>
+				</tr>
+			<% end %>
+		</table>
+		
+	</div>
+</div>
+</small>

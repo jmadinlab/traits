@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
 
   def correct_user
     @user = User.find(params[:id])
-    redirect_to(root_url) unless current_user?(@user)
+    redirect_to(root_url) unless (current_user?(@user) || current_user.admin?)
   end
 
   def admin_user
@@ -25,9 +25,20 @@ class ApplicationController < ActionController::Base
   def contributor
       redirect_to(
         root_url,flash: {danger: "You need to be a contributor to access this area of the database." }
-      ) unless (signed_in? && (current_user.contributor? || current_user.admin?))
-      
+      ) unless (signed_in? && (current_user.contributor? || current_user.admin?))  
   end
+
+  def editor
+      redirect_to(
+        root_url,flash: {danger: "You need to be a editor to access this area of the database." }
+      ) unless (signed_in? && (current_user.editor? || current_user.admin?))      
+  end
+
+  def enterer
+    @observation = Observation.find(params[:id])
+    redirect_to(root_url, flash: { danger: "You can't edit or delete other peoples' observations." }) unless (signed_in? && (@observation.user_id == current_user.id))      
+  end
+
 
   # get ip of the user for versioning database
   def info_for_paper_trail
@@ -41,11 +52,14 @@ class ApplicationController < ActionController::Base
   end
 
   # Return the main csv string depending upon the model (corals data / traits data / lcation data etc)
-  def get_main_csv(observations)
-      csv_string = CSV.generate do |csv|
-          csv << ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "precision", "precision_type", "precision_upper", "replicates"]
-          observations.each do |obs|
-            obs.measurements.each do |mea|
+  def get_main_csv(observations, contextual, global)
+
+    csv_string = CSV.generate do |csv|
+      csv << ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "methodology_name", "standard_unit",  "value", "precision", "precision_type", "precision_upper", "replicates"]
+      observations.each do |obs|
+        if global != "on" || obs.location_id == 1
+          obs.measurements.each do |mea|
+            if mea.trait.trait_class != "Contextual" || contextual == "on"
               if obs.location.present?
                 loc = obs.location.location_name
                 lat = obs.location.latitude
@@ -64,18 +78,26 @@ class ApplicationController < ActionController::Base
               else
                 acc = 1
               end
-              csv << [obs.id, acc, obs.user_id, obs.coral.coral_name, loc, lat, lon, obs.resource_id, mea.id, mea.trait.trait_name, mea.standard.standard_unit, mea.value, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates]
+
+              method = ""
+              if mea.methodology.present?
+                method = mea.methodology.methodology_name
+              end
+
+              csv << [obs.id, acc, obs.user_id, obs.coral.coral_name, loc, lat, lon, obs.resource_id, mea.id, mea.trait.trait_name, method, mea.standard.standard_unit, mea.value, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates]
             end
           end
         end
-    
-     return csv_string
+      end
     end
+    
+   return csv_string
+  end
 
 
 
   # Return the resources csv
-  def get_resources_csv(observations)
+  def get_resources_csv(observations, contextual, global)
     resources_string = CSV.generate do |csv|
         csv << ["resource_id", "author", "year", "title", "resource_type", "resource_ISBN", "resource_journal", "resource_volume_pages", "resource_notes"]
 
@@ -102,20 +124,20 @@ class ApplicationController < ActionController::Base
 
 
   # Return the zip file
-  def send_zip(observations, file_name='file1.csv')
+  def send_zip(observations, file_name='file1.csv', contextual, global)
     require 'rubygems'
     require 'zip'
 
     # Process file1 (corals.csv, traits.csv, locations.csv)
-    csv_string = get_main_csv(observations)
+    csv_string = get_main_csv(observations, contextual, global)
     file1 = file_name
     file1_path = "public/" + file1
     _file1 = File.open(file1_path, "w") { |f| f << csv_string }
     
 
     # Process file2 resources.csv
-    resources_string = get_resources_csv(observations)
-    file2 = "resources_file.csv"
+    resources_string = get_resources_csv(observations, contextual, global)
+    file2 = "resources.csv"
     file2_path = "public/" + file2
     _file2 = File.open(file2_path, "w") { |f| f << resources_string }
     
@@ -132,7 +154,7 @@ class ApplicationController < ActionController::Base
     
     File.open(zipfile_name, 'r') do |f|
       send_data f.read, type: "application/zip", :stream => true,
-      :disposition => "attachment; filename = zippedfile.zip"
+      :disposition => "attachment; filename = ctdb.zip"
     end
     File.delete(zipfile_name)
     FileUtils.rm_f(file2_path)
@@ -140,8 +162,26 @@ class ApplicationController < ActionController::Base
 
   end
 
+  
+  def upload_csv
+    @name = params[:controller]  
+  end
 
 
+  def get_coral_csv(corals)
+    csv_string = CSV.generate do |csv|
+        csv << ["coral_id", "master_species", "major_clade", "family_molecules", "family_morphology", "synonym_species", "coral_notes"]
+        corals.each do |cor|
+          syn_vec = []
+          cor.synonyms.each do |syn|
+            syn_vec << syn.synonym_name
+          end
+          csv << [cor.id, cor.coral_name, cor.major_clade, cor.family_molecules, cor.family_morphology, syn_vec.join(", "), cor.coral_description]
+        end
+      end
+  
+   return csv_string
+  end
 
   
 end

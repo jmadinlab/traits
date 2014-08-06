@@ -7,13 +7,23 @@ class CoralsController < ApplicationController
   # GET /corals
   # GET /corals.json
   def index
-    @corals = Coral.search(params[:search])
+    # @corals = Coral.search(params[:search])
+    
+    @search = Coral.search do
+      fulltext params[:search]
+    end
+    
+    if params[:search]
+      @corals = @search.results
+    else
+      @corals = Coral.all
+    end
     
     @corals = PaperTrail::Version.find(params[:version]).reify if params[:version]
 
     respond_to do |format|
       format.html
-      format.csv { send_data @corals.to_csv }
+      format.csv { send_data get_coral_csv(@corals) }
       
     end    
   end
@@ -34,12 +44,12 @@ class CoralsController < ApplicationController
       @observations = Observation.where(:coral_id => params[:checked])        
     end
     
-    #csv_string = get_main_csv(@observations)
+    # csv_string = get_main_csv(@observations, params[:contextual], params[:global])
 
-    send_zip(@observations, 'corals.csv')
+    send_zip(@observations, 'traits.csv', params[:contextual], params[:global])
       
 
-    #send_data csv_string, 
+    # send_data csv_string, 
     #  :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
     #  :disposition => "attachment; filename=ctdb_#{Date.today.strftime('%Y%m%d')}.csv"
           
@@ -54,8 +64,6 @@ class CoralsController < ApplicationController
     @coral = @item if @item
     @coral = Coral.find(params[:id]) if params[:id]
     
-
-
 
     if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
       #@observations = Observation.where(['observations.coral_id IS ? AND observations.private IS ?', @coral.id, false])
@@ -74,26 +82,24 @@ class CoralsController < ApplicationController
     respond_to do |format|
       format.html
       format.csv {
-        
         if request.url.include? 'resources.csv'
-          csv_string = get_resources_csv(@observations)
-          filename = 'resources.csv'
+          csv_string = get_resources_csv(@observations, "", "")
+          filename = 'resources'
         else
-          csv_string = get_main_csv(@observations)
-          filename = 'corals.csv'
+          csv_string = get_main_csv(@observations, "", "")
+          filename = 'data'
         end
-        
         send_data csv_string, 
           :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
           :disposition => "attachment; filename=#{filename}_#{Date.today.strftime('%Y%m%d')}.csv"
-
-        }
+      }
 
       format.zip{
-        send_zip(@observations, 'corals.csv')
+        send_zip(@observations, 'data.csv', "", "")
       }
 
     end
+
   end
 
   # GET /corals/new
@@ -149,7 +155,7 @@ class CoralsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def coral_params
-      params.require(:coral).permit(:coral_name, :coral_description, :user_id)
+      params.require(:coral).permit(:coral_name, :coral_description, :user_id, :approval_status, :major_clade, :family_molecules, :family_morphology, synonyms_attributes: [:id, :synonym_name, :synonym_notes, :_destroy])
     end
 
     

@@ -21,11 +21,12 @@
 
 	<div class="form-group">
 		<%= f.label :resource_type %>
-		<%= f.select :resource_type, ['', 'paper', 'monograph', 'book', 'book_chapter', 'webpage', 'CD_rom', 'conference_proceedings', 'thesis', 'technical_report', 'petition', 'pers_obs', 'pers_comm', 'guess'], {:selected => @resource.resource_type}, class: "form-control" %>
+		<%= f.select :resource_type, ['', 'paper', 'monograph', 'book', 'book_chapter', 'webpage', 'CD_rom', 'conference_proceedings', 'thesis', 'technical_report', 'petition', 'pers_obs', 'pers_comm', 'opinion'], {:selected => @resource.resource_type}, class: "form-control" %>
 	</div>
 	
 	<div class="form-group">
 		<%= f.label :doi_isbn %>
+		<p><small>Only the identifier.  Do not append text like "DOI"</small></p>
 		<%= f.text_field :doi_isbn, class: "form-control" %>
 	</div>
 
@@ -48,10 +49,14 @@
 
 	<div class="form-group">
 		<% if current_user.admin? %>
-				<%= f.label :user %>
+			<%= f.label :enterer %>
+			<% if f.object.id.present? %>
+				<%= f.select :user_id, User.all.collect {|a| [a.name, a.id]}, {}, class: "form-control" %>
+			<% else %>
 				<%= f.select :user_id, User.all.collect {|a| [a.name, a.id]}, {:selected => current_user.id}, class: "form-control" %>
+			<% end %>
 		<% else %>
-			<%= f.label :user %>: <%= current_user.name %>
+			<%#= current_user.name %>
 		  <%= f.hidden_field :user_id, :value => current_user.id %>
 		<% end %>
 	</div>

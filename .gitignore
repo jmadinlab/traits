@@ -4,14 +4,17 @@
 # Ignore the default SQLite database.
 /db/*.sqlite3
 /db/*.sqlite3-journal
+/db/schema.rb
 #/db
+/config/local_env.yml
+/solr
 
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
 /public/assets/
 /app/assets/images/
-
+/config/local_env.yml
 # Ignore other unneeded files.
 Gemfile.lock
 database.yml
@@ -24,3 +27,4 @@ doc/
 .rvmrc
 .ruby-*
 .secret
+notes_josh.md

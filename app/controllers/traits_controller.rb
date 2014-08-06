@@ -1,14 +1,23 @@
 class TraitsController < ApplicationController
 
   # before_action :signed_in_user
-  before_action :contributor, except: [:index, :show, :export]
+  before_action :editor, except: [:index, :show, :export]
   before_action :set_trait, only: [:show, :edit, :update, :destroy]
   before_action :admin_user, only: :destroy
 
   # GET /traits
   # GET /traits.json
   def index
-    @traits = Trait.search(params[:search])
+    # @traits = Trait.search(params[:search])
+    @search = Trait.search do
+      fulltext params[:search]
+    end
+    
+    if params[:search]
+      @traits = @search.results
+    else
+      @traits = Trait.all
+    end
 
     respond_to do |format|
       format.html
@@ -30,12 +39,12 @@ class TraitsController < ApplicationController
       @observations = Observation.joins(:measurements).where(:measurements => {:trait_id => params[:checked]})        
     end
     
-    #csv_string = get_main_csv(@observations)
+    # csv_string = get_main_csv(@observations, params[:contextual], params[:global])
 
-    send_zip(@observations, 'traits.csv')
+    send_zip(@observations, 'traits.csv', params[:contextual], params[:global])
       
 
-    #send_data csv_string, 
+    # send_data csv_string, 
     #  :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
     #  :disposition => "attachment; filename=ctdb_#{Date.today.strftime('%Y%m%d')}.csv"
        
@@ -44,52 +53,45 @@ class TraitsController < ApplicationController
   # GET /traits/1
   # GET /traits/1.json
   def show
-    @files = Dir.glob("app/assets/images/traits/*")
 
-    if params[:n].blank?
-      params[:n] = 100
-    end
-    
+    params[:n] = 100 if params[:n].blank?
     n = params[:n]
-    
-    if params[:n] == "all"
-      n = 9999999
-    end
+    n = 9999999 if params[:n] == "all"
 
-      # @observations = Observation.where(:private == false).includes(:coral).joins(:measurements).where(:measurements => {:trait_id => @trait.id}).where('value LIKE ?', "%#{params[:search]}%").limit(n) 
-
-    if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
-      @observations = Observation.where(['observations.private IS ?', false]).includes(:coral).joins(:measurements).where('measurements.trait_id IS ? AND measurements.value LIKE ?', @trait.id, "%#{params[:search]}%").limit(n)
-    end
-    
-    if signed_in? && current_user.contributor?
-      @observations = Observation.where(['observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?)', false, current_user.id, true]).includes(:coral).joins(:measurements).where('measurements.trait_id IS ? AND measurements.value LIKE ?', @trait.id, "%#{params[:search]}%").limit(n)
+    if params[:coral_id]
+      @coral = Coral.find(params[:coral_id])
+      @observations = Observation.includes(:coral).joins(:measurements).where('observations.coral_id IS ? AND measurements.trait_id IS ?', @coral.id, @trait.id)
+    else
+      @observations = Observation.joins(:measurements).where('measurements.trait_id IS ?', @trait.id)
     end
 
     if signed_in? && current_user.admin?
-      @observations = Observation.includes(:coral).joins(:measurements).where('measurements.trait_id IS ? AND measurements.value LIKE ?', @trait.id, "%#{params[:search]}%").limit(n)
+    elsif signed_in? && current_user.editor?
+    elsif signed_in? && current_user.contributor?
+      @observations = @observations.where(['observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?)', false, current_user.id, true])
+    else
+      @observations = @observations.where(['observations.private IS ?', false])
     end
     
     respond_to do |format|
-      format.html
+      format.html {
+        @observations = @observations.limit(n)
+      }
       format.csv {
-
         if request.url.include? 'resources.csv'
-          csv_string = get_resources_csv(@observations)
-          filename = 'resources.csv'
+          csv_string = get_resources_csv(@observations, "", "")
+          filename = 'resources'
         else
-          csv_string = get_main_csv(@observations)
-          filename = 'traits.csv'
+          csv_string = get_main_csv(@observations, "", "")
+          filename = 'data'
         end
-        
         send_data csv_string, 
           :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
           :disposition => "attachment; filename=#{filename}_#{Date.today.strftime('%Y%m%d')}.csv"
-
       }
 
       format.zip{
-        send_zip(@observations, 'traits.csv')
+        send_zip(@observations, 'data.csv', "", "")
       }
 
     end
@@ -109,6 +111,15 @@ class TraitsController < ApplicationController
   # POST /traits.json
   def create
     @trait = Trait.new(trait_params)
+    methodology_ids =  params[:trait][:methodologies_attributes]
+    traitvalue_ids =  params[:trait][:traitvalues_attributes]
+
+    if not methodology_ids.nil?
+      methodology_ids.keys().each do |k|
+        methodology = Methodology.find(methodology_ids[k]["id"])
+        @trait.methodologies << methodology if methodology_ids[k]["_destroy"] != "1" and not @trait.methodologies.include? methodology
+      end
+    end
 
     if @trait.save
       redirect_to @trait, flash: {success: "Trait was successfully created." }
@@ -120,6 +131,21 @@ class TraitsController < ApplicationController
   # PATCH/PUT /traits/1
   # PATCH/PUT /traits/1.json
   def update
+    methodology_ids =  params[:trait][:methodologies_attributes]
+    traitvalue_ids =  params[:trait][:traitvalues_attributes]
+
+    @trait.methodologies.delete_all()
+    #@trait.traitvalues.delete_all()
+
+    if not methodology_ids.nil?
+      methodology_ids.keys().each do |k|
+        method = Methodology.find(methodology_ids[k]["id"])
+        @trait.methodologies << method if ((methodology_ids[k]["_destroy"] != "1") and (not @trait.methodologies.include? method))
+        
+      end
+    end
+    
+    
     if @trait.update(trait_params)
       redirect_to @trait, flash: {success: "Trait was successfully updated." }
     else
@@ -145,7 +171,7 @@ class TraitsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def trait_params
-      params.require(:trait).permit(:trait_name, :trait_description, :trait_class, :value_range, :standard_id, :user_id)
+      params.require(:trait).permit(:trait_name, :trait_description, :trait_class, :value_range, :standard_id, :user_id, :approval_status, :release_status, :methodologies, traitvalues_attributes: [:id, :value_name, :value_description, :_destroy])
     end
 end
 

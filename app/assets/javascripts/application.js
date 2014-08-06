@@ -11,13 +11,13 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require jquery
+//= require jquery.turbolinks
 //= require jquery-ui
 //= require jquery_ujs
 //= require turbolinks
-//= require cocoon
 //= require bootstrap
-//= require jquery.turbolinks
 //= require select2
+//= require cocoon
 //= require_tree .
 
 
@@ -26,6 +26,12 @@
 //   $('select#simple-example').select2();
 // });
 // 
+
+   
+$(document).ready(function(){
+    $('span').tooltip();
+});
+
 
 
 function checkUncheckAll(theElement) { 
@@ -36,4 +42,84 @@ function checkUncheckAll(theElement) {
 		} 
 	} 
 }
+
+
+
+$(document).ready(function(){
+  $('.panel-body').hide();
+
+  $('.panel-heading').click(function(e){
+    e.preventDefault();
+    $(this).next('.panel-body').fadeToggle("slow");
+  });
+
+  
+  process_precision()
+  
+});
+
+/*
+var element_id = 1;
+
+$(document).bind('cocoon:after-insert', function(e,inserted_item) {
+   e.preventDefault();
+   setTimeout(function(){
+   	window.element_id = window.element_id + 1;
+   	custom_id = "trait_select" + element_id;
+   	$('#sur_trait').attr('id', custom_id);
+   	$('#sur_value').attr('id', 'trait_value' + element_id);
+   	$('#sur_methodology').attr('id', 'trait_methodology' + element_id);
+   	$('#sur_standard').attr('id', 'trait_standard' + element_id);
+    $('#sur_suggested_standard').attr('id', 'suggested_standard' + element_id) ;
+   	//alert('success');
+   }, 2000);
+   
+
+});
+
+$(window).on('load', function(){
+	$('#sur_trait').attr('id', 'trait_select1');
+	$('#sur_value').attr('id', 'trait_value1');
+	$('#sur_methodology').attr('id', 'trait_methodology1');
+	$('#sur_standard').attr('id', 'trait_standard1');
+  $('#sur_suggested_standard').attr('id', 'suggested_standard1');
+  
+});
+
+
+*/
+
+
+function process_precision()
+
+{
+
+  // Process the precision fields while document loads for first time (new / edit)
+  var selected_value_type = $('[id*=_value_type]');
+  selected_value_type.each(function(){
+    if ( $(this).val() =="" || $(this).val()== "raw_value")
+      $(this).parents(".nested-fields").find(".precision").hide();
+    else 
+      $(this).parents(".nested-fields").find(".precision").show();
+  });
+
+  // Add event listener for on change in value_type
+  $("[id*=_value_type]").on("change", function() {
+      var selected_value;
+      selected_value = $(this).val();
+      if (selected_value === "raw_value" || selected_value == "") {
+        $(this).parents(".nested-fields").find(".precision").children().val("");
+        $(this).parents(".nested-fields").find(".precision").hide();
+      } else {
+        $(this).parents(".nested-fields").find(".precision").show();
+      }
+    });
+  
+}
+
+$(document).bind('cocoon:after-insert', function(e,inserted_item) {
+  
+    process_precision()
+});
+
 

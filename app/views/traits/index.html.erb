@@ -3,26 +3,19 @@
 <div class="row">
   <div class="col-md-8 col-md-offset-2">
 
-		<h3>Traits</h3>
+		<div class="page-header">
+			<h1>Traits</h1>
+		</div>
 
 		<div class="row">
-		  <div class="col-md-9">
+		  <div class="col-md-12">
 				<p>Data for each of the traits listed below can be downloaded by selecting them using the checkbox and clicking <code style="color:green;">Download</code>.  Only public trait observations (and your own private observations) will be downloaded.</p>
-			</div>
-		  <div class="col-md-3">
-				<p><span class="glyphicon glyphicon-ok-circle" style="color:green;"></span> All data public<br/>
-				<span class="glyphicon glyphicon-record" style="color:orange;"></span> Some data public<br/>
-				<span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> No data public</p>
 			</div>
 		</div>
 	
 		<div class="well">
-			<% if signed_in? && current_user.contributor? %>	
-				<%= link_to 'New Trait', new_trait_path, class: "btn btn-primary btn-md pull-right" %>
-			<% end %>
-					
 			<div class="row">
-			  <div class="col-lg-6">
+			  <div class="col-md-6">
 					<%= form_tag traits_path, :method => 'get' do %>
 				    <div class="input-group">
 				      <%= text_field_tag :search, params[:search], :placeholder => "Search traits...", class: "form-control" %>
@@ -32,86 +25,69 @@
 				      </span>
 				    </div>
 					<% end %>
+					<br>Download trait list as a <%= link_to "csv", traits_path(format: "csv") %>.
+			  </div>
+			  <div class="col-md-6">
+			  	<% if signed_in? && current_user.contributor? %>	
+						<%= link_to 'New Trait', new_trait_path, class: "btn btn-primary btn-md pull-right" %>
+					<% end %>
 			  </div>
 			</div>
-
-			<br/>Download trait list as a <%= link_to "csv", traits_path(format: "csv") %>.
-
 		</div>
-
 
 		<%= form_tag export_traits_path do %>
 		
+			<%= render "shared/download_options" %>			
+
 			<div class="row">
-			  <div class="col-md-12 col-md-offset-7">
-					<p><input type="checkbox", name="ancillary" /> Download ancillary data as well?
-					<br/><input type="checkbox", name="global" /> Download global estimates only?</p>
-				</div>
-			</div>
-			
-
-			<table class="table table-condensed">
-			  <thead>
-			    <tr>
-			      <th></th>
-			      <th style="color: lightgrey;">ID</th>
-			      <th>Trait name</th>
-			      <th style="text-align:center;"><%= submit_tag "Download", class: "btn btn-success btn-sm" %></th>
-			      <th></th>
-			    </tr>
-			  </thead>
-
-			  <tbody>
-					<% temp = [] %>
-					<% @traits.sort_by{ |h| [h[:trait_class] || "z", h[:trait_name]] }.each do |trait| %>
-						<tr>
+			  <div class="col-md-12">
+				<% temp = [] %>
+				<% @traits.sort_by{ |h| [h[:trait_class] || "z", h[:trait_name]] }.each do |trait| %>
+					<% if trait.trait_class != "Contextual" %>
 						<% if temp != trait.trait_class %>
-								<% temp = trait.trait_class %>
-								<td><b>
+							<% temp = trait.trait_class %>
 								<% if trait.trait_class.blank? %>
-									Unclassified
+									<h4>Miscellaneous</h4>
+									<ul class="list-group">
 								<% else %>
-									<%= trait.trait_class %>
+    							</ul>
+									<h4><%= trait.trait_class %></h4>
+									<ul class="list-group">
 								<% end %>
-								</b></td>
-							<% else %>
-					    	<td style="border:none;"></td>
 							<% end %>
-					    <td style="color: lightgrey;"><%= trait.id %></td>
-					    <td><%= link_to trait.trait_name, trait %></td>
-						
-						 	<td style="text-align:center;">
-								<% access = Observation.select(:private).joins(:measurements).where(:measurements => {:trait_id => trait.id}) %>
-								<% if access.where(:private == false).size == 0 %>
-									<span class="glyphicon glyphicon-remove-circle" style="color:red;">
-								<% else %>
-									<% if access.where(:private => false).size == access.size %>
-										<span class="glyphicon glyphicon-ok-circle" style="color:green;">
-									<% else %>
-										<span class="glyphicon glyphicon-record" style="color:orange;">
-									<% end %>
-								<% end %>
-								<%= check_box_tag "checked[]", trait.id %>
-							</td>						
-						
-							
-						
-			        <td style="text-align:right; min-width: 170px;">
-							<% if signed_in? && current_user.contributor? %>
-				        <%= link_to 'Edit', edit_trait_path(trait) %>
-							<% end %>
-							<% if signed_in? && current_user.admin? %> |
-				        <%= link_to 'Delete', trait, method: :delete, data: { confirm: 'Are you sure?' } %>
-							<% end %>
-							</td>
-					  </tr>
 
+				  		<li class="list-group-item">							
+								<div class="row">
+	    						<div class="col-sm-1" style="color:lightgrey;"><%= trait.id %></div>
+									<div class="col-sm-5">
+							    	<%= link_to trait.trait_name, trait %>
+									</div>
+								
+									<div class="col-sm-1">
+										<%= check_box_tag "checked[]", trait.id %>
+									</div>
+								
+									<div class="col-sm-2">
+										<%= render "shared/access_counts", :acc => Observation.where(:id => Measurement.where(:trait_id => trait).map(&:observation_id)) %>
+									</div>
 
+			  					<div class="col-sm-3">
+							     	<div class="btn-group pull-right">
+							     		<%= link_to 'Show', trait_path(trait), class: "btn btn-xs btn-default" %>					
+											<% if signed_in? && current_user.editor? %>
+								        <%= link_to 'Edit', edit_trait_path(trait), class: "btn btn-xs btn-default" %>
+											<% end %>
+											<% if signed_in? && current_user.admin? %>
+								        <%= link_to 'Delete', trait, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
+											<% end %>
+					        	</div>
+									</div>
+						  	</div>
+							</li>
+			    	<% end %>
 			    <% end %>
-			  </tbody>
-			</table>
-
+			  </div>
+			</div>
 		<% end %>
-
 	</div>
 </div>

@@ -1,0 +1,37 @@
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+
+    <h3 > CSV Upload Admin </h3>
+    <% if @product_import.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@product_import.errors.count, "error") %> prohibited this import from completing:</h2>
+        <ul>
+        <% @product_import.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <% item_present = false %>
+    <% list = [ @corals , @locations, @traits, @standards, @resources ] %>
+    <% list.each do |l| %>
+    	<% if not l.empty? %>
+    		<% item_present = true %>
+    		<% items = l %>
+    		<%= render partial: "approve_table" , :locals => { :items => items } %>
+    	<% end %>
+    <% end %>
+
+    <% if not @observations.empty? %>
+      <% item_present = true %>
+      <%= render "import_observations" %>
+
+    <% end %>
+
+    <% if not item_present %>
+    	<div class="alert alert-info" role="alert">  No items uploaded </div>
+    <% end %>
+
+  </div>
+</div>

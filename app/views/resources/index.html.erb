@@ -3,15 +3,19 @@
 <div class="row">
   <div class="col-md-8 col-md-offset-2">
 
-		<h3>Resources</h3>
+    <div class="page-header">
+      <h1>Resources</h1>
+    </div>
+
+		<div class="row">
+		  <div class="col-md-12">
+				<p>Data for each of the resources listed below can be downloaded by selecting them using the checkbox and clicking <code style="color:green;">Download</code>.  Only public trait data will be downloaded for each location.</p>
+			</div>
+		</div>
 
 		<div class="well">
-			<% if signed_in? %>	
-				<%= link_to 'New Resource', new_resource_path, class: "btn btn-primary btn-md pull-right" %>
-			<% end %>
-			
 			<div class="row">
-			  <div class="col-lg-6">
+			  <div class="col-md-6">
 					<%= form_tag resources_path, :method => 'get' do %>
 				    <div class="input-group">
 				      <%= text_field_tag :search, params[:search], :placeholder => "Search resources...", class: "form-control" %>
@@ -20,43 +24,64 @@
 								<%= link_to 'Reset', resources_path, class: "btn btn-default" %>
 				      </span>
 				    </div>
+						<p>Sort by: <%= select_tag :sort, options_for_select(["id", "author", "year", "title"], params[:sort]), onchange: "$(this).parent('form').submit();" %></p>
+						<!-- Order: <%#= select_tag :order, options_for_select(["ascending", "descending"], params[:order]), onchange: "$(this).parent('form').submit();" %> -->
+					<% end %>
+					<p>Download resource list as a <%= link_to "csv", resources_path(format: "csv") %>.</p>
+			  </div>
+			  <div class="col-md-6">
+			  	<% if signed_in? && current_user.contributor? %>	
+						<%= link_to 'New Resource', new_resource_path, class: "btn btn-primary btn-md pull-right" %>
 					<% end %>
 			  </div>
 			</div>
-
-			<br/>Download resource list as a <%= link_to "csv", resources_path(format: "csv") %>.
-
 		</div>
 
-		<table class="table table-condensed">
-		  <thead>
-		    <tr>
-		      <th style="color: lightgrey;"><%= sortable "id", "ID" %></th>
-		      <th><%= sortable "author", "Author" %></th>
-		      <th><%= sortable "year", "Year" %></th>
-		      <th><%= sortable "title", "Title" %></th>
-		      <th>Obs</th>
-		      <th></th>
-		    </tr>
-		  </thead>
+		<%= form_tag export_resources_path do %>
 
-		  <tbody>
-		    <% @resources.each do |resource| %>
-		      <tr>
-		        <td style="color: lightgrey;"><%= resource.id %></td>
-		        <td style="max-width: 150px;overflow:hidden;"><%= resource.author %></td>
-		        <td><%= resource.year %></td>
-		        <td style="max-width: 250px;overflow:hidden;"><%= resource.title %></td>
-		        <td><%= Observation.where(:resource_id => resource).size %></td>
-		        <td style="text-align:right; "><%= link_to 'Show', resource %>
-		        <% if signed_in? && current_user.admin? %> |
-		        	<%= link_to 'Edit', edit_resource_path(resource) %> |
-		        	<%= link_to 'Delete', resource, method: :delete, data: { confirm: 'Are you sure?' } %>
-		        <% end %></td>
-		      </tr>
-		    <% end %>
-		  </tbody>
-		</table>
+			<%= render "shared/download_options" %>			
 
+			<div class="row">
+			  <div class="col-sm-12">
+					<ul class="list-group">
+			    	<% @resources.each do |resource| %>
+						  <li class="list-group-item">							
+								<div class="row">
+					        <div class="col-sm-1" style="color: lightgrey;">
+					        	<%= resource.id %>
+					        </div>
+
+					        <div class="col-sm-5">
+					        	<%= link_to resource.author, resource %>
+					        	<% if resource.year %>
+						        	(<%= resource.year %>)
+				    				<% end %>		
+					        	<small><%= resource.title %></small>
+					        </div>
+
+								 	<div class="col-sm-1">
+										<%= check_box_tag "checked[]", resource.id %>
+									</div>
+
+									<div class="col-sm-2">
+						        <%= render "shared/access_counts", :acc => Observation.where(:resource_id => resource) %>
+									</div>
+
+					        <div class="col-sm-3">
+								    <div class="btn-group pull-right">
+								     	<%= link_to 'Show', resource_path(resource), class: "btn btn-xs btn-default" %>
+										  <% if signed_in? && current_user.admin? %>
+							        	<%= link_to 'Edit', edit_resource_path(resource), class: "btn btn-xs btn-default" %>
+							        	<%= link_to 'Delete', resource, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
+											<% end %>
+						        </div>
+									</div>
+								</div>
+							</li>
+				    <% end %>		
+			    </ul>
+				</div>
+			</div>
+    <% end %>
 	</div>
 </div>

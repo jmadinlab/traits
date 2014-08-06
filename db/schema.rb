@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140619051818) do
+ActiveRecord::Schema.define(version: 20140731014427) do
 
   create_table "citations", force: true do |t|
     t.integer  "trait_id"
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(version: 20140619051818) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
+    t.string   "approval_status"
   end
 
   add_index "citations", ["resource_id"], name: "index_citations_on_resource_id"
@@ -31,6 +32,10 @@ ActiveRecord::Schema.define(version: 20140619051818) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "approval_status"
+    t.string   "major_clade"
+    t.string   "family_molecules"
+    t.string   "family_morphology"
   end
 
   add_index "corals", ["user_id"], name: "index_corals_on_user_id"
@@ -43,6 +48,7 @@ ActiveRecord::Schema.define(version: 20140619051818) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "approval_status"
   end
 
   add_index "locations", ["user_id"], name: "index_locations_on_user_id"
@@ -63,12 +69,27 @@ ActiveRecord::Schema.define(version: 20140619051818) do
     t.datetime "updated_at"
     t.text     "notes"
     t.string   "value_type"
+    t.string   "approval_status"
+    t.integer  "methodology_id"
   end
 
+  add_index "measurements", ["methodology_id"], name: "index_measurements_on_methodology_id"
   add_index "measurements", ["observation_id"], name: "index_measurements_on_observation_id"
   add_index "measurements", ["standard_id"], name: "index_measurements_on_standard_id"
   add_index "measurements", ["trait_id"], name: "index_measurements_on_trait_id"
   add_index "measurements", ["user_id"], name: "index_measurements_on_user_id"
+
+  create_table "methodologies", force: true do |t|
+    t.string   "methodology_name"
+    t.text     "method_description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "methodologies_traits", id: false, force: true do |t|
+    t.integer "trait_id"
+    t.integer "methodology_id"
+  end
 
   create_table "observations", force: true do |t|
     t.integer  "user_id"
@@ -78,6 +99,7 @@ ActiveRecord::Schema.define(version: 20140619051818) do
     t.boolean  "private"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "approval_status"
   end
 
   add_index "observations", ["coral_id"], name: "index_observations_on_coral_id"
@@ -97,6 +119,7 @@ ActiveRecord::Schema.define(version: 20140619051818) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "approval_status"
   end
 
   add_index "resources", ["user_id"], name: "index_resources_on_user_id"
@@ -109,9 +132,20 @@ ActiveRecord::Schema.define(version: 20140619051818) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "approval_status"
   end
 
   add_index "standards", ["user_id"], name: "index_standards_on_user_id"
+
+  create_table "synonyms", force: true do |t|
+    t.integer  "coral_id"
+    t.string   "synonym_name"
+    t.text     "synonym_notes"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "synonyms", ["coral_id"], name: "index_synonyms_on_coral_id"
 
   create_table "traits", force: true do |t|
     t.string   "trait_name"
@@ -122,10 +156,22 @@ ActiveRecord::Schema.define(version: 20140619051818) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "approval_status"
+    t.string   "release_status"
   end
 
   add_index "traits", ["standard_id"], name: "index_traits_on_standard_id"
   add_index "traits", ["user_id"], name: "index_traits_on_user_id"
+
+  create_table "traitvalues", force: true do |t|
+    t.string   "value_name"
+    t.integer  "trait_id"
+    t.text     "value_description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "traitvalues", ["trait_id"], name: "index_traitvalues_on_trait_id"
 
   create_table "users", force: true do |t|
     t.string   "name"
@@ -136,6 +182,9 @@ ActiveRecord::Schema.define(version: 20140619051818) do
     t.string   "remember_token"
     t.boolean  "admin"
     t.boolean  "contributor"
+    t.boolean  "editor"
+    t.string   "password_reset_token"
+    t.datetime "password_reset_sent_at"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true

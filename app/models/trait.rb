@@ -8,13 +8,26 @@ class Trait < ActiveRecord::Base
 
   has_many :citations#, :dependent => true
   has_many :resources, :through => :citations
+  
+  has_many :traitvalues, :dependent => :destroy
 
+  has_and_belongs_to_many :methodologies, :dependent => :destroy
+  accepts_nested_attributes_for :methodologies, :reject_if => :all_blank, :allow_destroy => true
+  accepts_nested_attributes_for :traitvalues, :reject_if => :all_blank, :allow_destroy => true
+  
+
+  searchable do
+    text :trait_name
+    text :trait_class
+  end
+
+  '''
   def self.search(search)
-      if search
-        where('trait_name LIKE ? OR trait_class LIKE ?', "%#{search}%", "%#{search}%")
-      else
-        all
-      end
+    if search
+      where("trait_name LIKE ? OR trait_class LIKE ?", "%#{search}%", "%#{search}%")
+    else
+      all
+    end
   end  
-
+  '''
 end

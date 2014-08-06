@@ -1,105 +1,83 @@
-
-
 <% if @observations.empty? %>
 	<p class="alert alert-danger">No public records.</p>
 <% else %>
-
-	<% temp = "" %>
-	<table class="table table-condensed">
-		<thead>
-			<tr>
-		  	<!-- <th style="color: lightgrey;">ID</th> -->
-		  	<th>Coral</th>
-		  	<th>Location</th>
-		  	<th>Resource</th>
-		  	<th>Contributor</th>
-		  	<th>Access</th>
-		  	<th>Trait</th>
-				<th>Value</th>
-				<th></th>
-			</tr>
-		</thead>
-		
-		<% mark = "" %>
-		<% mark1 = "" %>
-
-	<%# @measurements.sort_by{ |h| [h.trait.trait_class, h.trait.name] }.each do |mea| %>    
-	  <% @observations.each do |grp| %>    
-	    <% grp.measurements.each do |mea| %>    
-        
-		<tr>      
-      				
-			<% if grp.coral.coral_name != mark %>
-				<td style="text-align: right;">
-					<em><%= link_to grp.coral.coral_name, "/corals/" + grp.coral_id.to_s %></em>
-				</td>				
-			<% else %>
-				<td style="border:none;">
-				</td>				
-			<% end %>
-
-			  <% if grp.id != mark1 %>
-
-
-				<td style="text-align:center;">
-  				<% if !grp.location_id.blank? && grp.location_id != 0 %>
-  				  <% if grp.location_id == 1 %>
-			      	<%= link_to "Global", "/locations/" + grp.location_id.to_s %>
-  				  <% else %> 
-  			      <%= link_to "", "/locations/" + grp.location_id.to_s, class: "glyphicon glyphicon-globe", 'data-no-turbolink' => true %>
-  				  <% end %> 
-  				<% end %> 
-  			</td>
-
-  			<td style="text-align:center;">
-  				<% if !grp.resource_id.blank? && grp.resource_id != 0 %>
-  					<%= link_to "", "/resources/" + grp.resource_id.to_s, class: "glyphicon glyphicon-book" %>
-  				<% end %> 
-  			</td>        
-
-  			<td style="text-align:center;">
-  				<% if !grp.user_id.blank? && grp.user_id != 0 %>
-  					<%= link_to "", "/users/" + grp.user_id.to_s, class: "glyphicon glyphicon-user" %>
-  				<% end %>
-  			</td>
-				<% if grp.private == true %>
-					<td style="color:red;text-align:center;"><span class="glyphicon glyphicon-remove-circle"></span></td>
-				<% else %>
-					<td style="color:green;text-align:center;"><span class="glyphicon glyphicon-ok-circle"></span></td>
+	<% mark = "" %>
+	<div class="row">
+	  <div class="col-md-12">
+		  <% @observations.each do |grp| %>    
+				<% if grp.coral.coral_name != mark %>
+					</ul>
+					<h4><em><%= link_to grp.coral.coral_name, "/corals/" + grp.coral_id.to_s %></em></h4>
+					<ul class="list-group">
 				<% end %>
 
+		  	<li class="list-group-item">							
+					<div class="row">
+		        <div class="col-sm-1" style="color: lightgrey;">
+		        	<%= grp.id %>
+		        </div>
 
-		  <% else %> 
-        <td colspan=4 style="border:none;"></td>
-		  <% end %> 
-      
-      <td>
-				<%= link_to mea.trait.trait_name, "/traits/" + mea.trait_id.to_s %>
-      </td>
-      <td>
-        <%= mea.value %>
-				<% if !mea.standard.blank? %>
-					(<%= mea.standard.standard_unit %>)
-				<% end %> 
-      </td>
+						<div class="col-sm-3">
+							<div class="col-sm-1">
+			  				<% if !grp.location_id.blank? && grp.location_id != 0 %>
+			  				  <% if grp.location_id == 1 %>
+						      	<%= link_to "", "/locations/" + grp.location_id.to_s, class: "glyphicon glyphicon-globe" %>
+			  				  <% else %> 
+			  			      <%= link_to "", "/locations/" + grp.location_id.to_s, class: "glyphicon glyphicon-map-marker", 'data-no-turbolink' => true %>
+			  				  <% end %> 
+			  				<% end %> 
+			  			</div>
+							<div class="col-sm-1">
+			  				<% if !grp.resource_id.blank? && grp.resource_id != 0 %>
+			  					<%= link_to "", "/resources/" + grp.resource_id.to_s, class: "glyphicon glyphicon-book" %>
+			  				<% end %> 
+			  			</div>        
+							<div class="col-sm-1">
+			  				<% if !grp.user_id.blank? && grp.user_id != 0 %>
+			  					<%= link_to "", "/users/" + grp.user_id.to_s, class: "glyphicon glyphicon-user" %>
+			  				<% end %>
+			  			</div>
+							<div class="col-sm-1">
+								<% if grp.private == true %>
+									<span class="glyphicon glyphicon-remove-circle" style="color:red;"></span>
+								<% else %>
+									<span class="glyphicon glyphicon-ok-circle" style="color:green;"></span>
+								<% end %>
+			  			</div>
+							<div class="col-sm-1">
+				      	<% if grp.measurements.size > 1 %>
+									<span class="glyphicon glyphicon-eye-open"></span>
+								<% end %>
+			  			</div>
+		  			</div>
+			      <% measurement = grp.measurements.where(:trait_id => @trait.id).first %>
 
-		  <% if grp.id != mark1 %>
-
-  			<td style="text-align:right; min-width: 150px;">
-  				<% if signed_in? && current_user.contributor? %>
-  					<%= link_to 'Show', observation_path(grp, :trait => mea.trait_id) %> |
-  	    		<%= link_to 'Edit', edit_observation_path(grp, :trait => mea.trait_id) %> |
-  	    		<%= link_to 'Delete', observation_path(grp, :trait => mea.trait_id), method: :delete, data: { confirm: 'Are you sure?' } %>
-  				<% end %>
-  			</td>
-        <% end %>
-		</tr>
-    
-		<% mark = grp.coral.coral_name %>
-		<% mark1 = grp.id %>
-    
-  	<% end %>
-
-	<% end %>
-	</table>
+						<div class="col-sm-3">
+							<%= link_to measurement.trait.trait_name, "/traits/" + measurement.trait_id.to_s %>
+			      </div>
+						<div class="col-sm-3">
+							<% if measurement.standard.standard_class == "Nominal class" %>
+								<span class="label label-primary"><%= measurement.value %></span>
+							<% else %> 
+			        	<%= measurement.value %>
+								<% if !measurement.standard.blank? %>
+									(<%= measurement.standard.standard_unit %>)
+								<% end %> 
+							<% end %> 
+			      </div>
+						<div class="col-sm-2">
+		      		<div class="btn-group pull-right">				
+			  				<% if signed_in? && current_user.contributor? %>
+			  					<%= link_to 'Show', observation_path(grp), class: "btn btn-xs btn-default" %>
+			  	    		<%= link_to 'Edit', edit_observation_path(grp), class: "btn btn-xs btn-default" %>
+			  	    		<%= link_to 'X', observation_path(grp), method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
+			  				<% end %>
+		  				</div>
+		  			</div>
+					</div>
+				</li>
+				<% mark = grp.coral.coral_name %>
+	  	<% end %>
+		</div>
+	</div>
 <% end %>

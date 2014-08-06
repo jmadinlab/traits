@@ -7,9 +7,12 @@
 	<table class="table table-condensed">
 		<thead>
 		  <tr>
-		    <!-- <th style="color: lightgrey;">ID</th> -->
+		    <th style="color: lightgrey;">ID</th>
 		    <th>Name</th>
 		    <th>Email</th>
+			  <% if current_user.editor? %>
+	  	    <th style="text-align:center;">Editor</th>
+				<% end %>
 			  <% if current_user.admin? %>
 	  	    <th style="text-align:center;">Admin</th>
 				<% end %>
@@ -18,21 +21,34 @@
 		</thead>
 	
 	  <tbody>
-			<% @users.each do |user| %>
+			<% @users.sort_by{ |a| [a.editor ? 0 : 1, a.name] }.each do |user| %>
 				<% if user.contributor %>
 					<tr>
+						<td style="color: lightgrey;"><%= user.id %></td>
 						<td><%= link_to user.name, user %></td>
 					  <td><%= user.email %></td>
-					  <% if current_user.admin? %>
-						  <% if !user.admin? %>
-								<td style="color:red;text-align:center;"><span class="glyphicon glyphicon-remove-circle"></span></td>
+					  
+					  <td style="text-align:center;">
+					  <% if current_user.editor? %>
+						  <% if !user.editor? %>
+								<span class="glyphicon glyphicon-remove-circle red"></span>
 							<% else %>
-								<td style="color:green;text-align:center;"><span class="glyphicon glyphicon-ok-circle"></span></td>
+								<span class="glyphicon glyphicon-ok-circle green"></span>
 							<% end %>
 						<% end %>
+						</td>
 
-					  <td>      
+					  <% if current_user.admin? %>
+						  <% if !user.admin? %>
+								<td style="text-align:center;"><span class="glyphicon glyphicon-remove-circle red"></span></td>
+							<% else %>
+								<td style="text-align:center;"><span class="glyphicon glyphicon-ok-circle green"></span></td>
+							<% end %>
+						<% end %>
+						
+					  <td style="text-align:right;">      
 					  	<% if current_user.admin? && !current_user?(user) %>
+					    	<%= link_to "Edit", edit_user_path(user) %> |
 					    	<%= link_to "Delete", user, method: :delete, data: { confirm: "You sure?" } %>
 							<% end %>
 						</td>
@@ -49,7 +65,7 @@
 		<table class="table table-condensed">
 			<thead>
 			  <tr>
-			    <!-- <th style="color: lightgrey;">ID</th> -->
+			    <th style="color: lightgrey;">ID</th>
 			    <th>Name</th>
 			    <th>Email</th>
 				  <% if current_user.admin? %>
@@ -63,6 +79,7 @@
 				<% @users.each do |user| %>
 					<% if !user.contributor %>
 						<tr>
+							<td style="color: lightgrey;"><%= user.id %></td>
 							<td><%= link_to user.name, user %></td>
 						  <td><%= user.email %></td>
 						  <% if current_user.admin? %>
@@ -73,7 +90,7 @@
 								<% end %>
 							<% end %>
 
-						  <td style="text-align:right; min-width: 150px;">      
+						  <td style="text-align:right;">      
 						  	<% if current_user.admin? && !current_user?(user) %>
 						    	<%= link_to "Delete", user, method: :delete, data: { confirm: "You sure?" } %>
 								<% end %>

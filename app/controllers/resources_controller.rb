@@ -4,14 +4,26 @@ class ResourcesController < ApplicationController
   before_action :set_resource, only: [:show, :edit, :update, :destroy]
   before_action :admin_user, only: :destroy
 
-  helper_method :sort_column, :sort_direction
-
   # GET /resources
   # GET /resources.json
   def index
-    @resources = Resource.order(sort_column + " " + sort_direction).search(params[:search])
-    # @resources = @resources.paginate(page: params[:page])
+    @search = Resource.search do
+      fulltext params[:search]
+    end
     
+    if params[:search]
+      @resources = @search.results
+    else
+      @resources = Resource.all
+    end
+
+
+    @resources = @resources.sort_by{|l| l[:id]} if params[:sort] == "id"
+    @resources = @resources.sort_by{|l| l[:author]} if params[:sort] == "author"
+    @resources = @resources.sort_by{|l| l[:year] || 0 } if params[:sort] == "year"
+    @resources = @resources.sort_by{|l| l[:title]} if params[:sort] == "title"
+    @resources = @resources.reverse if params[:order] == "descending"
+
     respond_to do |format|
       format.html
       format.csv { send_data @resources.to_csv }
@@ -22,59 +34,43 @@ class ResourcesController < ApplicationController
   # GET /resources/1.json
   def show
 
-    if params[:n].blank?
-      params[:n] = 10
-    end
-    
+    params[:n] = 100 if params[:n].blank?
     n = params[:n]
-    
-    if params[:n] == "all"
-      n = 9999999
-    end
+    n = 9999999 if params[:n] == "all"
 
-    if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
-    @observations = Observation.where(['observations.resource_id IS ? AND observations.private IS ?', @resource.id, false]).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").uniq.limit(n)
-    end
-    
-    if signed_in? && current_user.contributor?
-      @observations = Observation.where(['observations.resource_id IS ? AND (observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?))', @resource.id, false, current_user.id, true]).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").uniq.limit(n)
-    end
+    @observations = Observation.where('resource_id IS ?', @resource.id)
 
     if signed_in? && current_user.admin?
-      @observations = Observation.where(:resource_id => @resource.id).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").uniq.limit(n)
+    elsif signed_in? && current_user.editor?
+    elsif signed_in? && current_user.contributor?
+      @observations = @observations.where(['observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?)', false, current_user.id, true])
+    else
+      @observations = @observations.where(['observations.private IS ?', false])
     end
-    
+
     respond_to do |format|
-      format.html
-      format.csv { 
+      format.html {
+        @observations = @observations.limit(n)
+      }
+      format.csv {
         if request.url.include? 'resources.csv'
-          csv_string = get_resources_csv(@observations)
-          filename = 'resources_extra.csv'
+          csv_string = get_resources_csv(@observations, "", "")
+          filename = 'resources'
         else
-          csv_string = get_main_csv(@observations)
-          filename = 'resources_main.csv'
+          csv_string = get_main_csv(@observations, "", "")
+          filename = 'data'
         end
-        
         send_data csv_string, 
           :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
           :disposition => "attachment; filename=#{filename}_#{Date.today.strftime('%Y%m%d')}.csv"
       }
 
       format.zip{
-        send_zip(@observations, 'resources.csv')
+        send_zip(@observations, 'data.csv', "", "")
       }
+
     end
 
-    # if signed_in?
-    #   if current_user.admin?
-    #         @observations = Observation.find(:all, :conditions => ["resource_id=?", @resource.id])
-    #       else
-    #     @observations = Observation.find(:all, :conditions => ["resource_id=? AND (private=? OR (user_id=? AND private=?))", @resource.id, false, current_user.id, true])
-    #   end
-    # else
-    #   @observations = Observation.find(:all, :conditions => ["resource_id=? AND private=?", @resource.id, false])
-    #   flash[:success] = "You are not signed in. You will only see publicly accessable data."
-    # end
   end
 
   # GET /resources/new
@@ -118,6 +114,31 @@ class ResourcesController < ApplicationController
     end
   end
 
+  def export
+    checked = params[:checked]
+      
+    if signed_in? && current_user.contributor?
+      if current_user.admin?
+        #@observations = Observation.where{location_id.in my{params[:checked]}}
+        @observations = Observation.where(:resource_id => params[:checked])
+      else
+        #@observations = Observation.where{ (private == 'f') | ((user_id == my{current_user.id}) & (private == 't')) }.        
+        #where{location_id.in my{params[:checked]}}
+        @observations = Observation.where(" (private = 'f' or (private = 't' and user_id = ? )) ", current_user.id).where(:resource_id => params[:checked])
+
+      end
+    else
+      @observations = Observation.where(:private => false).where(:resource_id => params[:checked])        
+    end        
+    
+    csv_string = get_main_csv(@observations)
+
+    send_data csv_string, 
+      :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
+      :disposition => "attachment; filename=ctdb_#{Date.today.strftime('%Y%m%d')}.csv"
+          
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_resource
@@ -126,15 +147,7 @@ class ResourcesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def resource_params
-      params.require(:resource).permit(:author, :year, :title, :resource_type, :doi_isbn, :journal, :volume_pages, :pdf_name, :resource_notes)
-    end
-
-    def sort_column
-      Resource.column_names.include?(params[:sort]) ? params[:sort] : "id"
-    end
-
-    def sort_direction
-      %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
+      params.require(:resource).permit(:author, :year, :title, :resource_type, :doi_isbn, :journal, :volume_pages, :pdf_name, :resource_notes, :approval_status, :user_id)
     end
 
 end

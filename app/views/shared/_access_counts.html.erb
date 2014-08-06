@@ -1,0 +1,4 @@
+<span class="label label-success"><span class="glyphicon glyphicon-ok-circle" style="color:white;"></span> <%= acc.where(:private => false).size %></span>
+<% if signed_in? && current_user.contributor? %>
+	<span class="label label-danger"><span class="glyphicon glyphicon-remove-circle" style="color:white;"></span> <%= acc.where(:private => true).size %></span>
+<% end %>

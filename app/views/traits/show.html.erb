@@ -1,93 +1,139 @@
 <% provide(:title, @trait.trait_name) %>
 
 <div class="row">
-  <div class="col-md-10 col-md-offset-1">
+	<div class="col-md-8 col-md-offset-2">
 
-		<h3>
-			<%= @trait.trait_name %>
-		</h3>
+		<div class="page-header">
+			<h1>
+				<%= @trait.trait_name %>
+				<% if @coral %>
+					(<em><%= link_to @coral.coral_name, coral_path(@coral) %></em>)
+				<% end %>
+			</h1>
+		</div>
 
-		<p>
-		  <strong>Default standard:</strong>
-			<% if !@trait.standard.blank? %>
-		  	<%= @trait.standard.standard_name %> (<%= @trait.standard.standard_unit %>)
-			<% end %>
-		</p>
+		<div class="row">
+		  <div class="col-md-9">
+				<p>
+					<strong>Default standard:</strong>
+					<% if !@trait.standard.blank? %>
+						<%= @trait.standard.standard_name %> (<%= @trait.standard.standard_unit %>)
+					<% end %>
+				</p>
 
-		<% if @trait.value_range.present? %>
-			<p>
-			  <strong>Value range:</strong>
-			  <%= @trait.value_range %>
-			</p>
-		<% end %>
+				<% if @trait.traitvalues.present? %>
+					<p>
+						<strong>Possible trait values:</strong>
+						<% @trait.traitvalues.each do |tv| %>
+							<span class="label label-primary"><%= tv.value_name %></span>
+							<%# if tv.value_description.present? %>
+								<!-- (<%#= tv.value_description %>) -->
+							<%# end %>
+						<% end %>
+					</p>
+				<% end %>
+				
+				<p>
+				  <strong>Class:</strong>
+					<% if @trait.trait_class.present? %>
+				  	<%= @trait.trait_class %>
+					<% else %>
+						<font style="color:lightgrey;">Unclassified</font>
+					<% end %>
+				</p>
 
-		<p>
-		  <strong>Trait class:</strong>
-		  <%= @trait.trait_class %>
-		</p>
+				<p>
+					<strong>Description:</strong>
+					<% if @trait.trait_description.present? %>
+						<%= @trait.trait_description %>
+					<% else %>
+						<font style="color:lightgrey;">Not entered</font>
+					<% end %>
+				</p>
 
-		<p>
-		  <strong>Trait description:</strong>
-			<% if @trait.value_range.present? %>
-			  <%= @trait.trait_description %>
-			<% else %>
-				Needs entering
-			<% end %>
-		</p>
+				<p>
+					<strong>Methodologies:</strong>
+					<% if not @trait.methodologies.empty? %>
+						<ul>
+							<% @trait.methodologies.each do |methodology| %>
+								<li>
+									<%= link_to methodology.methodology_name, methodology %>
+							</li>
+							<% end %>
+						</ul>
+					<% else %>
+						<font style="color:lightgrey;">None entered</font>
+					<% end %>
 
-		<p>
-		  <strong>Contributor:</strong>
-			<% if !@trait.user.blank? %>
-		  	<%= @trait.user.name %>
-			<% end %>
-		</p>
+				</p>
 
-		<% img = "#{@trait.trait_name.downcase.tr(" ", "_")}.png" %>
-		<% @temp = @files.find_all{|item| item.include? img }.last %>
+				<p>
+					<strong>Editor:</strong>
+					<% if !@trait.user.blank? %>
+						<%= @trait.user.name %> (<%= mail_to @trait.user.email, "contact", {:subject => "Coral Trait enquiry"} %>)
+					<% end %>
+				</p>
 
-		<% if !@temp.nil? %>
-			<p style="text-align:left;"><%= image_tag "traits/#{@trait.trait_name.downcase.tr(" ", "_")}.png", :style => "border:0px;", class:  "img-responsive" %></p>
-		<% end %>
+				<p>
+		      <div class="btn-group">
+						<% if signed_in? && current_user.editor? %>
+							<%= link_to 'Edit', edit_trait_path(@trait), class: "btn btn-sm btn-default" %>
+						<% end %>
+						<%= link_to 'Back', traits_path, class: "btn btn-sm btn-default" %>
+						<%= link_to 'Back to coral', coral_path(@coral), class: "btn btn-sm btn-default" if @coral %>
+		      </div>
+				</p>
+			</div>
 
-		<p>
-			<% if signed_in? && current_user.contributor? %>
-				<%= link_to 'Edit', edit_trait_path(@trait) %> |
-			<% end %>
-			<%= link_to 'Back', traits_path %>
-		</p>
+		  <div class="col-md-3">
+			  <%= render "shared/symbol_key" %>
+			</div>
+		</div>
 
+		
+		<h3>Observations</h3>
 		
 		<div class="well">
-					
-			<%= form_tag trait_path, :method => 'get' do %>
-				<div class="row">
-				  <div class="col-lg-6">
-				    <div class="input-group">
-				      <%= text_field_tag :search, params[:search], :placeholder => "Search by value...", class: "form-control" %>
-				      <span class="input-group-btn">
-						    <%= submit_tag "Update", :name => nil, class: "btn btn-default" %>
-								<%= link_to 'Reset', trait_path, class: "btn btn-default" %>
-				      </span>
-				    </div>
-				  </div>
-					Return: <%= select_tag :n, options_for_select([10, 100, 1000, "all"], params[:n]) %> observations.
+			<div class="row">
+				<div class="col-md-5">
+					<% if @coral %>
+						Access: <%= render "shared/access_counts", :acc => Observation.where(:coral_id => @coral).where(:id => Measurement.where(:trait_id => @trait).map(&:observation_id)) %> observations
+					<% else %>
+						Access: <%= render "shared/access_counts", :acc => Observation.where(:id => Measurement.where(:trait_id => @trait).map(&:observation_id)) %> observations
+					<% end %>
 				</div>
-			<% end %>
-			
-			<% if @observations.size > 0 %>
-				
-				<br/>
-			
-				<%= link_to "Download", trait_path(format: "csv", search: params[:search], n: params[:n]), class: "btn btn-success btn-md" %> currently displayed data.
-				<% end %>
-		</div>	
+				<div class="col-md-5">
+					<% if @coral %>
+						<%= form_tag coral_trait_path, :method => 'get' do %>
+							Displaying: <%= select_tag :n, options_for_select([10, 100, 1000, "all"], params[:n]), onchange: "$(this).parent('form').submit();" %> observations
+						<% end %>
+					<% else %>
+						<%= form_tag trait_path, :method => 'get' do %>
+							Displaying: <%= select_tag :n, options_for_select([10, 100, 1000, "all"], params[:n]), onchange: "$(this).parent('form').submit();" %> observations
+						<% end %>
+					<% end %>
+				</div>
+				<div class="col-md-2">
+					<% if @coral %>
+						<%= link_to "Download", coral_trait_path(format: "zip", n: params[:n]), class: "btn btn-default btn-xs pull-right" %>
+					<% else %>
+						<span data-toggle="tooltip" data-placement="top" title="Contextual data not included">
+							<%= link_to "Download", trait_path(format: "zip", n: params[:n]), class: "btn btn-default btn-xs" %>
+						</span>
+					<% end %>
+				</div>
+			</div>
+		</div>  
 
-		<% if @observations.size < Observation.joins(:measurements).where(:measurements => {:trait_id => @trait.id}).size %>
-      <div class="alert alert-danger">Not all observations for this trait are currently displayed.</div>
-    <% else %>
-    	<div class="alert alert-success">All observations for this trait are now displayed.</div>
-    <% end %>
-		
-		<%= render "trait_observations" %>
+								  		
+
+
+<!-- 		<%# if @observations.size < Observation.joins(:measurements).where(:measurements => {:trait_id => @trait.id}).size %>
+			<div class="alert alert-danger">Not all observations for this trait are currently displayed.</div>
+		<%# else %>
+			<div class="alert alert-success">All observations for this trait are now displayed.</div>
+		<%# end %>
+ -->		
+		<%= render "shared/observations" %>
 	</div>
 </div>

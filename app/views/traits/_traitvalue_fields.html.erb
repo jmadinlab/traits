@@ -1,0 +1,20 @@
+<div class="nested-fields">
+	<div class="row">
+		<div class="col-md-3">
+	
+			<div class="form-group">
+				<%= f.text_field :value_name, class: "form-control" %>	
+			</div>
+		</div>
+		<div class="col-md-6">
+	
+			<div class="form-group">
+				<%= f.text_field :value_description, class: "form-control" %>	
+			</div>
+		</div>
+		<div class="col-md-3">
+			<%= link_to_remove_association "remove", f %>
+		</div>
+		
+	</div>
+</div>
