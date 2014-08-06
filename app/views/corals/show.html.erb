@@ -3,12 +3,13 @@
 <div class="row">
   <div class="col-md-8 col-md-offset-2">
 
+    <div class="page-header">
+      <h1><em><%= @coral.coral_name %></em></h1>
+    </div>
+
 		<div class="row">
 		  <div class="col-md-6">
 
-		    <div class="page-header">
-		      <h1><em><%= @coral.coral_name %></em></h1>
-		    </div>
 				
 				<% if !@coral.synonyms.blank? %>
 				  <p>
@@ -52,7 +53,6 @@
 
 		  </div>
 		  <div class="col-md-6">
-		 		<br>
 		 		<div class="well">
 					<p><strong>External resources for this species:</strong></p>
 					<ul>
@@ -86,11 +86,6 @@
 						<li><%= link_to "OBIS observation records", "http://iobis.org/mapper/?taxon=" + @coral.coral_name.to_s, target: "_blank" %></li>
 					</ul>
 				
-					<!-- <p><small>Note: The OBIS link will search for the master species name, which might not return any records and doens't include alternate species names.  If OBIS records do exist, they can be downloaded by selecting <code>Show results</code>, then <code>Download</code>, and then choosing <code>Points</code>. This functionality is not immediately obvious.</small></p> -->
-					
-		<!-- 			<hr/>
-					<%#= link_to "Download", coral_path(format: "zip"), class: "btn btn-success btn-md" %> data for this species as a CSV file.
-		 -->
 				</div>
 			</div>
 		</div>
@@ -112,13 +107,13 @@
 				<% @htemp = @hfiles.find_all{|item| item.include? img }.last %>
 				<% if !@htemp.nil? %>
 					<p style="text-align:center;"><%= image_tag "hughes/#{@coral.coral_name.sub(" ", "_")}.png", :style => "border:0px;", class:  "img-responsive" %></p>
-					<p style="text-align:center;"><a href="http://www.esapubs.org/archive/ecol/E094/150/">Hughes map</a></p>
+					<p style="text-align:center;"><%= link_to "Hughes map", resource_path(605) %></p>
 				<% else %>
 						<p>No Hughes map</p>
 				<% end %>
 
 
 		<%= render "coral_observations" %>
-		<%#= render "coral_traits" %>
+
 	</div>
 </div>

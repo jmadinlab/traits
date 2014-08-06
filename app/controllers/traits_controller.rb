@@ -39,12 +39,12 @@ class TraitsController < ApplicationController
       @observations = Observation.joins(:measurements).where(:measurements => {:trait_id => params[:checked]})        
     end
     
-    #csv_string = get_main_csv(@observations)
+    # csv_string = get_main_csv(@observations, params[:contextual], params[:global])
 
-    send_zip(@observations, 'traits.csv')
+    send_zip(@observations, 'traits.csv', params[:contextual], params[:global])
       
 
-    #send_data csv_string, 
+    # send_data csv_string, 
     #  :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
     #  :disposition => "attachment; filename=ctdb_#{Date.today.strftime('%Y%m%d')}.csv"
        
@@ -79,11 +79,11 @@ class TraitsController < ApplicationController
       }
       format.csv {
         if request.url.include? 'resources.csv'
-          csv_string = get_resources_csv(@observations)
-          filename = 'resources.csv'
+          csv_string = get_resources_csv(@observations, "", "")
+          filename = 'resources'
         else
-          csv_string = get_main_csv(@observations)
-          filename = 'traits.csv'
+          csv_string = get_main_csv(@observations, "", "")
+          filename = 'data'
         end
         send_data csv_string, 
           :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
@@ -91,7 +91,7 @@ class TraitsController < ApplicationController
       }
 
       format.zip{
-        send_zip(@observations, 'traits.csv')
+        send_zip(@observations, 'data.csv', "", "")
       }
 
     end

@@ -21,25 +21,11 @@
 		</div>
 
 	  <div class="col-md-4">
-			<div class="well">
-				<span class="glyphicon glyphicon-globe"></span> Global estimate<br/>
-				<span class="glyphicon glyphicon-map-marker"></span> Location specific<br/>
-				<span class="glyphicon glyphicon-book"></span> Resource<br/>
-				<span class="glyphicon glyphicon-user"></span> Contributor<br/>
-				<span class="glyphicon glyphicon-eye-open"></span> Context included<br/>
-				<span class="glyphicon glyphicon-asterisk"></span> Pending approval<br/>
-				<span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> Not public<br/>
-				<span class="glyphicon glyphicon-ok-circle" style="color:green;"></span> Public
-			</div>
+			<%= render "shared/symbol_key" %>
 		</div>
 	</div>
 
 		<h3>Observations</h3>
-		<p>
-			<strong>Access: </strong>
-			<span class="label label-success"><span class="glyphicon glyphicon-ok-circle" style="color:white;"></span> <%= Observation.where(:user_id => @user.id).where(:private => false).size %></span>
-			<span class="label label-danger"><span class="glyphicon glyphicon-remove-circle" style="color:white;"></span> <%= Observation.where(:user_id => @user.id).where(:private => true).size %></span>
-		</p>
 
 		<% if @observations.blank? %>
 			<div class="alert alert-danger">No records available.</div>
@@ -47,13 +33,16 @@
 	
 			<div class="well">
 				<div class="row">
-				  <div class="col-md-6">
+					<div class="col-md-5">
+						Access: <%= render "shared/access_counts", :acc => Observation.where(:user_id => @user.id) %> observations
+					</div>
+				  <div class="col-md-4">
 						<%= form_tag user_path, :method => 'get' do %>
-							Showing <%= select_tag :n, options_for_select([10, 100, 1000, "all"], params[:n]), onchange: "$(this).parent('form').submit();" %> observations
+							Displaying: <%= select_tag :n, options_for_select([10, 100, 1000, "all"], params[:n]), onchange: "$(this).parent('form').submit();" %> observations
 						<% end %>
 					 </div>
-					<div class="col-md-6">
-						<%= link_to "Download all user observations", user_path(format: "csv", n: params[:n]), class: "btn btn-success btn-sm pull-right" %>
+					<div class="col-md-3">
+						<%= link_to "Download", user_path(format: "csv", n: params[:n]), class: "btn btn-default btn-xs pull-right" %>
 					</div>
 				</div>
 			</div>

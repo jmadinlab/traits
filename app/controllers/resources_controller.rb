@@ -4,8 +4,6 @@ class ResourcesController < ApplicationController
   before_action :set_resource, only: [:show, :edit, :update, :destroy]
   before_action :admin_user, only: :destroy
 
-  helper_method :sort_column, :sort_direction
-
   # GET /resources
   # GET /resources.json
   def index
@@ -51,27 +49,26 @@ class ResourcesController < ApplicationController
     end
 
     respond_to do |format|
-      format.html { 
+      format.html {
         @observations = @observations.limit(n)
       }
-
-      format.csv { 
+      format.csv {
         if request.url.include? 'resources.csv'
-          csv_string = get_resources_csv(@observations)
-          filename = 'resources_extra.csv'
+          csv_string = get_resources_csv(@observations, "", "")
+          filename = 'resources'
         else
-          csv_string = get_main_csv(@observations)
-          filename = 'resources_main.csv'
+          csv_string = get_main_csv(@observations, "", "")
+          filename = 'data'
         end
-        
         send_data csv_string, 
           :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
           :disposition => "attachment; filename=#{filename}_#{Date.today.strftime('%Y%m%d')}.csv"
       }
 
       format.zip{
-        send_zip(@observations, 'resources.csv')
+        send_zip(@observations, 'data.csv', "", "")
       }
+
     end
 
   end
@@ -151,14 +148,6 @@ class ResourcesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def resource_params
       params.require(:resource).permit(:author, :year, :title, :resource_type, :doi_isbn, :journal, :volume_pages, :pdf_name, :resource_notes, :approval_status, :user_id)
-    end
-
-    def sort_column
-      Resource.column_names.include?(params[:sort]) ? params[:sort] : "id"
-    end
-
-    def sort_direction
-      %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
     end
 
 end

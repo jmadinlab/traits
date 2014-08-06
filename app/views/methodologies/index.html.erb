@@ -3,17 +3,19 @@
 <div class="row">
   <div class="col-md-8 col-md-offset-2">
 
-		<h3>Listing Methodologies</h3>
+    <div class="page-header">
+      <h1>Methodologies</h1>
+    </div>
 
-		<p>Data for each of the methodologies listed below can be downloaded by selecting them using the checkbox and clicking <code style="color:green;">Download</code>.  Only public trait data will be downloaded for each coral.</p>
-		
+		<div class="row">
+		  <div class="col-md-12">
+				<p>Data for each of the methodologies listed below can be downloaded by selecting them using the checkbox and clicking <code style="color:green;">Download</code>.  Only public trait data will be downloaded for each methodology.</p>
+			</div>
+		</div>
+
 		<div class="well">
-			<% if signed_in? && current_user.contributor? %>	
-				<%= link_to 'New Methodology', new_methodology_path, class: "btn btn-primary btn-md pull-right" %>
-			<% end %>
-			
 			<div class="row">
-			  <div class="col-lg-6">
+			  <div class="col-md-6">
 					<%= form_tag methodologies_path, :method => 'get' do %>
 				    <div class="input-group">
 				      <%= text_field_tag :search, params[:search], :placeholder => "Search methodologies...", class: "form-control" %>
@@ -21,58 +23,66 @@
 						    <%= submit_tag "Search", :name => nil, class: "btn btn-default" %>
 								<%= link_to 'Reset', methodologies_path, class: "btn btn-default" %>
 				      </span>
-				    </div>
+				    </div><br>
+						<!-- <p>Sort by: <%#= select_tag :sort, options_for_select(["id", "name"], params[:sort]), onchange: "$(this).parent('form').submit();" %></p> -->
+					<% end %>
+					<p>Download resource list as a <%= link_to "csv", methodologies_path(format: "csv") %>.</p>
+			  </div>
+			  <div class="col-md-6">
+			  	<% if signed_in? && current_user.contributor? %>	
+						<%= link_to 'New Methodology', new_methodology_path, class: "btn btn-primary btn-md pull-right" %>
 					<% end %>
 			  </div>
 			</div>
-
-			<br/>Download methodology list as a <%= link_to "csv", methodologies_path(format: "csv") %>.
-
 		</div>
 
-
 		<%= form_tag export_methodologies_path do %>
+			<div class="row">
+			  <div class="col-sm-12 col-sm-offset-6">
+					<p><input type="checkbox", name="contextual" /> Download contexual data?
+					<br/><input type="checkbox", name="global" /> Download global estimates only?</p>
+					<p><%= submit_tag "Download", class: "btn btn-success btn-sm" %></p>
+				</div>
+      </div>
 
-			<table class="table table-condensed">
-			  <thead>
-			    <tr>
-			      <th style="color: lightgrey;">ID</th>
-			      <th>Methodology name</th>
-			      <th style="text-align:center;"><%= submit_tag "Download", class: "btn btn-success btn-sm" %></th>
-			      <th></th>
-			    </tr>
-			  </thead>
+			<div class="row">
+			  <div class="col-sm-12">
+					<ul class="list-group">
+			    	<% @methodologies.each do |methodology| %>
+						  <li class="list-group-item">							
+								<div class="row">
+					        <div class="col-sm-1" style="color: lightgrey;">
+					        	<%= methodology.id %>
+					        </div>
+					        <div class="col-sm-5">
+			        			<%= link_to methodology.methodology_name, methodology %>
+					        </div>
 
-			  <tbody>
-			    <% @methodologies.each do |methodology| %>
-			      <tr>
-			        <td style="color: lightgrey;"><%= methodology.id %></td>
-			        <td><em><%= link_to methodology.methodology_name, methodology %></em></td>
+								 	<div class="col-sm-1">
+										<%= check_box_tag "checked[]", methodology.id %>
+									</div>
 
-						 	<td style="text-align:center;">
-								<%= check_box_tag "checked[]", methodology.id %>
-							</td>						
 
-			        <td style="text-align:right; min-width: 150px;">
-								<% if signed_in? && current_user.contributor? %>
-				        	<%= link_to 'Edit', edit_methodology_path(methodology) %>
-								<% end %>
-							  <% if signed_in? && current_user.admin? %> |
-				        	<%= link_to 'Delete', methodology, method: :delete, data: { confirm: 'Are you sure?' } %>
-								<% end %>
-							</td>
-			      </tr>
-			    <% end %>
-			  </tbody>
-			</table>
+									<div class="col-sm-2">
+						        <%= render "shared/access_counts", :acc => Observation.where(:id => Measurement.where(:methodology_id => methodology).map(&:observation_id)) %>
+									</div>
 
-		
-		<% end %>
-
+					        <div class="col-sm-3">
+								    <div class="btn-group pull-right">
+								     	<%= link_to 'Show', methodology_path(methodology), class: "btn btn-xs btn-default" %>
+										  <% if signed_in? && current_user.admin? %>
+							        	<%= link_to 'Edit', edit_methodology_path(methodology), class: "btn btn-xs btn-default" %>
+							        	<%= link_to 'Delete', methodology, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
+											<% end %>
+						        </div>
+									</div>
+								</div>
+							</li>
+				    <% end %>		
+			    </ul>
+				</div>
+			</div>
+    <% end %>
 	</div>
 </div>
-
-
-
-
 

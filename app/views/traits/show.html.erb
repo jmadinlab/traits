@@ -80,55 +80,53 @@
 							<%= link_to 'Edit', edit_trait_path(@trait), class: "btn btn-sm btn-default" %>
 						<% end %>
 						<%= link_to 'Back', traits_path, class: "btn btn-sm btn-default" %>
-						<%= link_to 'Back to species list', coral_path(@coral), class: "btn btn-sm btn-default" if @coral %>
+						<%= link_to 'Back to coral', coral_path(@coral), class: "btn btn-sm btn-default" if @coral %>
 		      </div>
 				</p>
 			</div>
 
 		  <div class="col-md-4">
-				<div class="well">
-					<span class="glyphicon glyphicon-globe"></span> Global estimate<br/>
-					<span class="glyphicon glyphicon-map-marker"></span> Location specific<br/>
-					<span class="glyphicon glyphicon-book"></span> Resource<br/>
-					<span class="glyphicon glyphicon-user"></span> Contributor<br/>
-					<span class="glyphicon glyphicon-eye-open"></span> Context included<br/>
-					<span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> Not public<br/>
-					<span class="glyphicon glyphicon-ok-circle" style="color:green;"></span> Public
-				</div>
+			  <%= render "shared/symbol_key" %>
 			</div>
 		</div>
 
 		
 		<h3>Observations</h3>
-
-		<p>
-			<strong>Access: </strong>
-			<span class="label label-success"><span class="glyphicon glyphicon-ok-circle" style="color:white;"></span> <%= @observations.where(:private => false).size %></span>
-			<span class="label label-danger"><span class="glyphicon glyphicon-remove-circle" style="color:white;"></span> <%= @observations.where(:private => true).size %></span>
-		</p>
 		
 		<div class="well">
 			<div class="row">
-			<div class="col-md-6">
-				<% if @coral %>
-					<%= form_tag coral_trait_path, :method => 'get' do %>
-						Displaying first <%= select_tag :n, options_for_select([10, 100, 1000, "all"], params[:n]), onchange: "$(this).parent('form').submit();" %> observations
+				<div class="col-md-5">
+					<% if @coral %>
+						Access: <%= render "shared/access_counts", :acc => Observation.where(:coral_id => @coral).where(:id => Measurement.where(:trait_id => @trait).map(&:observation_id)) %> observations
+					<% else %>
+						Access: <%= render "shared/access_counts", :acc => Observation.where(:id => Measurement.where(:trait_id => @trait).map(&:observation_id)) %> observations
 					<% end %>
-				<% else %>
-					<%= form_tag trait_path, :method => 'get' do %>
-						Displaying first <%= select_tag :n, options_for_select([10, 100, 1000, "all"], params[:n]), onchange: "$(this).parent('form').submit();" %> observations
+				</div>
+				<div class="col-md-5">
+					<% if @coral %>
+						<%= form_tag coral_trait_path, :method => 'get' do %>
+							Displaying: <%= select_tag :n, options_for_select([10, 100, 1000, "all"], params[:n]), onchange: "$(this).parent('form').submit();" %> observations
+						<% end %>
+					<% else %>
+						<%= form_tag trait_path, :method => 'get' do %>
+							Displaying: <%= select_tag :n, options_for_select([10, 100, 1000, "all"], params[:n]), onchange: "$(this).parent('form').submit();" %> observations
+						<% end %>
 					<% end %>
-				<% end %>
-			</div>
-			<div class="col-md-6">
-				<% if @coral %>
-					<%= link_to "Download all species' trait observations", coral_trait_path(format: "csv", n: params[:n]), class: "btn btn-success btn-sm pull-right" %>
-				<% else %>
-					<%= link_to "Download all trait observations", trait_path(format: "csv", n: params[:n]), class: "btn btn-success btn-sm pull-right" %>
-				<% end %>
-			</div>
+				</div>
+				<div class="col-md-2">
+					<% if @coral %>
+						<%= link_to "Download", coral_trait_path(format: "zip", n: params[:n]), class: "btn btn-default btn-xs pull-right" %>
+					<% else %>
+						<span data-toggle="tooltip" data-placement="top" title="Contextual data not included">
+							<%= link_to "Download", trait_path(format: "zip", n: params[:n]), class: "btn btn-default btn-xs" %>
+						</span>
+					<% end %>
+				</div>
 			</div>
 		</div>  
+
+								  		
+
 
 <!-- 		<%# if @observations.size < Observation.joins(:measurements).where(:measurements => {:trait_id => @trait.id}).size %>
 			<div class="alert alert-danger">Not all observations for this trait are currently displayed.</div>

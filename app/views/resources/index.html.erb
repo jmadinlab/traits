@@ -3,7 +3,9 @@
 <div class="row">
   <div class="col-md-8 col-md-offset-2">
 
-		<h1>Resources</h1>
+    <div class="page-header">
+      <h1>Resources</h1>
+    </div>
 
 		<div class="row">
 		  <div class="col-md-12">
@@ -22,9 +24,10 @@
 								<%= link_to 'Reset', resources_path, class: "btn btn-default" %>
 				      </span>
 				    </div>
-						Sort by: <%= select_tag :sort, options_for_select(["id", "author", "year", "title"], params[:sort]), onchange: "$(this).parent('form').submit();" %>
-						Order: <%= select_tag :order, options_for_select(["ascending", "descending"], params[:order]), onchange: "$(this).parent('form').submit();" %>
+						<p>Sort by: <%= select_tag :sort, options_for_select(["id", "author", "year", "title"], params[:sort]), onchange: "$(this).parent('form').submit();" %></p>
+						<!-- Order: <%#= select_tag :order, options_for_select(["ascending", "descending"], params[:order]), onchange: "$(this).parent('form').submit();" %> -->
 					<% end %>
+					<p>Download resource list as a <%= link_to "csv", resources_path(format: "csv") %>.</p>
 			  </div>
 			  <div class="col-md-6">
 			  	<% if signed_in? && current_user.contributor? %>	
@@ -32,14 +35,11 @@
 					<% end %>
 			  </div>
 			</div>
-
-			<br/>Download resource list as a <%= link_to "csv", resources_path(format: "csv") %>.
-
 		</div>
 
 		<%= form_tag export_resources_path do %>
 			<div class="row">
-			  <div class="col-md-12 col-md-offset-7">
+			  <div class="col-sm-12 col-sm-offset-7">
 					<p><input type="checkbox", name="contextual" /> Download contexual data?
 					<br/><input type="checkbox", name="global" /> Download global estimates only?</p>
 					<p><%= submit_tag "Download", class: "btn btn-success btn-sm" %></p>
@@ -47,7 +47,7 @@
       </div>
 
 			<div class="row">
-			  <div class="col-md-12">
+			  <div class="col-sm-12">
 					<ul class="list-group">
 			    	<% @resources.each do |resource| %>
 						  <li class="list-group-item">							
@@ -61,7 +61,7 @@
 					        	<% if resource.year %>
 						        	(<%= resource.year %>)
 				    				<% end %>		
-					        	<%= resource.title %>
+					        	<small><%= resource.title %></small>
 					        </div>
 
 								 	<div class="col-sm-1">
@@ -69,8 +69,7 @@
 									</div>
 
 									<div class="col-sm-1">
-						        <span class="label label-success"><span class="glyphicon glyphicon-ok-circle" style="color:white;"></span> <%= Observation.where(:resource_id => resource).where(:private => false).size %></span>
-						        <span class="label label-danger"><span class="glyphicon glyphicon-remove-circle" style="color:white;"></span> <%= Observation.where(:resource_id => resource).where(:private => true).size %></span>
+						        <%= render "shared/access_counts", :acc => Observation.where(:resource_id => resource) %>
 									</div>
 
 					        <div class="col-sm-3">

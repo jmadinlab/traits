@@ -76,7 +76,6 @@
 					  <% @observation.measurements.each do |mea| %>
 
 						  <li class="list-group-item">							
-									
 								<div class="row">
 								  <div class="col-sm-1" style="color: lightgrey;">
 								  	<%= mea.id %>
@@ -101,7 +100,7 @@
 									</div>
 								  <div class="col-sm-2">
 										<% if mea.methodology %>
-											<%= mea.methodology.methodology_name %>
+										<%= link_to mea.methodology.methodology_name, methodology_path(mea.methodology_id) %>
 										<% else %>
 											<span class="label label-danger">no method</span>
 										<% end %>
@@ -134,7 +133,9 @@
 
 								<% if mea.notes && mea.notes != "" %>
 									<div class="row">
-									  <div class="col-md-12">
+									  <div class="col-sm-4">
+										</div>
+									  <div class="col-md-8">
 								      <strong>Notes:</strong> <%= mea.notes %>
 										</div>
 									</div>
@@ -156,5 +157,6 @@
 
   </div>
  </div>
+
 
 

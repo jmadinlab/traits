@@ -25,54 +25,28 @@ class UsersController < ApplicationController
       @observations = @observations.where(['observations.private IS ?', false])
     end
 
-
-
-
-
-
-
-    # if signed_in? && current_user.contributor?
-    #   if params[:n].blank?
-    #     params[:n] = 100
-    #   end
-    
-    #   n = params[:n]
-    
-    #   if params[:n] == "all"
-    #     n = 9999999
-    #   end
-
-    #   if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
-    #   @observations = Observation.where(['observations.user_id IS ? AND observations.private IS ?', @user.id, false]).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").uniq.limit(n)
-    #   end
-      
-    #   if signed_in? && current_user.contributor?
-    #     @observations = Observation.where(['observations.user_id IS ? AND (observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?))', @user.id, false, current_user.id, true]).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").uniq.limit(n)
-    #   end
-
-    #   if signed_in? && current_user.admin?
-    #     @observations = Observation.where(:user_id => @user.id).includes(:coral).joins(:measurements).where('value LIKE ?', "%#{params[:search]}%").uniq.limit(n)
-    #   end
-    
     respond_to do |format|
-      format.html { 
+      format.html {
         @observations = @observations.limit(n)
       }
-      format.csv { 
-
-        csv_string = get_main_csv(@observations)
+      format.csv {
+        if request.url.include? 'resources.csv'
+          csv_string = get_resources_csv(@observations, "", "")
+          filename = 'resources'
+        else
+          csv_string = get_main_csv(@observations, "", "")
+          filename = 'data'
+        end
         send_data csv_string, 
           :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
-          :disposition => "attachment; filename=user_#{Date.today.strftime('%Y%m%d')}.csv"
-
+          :disposition => "attachment; filename=#{filename}_#{Date.today.strftime('%Y%m%d')}.csv"
       }
 
       format.zip{
-        send_zip(@observations, 'users.csv')
+        send_zip(@observations, 'data.csv', "", "")
       }
 
     end
-    
   end
 
   def new

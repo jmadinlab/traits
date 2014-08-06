@@ -39,7 +39,7 @@
 
 								<div class="col-sm-6">
 									<% if grp.size > 1 %>
-										<span class="badge"><%= grp.size %></span> observations
+										<%= render "shared/access_counts", :acc => grp %> observations
 									<% else %>
 										<% if grp.first.measurements.first.standard.standard_class == "Nominal class" || grp.first.measurements.first.standard.standard_class == "Ordered class" %>
 											<span class="label label-primary"><%= grp.first.measurements.first.value %></span>

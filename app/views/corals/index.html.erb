@@ -10,7 +10,6 @@
 		<p>Data for each of the corals listed below can be downloaded by selecting them using the checkbox and clicking <code style="color:green;">Download</code>.  Only public trait data will be downloaded for each coral.</p>
 		
 		<div class="well">
-			
 			<div class="row">
 			  <div class="col-md-6">
 					<%= form_tag corals_path, :method => 'get' do %>
@@ -22,6 +21,7 @@
 				      </span>
 				    </div>
 					<% end %>
+					<br>Download coral list as a <%= link_to "csv", corals_path(format: "csv") %>.
 			  </div>
 			  <div class="col-md-6">
 					<% if signed_in? && current_user.contributor? %>	
@@ -29,18 +29,15 @@
 					<% end %>
 			  </div>
 			</div>
-
-			<br/>Download coral list as a <%= link_to "csv", corals_path(format: "csv") %>.
-
 		</div>
 
 
 		<%= form_tag export_corals_path do %>
 			<div class="row">
 			  <div class="col-md-12 col-md-offset-5">
-					<p><input type="checkbox", name="contextual" /> Download contexual data?
-					<br/><input type="checkbox", name="global" /> Download global estimates only?</p>
-					<p><%= submit_tag "Download", class: "btn btn-success btn-sm" %></p>
+					<p><input type="checkbox", name="contextual" /> Include contexual data?
+					<br/><input type="checkbox", name="global" /> Global estimates only?</p>
+					<p><%= submit_tag "Download", class: "btn btn-success btn-md" %></p>
 				</div>
       </div>
 
@@ -50,23 +47,22 @@
 				    <% @corals.each do |coral| %>
 						  <li class="list-group-item">							
 								<div class="row">
-					        <div class="col-sm-1" style="color: lightgrey;">
+					        <div class="col-md-1" style="color: lightgrey;">
 					        	<%= coral.id %>
 					        </div>
-					        <div class="col-sm-4">
+					        <div class="col-md-4">
 					        	<em><%= link_to coral.coral_name, coral %></em>
 					        </div>
 
-								 	<div class="col-sm-1">
+								 	<div class="col-md-1">
 										<%= check_box_tag "checked[]", coral.id %>
 									</div>
 
-									<div class="col-sm-3">
-<!-- 						        <span class="label label-success"><span class="glyphicon glyphicon-ok-circle" style="color:white;"></span> <%#= Observation.where(:coral_id => coral).where(:private => false).size %></span>
-						        <span class="label label-danger"><span class="glyphicon glyphicon-remove-circle" style="color:white;"></span> <%#= Observation.where(:coral_id => coral).where(:private => true).size %></span>
- -->									</div>
+									<div class="col-md-3">
+										<%= render "shared/access_counts", :acc => Observation.where(:coral_id => coral) %>
+									</div>
 
-					        <div class="col-sm-3">
+					        <div class="col-md-3">
 								    <div class="btn-group pull-right">
 								     	<%= link_to 'Show', coral_path(coral), class: "btn btn-xs btn-default" %>
 										  <% if signed_in? && current_user.admin? %>

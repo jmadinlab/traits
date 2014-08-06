@@ -52,11 +52,14 @@ class ApplicationController < ActionController::Base
   end
 
   # Return the main csv string depending upon the model (corals data / traits data / lcation data etc)
-  def get_main_csv(observations)
-      csv_string = CSV.generate do |csv|
-          csv << ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "methodology_name", "standard_unit",  "value", "precision", "precision_type", "precision_upper", "replicates"]
-          observations.each do |obs|
-            obs.measurements.each do |mea|
+  def get_main_csv(observations, contextual, global)
+
+    csv_string = CSV.generate do |csv|
+      csv << ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "methodology_name", "standard_unit",  "value", "precision", "precision_type", "precision_upper", "replicates"]
+      observations.each do |obs|
+        if global != "on" || obs.location_id == 1
+          obs.measurements.each do |mea|
+            if mea.trait.trait_class != "Contextual" || contextual == "on"
               if obs.location.present?
                 loc = obs.location.location_name
                 lat = obs.location.latitude
@@ -85,14 +88,16 @@ class ApplicationController < ActionController::Base
             end
           end
         end
-    
-     return csv_string
+      end
     end
+    
+   return csv_string
+  end
 
 
 
   # Return the resources csv
-  def get_resources_csv(observations)
+  def get_resources_csv(observations, contextual, global)
     resources_string = CSV.generate do |csv|
         csv << ["resource_id", "author", "year", "title", "resource_type", "resource_ISBN", "resource_journal", "resource_volume_pages", "resource_notes"]
 
@@ -119,20 +124,20 @@ class ApplicationController < ActionController::Base
 
 
   # Return the zip file
-  def send_zip(observations, file_name='file1.csv')
+  def send_zip(observations, file_name='file1.csv', contextual, global)
     require 'rubygems'
     require 'zip'
 
     # Process file1 (corals.csv, traits.csv, locations.csv)
-    csv_string = get_main_csv(observations)
+    csv_string = get_main_csv(observations, contextual, global)
     file1 = file_name
     file1_path = "public/" + file1
     _file1 = File.open(file1_path, "w") { |f| f << csv_string }
     
 
     # Process file2 resources.csv
-    resources_string = get_resources_csv(observations)
-    file2 = "resources_file.csv"
+    resources_string = get_resources_csv(observations, contextual, global)
+    file2 = "resources.csv"
     file2_path = "public/" + file2
     _file2 = File.open(file2_path, "w") { |f| f << resources_string }
     
@@ -149,7 +154,7 @@ class ApplicationController < ActionController::Base
     
     File.open(zipfile_name, 'r') do |f|
       send_data f.read, type: "application/zip", :stream => true,
-      :disposition => "attachment; filename = zippedfile.zip"
+      :disposition => "attachment; filename = ctdb.zip"
     end
     File.delete(zipfile_name)
     FileUtils.rm_f(file2_path)

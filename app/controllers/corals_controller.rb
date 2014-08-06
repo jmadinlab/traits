@@ -44,12 +44,12 @@ class CoralsController < ApplicationController
       @observations = Observation.where(:coral_id => params[:checked])        
     end
     
-    #csv_string = get_main_csv(@observations)
+    # csv_string = get_main_csv(@observations, params[:contextual], params[:global])
 
-    send_zip(@observations, 'corals.csv')
+    send_zip(@observations, 'traits.csv', params[:contextual], params[:global])
       
 
-    #send_data csv_string, 
+    # send_data csv_string, 
     #  :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
     #  :disposition => "attachment; filename=ctdb_#{Date.today.strftime('%Y%m%d')}.csv"
           
@@ -82,26 +82,24 @@ class CoralsController < ApplicationController
     respond_to do |format|
       format.html
       format.csv {
-        
         if request.url.include? 'resources.csv'
-          csv_string = get_resources_csv(@observations)
-          filename = 'resources.csv'
+          csv_string = get_resources_csv(@observations, "", "")
+          filename = 'resources'
         else
-          csv_string = get_main_csv(@observations)
-          filename = 'corals.csv'
+          csv_string = get_main_csv(@observations, "", "")
+          filename = 'data'
         end
-        
         send_data csv_string, 
           :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
           :disposition => "attachment; filename=#{filename}_#{Date.today.strftime('%Y%m%d')}.csv"
-
-        }
+      }
 
       format.zip{
-        send_zip(@observations, 'corals.csv')
+        send_zip(@observations, 'data.csv', "", "")
       }
 
     end
+
   end
 
   # GET /corals/new

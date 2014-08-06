@@ -15,7 +15,6 @@
 //= require jquery-ui
 //= require jquery_ujs
 //= require turbolinks
-
 //= require bootstrap
 //= require select2
 //= require cocoon
@@ -28,10 +27,12 @@
 // });
 // 
 
-
+   
 $(document).ready(function(){
     $('span').tooltip();
 });
+
+
 
 function checkUncheckAll(theElement) { 
 	var theForm = theElement.form, z = 0; 

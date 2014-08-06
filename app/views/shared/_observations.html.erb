@@ -37,7 +37,7 @@
 						<div class="col-sm-2">
 		  				<% if !grp.location_id.blank? && grp.location_id != 0 %>
 		  				  <% if grp.location_id == 1 %>
-					      	<%= link_to "", location_path(grp.location_id), class: "glyphicon glyphicon-globe" %>
+					      	<%= link_to "", location_path(grp.location_id), class: "glyphicon glyphicon-globe", 'data-no-turbolink' => true %>
 		  				  <% else %> 
 		  			      <%= link_to "", location_path(grp.location_id), class: "glyphicon glyphicon-map-marker", 'data-no-turbolink' => true %>
 		  				  <% end %> 
