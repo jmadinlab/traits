@@ -16,7 +16,7 @@ class TraitsController < ApplicationController
     if params[:search]
       @traits = @search.results
     else
-      @traits = Trait.all.paginate(:page=> params[:page], :per_page => 20)
+      @traits = Trait.all#.paginate(:page=> params[:page], :per_page => 20)
     end
 
     respond_to do |format|
@@ -54,10 +54,6 @@ class TraitsController < ApplicationController
   # GET /traits/1.json
   def show
 
-    params[:n] = 100 if params[:n].blank?
-    n = params[:n]
-    n = 9999999 if params[:n] == "all"
-
     if params[:coral_id]
       @coral = Coral.find(params[:coral_id])
       @observations = Observation.includes(:coral).joins(:measurements).where('observations.coral_id IS ? AND measurements.trait_id IS ?', @coral.id, @trait.id)
@@ -73,10 +69,9 @@ class TraitsController < ApplicationController
       @observations = @observations.where(['observations.private IS ?', false])
     end
     
-    
     respond_to do |format|
       format.html {
-        @observations = @observations.limit(n)
+        @observations = @observations.paginate(:page=> params[:page], :per_page => 20)
       }
       format.csv {
         if request.url.include? 'resources.csv'

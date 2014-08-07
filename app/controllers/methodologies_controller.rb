@@ -56,7 +56,7 @@ class MethodologiesController < ApplicationController
 
   	respond_to do |format|
       format.html
-      format.csv { send_data @methodologies.to_csv }
+      format.csv { send_data Methodology.all.to_csv }
       
     end    
   end
@@ -156,11 +156,7 @@ class MethodologiesController < ApplicationController
       @observations = Observation.where(:private => false).where(:id => Measurement.where(:methodology_id => params[:checked]).map(&:observation_id))        
     end        
     
-    csv_string = get_main_csv(@observations)
-
-    send_data csv_string, 
-      :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
-      :disposition => "attachment; filename=ctdb_#{Date.today.strftime('%Y%m%d')}.csv"
+    send_zip(@observations, 'traits.csv', params[:contextual], params[:global])
           
   end
 

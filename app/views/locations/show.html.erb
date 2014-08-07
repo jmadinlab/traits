@@ -52,23 +52,9 @@
 	<p class="alert alert-danger">No observations available.</p>
 <% else %>
 
-	<div class="well">
-		<div class="row">
-			<div class="col-md-5">
-				Access: <%= render "shared/access_counts", :acc => Observation.where(:location_id => @location.id) %> observations
-			</div>
-			<div class="col-md-4">
-				<%= form_tag location_path, :method => 'get' do %>
-						Displaying: <%= select_tag :n, options_for_select([10, 100, 1000, "all"], params[:n]), onchange: "$(this).parent('form').submit();" %> observations
-				<% end %>
-			</div>
-			<div class="col-md-3">
-				<%= link_to "Download", location_path(format: "csv", n: params[:n]), class: "btn btn-default btn-xs pull-right" %>
-			</div>
-		</div>
-	</div>  
-
+	<%= will_paginate @observations %>
 	<%= render "shared/observations" %>
+
 <% end %>
 
 

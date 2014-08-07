@@ -10,7 +10,7 @@ class UsersController < ApplicationController
 
   def show
 
-    params[:n] = 100 if params[:n].blank?
+    params[:n] = 20 if params[:n].blank?
     n = params[:n]
     n = 9999999 if params[:n] == "all"
 
@@ -27,7 +27,7 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       format.html {
-        @observations = @observations.limit(n)
+        @observations = @observations.paginate(:page=> params[:page], :per_page => n)
       }
       format.csv {
         if request.url.include? 'resources.csv'

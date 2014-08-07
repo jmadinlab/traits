@@ -91,36 +91,6 @@
 
 <h3>Observations</h3>
 
-<div class="well">
-	<div class="row">
-		<div class="col-md-5">
-			<% if @coral %>
-				Access: <%= render "shared/access_counts", :acc => Observation.where(:coral_id => @coral).where(:id => Measurement.where(:trait_id => @trait).map(&:observation_id)) %> observations
-			<% else %>
-				Access: <%= render "shared/access_counts", :acc => Observation.where(:id => Measurement.where(:trait_id => @trait).map(&:observation_id)) %> observations
-			<% end %>
-		</div>
-		<div class="col-md-5">
-			<% if @coral %>
-				<%= form_tag coral_trait_path, :method => 'get' do %>
-					Displaying: <%= select_tag :n, options_for_select([10, 100, 1000, "all"], params[:n]), onchange: "$(this).parent('form').submit();" %> observations
-				<% end %>
-			<% else %>
-				<%= form_tag trait_path, :method => 'get' do %>
-					Displaying: <%= select_tag :n, options_for_select([10, 100, 1000, "all"], params[:n]), onchange: "$(this).parent('form').submit();" %> observations
-				<% end %>
-			<% end %>
-		</div>
-		<div class="col-md-2">
-			<% if @coral %>
-				<%= link_to "Download", coral_trait_path(format: "zip", n: params[:n]), class: "btn btn-default btn-xs pull-right" %>
-			<% else %>
-				<span data-toggle="tooltip" data-placement="top" title="Contextual data not included">
-					<%= link_to "Download", trait_path(format: "zip", n: params[:n]), class: "btn btn-default btn-xs" %>
-				</span>
-			<% end %>
-		</div>
-	</div>
-</div>  
-
+<%= will_paginate @observations %>
 <%= render "shared/observations" %>
+

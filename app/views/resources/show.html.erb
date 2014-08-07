@@ -118,24 +118,7 @@
 	<p class="alert alert-danger">No records available.</p>
 <% else %>
 
-	<div class="well">
-		<div class="row">
-			<div class="col-md-5">
-				Access: <%= render "shared/access_counts", :acc => Observation.where(:resource_id => @resource.id) %> observations
-			</div>
-			<div class="col-md-5">
-				<%= form_tag resource_path, :method => 'get' do %>
-						Displaying: <%= select_tag :n, options_for_select([10, 100, 1000, "all"], params[:n]), onchange: "$(this).parent('form').submit();" %> observations 
-				<% end %>
-			</div>
-			<div class="col-md-2">
-				<span data-toggle="tooltip" data-placement="top" title="Contextual data not included">
-					<%= link_to "Download", trait_path(format: "zip", n: params[:n]), class: "btn btn-default btn-xs" %>
-				</span>
-			</div>
-		</div>
-	</div>  
-
-
+	<%= will_paginate @observations %>
 	<%= render "shared/observations" %>
- <% end %>
+
+<% end %>

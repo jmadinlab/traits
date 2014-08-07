@@ -27,17 +27,13 @@ class ResourcesController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.csv { send_data @resources.to_csv }
+      format.csv { send_data Resource.all.to_csv }
     end    
   end
 
   # GET /resources/1
   # GET /resources/1.json
   def show
-
-    params[:n] = 100 if params[:n].blank?
-    n = params[:n]
-    n = 9999999 if params[:n] == "all"
 
     @observations = Observation.where('resource_id IS ?', @resource.id)
 
@@ -51,7 +47,7 @@ class ResourcesController < ApplicationController
 
     respond_to do |format|
       format.html {
-        @observations = @observations.limit(n)
+        @observations = @observations.paginate(:page=> params[:page], :per_page => 20)
       }
       format.csv {
         if request.url.include? 'resources.csv'
@@ -132,11 +128,7 @@ class ResourcesController < ApplicationController
       @observations = Observation.where(:private => false).where(:resource_id => params[:checked])        
     end        
     
-    csv_string = get_main_csv(@observations)
-
-    send_data csv_string, 
-      :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
-      :disposition => "attachment; filename=ctdb_#{Date.today.strftime('%Y%m%d')}.csv"
+    send_zip(@observations, 'traits.csv', params[:contextual], params[:global])
           
   end
 
