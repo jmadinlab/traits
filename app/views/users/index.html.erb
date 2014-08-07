@@ -46,7 +46,7 @@
 
 					<div class="col-sm-4">
 						<%= link_to user.name, user %>
-					  (<%= mail_to user.email, user.email, {:subject => "Coral Trait enquiry"} %>)
+					  <small>(<%= mail_to user.email, user.email, {:subject => "Coral Trait enquiry"} %>)</small>
 					</div>
 					
 					<div class="col-sm-1" style="text-align:center;">

@@ -91,6 +91,11 @@
 
 <h3>Observations</h3>
 
-<%= will_paginate @observations %>
-<%= render "shared/observations" %>
+<% if @observations.empty? %>
+	<p class="alert alert-danger">No records available.</p>
+<% else %>
 
+	<%= will_paginate @observations %>
+	<%= render "shared/observations" %>
+
+<% end %>
