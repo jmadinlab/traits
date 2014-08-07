@@ -9,20 +9,21 @@ class ResourcesController < ApplicationController
   def index
     @search = Resource.search do
       fulltext params[:search]
+      paginate page: params[:page], per_page: 15
     end
     
     if params[:search]
       @resources = @search.results
     else
-      @resources = Resource.all
+      @resources = Resource.all.paginate(:page=> params[:page], :per_page => 15)
     end
 
 
-    @resources = @resources.sort_by{|l| l[:id]} if params[:sort] == "id"
-    @resources = @resources.sort_by{|l| l[:author]} if params[:sort] == "author"
-    @resources = @resources.sort_by{|l| l[:year] || 0 } if params[:sort] == "year"
-    @resources = @resources.sort_by{|l| l[:title]} if params[:sort] == "title"
-    @resources = @resources.reverse if params[:order] == "descending"
+    # @resources = @resources.sort_by{|l| l[:id]} if params[:sort] == "id"
+    # @resources = @resources.sort_by{|l| l[:author]} if params[:sort] == "author"
+    # @resources = @resources.sort_by{|l| l[:year] || 0 } if params[:sort] == "year"
+    # @resources = @resources.sort_by{|l| l[:title]} if params[:sort] == "title"
+    # @resources = @resources.reverse if params[:order] == "descending"
 
     respond_to do |format|
       format.html

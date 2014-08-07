@@ -11,15 +11,18 @@ class CoralsController < ApplicationController
     
     @search = Coral.search do
       fulltext params[:search]
+      paginate page: params[:page], per_page: 15
     end
     
     if params[:search]
       @corals = @search.results
     else
-      @corals = Coral.all
+      @corals = Coral.all.paginate(:page=> params[:page], :per_page => 15)
     end
     
     @corals = PaperTrail::Version.find(params[:version]).reify if params[:version]
+
+    # @corals = @corals.paginate(:page=> params[:page], :per_page => 20)
 
     respond_to do |format|
       format.html

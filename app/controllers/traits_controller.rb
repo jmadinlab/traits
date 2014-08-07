@@ -16,7 +16,7 @@ class TraitsController < ApplicationController
     if params[:search]
       @traits = @search.results
     else
-      @traits = Trait.all
+      @traits = Trait.all.paginate(:page=> params[:page], :per_page => 20)
     end
 
     respond_to do |format|
@@ -72,6 +72,7 @@ class TraitsController < ApplicationController
     else
       @observations = @observations.where(['observations.private IS ?', false])
     end
+    
     
     respond_to do |format|
       format.html {

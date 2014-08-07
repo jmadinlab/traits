@@ -14,13 +14,9 @@
     <div class="container">
       <!-- <div class="alert alert-danger">The database is undergoing a major restructure.  Please contact coraltraits@gmail.com if you would like to make changes or upload data.</div> -->
 
-			<div class="row">
-			  <div class="col-md-8 col-md-offset-2">
-		      <% flash.each do |key, value| %>
-		        <div class="alert alert-<%= key %>"><%= value %></div>
-		      <% end %>
-		    </div>
-	    </div>
+      <% flash.each do |key, value| %>
+        <div class="alert alert-<%= key %>"><%= value %></div>
+      <% end %>
 
       <%= yield %>
 	<%# render partial: "layouts/google_analytics" %>

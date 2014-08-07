@@ -15,6 +15,7 @@ class Trait < ActiveRecord::Base
   accepts_nested_attributes_for :methodologies, :reject_if => :all_blank, :allow_destroy => true
   accepts_nested_attributes_for :traitvalues, :reject_if => :all_blank, :allow_destroy => true
   
+  default_scope -> { order('trait_class ASC') }
 
   searchable do
     text :trait_name

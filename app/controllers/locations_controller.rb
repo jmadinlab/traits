@@ -12,18 +12,19 @@ class LocationsController < ApplicationController
 
     @search = Location.search do
       fulltext params[:search]
+      paginate page: params[:page], per_page: 15
     end
     
     if params[:search]
       @locations = @search.results
     else
-      @locations = Location.all
+      @locations = Location.all.paginate(:page=> params[:page], :per_page => 15)
     end
 
-    @locations = @locations.sort_by{|l| l[:latitude]} if params[:sort] == "latitude"
-    @locations = @locations.sort_by{|l| l[:longitude]} if params[:sort] == "longitude"
-    @locations = @locations.sort_by{|l| l[:id]} if params[:sort] == "id"
-    @locations = @locations.sort_by{|l| l[:location_name]} if params[:sort] == "name"
+    # @locations = @locations.sort_by{|l| l[:latitude]} if params[:sort] == "latitude"
+    # @locations = @locations.sort_by{|l| l[:longitude]} if params[:sort] == "longitude"
+    # @locations = @locations.sort_by{|l| l[:id]} if params[:sort] == "id"
+    # @locations = @locations.sort_by{|l| l[:location_name]} if params[:sort] == "name"
 
     respond_to do |format|
       format.html

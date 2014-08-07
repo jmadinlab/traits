@@ -1,87 +1,81 @@
 <% provide(:title, 'Resources') %>
 
-<div class="row">
-  <div class="col-md-8 col-md-offset-2">
 
-    <div class="page-header">
-      <h1>Resources</h1>
-    </div>
+<div class="page-header">
+  <h1>Resources</h1>
+</div>
 
-		<div class="row">
-		  <div class="col-md-12">
-				<p>Data for each of the resources listed below can be downloaded by selecting them using the checkbox and clicking <code style="color:green;">Download</code>.  Only public trait data will be downloaded for each location.</p>
-			</div>
-		</div>
+<p>Data for each of the resources listed below can be downloaded by selecting them using the checkbox and clicking <code style="color:green;">Download</code>.  Only public trait data will be downloaded for each location.</p>
 
-		<div class="well">
-			<div class="row">
-			  <div class="col-md-6">
-					<%= form_tag resources_path, :method => 'get' do %>
-				    <div class="input-group">
-				      <%= text_field_tag :search, params[:search], :placeholder => "Search resources...", class: "form-control" %>
-				      <span class="input-group-btn">
-						    <%= submit_tag "Search", :name => nil, class: "btn btn-default" %>
-								<%= link_to 'Reset', resources_path, class: "btn btn-default" %>
-				      </span>
-				    </div>
-						<p>Sort by: <%= select_tag :sort, options_for_select(["id", "author", "year", "title"], params[:sort]), onchange: "$(this).parent('form').submit();" %></p>
-						<!-- Order: <%#= select_tag :order, options_for_select(["ascending", "descending"], params[:order]), onchange: "$(this).parent('form').submit();" %> -->
-					<% end %>
-					<p>Download resource list as a <%= link_to "csv", resources_path(format: "csv") %>.</p>
-			  </div>
-			  <div class="col-md-6">
-			  	<% if signed_in? && current_user.contributor? %>	
-						<%= link_to 'New Resource', new_resource_path, class: "btn btn-primary btn-md pull-right" %>
-					<% end %>
-			  </div>
-			</div>
-		</div>
-
-		<%= form_tag export_resources_path do %>
-
-			<%= render "shared/download_options" %>			
-
-			<div class="row">
-			  <div class="col-sm-12">
-					<ul class="list-group">
-			    	<% @resources.each do |resource| %>
-						  <li class="list-group-item">							
-								<div class="row">
-					        <div class="col-sm-1" style="color: lightgrey;">
-					        	<%= resource.id %>
-					        </div>
-
-					        <div class="col-sm-5">
-					        	<%= link_to resource.author, resource %>
-					        	<% if resource.year %>
-						        	(<%= resource.year %>)
-				    				<% end %>		
-					        	<small><%= resource.title %></small>
-					        </div>
-
-								 	<div class="col-sm-1">
-										<%= check_box_tag "checked[]", resource.id %>
-									</div>
-
-									<div class="col-sm-2">
-						        <%= render "shared/access_counts", :acc => Observation.where(:resource_id => resource) %>
-									</div>
-
-					        <div class="col-sm-3">
-								    <div class="btn-group pull-right">
-								     	<%= link_to 'Show', resource_path(resource), class: "btn btn-xs btn-default" %>
-										  <% if signed_in? && current_user.admin? %>
-							        	<%= link_to 'Edit', edit_resource_path(resource), class: "btn btn-xs btn-default" %>
-							        	<%= link_to 'Delete', resource, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
-											<% end %>
-						        </div>
-									</div>
-								</div>
-							</li>
-				    <% end %>		
-			    </ul>
-				</div>
-			</div>
-    <% end %>
+<div class="well">
+	<div class="row">
+	  <div class="col-md-6">
+			<%= form_tag resources_path, :method => 'get' do %>
+		    <div class="input-group">
+		      <%= text_field_tag :search, params[:search], :placeholder => "Search resources...", class: "form-control" %>
+		      <span class="input-group-btn">
+				    <%= submit_tag "Search", :name => nil, class: "btn btn-default" %>
+						<%= link_to 'Reset', resources_path, class: "btn btn-default" %>
+		      </span>
+		    </div>
+				<!-- <p>Sort by: <%#= select_tag :sort, options_for_select(["id", "author", "year", "title"], params[:sort]), onchange: "$(this).parent('form').submit();" %></p> -->
+				<!-- Order: <%#= select_tag :order, options_for_select(["ascending", "descending"], params[:order]), onchange: "$(this).parent('form').submit();" %> -->
+			<% end %>
+			<p>Download resource list as a <%= link_to "csv", resources_path(format: "csv") %>.</p>
+	  </div>
+	  <div class="col-md-6">
+	  	<% if signed_in? && current_user.contributor? %>	
+				<%= link_to 'New Resource', new_resource_path, class: "btn btn-primary btn-md pull-right" %>
+			<% end %>
+	  </div>
 	</div>
 </div>
+
+<%= will_paginate @resources %>
+
+<%= form_tag export_resources_path do %>
+
+	<%= render "shared/download_options" %>			
+
+	<div class="row">
+	  <div class="col-sm-12">
+			<ul class="list-group">
+	    	<% @resources.each do |resource| %>
+				  <li class="list-group-item">							
+						<div class="row">
+			        <div class="col-sm-1" style="color: lightgrey;">
+			        	<%= resource.id %>
+			        </div>
+
+			        <div class="col-sm-5">
+			        	<%= link_to resource.author, resource %>
+			        	<% if resource.year %>
+				        	(<%= resource.year %>)
+		    				<% end %>		
+			        	<small><%= resource.title %></small>
+			        </div>
+
+						 	<div class="col-sm-1">
+								<%= check_box_tag "checked[]", resource.id %>
+							</div>
+
+							<div class="col-sm-2">
+				        <%= render "shared/access_counts", :acc => Observation.where(:resource_id => resource) %>
+							</div>
+
+			        <div class="col-sm-3">
+						    <div class="btn-group pull-right">
+						     	<%= link_to 'Show', resource_path(resource), class: "btn btn-xs btn-default" %>
+								  <% if signed_in? && current_user.admin? %>
+					        	<%= link_to 'Edit', edit_resource_path(resource), class: "btn btn-xs btn-default" %>
+					        	<%= link_to 'Delete', resource, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
+									<% end %>
+				        </div>
+							</div>
+						</div>
+					</li>
+		    <% end %>		
+	    </ul>
+		</div>
+	</div>
+<% end %>

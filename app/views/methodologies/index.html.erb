@@ -1,83 +1,81 @@
 <% provide(:title, 'Methodologies') %>
 
+
+<div class="page-header">
+  <h1>Methodologies</h1>
+</div>
+
 <div class="row">
-  <div class="col-md-8 col-md-offset-2">
-
-    <div class="page-header">
-      <h1>Methodologies</h1>
-    </div>
-
-		<div class="row">
-		  <div class="col-md-12">
-				<p>Data for each of the methodologies listed below can be downloaded by selecting them using the checkbox and clicking <code style="color:green;">Download</code>.  Only public trait data will be downloaded for each methodology.</p>
-			</div>
-		</div>
-
-		<div class="well">
-			<div class="row">
-			  <div class="col-md-6">
-					<%= form_tag methodologies_path, :method => 'get' do %>
-				    <div class="input-group">
-				      <%= text_field_tag :search, params[:search], :placeholder => "Search methodologies...", class: "form-control" %>
-				      <span class="input-group-btn">
-						    <%= submit_tag "Search", :name => nil, class: "btn btn-default" %>
-								<%= link_to 'Reset', methodologies_path, class: "btn btn-default" %>
-				      </span>
-				    </div><br>
-						<!-- <p>Sort by: <%#= select_tag :sort, options_for_select(["id", "name"], params[:sort]), onchange: "$(this).parent('form').submit();" %></p> -->
-					<% end %>
-					<p>Download resource list as a <%= link_to "csv", methodologies_path(format: "csv") %>.</p>
-			  </div>
-			  <div class="col-md-6">
-			  	<% if signed_in? && current_user.contributor? %>	
-						<%= link_to 'New Methodology', new_methodology_path, class: "btn btn-primary btn-md pull-right" %>
-					<% end %>
-			  </div>
-			</div>
-		</div>
-
-		<%= form_tag export_methodologies_path do %>
-
-			<%= render "shared/download_options" %>			
-
-			<div class="row">
-			  <div class="col-sm-12">
-					<ul class="list-group">
-			    	<% @methodologies.each do |methodology| %>
-						  <li class="list-group-item">							
-								<div class="row">
-					        <div class="col-sm-1" style="color: lightgrey;">
-					        	<%= methodology.id %>
-					        </div>
-					        <div class="col-sm-5">
-			        			<%= link_to methodology.methodology_name, methodology %>
-					        </div>
-
-								 	<div class="col-sm-1">
-										<%= check_box_tag "checked[]", methodology.id %>
-									</div>
-
-
-									<div class="col-sm-2">
-						        <%= render "shared/access_counts", :acc => Observation.where(:id => Measurement.where(:methodology_id => methodology).map(&:observation_id)) %>
-									</div>
-
-					        <div class="col-sm-3">
-								    <div class="btn-group pull-right">
-								     	<%= link_to 'Show', methodology_path(methodology), class: "btn btn-xs btn-default" %>
-										  <% if signed_in? && current_user.admin? %>
-							        	<%= link_to 'Edit', edit_methodology_path(methodology), class: "btn btn-xs btn-default" %>
-							        	<%= link_to 'Delete', methodology, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
-											<% end %>
-						        </div>
-									</div>
-								</div>
-							</li>
-				    <% end %>		
-			    </ul>
-				</div>
-			</div>
-    <% end %>
+  <div class="col-md-12">
+		<p>Data for each of the methodologies listed below can be downloaded by selecting them using the checkbox and clicking <code style="color:green;">Download</code>.  Only public trait data will be downloaded for each methodology.</p>
 	</div>
 </div>
+
+<div class="well">
+	<div class="row">
+	  <div class="col-md-6">
+			<%= form_tag methodologies_path, :method => 'get' do %>
+		    <div class="input-group">
+		      <%= text_field_tag :search, params[:search], :placeholder => "Search methodologies...", class: "form-control" %>
+		      <span class="input-group-btn">
+				    <%= submit_tag "Search", :name => nil, class: "btn btn-default" %>
+						<%= link_to 'Reset', methodologies_path, class: "btn btn-default" %>
+		      </span>
+		    </div><br>
+				<!-- <p>Sort by: <%#= select_tag :sort, options_for_select(["id", "name"], params[:sort]), onchange: "$(this).parent('form').submit();" %></p> -->
+			<% end %>
+			<p>Download resource list as a <%= link_to "csv", methodologies_path(format: "csv") %>.</p>
+	  </div>
+	  <div class="col-md-6">
+	  	<% if signed_in? && current_user.contributor? %>	
+				<%= link_to 'New Methodology', new_methodology_path, class: "btn btn-primary btn-md pull-right" %>
+			<% end %>
+	  </div>
+	</div>
+</div>
+
+<%= will_paginate @methodologies %>
+
+<%= form_tag export_methodologies_path do %>
+
+	<%= render "shared/download_options" %>			
+
+	<div class="row">
+	  <div class="col-sm-12">
+			<ul class="list-group">
+	    	<% @methodologies.each do |methodology| %>
+				  <li class="list-group-item">							
+						<div class="row">
+			        <div class="col-sm-1" style="color: lightgrey;">
+			        	<%= methodology.id %>
+			        </div>
+			        <div class="col-sm-5">
+	        			<%= link_to methodology.methodology_name, methodology %>
+			        </div>
+
+						 	<div class="col-sm-1">
+								<%= check_box_tag "checked[]", methodology.id %>
+							</div>
+
+
+							<div class="col-sm-2">
+				        <%= render "shared/access_counts", :acc => Observation.where(:id => Measurement.where(:methodology_id => methodology).map(&:observation_id)) %>
+							</div>
+
+			        <div class="col-sm-3">
+						    <div class="btn-group pull-right">
+						     	<%= link_to 'Show', methodology_path(methodology), class: "btn btn-xs btn-default" %>
+								  <% if signed_in? && current_user.admin? %>
+					        	<%= link_to 'Edit', edit_methodology_path(methodology), class: "btn btn-xs btn-default" %>
+					        	<%= link_to 'Delete', methodology, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
+									<% end %>
+				        </div>
+							</div>
+						</div>
+					</li>
+		    <% end %>		
+	    </ul>
+		</div>
+	</div>
+<% end %>
 

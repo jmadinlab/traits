@@ -1,80 +1,77 @@
 <% provide(:title, 'Corals') %>
 
-<div class="row">
-  <div class="col-md-8 col-md-offset-2">
 
-    <div class="page-header">
-      <h1>Corals</h1>
-    </div>
+<div class="page-header">
+  <h1>Corals</h1>
+</div>
 
-		<p>Data for each of the corals listed below can be downloaded by selecting them using the checkbox and clicking <code style="color:green;">Download</code>.  Only public trait data will be downloaded for each coral.</p>
-		
-		<div class="well">
-			<div class="row">
-			  <div class="col-md-6">
-					<%= form_tag corals_path, :method => 'get' do %>
-				    <div class="input-group">
-				      <%= text_field_tag :search, params[:search], :placeholder => "Search species...", class: "form-control" %>
-				      <span class="input-group-btn">
-						    <%= submit_tag "Search", :name => nil, class: "btn btn-default" %>
-								<%= link_to 'Reset', corals_path, class: "btn btn-default" %>
-				      </span>
-				    </div>
-					<% end %>
-					<br>Download coral list as a <%= link_to "csv", corals_path(format: "csv") %>.
-			  </div>
-			  <div class="col-md-6">
-					<% if signed_in? && current_user.contributor? %>	
-						<%= link_to 'New Coral', new_coral_path, class: "btn btn-primary btn-md pull-right" %>
-					<% end %>
-			  </div>
-			</div>
-		</div>
+<p>Data for each of the corals listed below can be downloaded by selecting them using the checkbox and clicking <code style="color:green;">Download</code>.  Only public trait data will be downloaded for each coral.</p>
 
-
-		<%= form_tag export_corals_path do %>
-
-			<%= render "shared/download_options" %>			
-
-			<div class="row">
-			  <div class="col-md-12">
-					<ul class="list-group">
-				    <% @corals.each do |coral| %>
-						  <li class="list-group-item">							
-								<div class="row">
-					        <div class="col-md-1" style="color: lightgrey;">
-					        	<%= coral.id %>
-					        </div>
-					        <div class="col-md-5">
-					        	<em><%= link_to coral.coral_name, coral %></em>
-					        </div>
-
-								 	<div class="col-md-1">
-										<%= check_box_tag "checked[]", coral.id %>
-									</div>
-
-									<div class="col-md-2">
-										<%= render "shared/access_counts", :acc => Observation.where(:coral_id => coral) %>
-									</div>
-
-					        <div class="col-md-3">
-								    <div class="btn-group pull-right">
-								     	<%= link_to 'Show', coral_path(coral), class: "btn btn-xs btn-default" %>
-										  <% if signed_in? && current_user.admin? %>
-							        	<%= link_to 'Edit', edit_coral_path(coral), class: "btn btn-xs btn-default" %>
-							        	<%= link_to 'Delete', coral, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
-											<% end %>
-						        </div>
-									</div>
-								</div>
-							</li>
-				    <% end %>		
-			    </ul>
-				</div>
-			</div>
-		<% end %>
+<div class="well">
+	<div class="row">
+	  <div class="col-md-6">
+			<%= form_tag corals_path, :method => 'get' do %>
+		    <div class="input-group">
+		      <%= text_field_tag :search, params[:search], :placeholder => "Search species...", class: "form-control" %>
+		      <span class="input-group-btn">
+				    <%= submit_tag "Search", :name => nil, class: "btn btn-default" %>
+						<%= link_to 'Reset', corals_path, class: "btn btn-default" %>
+		      </span>
+		    </div>
+			<% end %>
+			<br>Download coral list as a <%= link_to "csv", corals_path(format: "csv") %>.
+	  </div>
+	  <div class="col-md-6">
+			<% if signed_in? && current_user.contributor? %>	
+				<%= link_to 'New Coral', new_coral_path, class: "btn btn-primary btn-md pull-right" %>
+			<% end %>
+	  </div>
 	</div>
 </div>
+
+<%= will_paginate @corals %>
+
+<%= form_tag export_corals_path do %>
+
+	<%= render "shared/download_options" %>			
+
+	<div class="row">
+	  <div class="col-md-12">
+			<ul class="list-group">
+		    <% @corals.each do |coral| %>
+				  <li class="list-group-item">							
+						<div class="row">
+			        <div class="col-md-1" style="color: lightgrey;">
+			        	<%= coral.id %>
+			        </div>
+			        <div class="col-md-5">
+			        	<em><%= link_to coral.coral_name, coral %></em>
+			        </div>
+
+						 	<div class="col-md-1">
+								<%= check_box_tag "checked[]", coral.id %>
+							</div>
+
+							<div class="col-md-2">
+								<%= render "shared/access_counts", :acc => Observation.where(:coral_id => coral) %>
+							</div>
+
+			        <div class="col-md-3">
+						    <div class="btn-group pull-right">
+						     	<%= link_to 'Show', coral_path(coral), class: "btn btn-xs btn-default" %>
+								  <% if signed_in? && current_user.admin? %>
+					        	<%= link_to 'Edit', edit_coral_path(coral), class: "btn btn-xs btn-default" %>
+					        	<%= link_to 'Delete', coral, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
+									<% end %>
+				        </div>
+							</div>
+						</div>
+					</li>
+		    <% end %>		
+	    </ul>
+		</div>
+	</div>
+<% end %>
 
 
 

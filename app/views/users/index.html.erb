@@ -1,7 +1,64 @@
 <% provide(:title, 'Users') %>
-<div class="row">
-  <div class="col-md-8 col-md-offset-2">
-	<h3>Contributors</h3>
+
+<h3>Contributors</h3>
+<br>
+
+<table class="table table-condensed">
+	<thead>
+	  <tr>
+	    <th style="color: lightgrey;">ID</th>
+	    <th>Name</th>
+	    <th>Email</th>
+		  <% if current_user.editor? %>
+  	    <th style="text-align:center;">Editor</th>
+			<% end %>
+		  <% if current_user.admin? %>
+  	    <th style="text-align:center;">Admin</th>
+			<% end %>
+	    <th></th>
+	  </tr>
+	</thead>
+
+  <tbody>
+		<% @users.sort_by{ |a| [a.editor ? 0 : 1, a.name] }.each do |user| %>
+			<% if user.contributor %>
+				<tr>
+					<td style="color: lightgrey;"><%= user.id %></td>
+					<td><%= link_to user.name, user %></td>
+				  <td><%= user.email %></td>
+				  
+				  <td style="text-align:center;">
+				  <% if current_user.editor? %>
+					  <% if !user.editor? %>
+							<span class="glyphicon glyphicon-remove-circle red"></span>
+						<% else %>
+							<span class="glyphicon glyphicon-ok-circle green"></span>
+						<% end %>
+					<% end %>
+					</td>
+
+				  <% if current_user.admin? %>
+					  <% if !user.admin? %>
+							<td style="text-align:center;"><span class="glyphicon glyphicon-remove-circle red"></span></td>
+						<% else %>
+							<td style="text-align:center;"><span class="glyphicon glyphicon-ok-circle green"></span></td>
+						<% end %>
+					<% end %>
+					
+				  <td style="text-align:right;">      
+				  	<% if current_user.admin? && !current_user?(user) %>
+				    	<%= link_to "Edit", edit_user_path(user) %> |
+				    	<%= link_to "Delete", user, method: :delete, data: { confirm: "You sure?" } %>
+						<% end %>
+					</td>
+				</tr>
+			<% end %>
+		<% end %>
+	</tbody>
+</table>
+
+<% if current_user.admin %>
+	<h3>Other users</h3>
 	<br>
 
 	<table class="table table-condensed">
@@ -10,45 +67,30 @@
 		    <th style="color: lightgrey;">ID</th>
 		    <th>Name</th>
 		    <th>Email</th>
-			  <% if current_user.editor? %>
-	  	    <th style="text-align:center;">Editor</th>
-				<% end %>
 			  <% if current_user.admin? %>
 	  	    <th style="text-align:center;">Admin</th>
 				<% end %>
 		    <th></th>
 		  </tr>
 		</thead>
-	
+
 	  <tbody>
-			<% @users.sort_by{ |a| [a.editor ? 0 : 1, a.name] }.each do |user| %>
-				<% if user.contributor %>
+			<% @users.each do |user| %>
+				<% if !user.contributor %>
 					<tr>
 						<td style="color: lightgrey;"><%= user.id %></td>
 						<td><%= link_to user.name, user %></td>
 					  <td><%= user.email %></td>
-					  
-					  <td style="text-align:center;">
-					  <% if current_user.editor? %>
-						  <% if !user.editor? %>
-								<span class="glyphicon glyphicon-remove-circle red"></span>
-							<% else %>
-								<span class="glyphicon glyphicon-ok-circle green"></span>
-							<% end %>
-						<% end %>
-						</td>
-
 					  <% if current_user.admin? %>
 						  <% if !user.admin? %>
-								<td style="text-align:center;"><span class="glyphicon glyphicon-remove-circle red"></span></td>
+								<td style="color:red;text-align:center;"><span class="glyphicon glyphicon-remove-circle"></span></td>
 							<% else %>
-								<td style="text-align:center;"><span class="glyphicon glyphicon-ok-circle green"></span></td>
+								<td style="color:green;text-align:center;"><span class="glyphicon glyphicon-ok-circle"></span></td>
 							<% end %>
 						<% end %>
-						
+
 					  <td style="text-align:right;">      
 					  	<% if current_user.admin? && !current_user?(user) %>
-					    	<%= link_to "Edit", edit_user_path(user) %> |
 					    	<%= link_to "Delete", user, method: :delete, data: { confirm: "You sure?" } %>
 							<% end %>
 						</td>
@@ -57,50 +99,5 @@
 			<% end %>
 		</tbody>
 	</table>
+<% end %>
 
-	<% if current_user.admin %>
-		<h3>Other users</h3>
-		<br>
-
-		<table class="table table-condensed">
-			<thead>
-			  <tr>
-			    <th style="color: lightgrey;">ID</th>
-			    <th>Name</th>
-			    <th>Email</th>
-				  <% if current_user.admin? %>
-		  	    <th style="text-align:center;">Admin</th>
-					<% end %>
-			    <th></th>
-			  </tr>
-			</thead>
-	
-		  <tbody>
-				<% @users.each do |user| %>
-					<% if !user.contributor %>
-						<tr>
-							<td style="color: lightgrey;"><%= user.id %></td>
-							<td><%= link_to user.name, user %></td>
-						  <td><%= user.email %></td>
-						  <% if current_user.admin? %>
-							  <% if !user.admin? %>
-									<td style="color:red;text-align:center;"><span class="glyphicon glyphicon-remove-circle"></span></td>
-								<% else %>
-									<td style="color:green;text-align:center;"><span class="glyphicon glyphicon-ok-circle"></span></td>
-								<% end %>
-							<% end %>
-
-						  <td style="text-align:right;">      
-						  	<% if current_user.admin? && !current_user?(user) %>
-						    	<%= link_to "Delete", user, method: :delete, data: { confirm: "You sure?" } %>
-								<% end %>
-							</td>
-						</tr>
-					<% end %>
-				<% end %>
-			</tbody>
-		</table>
-	<% end %>
-
-	</div>
-</div>
