@@ -1,8 +1,10 @@
 <div class="row">
   <div class="col-md-12 col-md-offset-6">
 		<p>
-			<input type="checkbox", name="contextual" /> Include contexual data?<br>
-			<input type="checkbox", name="global" /> Global estimates only?<br>
+			<input type="checkbox", name="contextual" /> Remove contexual data?<br>
+			<% if not @locations %>
+				<input type="checkbox", name="global" /> Global estimates only?<br>
+			<% end %>
 			<%= submit_tag "Download", class: "btn btn-success btn-md" %></p>
 	</div>
 </div>

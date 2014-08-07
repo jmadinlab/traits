@@ -54,12 +54,15 @@ class ApplicationController < ActionController::Base
   # Return the main csv string depending upon the model (corals data / traits data / lcation data etc)
   def get_main_csv(observations, contextual, global)
 
+
+#observation_id access  user_id coral_id  location_id resource_id trait_id  standard_id method_id value value_type  precision precision_type  precision_upper replicates
+
     csv_string = CSV.generate do |csv|
-      csv << ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "methodology_name", "standard_unit",  "value", "precision", "precision_type", "precision_upper", "replicates"]
+      csv << ["observation_id", "access", "user_id", "coral_id", "coral_name", "location_id", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_id", "trait_name", "standard_id", "standard_unit", "methodology_id", "methodology_name", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates", "measurement_notes"]
       observations.each do |obs|
         if global != "on" || obs.location_id == 1
           obs.measurements.each do |mea|
-            if mea.trait.trait_class != "Contextual" || contextual == "on"
+            if contextual != "on" || mea.trait.trait_class != "Contextual"
               if obs.location.present?
                 loc = obs.location.location_name
                 lat = obs.location.latitude
@@ -84,7 +87,7 @@ class ApplicationController < ActionController::Base
                 method = mea.methodology.methodology_name
               end
 
-              csv << [obs.id, acc, obs.user_id, obs.coral.coral_name, loc, lat, lon, obs.resource_id, mea.id, mea.trait.trait_name, method, mea.standard.standard_unit, mea.value, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates]
+              csv << [obs.id, acc, obs.user_id, obs.coral.id, obs.coral.coral_name, obs.location_id, loc, lat, lon, obs.resource_id, mea.id, mea.trait.id, mea.trait.trait_name, mea.standard.id, mea.standard.standard_unit, mea.methodology_id, method, mea.value, mea.value_type, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates, mea.notes]
             end
           end
         end

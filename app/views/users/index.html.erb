@@ -22,10 +22,10 @@
 			<strong>Contributor</strong>
 		</div>
 		<div class="col-sm-1" style="text-align:center;">
-			<strong>Editor</strong>
+			<% if current_user.admin? %><strong>Editor</strong><% end %>
 		</div>
 		<div class="col-sm-1" style="text-align:center;">
-			<strong>Admin</strong>
+			<% if current_user.admin? %><strong>Admin</strong><% end %>
 		</div>
 		<div class="col-sm-1" style="text-align:center;">
 			<strong>Observations</strong>
@@ -56,19 +56,22 @@
 					</div>
 
 					<div class="col-sm-1" style="text-align:center;">
-					  <% if current_user.editor? %>
+					  <% if current_user.admin? %>
 							<%= check_box_tag "editor_true_ids[]", user.id, user.editor %>
 							<% if user.editor? %>
-								<%= user.traits.size %>
+								<span class="badge"><%= user.traits.size %></span>
 							<% end %>
+						<% else %>
+							<%= check_box_tag "editor_true_ids[]", user.id, user.editor, style: "visibility:hidden;" %>
 						<% end %>
 					</div>
 
 					<div class="col-sm-1" style="text-align:center;">
 					  <% if current_user.admin? %>
 							<%= check_box_tag "admin_true_ids[]", user.id, user.admin %>
+						<% else %>
+							<%= check_box_tag "admin_true_ids[]", user.id, user.admin, style: "visibility:hidden;" %>
 						<% end %>
-
 					</div>
 
 					<div class="col-sm-2">

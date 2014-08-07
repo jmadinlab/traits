@@ -38,13 +38,9 @@ class LocationsController < ApplicationController
       
     if signed_in? && current_user.contributor?
       if current_user.admin?
-        #@observations = Observation.where{location_id.in my{params[:checked]}}
         @observations = Observation.where(:location_id => params[:checked])
       else
-        #@observations = Observation.where{ (private == 'f') | ((user_id == my{current_user.id}) & (private == 't')) }.        
-        #where{location_id.in my{params[:checked]}}
         @observations = Observation.where(" (private = 'f' or (private = 't' and user_id = ? )) ", current_user.id).where(:location_id => params[:checked])
-
       end
     else
       @observations = Observation.where(:private => false).where(:location_id => params[:checked])        
