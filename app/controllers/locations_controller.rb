@@ -10,15 +10,18 @@ class LocationsController < ApplicationController
   # GET /locations.json
   def index
 
+    pp = 15
+    pp = 9999 if params[:pp]
+
     @search = Location.search do
       fulltext params[:search]
-      paginate page: params[:page], per_page: 15
+      paginate page: params[:page], per_page: pp
     end
     
     if params[:search]
       @locations = @search.results
     else
-      @locations = Location.all.paginate(:page=> params[:page], :per_page => 15)
+      @locations = Location.all.paginate(:page=> params[:page], :per_page => pp)
     end
 
     # @locations = @locations.sort_by{|l| l[:latitude]} if params[:sort] == "latitude"

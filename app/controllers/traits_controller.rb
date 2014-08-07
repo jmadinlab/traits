@@ -9,14 +9,19 @@ class TraitsController < ApplicationController
   # GET /traits.json
   def index
     # @traits = Trait.search(params[:search])
+
+    pp = 15
+    pp = 999 if params[:pp]
+
     @search = Trait.search do
       fulltext params[:search]
+      paginate page: params[:page], per_page: pp
     end
     
     if params[:search]
       @traits = @search.results
     else
-      @traits = Trait.all#.paginate(:page=> params[:page], :per_page => 20)
+      @traits = Trait.all.paginate(:page=> params[:page], :per_page => pp)
     end
 
     respond_to do |format|

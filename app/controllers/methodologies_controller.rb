@@ -39,15 +39,19 @@ class MethodologiesController < ApplicationController
   end
 
   def index
-   @search = Methodology.search do
+
+    pp = 15
+    pp = 9999 if params[:pp]
+
+    @search = Methodology.search do
       fulltext params[:search]
-      paginate page: params[:page], per_page: 15
+      paginate page: params[:page], per_page: pp
     end
     
     if params[:search]
       @methodologies = @search.results
     else
-      @methodologies = Methodology.all.paginate(:page=> params[:page], :per_page => 15)
+      @methodologies = Methodology.all.paginate(:page=> params[:page], :per_page => pp)
     end
 
     # @methodologies = @methodologies.sort_by{|l| l[:id]} if params[:sort] == "id"

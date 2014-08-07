@@ -6,7 +6,7 @@
 
 <div class="row">
   <div class="col-md-4">
-		<p>Data for each of the locations listed below can be downloaded by selecting them using the checkbox and clicking <code style="color:green;">Download</code>.  Only public trait data will be downloaded for each location.</p>
+		<%= render "shared/instructions" %>
 	</div>
   <div class="col-md-8">
 		<div id="map-canvas" class="map-container"></div> 
@@ -23,6 +23,7 @@
 		      <%= text_field_tag :search, params[:search], :placeholder => "Search locations...", class: "form-control" %>
 		      <span class="input-group-btn">
 				    <%= submit_tag "Search", :name => nil, class: "btn btn-default" %>
+						<%= link_to "1 Page", locations_path(search: params[:search], pp: "all"), class: "btn btn-default" %>
 						<%= link_to 'Reset', locations_path, class: "btn btn-default" %>
 		      </span>
 		    </div>
@@ -65,7 +66,9 @@
 							</div>
 
 							<div class="col-sm-2">
-				        <%= render "shared/access_counts", :acc => Observation.where(:location_id => location) %>
+								<% if not params[:pp] %>
+				        	<%= render "shared/access_counts", :acc => Observation.where(:location_id => location) %>
+								<% end %>
 							</div>
 
 			        <div class="col-sm-3">

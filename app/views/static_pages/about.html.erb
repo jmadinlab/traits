@@ -1,22 +1,40 @@
 <% provide(:title, 'About Us') %>
 
-
-    
     <div class="page-header">
       <h1>The Coral Trait Database</h3></h1>
     </div>
-    
-    <p>The Coral Trait Database is a initiative led by Dr. Joshua Madin (Macquarie University, Sydney) and Prof. Andrew Baird (James Cook University, Townsville) to make observations and measurements of corals in the vast coral literature easily accessible in order to support coral reef science.  If you use information from the database, you are obliged to cite the original data sources. In additional, we would also appreciate you citing the database itself as:</p>
+
+
+    <p>The Coral Trait Database is a community initiative focused on making all observations and measurements of corals accessible in order to more rapidly advance coral reef science. Database contributors have control over the privacy of their data.</p>
 
     <div class="list-group">
       <div class="list-group-item">
-        Madin JS and Baird AH (2014) The Coral Trait Database. http://coraltraits.org
+        The Coral Trait Database Consortium (2014) The Coral Trait Database. http://coraltraits.org
       </div>
     </div> 
 
-    <p>The Coral Trait Database has been developed according to the Observation and Measurement Ontology (OBOE) that was developed at the National Center for Ecological Analysis and Synthesis (see references below).  The system has been designed with reef corals in mind, but is a generic system for data in which entities are observed and traits of these entities are measured.  The key distinction between OBOE and observational models is that trait-entity relationships and observation context are made explicit.  These are the ingredients that make sense of within-dataset data (i.e., metadata about values).</p>
+    <h3>Database trait editors</h3>
 
-    <p>Several contextual constraints have been implemented in the Coral Trait Database to simplify the structure.  The model only includes four observed entities: User, Resource, Location and Coral.  Measurements of "traits" can be taken of all four entities; however, those for the former three entities are constrained.  Measurements of "traits" for Coral are highly flexible.  Also for simplicity, many contextual entities, such as "habitat" or "plot", are measured at the Coral entity level.  For example, a Coral "area" can be measured as expected, but so can traits for higher-level entities such as "water temperature", "depth" and "habitat".  Such constraints on the model can be relaxed if deemed necessary, but greatly improved the performance of the model for it's current purposes.</p>  
+    <p>The Coral Trait Database replies on expert volunteers who monitor contributions to the database. The current editors are:</p>
+
+    <div class="row">
+      <div class="col col-md-3">
+        <div class="list-group">
+          <% User.where(:editor => true).each do |ed| %>
+            <div class="list-group-item">
+              <%= ed.name %>
+            </div>
+          <% end %>
+        </div>      
+      </div>      
+    </div>      
+
+    <h3>Database design</h3>
+    
+    <p>The Coral Trait Database has been developed according to the Observation and Measurement Ontology (OBOE) that was developed at the National Center for Ecological Analysis and Synthesis (see references below).  The system has been designed with reef corals in mind, but is a generic system for data in which entities are observed, and then traits of these entities are measured.  The key distinction between OBOE and other observational models is that trait-entity relationships and observation context are made explicit.  On other words, the database preserves metadata about data values as well as the standard metadata about datasets.</p>
+
+    <p>Several contextual constraints have been implemented in the Coral Trait Database to simplify the structure and improve speed. For example, we model only five observed entities: User, Resource, Location, Time and Coral.  Measurements of "traits" can be taken of all five entities; however, we constrain the measureable traits for the first four of these entities.  Measurements of "traits" for Coral are highly flexible.  Also for simplicity, many contextual entities, such as "habitat" or "plot", are measured at the Coral entity level.  For example, a Coral "planar area" (i.e., colony size) can be measured as expected, but so can traits for higher-level entities such as "water temperature", "depth" and "habitat".  Such constraints on the model can be relaxed if necessary, but are in place to improve the performance of the model for current purposes.</p>  
+
     <h3>References</h3>    
     
     <div class="list-group">
@@ -35,7 +53,8 @@
         The foundation for this web application (e.g., session and user models) was developed using Michael Hartl's ruby of rails tutorial.
 			</div> 
     </div>      
- 
+
+
     <h3>Database code</h3>
     
     <p>The database was developed using Ruby on Rails and can be freely downloaded from <a href="https://github.com/jmadin/coraltraits">Github<a>.</p>

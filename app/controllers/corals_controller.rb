@@ -8,16 +8,19 @@ class CoralsController < ApplicationController
   # GET /corals.json
   def index
     # @corals = Coral.search(params[:search])
+
+    pp = 15
+    pp = 9999 if params[:pp]
     
     @search = Coral.search do
       fulltext params[:search]
-      paginate page: params[:page], per_page: 15
+      paginate page: params[:page], per_page: pp
     end
     
     if params[:search]
       @corals = @search.results
     else
-      @corals = Coral.all.paginate(:page=> params[:page], :per_page => 15)
+      @corals = Coral.all.paginate(:page=> params[:page], :per_page => pp)
     end
     
     @corals = PaperTrail::Version.find(params[:version]).reify if params[:version]

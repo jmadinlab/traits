@@ -7,7 +7,7 @@
 
 <div class="row">
   <div class="col-md-12">
-		<p>Data for each of the methodologies listed below can be downloaded by selecting them using the checkbox and clicking <code style="color:green;">Download</code>.  Only public trait data will be downloaded for each methodology.</p>
+		<%= render "shared/instructions" %>
 	</div>
 </div>
 
@@ -19,6 +19,7 @@
 		      <%= text_field_tag :search, params[:search], :placeholder => "Search methodologies...", class: "form-control" %>
 		      <span class="input-group-btn">
 				    <%= submit_tag "Search", :name => nil, class: "btn btn-default" %>
+						<%= link_to "1 Page", methodologies_path(search: params[:search], pp: "all"), class: "btn btn-default" %>
 						<%= link_to 'Reset', methodologies_path, class: "btn btn-default" %>
 		      </span>
 		    </div><br>
@@ -59,7 +60,9 @@
 
 
 							<div class="col-sm-2">
-				        <%= render "shared/access_counts", :acc => Observation.where(:id => Measurement.where(:methodology_id => methodology).map(&:observation_id)) %>
+								<% if not params[:pp] %>
+				        	<%= render "shared/access_counts", :acc => Observation.where(:id => Measurement.where(:methodology_id => methodology).map(&:observation_id)) %>
+								<% end %>
 							</div>
 
 			        <div class="col-sm-3">

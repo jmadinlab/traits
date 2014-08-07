@@ -6,7 +6,7 @@
 
 <div class="row">
   <div class="col-md-12">
-		<p>Data for each of the traits listed below can be downloaded by selecting them using the checkbox and clicking <code style="color:green;">Download</code>.  Only public trait observations (and your own private observations) will be downloaded.</p>
+  	<%= render "shared/instructions" %>
 	</div>
 </div>
 
@@ -18,6 +18,7 @@
 		      <%= text_field_tag :search, params[:search], :placeholder => "Search traits...", class: "form-control" %>
 		      <span class="input-group-btn">
 				    <%= submit_tag "Search", :name => nil, class: "btn btn-default" %>
+						<%= link_to "1 Page", traits_path(search: params[:search], pp: "all"), class: "btn btn-default" %>
 						<%= link_to 'Reset', traits_path, class: "btn btn-default" %>
 		      </span>
 		    </div>
@@ -32,7 +33,7 @@
 	</div>
 </div>
 
-<%#= will_paginate @traits %>
+<%= will_paginate @traits %>
 
 <%= form_tag export_traits_path do %>
 
@@ -67,7 +68,9 @@
 							</div>
 						
 							<div class="col-sm-2">
-								<%= render "shared/access_counts", :acc => Observation.where(:id => Measurement.where(:trait_id => trait).map(&:observation_id)) %>
+								<% if not params[:pp] %>
+									<%= render "shared/access_counts", :acc => Observation.where(:id => Measurement.where(:trait_id => trait).map(&:observation_id)) %>
+								<% end %>
 							</div>
 
 	  					<div class="col-sm-3">

@@ -5,7 +5,7 @@
   <h1>Resources</h1>
 </div>
 
-<p>Data for each of the resources listed below can be downloaded by selecting them using the checkbox and clicking <code style="color:green;">Download</code>.  Only public trait data will be downloaded for each location.</p>
+<%= render "shared/instructions" %>
 
 <div class="well">
 	<div class="row">
@@ -15,6 +15,7 @@
 		      <%= text_field_tag :search, params[:search], :placeholder => "Search resources...", class: "form-control" %>
 		      <span class="input-group-btn">
 				    <%= submit_tag "Search", :name => nil, class: "btn btn-default" %>
+						<%= link_to "1 Page", resources_path(search: params[:search], pp: "all"), class: "btn btn-default" %>
 						<%= link_to 'Reset', resources_path, class: "btn btn-default" %>
 		      </span>
 		    </div>
@@ -60,7 +61,9 @@
 							</div>
 
 							<div class="col-sm-2">
-				        <%= render "shared/access_counts", :acc => Observation.where(:resource_id => resource) %>
+								<% if not params[:pp] %>
+				        	<%= render "shared/access_counts", :acc => Observation.where(:resource_id => resource) %>
+								<% end %>
 							</div>
 
 			        <div class="col-sm-3">

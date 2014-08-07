@@ -7,15 +7,19 @@ class ResourcesController < ApplicationController
   # GET /resources
   # GET /resources.json
   def index
+
+    pp = 15
+    pp = 9999 if params[:pp]
+
     @search = Resource.search do
       fulltext params[:search]
-      paginate page: params[:page], per_page: 15
+      paginate page: params[:page], per_page: pp
     end
     
     if params[:search]
       @resources = @search.results
     else
-      @resources = Resource.all.paginate(:page=> params[:page], :per_page => 15)
+      @resources = Resource.all.paginate(:page=> params[:page], :per_page => pp)
     end
 
 
