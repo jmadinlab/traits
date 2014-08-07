@@ -83,6 +83,28 @@ class UsersController < ApplicationController
     redirect_to users_url
   end
 
+
+  def edit_multiple
+    @observations = Observation.find(params[:obs_ids])
+  end
+
+  def update_multiple
+    User.where(:id => params[:ids]).update_all(:contributor => false)
+    User.where(:id => params[:contrib_true_ids]).update_all(:contributor => true)
+    User.where(:id => params[:ids]).update_all(:editor => false)
+    User.where(:id => params[:editor_true_ids]).update_all(:contributor => true)
+    User.where(:id => params[:editor_true_ids]).update_all(:editor => true)
+    User.where(:id => params[:ids]).update_all(:admin => false)
+    User.where(:id => params[:admin_true_ids]).update_all(:contributor => true)
+    User.where(:id => params[:admin_true_ids]).update_all(:admin => true)
+    User.where(:id => params[:admin_true_ids]).update_all(:editor => true)
+
+    redirect_to users_path, flash: {success: "Privileges updated." }
+  end
+
+
+
+
   private
 
     def user_params

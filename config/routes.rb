@@ -76,7 +76,9 @@ Traits::Application.routes.draw do
 
   resources :entities
 
-  resources :users
+  resources :users do  
+      post :update_multiple, :on => :collection
+  end
   
   resources :sessions,      only: [:new, :create, :destroy]
 

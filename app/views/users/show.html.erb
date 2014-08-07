@@ -19,6 +19,15 @@
 		  <%= render "shared/access_counts", :acc => Observation.where(:user_id => @user.id) %>
 		</p>
 
+		<% if @user.editor? %>
+			<p>
+			  <strong>Editor for:</strong>
+			  <% @user.traits.each do |t| %>
+			  	<%= link_to t.trait_name, trait_path(t), class: "label label-primary" %>
+			  <% end %>
+			</p>
+	  <% end %>
+
 		<p>Observations that entered by <%= @user.name %> are listed below.  These are original/new observations only (i.e., not  observations that have been modified/edited). Displayed data can be downloaded by clicking <code style="color:green;">Download</code>.  Use the search filter and number of measurements to be returned (above) to limit or expand your download.  You will only see (and be able to download) public <span class="glyphicon glyphicon-ok-circle" style="color:green;"></span> observations as well as the private <span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> observations that you entered.  If these are your observations, then you can also control their access.</p>
 	</div>
 
