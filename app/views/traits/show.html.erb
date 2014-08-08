@@ -70,6 +70,9 @@
 			<% if !@trait.user.blank? %>
 				<%= @trait.user.name %> (<%= mail_to @trait.user.email, "contact", {:subject => "Coral Trait enquiry"} %>)
 			<% end %>
+			<% if current_user.editor? %>
+				<%= link_to "meta", show_meta_path(@trait), class: "label label-danger" %>
+			<% end %>
 		</p>
 
 		<p>

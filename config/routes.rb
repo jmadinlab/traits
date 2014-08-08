@@ -20,6 +20,8 @@ Traits::Application.routes.draw do
   get '/locations/:id/resources', to: 'locations#show'
   get '/resources/:id/resources', to: 'resources#show'
   
+  match '/meta/:id',     to: 'static_pages#show',    via: 'get', :as => :show_meta
+  # get '/meta/:ids', to: 'static_pages#show'
 
   
   resources :imports
@@ -89,7 +91,6 @@ Traits::Application.routes.draw do
   match '/help',     to: 'static_pages#help',    via: 'get'
   match '/about',    to: 'static_pages#about',   via: 'get'
   match '/meta',     to: 'static_pages#meta',    via: 'get'
-  match '/download', to: 'static_pages#download', via: 'get'
 
   
 

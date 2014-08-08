@@ -96,8 +96,13 @@
 				  
 
 								  <div class="col-sm-2">
-							      <span class="label label-default"><%= mea.value_type %></span>
+										<% if mea.value_type %>
+											<span class="label label-default"><%= mea.value_type %></span>
+										<% else %>
+											<span class="label label-danger">no value type</span>
+										<% end %>
 									</div>
+
 								  <div class="col-sm-2">
 										<% if mea.methodology %>
 										<%= link_to mea.methodology.methodology_name, methodology_path(mea.methodology_id) %>

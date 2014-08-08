@@ -7,6 +7,8 @@ class Methodology < ActiveRecord::Base
     text :methodology_name  
   end
 
+  default_scope -> { order('methodology_name ASC') }
+
   '''
 	def self.search(search)
       if search

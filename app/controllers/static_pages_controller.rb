@@ -19,7 +19,8 @@ class StaticPagesController < ApplicationController
     @traits = query.all
   end
 
-  def download
+  def show
+    @trait = Trait.find(params[:id])
   end
 
   def about

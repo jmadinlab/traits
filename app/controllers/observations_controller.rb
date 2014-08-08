@@ -3,7 +3,7 @@
   before_action :contributor
   before_action :enterer, only: [:edit, :update, :destroy]
   before_action :set_observation, only: [:show, :edit, :update, :destroy]
-  
+  # before_action :admin, :destroy
 
   # autocomplete :location, :name, :full => true
   # autocomplete :coral, :name, :full => true

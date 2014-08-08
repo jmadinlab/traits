@@ -1,42 +1,85 @@
 <% provide(:title, 'Meta') %>
-<small>
 
-<%= form_tag meta_path, :method => 'get' do %>
-  <%= select_tag :status, options_for_select(Trait.all.map(&:release_status).uniq, params[:status]), onchange: "$(this).parent('form').submit();" %>
-<% end %>
+<div class="page-header">
+	<h1>Metadata</h1>
+</div>
 
-	<h3><%= params[:status] %></h3>
+<%#= form_tag meta_path, :method => 'get' do %>
+  <%#= select_tag :status, options_for_select(Trait.all.map(&:release_status).uniq, params[:status]), onchange: "$(this).parent('form').submit();" %>
+<%# end %>
 
-	<table class="table table-condensed">
-		<tr style="background-color:#9DBB5E">
-		  <th>Trait Name</th>
-		  <th>Class</th>
-		  <th style="width:200px;">Description</th>
-		  <th>Editor</th>
-		  <th>Measurements</th>
-		  <th>Standard</th>
-		  <th>Value range</th>
-		  <th>Value type</th>
-		  <th>Methods</th>
-		  <th style="width:200px;">Resources</th>
-		  <th></th>
-		</tr>
-		<% @traits.sort_by{ |h| h[:trait_name] }.each do |trait| %>
-			<tr>
-			  <td><%= link_to trait.trait_name, "/traits/" + trait.id.to_s %></td>
-			  <td><%= trait.trait_class %></td>
-			  <td><%= trait.trait_description %></td>
-			  <td><%= trait.user.name %></td>
-			  <td><%= Measurement.where(:trait_id => trait.id).size %></td>
-			  <td><%= trait.standard.standard_name %> (<%= trait.standard.standard_unit %>)</td>
-			  <td><%= trait.value_range %></td>
-			  <td><%= Measurement.where(:trait_id => trait.id).map(&:value_type).compact.uniq.sort.join(",\n") %></td>
-			  <td></td>
-			  <td><%= Observation.where(:id => Measurement.where(:trait_id => trait.id).map(&:observation_id)).map(&:resource_id).compact.uniq.sort.join(",\n") %></td>
-			  <td><%= link_to 'Edit', edit_trait_path(trait), class: "btn btn-default btn-xs" %></td>
-			</tr>
-		<% end %>
-	</table>
+<h3><%= params[:status] %></h3>
 
-		
-</small>
+<div class="row">
+	<div class="col-md-2">
+	  <strong>Trait Name</strong>
+  </div>
+	<div class="col-md-2">
+	  <strong>Class</strong>
+  </div>
+	<div class="col-md-2">
+	  <strong>Description</strong>
+  </div>
+	<div class="col-md-1">
+	  <strong>Editor</strong>
+  </div>
+	<div class="col-md-1">
+	  <strong>Standard</strong>
+  </div>
+	<div class="col-md-2">
+	  <strong>Value range</strong>
+  </div>
+	<div class="col-md-1">
+	  <strong>Measurements</strong>
+  </div>
+	<div class="col-md-1">
+  </div>
+</div>
+
+<ul class="list-group">
+
+	<% @traits.sort_by{ |h| h[:id] }.each do |trait| %>
+
+	<% if trait.user == current_user || current_user.admin? %>
+	  <li class="list-group-item">							
+			<div class="row">
+				<div class="col-md-2">
+				  <%= link_to trait.trait_name, "/traits/" + trait.id.to_s %>
+			  </div>
+				<div class="col-md-2">
+				  <%= trait.trait_class %>
+			  </div>
+				<div class="col-md-2">
+				  <%= trait.trait_description %>
+			  </div>
+				<div class="col-md-1">
+				  <%= trait.user.name %>
+			  </div>
+				<div class="col-md-1">
+				  <%= trait.standard.standard_name %> (<%= trait.standard.standard_unit %>)
+			  </div>
+				<div class="col-md-2">
+				  <% trait.value_range.to_s.split(',').each do |v| %>
+				  	<span class="label label-primary"><%= v %></span>
+					<% end %>
+					<% if trait.standard.id != 2 && trait.standard.id != 10 && trait.standard.id != 40 %>
+				  	<span class="label label-success">not applicable</span>
+					<% end %>
+
+			  </div>
+				<div class="col-md-1">
+				  <%= Measurement.where(:trait_id => trait.id).size %>
+			  </div>
+				<div class="col-md-1">
+				  <%= link_to 'Status', show_meta_path(trait.id), class: "btn btn-default btn-xs" %>
+				  <%= link_to 'Edit', edit_trait_path(trait), class: "btn btn-default btn-xs" %>
+			  </div>
+		  </div>
+	  </li>
+	<% end %>
+
+
+	<% end %>
+
+
+</ul>		
