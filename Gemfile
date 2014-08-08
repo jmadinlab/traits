@@ -40,7 +40,7 @@ gem 'hirb'
 
 group :development, :test do
   gem 'sqlite3'#, '1.3.8'
-  gem 'sunspot_solr'
+  #gem 'sunspot_solr'
   # gem 'rspec-rails', '2.13.1'
   # The following optional lines are part of the advanced setup.
   # gem 'guard-rspec', '2.5.0'
@@ -83,4 +83,5 @@ end
 
 group :production do
   # gem 'rails_12factor', '0.0.2'
+  gem 'sunspot_solr'
 end
