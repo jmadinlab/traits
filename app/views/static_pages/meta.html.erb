@@ -5,7 +5,7 @@
   <%= select_tag :status, options_for_select(Trait.all.map(&:release_status).uniq, params[:status]), onchange: "$(this).parent('form').submit();" %>
 <% end %>
 
-	<h3><%= params[:status].humanize %></h3>
+	<h3><%= params[:status] %></h3>
 
 	<table class="table table-condensed">
 		<tr style="background-color:#9DBB5E">

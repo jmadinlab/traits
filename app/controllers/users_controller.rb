@@ -43,7 +43,7 @@ class UsersController < ApplicationController
       }
 
       format.zip{
-        send_zip(@observations, 'data.csv', "", "")
+        send_zip(@observations, 'traits.csv', params[:taxonomy], params[:contextual], params[:global])
       }
 
     end

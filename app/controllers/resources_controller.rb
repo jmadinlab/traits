@@ -132,7 +132,7 @@ class ResourcesController < ApplicationController
       @observations = Observation.where(:private => false).where(:resource_id => params[:checked])        
     end        
     
-    send_zip(@observations, 'traits.csv', params[:contextual], params[:global])
+    send_zip(@observations, 'traits.csv', params[:taxonomy], params[:contextual], params[:global])
           
   end
 

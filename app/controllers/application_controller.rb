@@ -52,13 +52,19 @@ class ApplicationController < ActionController::Base
   end
 
   # Return the main csv string depending upon the model (corals data / traits data / lcation data etc)
-  def get_main_csv(observations, contextual, global)
+  def get_main_csv(observations, taxonomy, contextual, global)
 
 
 #observation_id access  user_id coral_id  location_id resource_id trait_id  standard_id method_id value value_type  precision precision_type  precision_upper replicates
 
+
+
     csv_string = CSV.generate do |csv|
-      csv << ["observation_id", "access", "user_id", "coral_id", "coral_name", "location_id", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_id", "trait_name", "standard_id", "standard_unit", "methodology_id", "methodology_name", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates", "measurement_notes"]
+      if taxonomy == "on"
+        csv << ["observation_id", "access", "user_id", "coral_id", "coral_name", "major_clade", "family_molecules", "family_morphology", "location_id", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_id", "trait_name", "standard_id", "standard_unit", "methodology_id", "methodology_name", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates", "measurement_notes"]
+      else
+        csv << ["observation_id", "access", "user_id", "coral_id", "coral_name", "location_id", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_id", "trait_name", "standard_id", "standard_unit", "methodology_id", "methodology_name", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates", "measurement_notes"]
+      end
       observations.each do |obs|
         if global != "on" || obs.location_id == 1
           obs.measurements.each do |mea|
@@ -86,8 +92,11 @@ class ApplicationController < ActionController::Base
               if mea.methodology.present?
                 method = mea.methodology.methodology_name
               end
-
-              csv << [obs.id, acc, obs.user_id, obs.coral.id, obs.coral.coral_name, obs.location_id, loc, lat, lon, obs.resource_id, mea.id, mea.trait.id, mea.trait.trait_name, mea.standard.id, mea.standard.standard_unit, mea.methodology_id, method, mea.value, mea.value_type, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates, mea.notes]
+              if taxonomy == "on"
+                csv << [obs.id, acc, obs.user_id, obs.coral.id, obs.coral.coral_name, obs.coral.major_clade, obs.coral.family_molecules, obs.coral.family_morphology, obs.location_id, loc, lat, lon, obs.resource_id, mea.id, mea.trait.id, mea.trait.trait_name, mea.standard.id, mea.standard.standard_unit, mea.methodology_id, method, mea.value, mea.value_type, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates, mea.notes]
+              else
+                csv << [obs.id, acc, obs.user_id, obs.coral.id, obs.coral.coral_name, obs.location_id, loc, lat, lon, obs.resource_id, mea.id, mea.trait.id, mea.trait.trait_name, mea.standard.id, mea.standard.standard_unit, mea.methodology_id, method, mea.value, mea.value_type, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates, mea.notes]
+              end
             end
           end
         end
@@ -100,7 +109,7 @@ class ApplicationController < ActionController::Base
 
 
   # Return the resources csv
-  def get_resources_csv(observations, contextual, global)
+  def get_resources_csv(observations, taxonomy, contextual, global)
     resources_string = CSV.generate do |csv|
         csv << ["resource_id", "author", "year", "title", "resource_type", "resource_ISBN", "resource_journal", "resource_volume_pages", "resource_notes"]
 
@@ -127,19 +136,19 @@ class ApplicationController < ActionController::Base
 
 
   # Return the zip file
-  def send_zip(observations, file_name='file1.csv', contextual, global)
+  def send_zip(observations, file_name='file1.csv', taxonomy, contextual, global)
     require 'rubygems'
     require 'zip'
 
     # Process file1 (corals.csv, traits.csv, locations.csv)
-    csv_string = get_main_csv(observations, contextual, global)
+    csv_string = get_main_csv(observations, taxonomy, contextual, global)
     file1 = file_name
     file1_path = "public/" + file1
     _file1 = File.open(file1_path, "w") { |f| f << csv_string }
     
 
     # Process file2 resources.csv
-    resources_string = get_resources_csv(observations, contextual, global)
+    resources_string = get_resources_csv(observations, taxonomy, contextual, global)
     file2 = "resources.csv"
     file2_path = "public/" + file2
     _file2 = File.open(file2_path, "w") { |f| f << resources_string }

@@ -67,10 +67,6 @@ class MethodologiesController < ApplicationController
 
   def show
 
-    params[:n] = 100 if params[:n].blank?
-    n = params[:n]
-    n = 9999999 if params[:n] == "all"
-
     @observations = Observation.where(:id => @methodology.measurements.map(&:observation_id))
 
     if signed_in? && current_user.admin?
@@ -83,7 +79,7 @@ class MethodologiesController < ApplicationController
 
     respond_to do |format|
       format.html {
-        @observations = @observations.limit(n)
+        @observations = @observations.paginate(:page=> params[:page], :per_page => 20)
       }
       format.csv {
         if request.url.include? 'resources.csv'
@@ -160,7 +156,7 @@ class MethodologiesController < ApplicationController
       @observations = Observation.where(:private => false).where(:id => Measurement.where(:methodology_id => params[:checked]).map(&:observation_id))        
     end        
     
-    send_zip(@observations, 'traits.csv', params[:contextual], params[:global])
+    send_zip(@observations, 'traits.csv', params[:taxonomy], params[:contextual], params[:global])
           
   end
 

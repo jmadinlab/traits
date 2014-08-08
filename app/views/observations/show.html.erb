@@ -17,7 +17,7 @@
 		<p>
 		  <strong>Location:</strong>
 			<% if @observation.location.present? %>
-			  <%= link_to @observation.location.location_name, location_path(@observation.location) %>
+			  <%= link_to @observation.location.location_name, location_path(@observation.location), 'data-no-turbolink' => true %>
 			<% else %>
 					No record
 			<% end %>

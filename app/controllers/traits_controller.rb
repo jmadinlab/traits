@@ -46,7 +46,7 @@ class TraitsController < ApplicationController
     
     # csv_string = get_main_csv(@observations, params[:contextual], params[:global])
 
-    send_zip(@observations, 'traits.csv', params[:contextual], params[:global])
+    send_zip(@observations, 'traits.csv', params[:taxonomy], params[:contextual], params[:global])
       
 
     # send_data csv_string, 

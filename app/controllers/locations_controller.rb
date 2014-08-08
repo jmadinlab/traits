@@ -49,7 +49,7 @@ class LocationsController < ApplicationController
       @observations = Observation.where(:private => false).where(:location_id => params[:checked])        
     end        
     
-    send_zip(@observations, 'traits.csv', params[:contextual], params[:global])
+    send_zip(@observations, 'traits.csv', params[:taxonomy], params[:contextual], params[:global])
           
   end
 
