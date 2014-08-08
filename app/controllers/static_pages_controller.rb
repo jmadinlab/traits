@@ -1,6 +1,6 @@
 class StaticPagesController < ApplicationController
 
-  before_action :editor, only: [:meta]
+  before_action :editor, only: [:meta, :show, :about, :help]
 
   def home
     @mea = Measurement.all.size
