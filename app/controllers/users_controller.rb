@@ -10,7 +10,7 @@ class UsersController < ApplicationController
 
   def show
 
-    params[:n] = 100 if params[:n].blank?
+    params[:n] = 20 if params[:n].blank?
     n = params[:n]
     n = 9999999 if params[:n] == "all"
 
@@ -27,7 +27,7 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       format.html {
-        @observations = @observations.limit(n)
+        @observations = @observations.paginate(:page=> params[:page], :per_page => n)
       }
       format.csv {
         if request.url.include? 'resources.csv'
@@ -43,7 +43,7 @@ class UsersController < ApplicationController
       }
 
       format.zip{
-        send_zip(@observations, 'data.csv', "", "")
+        send_zip(@observations, 'traits.csv', params[:taxonomy], params[:contextual], params[:global])
       }
 
     end
@@ -82,6 +82,28 @@ class UsersController < ApplicationController
     flash[:danger] = "User destroyed."
     redirect_to users_url
   end
+
+
+  def edit_multiple
+    @observations = Observation.find(params[:obs_ids])
+  end
+
+  def update_multiple
+    User.where(:id => params[:ids]).update_all(:contributor => false)
+    User.where(:id => params[:contrib_true_ids]).update_all(:contributor => true)
+    User.where(:id => params[:ids]).update_all(:editor => false)
+    User.where(:id => params[:editor_true_ids]).update_all(:contributor => true)
+    User.where(:id => params[:editor_true_ids]).update_all(:editor => true)
+    User.where(:id => params[:ids]).update_all(:admin => false)
+    User.where(:id => params[:admin_true_ids]).update_all(:contributor => true)
+    User.where(:id => params[:admin_true_ids]).update_all(:admin => true)
+    User.where(:id => params[:admin_true_ids]).update_all(:editor => true)
+
+    redirect_to users_path, flash: {success: "Privileges updated." }
+  end
+
+
+
 
   private
 

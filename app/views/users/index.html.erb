@@ -1,106 +1,95 @@
 <% provide(:title, 'Users') %>
-<div class="row">
-  <div class="col-md-8 col-md-offset-2">
-	<h3>Contributors</h3>
-	<br>
 
-	<table class="table table-condensed">
-		<thead>
-		  <tr>
-		    <th style="color: lightgrey;">ID</th>
-		    <th>Name</th>
-		    <th>Email</th>
-			  <% if current_user.editor? %>
-	  	    <th style="text-align:center;">Editor</th>
-				<% end %>
-			  <% if current_user.admin? %>
-	  	    <th style="text-align:center;">Admin</th>
-				<% end %>
-		    <th></th>
-		  </tr>
-		</thead>
-	
-	  <tbody>
-			<% @users.sort_by{ |a| [a.editor ? 0 : 1, a.name] }.each do |user| %>
-				<% if user.contributor %>
-					<tr>
-						<td style="color: lightgrey;"><%= user.id %></td>
-						<td><%= link_to user.name, user %></td>
-					  <td><%= user.email %></td>
-					  
-					  <td style="text-align:center;">
-					  <% if current_user.editor? %>
-						  <% if !user.editor? %>
-								<span class="glyphicon glyphicon-remove-circle red"></span>
-							<% else %>
-								<span class="glyphicon glyphicon-ok-circle green"></span>
-							<% end %>
-						<% end %>
-						</td>
-
-					  <% if current_user.admin? %>
-						  <% if !user.admin? %>
-								<td style="text-align:center;"><span class="glyphicon glyphicon-remove-circle red"></span></td>
-							<% else %>
-								<td style="text-align:center;"><span class="glyphicon glyphicon-ok-circle green"></span></td>
-							<% end %>
-						<% end %>
-						
-					  <td style="text-align:right;">      
-					  	<% if current_user.admin? && !current_user?(user) %>
-					    	<%= link_to "Edit", edit_user_path(user) %> |
-					    	<%= link_to "Delete", user, method: :delete, data: { confirm: "You sure?" } %>
-							<% end %>
-						</td>
-					</tr>
-				<% end %>
-			<% end %>
-		</tbody>
-	</table>
-
-	<% if current_user.admin %>
-		<h3>Other users</h3>
-		<br>
-
-		<table class="table table-condensed">
-			<thead>
-			  <tr>
-			    <th style="color: lightgrey;">ID</th>
-			    <th>Name</th>
-			    <th>Email</th>
-				  <% if current_user.admin? %>
-		  	    <th style="text-align:center;">Admin</th>
-					<% end %>
-			    <th></th>
-			  </tr>
-			</thead>
-	
-		  <tbody>
-				<% @users.each do |user| %>
-					<% if !user.contributor %>
-						<tr>
-							<td style="color: lightgrey;"><%= user.id %></td>
-							<td><%= link_to user.name, user %></td>
-						  <td><%= user.email %></td>
-						  <% if current_user.admin? %>
-							  <% if !user.admin? %>
-									<td style="color:red;text-align:center;"><span class="glyphicon glyphicon-remove-circle"></span></td>
-								<% else %>
-									<td style="color:green;text-align:center;"><span class="glyphicon glyphicon-ok-circle"></span></td>
-								<% end %>
-							<% end %>
-
-						  <td style="text-align:right;">      
-						  	<% if current_user.admin? && !current_user?(user) %>
-						    	<%= link_to "Delete", user, method: :delete, data: { confirm: "You sure?" } %>
-								<% end %>
-							</td>
-						</tr>
-					<% end %>
-				<% end %>
-			</tbody>
-		</table>
-	<% end %>
-
-	</div>
+<div class="page-header">
+	<h1>
+	  Administration
+	</h1>
 </div>
+
+<%= form_tag update_multiple_users_path do %>
+
+	<div class="row">
+		<div class="col-sm-5">
+		</div>
+		<div class="col-sm-3" style="text-align:center;">
+			<%= submit_tag "Update Privileges", class: "btn btn-danger btn-md", style: "margin-right: 5px;" %>
+		</div>
+	</div><br>
+	<div class="row">
+		<div class="col-sm-5">
+		</div>
+		<div class="col-sm-1" style="text-align:center;">
+			<strong>Contributor</strong>
+		</div>
+		<div class="col-sm-1" style="text-align:center;">
+			<% if current_user.admin? %><strong>Editor</strong><% end %>
+		</div>
+		<div class="col-sm-1" style="text-align:center;">
+			<% if current_user.admin? %><strong>Admin</strong><% end %>
+		</div>
+		<div class="col-sm-1" style="text-align:center;">
+			<strong>Observations</strong>
+		</div>
+	</div>
+
+	<ul class="list-group">
+
+		<% @users.sort_by{ |a| [a.admin ? 0 : 1, a.editor ? 0 : 1, a.contributor ? 0 : 1, a.name] }.each do |user| %>
+
+			<%= hidden_field_tag "ids[]", user.id %>
+		  
+		  <li class="list-group-item">							
+				<div class="row">
+					<div class="col-sm-1" style="color: lightgrey;">
+						<%= user.id %>
+					</div>
+
+					<div class="col-sm-4">
+						<%= link_to user.name, user %>
+					  <small>(<%= mail_to user.email, user.email, {:subject => "Coral Trait enquiry"} %>)</small>
+					</div>
+					
+					<div class="col-sm-1" style="text-align:center;">
+					  <% if current_user.editor? %>
+							<%= check_box_tag "contrib_true_ids[]", user.id, user.contributor %>
+						<% end %>
+					</div>
+
+					<div class="col-sm-1" style="text-align:center;">
+					  <% if current_user.admin? %>
+							<%= check_box_tag "editor_true_ids[]", user.id, user.editor %>
+							<% if user.editor? %>
+								<span class="badge"><%= user.traits.size %></span>
+							<% end %>
+						<% else %>
+							<%= check_box_tag "editor_true_ids[]", user.id, user.editor, style: "visibility:hidden;" %>
+						<% end %>
+					</div>
+
+					<div class="col-sm-1" style="text-align:center;">
+					  <% if current_user.admin? %>
+							<%= check_box_tag "admin_true_ids[]", user.id, user.admin %>
+						<% else %>
+							<%= check_box_tag "admin_true_ids[]", user.id, user.admin, style: "visibility:hidden;" %>
+						<% end %>
+					</div>
+
+					<div class="col-sm-2">
+						<%= render "shared/access_counts", :acc => Observation.where(:user_id => user.id) %>
+					</div>
+
+	        <div class="col-sm-2">
+				    <div class="btn-group pull-right">
+				     	<%= link_to 'Show', user_path(user), class: "btn btn-xs btn-default" %>
+					  	<% if current_user.admin? && !current_user?(user) %>
+					    	<%= link_to "Edit", edit_user_path(user), class: "btn btn-xs btn-default" %>
+					    	<%= link_to "X", user, method: :delete, data: { confirm: "You sure?" }, class: "btn btn-xs btn-danger" %>
+							<% end %>
+		        </div>
+					</div>
+				</div>
+			</li>
+		<% end %>
+	</ul>
+
+<% end %>

@@ -1,67 +1,78 @@
 <% provide(:title, @user.name) %>
 
+
+<div class="page-header">
+	<h1>
+	  <%= @user.name %>
+	</h1>
+</div>
+
 <div class="row">
-  <div class="col-md-8 col-md-offset-2">
+	<div class="col-md-9">
+		<p>
+		  <strong>Email:</strong>
+		  <%= @user.email %>
+		</p>
 
-		<div class="page-header">
-			<h1>
-			  <%= @user.name %>
-			</h1>
-		</div>
+		<p>
+		  <strong>Observations:</strong>
+		  <%= render "shared/access_counts", :acc => Observation.where(:user_id => @user.id) %>
+		</p>
 
-	<div class="row">
-		<div class="col-md-9">
+		<% if @user.editor? %>
 			<p>
-			  <strong>Email:</strong>
-			  <%= @user.email %>
+			  <strong>Editor for:</strong>
+			  <% @user.traits.each do |t| %>
+			  	<%= link_to t.trait_name, trait_path(t), class: "label label-primary" %>
+			  <% end %>
 			</p>
+	  <% end %>
 
-			<p>Observations that entered by <%= @user.name %> are listed below.  These are original/new observations only (i.e., not  observations that have been modified/edited). Displayed data can be downloaded by clicking <code style="color:green;">Download</code>.  Use the search filter and number of measurements to be returned (above) to limit or expand your download.  You will only see (and be able to download) public <span class="glyphicon glyphicon-ok-circle" style="color:green;"></span> observations as well as the private <span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> observations that you entered.  If these are your observations, then you can also control their access.</p>
-
-		</div>
-
-	  <div class="col-md-3">
-			<%= render "shared/symbol_key" %>
-		</div>
+		<p>Observations that entered by <%= @user.name %> are listed below.  These are original/new observations only (i.e., not  observations that have been modified/edited). Displayed data can be downloaded by clicking <code style="color:green;">Download</code>.  Use the search filter and number of measurements to be returned (above) to limit or expand your download.  You will only see (and be able to download) public <span class="glyphicon glyphicon-ok-circle" style="color:green;"></span> observations as well as the private <span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> observations that you entered.  If these are your observations, then you can also control their access.</p>
 	</div>
 
-		<h3>Observations</h3>
-
-		<% if @observations.blank? %>
-			<div class="alert alert-danger">No records available.</div>
-		<% else %>
-	
-			<div class="well">
-				<div class="row">
-					<div class="col-md-5">
-						Access: <%= render "shared/access_counts", :acc => Observation.where(:user_id => @user.id) %> observations
-					</div>
-				  <div class="col-md-4">
-						<%= form_tag user_path, :method => 'get' do %>
-							Displaying: <%= select_tag :n, options_for_select([10, 100, 1000, "all"], params[:n]), onchange: "$(this).parent('form').submit();" %> observations
-						<% end %>
-					 </div>
-					<div class="col-md-3">
-						<%= link_to "Download", user_path(format: "csv", n: params[:n]), class: "btn btn-default btn-xs pull-right" %>
-					</div>
-				</div>
-			</div>
-
-		<% end %>
-
-		<%#= render "user_observations" %>
-		<%= form_tag update_multiple_observations_path do %>
-			<%= hidden_field_tag "con_id", @user.id %>
-
-			<% if (@user.id == current_user.id || current_user.admin?) && !@observations.blank? %>
-				<%= submit_tag "Update Access", class: "btn btn-danger btn-md", style: "margin-right: 5px;" %>
-				<input type="checkbox", name="checkall", onclick="checkUncheckAll(this);" /> Check/uncheck access for all
-			<% end %>
-
-
-			<%= render "shared/observations" %>
-			
-		<% end %>	
-
+	<div class="col-md-3">
+		<%= render "shared/symbol_key" %>
 	</div>
 </div>
+
+<h3>Observations</h3>
+
+<% if @observations.blank? %>
+	<div class="alert alert-danger">No records available.</div>
+<% else %>
+
+	<div class="well">
+		<div class="row">
+		  <div class="col-md-2">
+				<%= form_tag user_path, :method => 'get' do %>
+					<%= select_tag :n, options_for_select([20, 200, 2000, "all"], params[:n]), onchange: "$(this).parent('form').submit();", class: "form-control" %><br>
+				<% end %>
+			</div>
+			<div class="col-md-8">
+				<p>observations per page</p>
+			</div>
+			<div class="col-md-2">
+				<%= link_to "Download", user_path(format: "zip", taxonomy: "on"), class: "btn btn-primary pull-right" %>
+			</div>
+		</div>
+
+		<div class="row">
+		  <div class="col-md-12">
+
+			<%= form_tag update_multiple_observations_path do %>
+				<%= hidden_field_tag "con_id", @user.id %>
+
+				<% if (@user.id == current_user.id || current_user.admin?) && !@observations.blank? %>
+					<%= submit_tag "Update Access", class: "btn btn-danger btn-md", style: "margin-right: 5px;" %>
+					<input type="checkbox", name="checkall", onclick="checkUncheckAll(this);" /> Check/uncheck access for all
+				<% end %>
+			</div>
+		</div>
+	</div>
+
+			<%= will_paginate @observations %>
+			<%= render "shared/observations" %>
+	
+		<% end %>	
+<% end %>

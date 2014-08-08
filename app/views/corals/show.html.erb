@@ -1,119 +1,115 @@
 <% provide(:title, @coral.coral_name) %>
 
+
+<div class="page-header">
+  <h1><em><%= @coral.coral_name %></em></h1>
+</div>
+
 <div class="row">
-  <div class="col-md-8 col-md-offset-2">
+  <div class="col-md-8">
 
-    <div class="page-header">
-      <h1><em><%= @coral.coral_name %></em></h1>
-    </div>
-
-		<div class="row">
-		  <div class="col-md-7">
-
-				
-				<% if !@coral.synonyms.blank? %>
-				  <p>
-				    <strong>Other names:</strong>
-						<% @coral.synonyms.each do |s| %>
-				    	<br><%= s.synonym_name %>
-						<% end %>
-				  </p>
+		
+		<% if !@coral.synonyms.blank? %>
+		  <p>
+		    <strong>Other names:</strong>
+				<% @coral.synonyms.each do |s| %>
+		    	<br><%= s.synonym_name %>
 				<% end %>
+		  </p>
+		<% end %>
 
-				<% if !@coral.coral_description.blank? %>
-				  <p>
-				    <strong>Description:</strong>
-				    	<%= @coral.coral_description %>
-				  </p>
+		<% if !@coral.coral_description.blank? %>
+		  <p>
+		    <strong>Description:</strong>
+		    	<%= @coral.coral_description %>
+		  </p>
+		<% end %>
+
+	  <p>
+	    <strong>Major clade:</strong>
+	    	<%= @coral.major_clade %>
+	  </p>
+
+	  <p>
+	    <strong>Family molecules:</strong>
+	    	<%= @coral.family_molecules %>
+	  </p>
+
+	  <p>
+	    <strong>Family morphology:</strong>
+	    	<%= @coral.family_morphology %>
+	  </p>
+
+		<p>
+	    <div class="btn-group">
+		  	<% if signed_in? && current_user.admin? %>
+					<%= link_to 'Edit', edit_coral_path(@coral), class: "btn btn-sm btn-default" %>
 				<% end %>
-
-			  <p>
-			    <strong>Major clade:</strong>
-			    	<%= @coral.major_clade %>
-			  </p>
-
-			  <p>
-			    <strong>Family molecules:</strong>
-			    	<%= @coral.family_molecules %>
-			  </p>
-
-			  <p>
-			    <strong>Family morphology:</strong>
-			    	<%= @coral.family_morphology %>
-			  </p>
-
-				<p>
-			    <div class="btn-group">
-				  	<% if signed_in? && current_user.admin? %>
-							<%= link_to 'Edit', edit_coral_path(@coral), class: "btn btn-sm btn-default" %>
-						<% end %>
-						<%= link_to 'Back', corals_path, class: "btn btn-sm btn-default" %>
-					</div>
-				</p>
-
-		  </div>
-		  <div class="col-md-5">
-		 		<div class="well">
-					<p><strong>External resources for this species:</strong></p>
-					<ul>
-						<li>
-							<%= link_to "World Register of Marine Species", "http://www.marinespecies.org/aphia.php?p=taxlist&tName=" + @coral.coral_name.to_s, target: "_blank" %>
-						</li>
-
-						<li>
-							<% fac = Measurement.where("observation_id IN (?) AND trait_id=?", @observations.map(&:id), 139)  %>
-							<% if !fac.blank? %>
-								AIMS factsheet and images:
-								<% fac.each do |f| %>
-									<%= link_to f.value, "http://coral.aims.gov.au/factsheet.jsp?speciesCode=" + f.value.to_s.rjust(4, '0'), target: "_blank" %>
-								<% end %>
-							<% else %>
-								AIMS factsheet and images (not available)
-							<% end %>
-						</li>
-
-						<li>
-							<% pal = Measurement.where("observation_id IN (?) AND trait_id=?", @observations.map(&:id), 140) %>
-							<% if !pal.blank? %>
-								PaleoDB fossil records:
-								<% pal.each do |p| %>
-									<%= link_to p.value, "http://paleodb.org/bridge.pl?a=checkTaxonInfo&taxon_no=" + p.value.to_s, target: "_blank" %>
-								<% end %>
-							<% else %>
-								PaleoDB records (not available)
-								<% end %>
-						</li>
-						<li><%= link_to "OBIS observation records", "http://iobis.org/mapper/?taxon=" + @coral.coral_name.to_s, target: "_blank" %></li>
-					</ul>
-				
-				</div>
+				<%= link_to 'Back', corals_path, class: "btn btn-sm btn-default" %>
 			</div>
+		</p>
+
+  </div>
+  <div class="col-md-4">
+ 		<div class="well">
+			<p><strong>External resources for this species:</strong></p>
+			<ul>
+				<li>
+					<%= link_to "World Register of Marine Species", "http://www.marinespecies.org/aphia.php?p=taxlist&tName=" + @coral.coral_name.to_s, target: "_blank" %>
+				</li>
+
+				<li>
+					<% fac = Measurement.where("observation_id IN (?) AND trait_id=?", @observations.map(&:id), 139)  %>
+					<% if !fac.blank? %>
+						AIMS factsheet and images:
+						<% fac.each do |f| %>
+							<%= link_to f.value, "http://coral.aims.gov.au/factsheet.jsp?speciesCode=" + f.value.to_s.rjust(4, '0'), target: "_blank" %>
+						<% end %>
+					<% else %>
+						AIMS factsheet and images (not available)
+					<% end %>
+				</li>
+
+				<li>
+					<% pal = Measurement.where("observation_id IN (?) AND trait_id=?", @observations.map(&:id), 140) %>
+					<% if !pal.blank? %>
+						PaleoDB fossil records:
+						<% pal.each do |p| %>
+							<%= link_to p.value, "http://paleodb.org/bridge.pl?a=checkTaxonInfo&taxon_no=" + p.value.to_s, target: "_blank" %>
+						<% end %>
+					<% else %>
+						PaleoDB records (not available)
+						<% end %>
+				</li>
+				<li><%= link_to "OBIS observation records", "http://iobis.org/mapper/?taxon=" + @coral.coral_name.to_s, target: "_blank" %></li>
+			</ul>
+		
 		</div>
-				<% img = "#{@coral.coral_name.sub(" ", "_")}.png" %>
-		<!-- 		
-
-				<%# if signed_in? && current_user.contributor? %>
-					<%# @vtemp = @vfiles.find_all{|item| item.include? img }.last %>
-
-					<%# if !@vtemp.nil? %>
-						<p style="text-align:center;"><%#= image_tag "veron/#{@coral.coral_name.sub(" ", "_")}.png", :style => "border:0px;", class:  "img-responsive" %></p>
-						<p style="text-align:center;">Veron map (viewable for contributors, but not published yet, so please don't distribute)</p>
-					<%# else %>
-							<p>No Veron map</p>
-					<%# end %>
-				<%# end %>
-		 -->		
-			
-				<% @htemp = @hfiles.find_all{|item| item.include? img }.last %>
-				<% if !@htemp.nil? %>
-					<p style="text-align:center;"><%= image_tag "hughes/#{@coral.coral_name.sub(" ", "_")}.png", :style => "border:0px;", class:  "img-responsive" %></p>
-					<p style="text-align:center;"><%= link_to "Hughes map", resource_path(605) %></p>
-				<% else %>
-						<p>No Hughes map</p>
-				<% end %>
-
-
-		<%= render "coral_observations" %>
-
 	</div>
 </div>
+		<% img = "#{@coral.coral_name.sub(" ", "_")}.png" %>
+<!-- 		
+
+		<%# if signed_in? && current_user.contributor? %>
+			<%# @vtemp = @vfiles.find_all{|item| item.include? img }.last %>
+
+			<%# if !@vtemp.nil? %>
+				<p style="text-align:center;"><%#= image_tag "veron/#{@coral.coral_name.sub(" ", "_")}.png", :style => "border:0px;", class:  "img-responsive" %></p>
+				<p style="text-align:center;">Veron map (viewable for contributors, but not published yet, so please don't distribute)</p>
+			<%# else %>
+					<p>No Veron map</p>
+			<%# end %>
+		<%# end %>
+ -->		
+	
+		<% @htemp = @hfiles.find_all{|item| item.include? img }.last %>
+		<% if !@htemp.nil? %>
+			<p style="text-align:center;"><%= image_tag "hughes/#{@coral.coral_name.sub(" ", "_")}.png", :style => "border:0px;", class:  "img-responsive" %></p>
+			<p style="text-align:center;"><%= link_to "Hughes map", resource_path(605) %></p>
+		<% else %>
+				<p>No Hughes map</p>
+		<% end %>
+
+
+<%= render "coral_observations" %>
+

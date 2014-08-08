@@ -8,18 +8,24 @@ class CoralsController < ApplicationController
   # GET /corals.json
   def index
     # @corals = Coral.search(params[:search])
+
+    pp = 15
+    pp = 9999 if params[:pp]
     
     @search = Coral.search do
       fulltext params[:search]
+      paginate page: params[:page], per_page: pp
     end
     
     if params[:search]
       @corals = @search.results
     else
-      @corals = Coral.all
+      @corals = Coral.all.paginate(:page=> params[:page], :per_page => pp)
     end
     
     @corals = PaperTrail::Version.find(params[:version]).reify if params[:version]
+
+    # @corals = @corals.paginate(:page=> params[:page], :per_page => 20)
 
     respond_to do |format|
       format.html
@@ -46,7 +52,7 @@ class CoralsController < ApplicationController
     
     # csv_string = get_main_csv(@observations, params[:contextual], params[:global])
 
-    send_zip(@observations, 'traits.csv', params[:contextual], params[:global])
+    send_zip(@observations, 'traits.csv', params[:taxonomy], params[:contextual], params[:global])
       
 
     # send_data csv_string, 

@@ -138,16 +138,7 @@
     if (@observation.user_id == current_user.id) | current_user.admin?
       @observation.destroy
       flash[:success] = 'Observation was successfully deleted.'
-      if params[:user].blank?
-        if params[:trait].blank?
-          redirect_to coral_path(@observation.coral_id)
-        else
-          redirect_to trait_path(params[:trait])
-        end
-      else
-        redirect_to user_path(@observation.user_id)
-      end
-
+      redirect_to user_path(current_user.id)
     else
       flash[:danger] = 'Observation NOT deleted. You need to be the original contributor of an observation to delete it.'
       if params[:user].blank?

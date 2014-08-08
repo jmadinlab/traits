@@ -39,32 +39,33 @@ class MethodologiesController < ApplicationController
   end
 
   def index
-   @search = Methodology.search do
+
+    pp = 15
+    pp = 9999 if params[:pp]
+
+    @search = Methodology.search do
       fulltext params[:search]
+      paginate page: params[:page], per_page: pp
     end
     
     if params[:search]
       @methodologies = @search.results
     else
-      @methodologies = Methodology.all
+      @methodologies = Methodology.all.paginate(:page=> params[:page], :per_page => pp)
     end
 
-    @methodologies = @methodologies.sort_by{|l| l[:id]} if params[:sort] == "id"
-    @methodologies = @methodologies.sort_by{|l| l[:methodology_name]} if params[:sort] == "name"
+    # @methodologies = @methodologies.sort_by{|l| l[:id]} if params[:sort] == "id"
+    # @methodologies = @methodologies.sort_by{|l| l[:methodology_name]} if params[:sort] == "name"
 
 
   	respond_to do |format|
       format.html
-      format.csv { send_data @methodologies.to_csv }
+      format.csv { send_data Methodology.all.to_csv }
       
     end    
   end
 
   def show
-
-    params[:n] = 100 if params[:n].blank?
-    n = params[:n]
-    n = 9999999 if params[:n] == "all"
 
     @observations = Observation.where(:id => @methodology.measurements.map(&:observation_id))
 
@@ -78,7 +79,7 @@ class MethodologiesController < ApplicationController
 
     respond_to do |format|
       format.html {
-        @observations = @observations.limit(n)
+        @observations = @observations.paginate(:page=> params[:page], :per_page => 20)
       }
       format.csv {
         if request.url.include? 'resources.csv'
@@ -155,11 +156,7 @@ class MethodologiesController < ApplicationController
       @observations = Observation.where(:private => false).where(:id => Measurement.where(:methodology_id => params[:checked]).map(&:observation_id))        
     end        
     
-    csv_string = get_main_csv(@observations)
-
-    send_data csv_string, 
-      :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
-      :disposition => "attachment; filename=ctdb_#{Date.today.strftime('%Y%m%d')}.csv"
+    send_zip(@observations, 'traits.csv', params[:taxonomy], params[:contextual], params[:global])
           
   end
 

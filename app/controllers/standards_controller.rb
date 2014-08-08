@@ -21,7 +21,7 @@ class StandardsController < ApplicationController
     
     respond_to do |format|
       format.html
-      format.csv { send_data @standards.to_csv }
+      format.csv { send_data Standard.all.to_csv }
     end    
 
   end

@@ -9,14 +9,19 @@ class TraitsController < ApplicationController
   # GET /traits.json
   def index
     # @traits = Trait.search(params[:search])
+
+    pp = 15
+    pp = 999 if params[:pp]
+
     @search = Trait.search do
       fulltext params[:search]
+      paginate page: params[:page], per_page: pp
     end
     
     if params[:search]
       @traits = @search.results
     else
-      @traits = Trait.all
+      @traits = Trait.all.paginate(:page=> params[:page], :per_page => pp)
     end
 
     respond_to do |format|
@@ -41,7 +46,7 @@ class TraitsController < ApplicationController
     
     # csv_string = get_main_csv(@observations, params[:contextual], params[:global])
 
-    send_zip(@observations, 'traits.csv', params[:contextual], params[:global])
+    send_zip(@observations, 'traits.csv', params[:taxonomy], params[:contextual], params[:global])
       
 
     # send_data csv_string, 
@@ -53,10 +58,6 @@ class TraitsController < ApplicationController
   # GET /traits/1
   # GET /traits/1.json
   def show
-
-    params[:n] = 100 if params[:n].blank?
-    n = params[:n]
-    n = 9999999 if params[:n] == "all"
 
     if params[:coral_id]
       @coral = Coral.find(params[:coral_id])
@@ -75,7 +76,7 @@ class TraitsController < ApplicationController
     
     respond_to do |format|
       format.html {
-        @observations = @observations.limit(n)
+        @observations = @observations.paginate(:page=> params[:page], :per_page => 20)
       }
       format.csv {
         if request.url.include? 'resources.csv'

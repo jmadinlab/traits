@@ -10,24 +10,28 @@ class LocationsController < ApplicationController
   # GET /locations.json
   def index
 
+    pp = 15
+    pp = 9999 if params[:pp]
+
     @search = Location.search do
       fulltext params[:search]
+      paginate page: params[:page], per_page: pp
     end
     
     if params[:search]
       @locations = @search.results
     else
-      @locations = Location.all
+      @locations = Location.all.paginate(:page=> params[:page], :per_page => pp)
     end
 
-    @locations = @locations.sort_by{|l| l[:latitude]} if params[:sort] == "latitude"
-    @locations = @locations.sort_by{|l| l[:longitude]} if params[:sort] == "longitude"
-    @locations = @locations.sort_by{|l| l[:id]} if params[:sort] == "id"
-    @locations = @locations.sort_by{|l| l[:location_name]} if params[:sort] == "name"
+    # @locations = @locations.sort_by{|l| l[:latitude]} if params[:sort] == "latitude"
+    # @locations = @locations.sort_by{|l| l[:longitude]} if params[:sort] == "longitude"
+    # @locations = @locations.sort_by{|l| l[:id]} if params[:sort] == "id"
+    # @locations = @locations.sort_by{|l| l[:location_name]} if params[:sort] == "name"
 
     respond_to do |format|
       format.html
-      format.csv { send_data @locations.to_csv }
+      format.csv { send_data Location.all.to_csv }
     end    
 
   end
@@ -37,33 +41,21 @@ class LocationsController < ApplicationController
       
     if signed_in? && current_user.contributor?
       if current_user.admin?
-        #@observations = Observation.where{location_id.in my{params[:checked]}}
         @observations = Observation.where(:location_id => params[:checked])
       else
-        #@observations = Observation.where{ (private == 'f') | ((user_id == my{current_user.id}) & (private == 't')) }.        
-        #where{location_id.in my{params[:checked]}}
         @observations = Observation.where(" (private = 'f' or (private = 't' and user_id = ? )) ", current_user.id).where(:location_id => params[:checked])
-
       end
     else
       @observations = Observation.where(:private => false).where(:location_id => params[:checked])        
     end        
     
-    csv_string = get_main_csv(@observations)
-
-    send_data csv_string, 
-      :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
-      :disposition => "attachment; filename=ctdb_#{Date.today.strftime('%Y%m%d')}.csv"
+    send_zip(@observations, 'traits.csv', params[:taxonomy], params[:contextual], params[:global])
           
   end
 
   # GET /locations/1
   # GET /locations/1.json
   def show
-
-    params[:n] = 100 if params[:n].blank?
-    n = params[:n]
-    n = 9999999 if params[:n] == "all"
 
     @observations = Observation.where('location_id IS ?', @location.id)
 
@@ -77,7 +69,7 @@ class LocationsController < ApplicationController
 
     respond_to do |format|
       format.html {
-        @observations = @observations.limit(n)
+        @observations = @observations.paginate(:page=> params[:page], :per_page => 20)
       }
       format.csv {
         if request.url.include? 'resources.csv'

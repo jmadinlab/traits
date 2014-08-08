@@ -1,71 +1,51 @@
 <% provide(:title, @methodology.methodology_name) %>
 
+
+<div class="page-header">
+  <h1>Methodology: <%= @methodology.methodology_name %></h1>
+</div>
+
 <div class="row">
-  <div class="col-md-8 col-md-offset-2">
+  <div class="col-md-9">
+		<% if !@methodology.method_description.blank? %>
+		  <p>
+		    <strong>Description:</strong>
+	    	<%= @methodology.method_description %>
+		  </p>
+		<% end %>
 
-    <div class="page-header">
-      <h1>Methodology: <%= @methodology.methodology_name %></h1>
-    </div>
-		
-		<div class="row">
-		  <div class="col-md-9">
-				<% if !@methodology.method_description.blank? %>
-				  <p>
-				    <strong>Description:</strong>
-			    	<%= @methodology.method_description %>
-				  </p>
+
+		<% if not @methodology.traits.empty? %>
+			<p>
+	 			<strong>Used for traits:</strong>
+ 				<% @methodology.traits.each do |trait| %>
+	 				<%= link_to trait.trait_name, trait, class: "label label-primary" %>
+	    		<% end %>
+			</p>
+	    <% end %>
+
+		<p>
+			<div class="btn-group">
+				<% if signed_in? && current_user.contributor? %>
+					<%= link_to 'Edit', edit_methodology_path(@methodology), class: "btn btn-sm btn-default" %>
 				<% end %>
-
-
-				<% if not @methodology.traits.empty? %>
-					<p>
-			 			<strong>Used for traits:</strong>
-		 				<% @methodology.traits.each do |trait| %>
-			 				<%= link_to trait.trait_name, trait, class: "label label-primary" %>
-	 	    		<% end %>
-					</p>
-	 	    <% end %>
-
-				<p>
-					<div class="btn-group">
-						<% if signed_in? && current_user.contributor? %>
-							<%= link_to 'Edit', edit_methodology_path(@methodology), class: "btn btn-sm btn-default" %>
-						<% end %>
-						<%= link_to 'Back', methodologies_path, class: "btn btn-sm btn-default" %>
-					</div>
-				</p>
-				
+				<%= link_to 'Back', methodologies_path, class: "btn btn-sm btn-default" %>
 			</div>
-		  <div class="col-md-3">
-			  <%= render "shared/symbol_key" %>
-			</div>
-		</div>
-
-		<h3>Observations using this methodology</h3>
-
-		<% if @observations.empty? %>
-			<p class="alert alert-danger">No records available.</p>
-		<% else %>
-
-			<div class="well">
-				<div class="row">
-					<div class="col-md-5">
-						Access: <%= render "shared/access_counts", :acc => Observation.where(:id => Measurement.where(:methodology_id => @methodology).map(&:observation_id)) %> observations
-					</div>
-					<div class="col-md-4">
-						<%= form_tag methodology_path, :method => 'get' do %>
-								Displaying: <%= select_tag :n, options_for_select([10, 100, 1000, "all"], params[:n]), onchange: "$(this).parent('form').submit();" %> observations 
-						<% end %>
-					</div>
-					<div class="col-md-3">
-						<%= link_to "Download", methodology_path(format: "zip", n: params[:n]), class: "btn btn-default btn-sm pull-right" %>
-					</div>
-				</div>
-			</div>  
-
-
-			<%= render "shared/observations" %>
-	   <% end %>
+		</p>
+		
+	</div>
+  <div class="col-md-3">
+	  <%= render "shared/symbol_key" %>
 	</div>
 </div>
 
+<h3>Observations using this methodology</h3>
+
+<% if @observations.empty? %>
+	<p class="alert alert-danger">No records available.</p>
+<% else %>
+
+	<%= will_paginate @observations %>
+	<%= render "shared/observations" %>
+
+<% end %>
