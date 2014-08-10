@@ -83,8 +83,8 @@
 		      </div>
 					<div class="col-sm-2">
 	      		<div class="btn-group pull-right">				
+	  					<%= link_to 'Show', observation_path(grp), class: "btn btn-xs btn-default" %>
 		  				<% if signed_in? && current_user.contributor? %>
-		  					<%= link_to 'Show', observation_path(grp), class: "btn btn-xs btn-default" %>
 		  	    		<%= link_to 'Edit', edit_observation_path(grp), class: "btn btn-xs btn-default" %>
 		  	    		<%= link_to 'X', observation_path(grp), method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
 		  				<% end %>

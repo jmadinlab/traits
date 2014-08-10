@@ -1,7 +1,8 @@
  class ObservationsController < ApplicationController
 
-  before_action :contributor
-  before_action :enterer, only: [:edit, :update, :destroy]
+  # before_action :contributor, only: [:new, :create ]
+  before_action :enterer, except: [:show]
+  # before_action :enterer, only: [:new, :create, :edit, :update, :destroy]
   before_action :set_observation, only: [:show, :edit, :update, :destroy]
   # before_action :admin, :destroy
 

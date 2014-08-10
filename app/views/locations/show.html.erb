@@ -58,24 +58,23 @@
 <% end %>
 
 
-<script type="text/javascript"> 
-	function initialize() {
-		var myLatlng = new google.maps.LatLng(<%= @location.latitude %>, <%= @location.longitude %>);	
-		var mapOptions = {
-		  zoom: 10,
-		  center: myLatlng,
-	    mapTypeId: google.maps.MapTypeId.SATELLITE,
-	    streetViewControl: false
-		}
-		var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-		var marker = new google.maps.Marker({
-		  position: myLatlng,
-		  map: map
-		});
-	}
-	google.maps.event.addDomListener(window, 'load', initialize);
-</script> 
+<script type="text/javascript">
+  var loc = <%= raw [@location.location_name.to_s, @location.latitude.to_s, @location.longitude.to_s, @location.id.to_s] %>;
 
+  var map = new google.maps.Map(document.getElementById('map-canvas'), {
+    zoom: 10,
+    center: new google.maps.LatLng(loc[1], loc[2]),
+    mapTypeId: google.maps.MapTypeId.SATELLITE,
+    streetViewControl: false
+  });
+
+  var infowindow = new google.maps.InfoWindow();
+
+  marker = new google.maps.Marker({
+    position: new google.maps.LatLng(loc[1], loc[2]),
+    map: map
+  });
+</script>
 
 
 

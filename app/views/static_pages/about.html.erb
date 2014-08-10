@@ -1,11 +1,13 @@
 <% provide(:title, 'About Us') %>
 
+    <div class="alert alert-danger" role="alert">The Coral Traits Database is currently being overhauled for release in approximately November.  Details and instructions about the database will change consistently until this time.</div>
+
     <div class="page-header">
       <h1>The Coral Trait Database</h3></h1>
     </div>
 
 
-    <p>The Coral Trait Database is a community initiative focused on making all observations and measurements of corals accessible in order to more rapidly advance coral reef science. Database contributors have control over the privacy of their data.</p>
+    <p>The Coral Trait Database is an open source research initiative that aims to make all observations and measurements of corals accessible in order to more rapidly advance coral reef science. Anyone collecting coral trait data (e.g., collected in field and laboratory studies, extracted from the literature, or by other means) can join and contribute to the growing data compilation. Contributors have control over the privacy of their data and greatly benefit from being able to download complementary public data from the database in a standard format for use in their analyses. We hope that private data will become visible to other database users once the contributor has published a paper, which will  be cited when their data are used in subsequent analyses by other people.  We have carefully designed a citation system that ensures full transparency about the origin of each individual data point as well as larger data compilations and compilations of other peoples' data (such as data extracted from literature). By becoming a contributor, you become a member of the Coral Trait Database Consortium (something for the CV).</p>
 
     <div class="list-group">
       <div class="list-group-item">
@@ -15,14 +17,23 @@
 
     <h3>Database trait editors</h3>
 
-    <p>The Coral Trait Database replies on expert volunteers who monitor contributions to the database. The current editors are:</p>
+    <p>The Coral Trait Database replies on expert volunteers who monitor contributions to the database. Editors are assigned one or more traits to monitor for data quality. If you add a new trait to the database, you might be asked to volunteer as the editor for this trait.  Editors are automatically emailed when new data for their traits are entered. The current editors are:</p>
 
     <div class="row">
-      <div class="col col-md-3">
+      <div class="col col-md-12">
         <div class="list-group">
           <% User.where(:editor => true).each do |ed| %>
             <div class="list-group-item">
-              <%= ed.name %>
+              <div class="row">
+                <div class="col col-md-2">
+                  <%= ed.name %>
+                </div>      
+                <div class="col col-md-10">
+                  <% Trait.where(:user_id => ed.id).each do |tr| %>
+                  <span class="label label-primary"><%= tr.trait_name %></span>
+                <% end %>
+                </div>      
+              </div>      
             </div>
           <% end %>
         </div>      

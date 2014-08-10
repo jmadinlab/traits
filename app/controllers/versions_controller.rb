@@ -1,5 +1,6 @@
 class VersionsController < ApplicationController
-  before_action :contributor
+
+  before_action :editor
   
   def index
 
