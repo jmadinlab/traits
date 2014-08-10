@@ -4,15 +4,16 @@
 	<h1>Metadata</h1>
 </div>
 
-<%#= form_tag meta_path, :method => 'get' do %>
-  <%#= select_tag :status, options_for_select(Trait.all.map(&:release_status).uniq, params[:status]), onchange: "$(this).parent('form').submit();" %>
-<%# end %>
+<p>
+	<%= form_tag meta_path, :method => 'get' do %>
+	  <strong>Editor: </strong><%= select_tag :editor, options_for_select(User.all.where(:id => Trait.all.map(&:user_id).uniq).map { |e| [e.name, e.id] }, params[:editor]), include_blank: true, onchange: "$(this).parent('form').submit();" %>
+	<% end %>
+</p>
 
 <h3><%= params[:status] %></h3>
 
 <div class="row">
 	<div class="col-md-2">
-	  <strong>Trait Name</strong>
   </div>
 	<div class="col-md-2">
 	  <strong>Class</strong>
@@ -40,14 +41,19 @@
 
 	<% @traits.sort_by{ |h| h[:id] }.each do |trait| %>
 
-	<% if trait.user == current_user || current_user.admin? %>
+	<%# if trait.user == current_user || current_user.admin? %>
 	  <li class="list-group-item">							
 			<div class="row">
-				<div class="col-md-2">
-				  <%= link_to trait.trait_name, "/traits/" + trait.id.to_s %>
-			  </div>
-				<div class="col-md-2">
-				  <%= trait.trait_class %>
+				<div class="col-md-4">
+					<div class="col-sm-1" style="color:lightgrey;">
+				  	<%= trait.id %>
+			  	</div>
+					<div class="col-sm-6">
+				  	<%= link_to trait.trait_name, "/traits/" + trait.id.to_s %>
+			  	</div>
+					<div class="col-sm-4">
+					  <%= trait.trait_class %>
+				  </div>
 			  </div>
 				<div class="col-md-2">
 				  <%= trait.trait_description %>
@@ -76,7 +82,7 @@
 			  </div>
 		  </div>
 	  </li>
-	<% end %>
+	<%# end %>
 
 
 	<% end %>

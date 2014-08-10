@@ -17,7 +17,7 @@ class Trait < ActiveRecord::Base
   
   default_scope -> { order('trait_class ASC') }
 
-  scope :status, lambda {|sta| where("release_status = ?", sta)}
+  scope :editor, lambda {|ed| where("user_id = ?", ed)}
 
   searchable do
     text :trait_name

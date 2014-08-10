@@ -42,7 +42,9 @@ Traits::Application.routes.draw do
   end
 
   resources :corals do
-    resources :traits
+    resources :traits do
+      resources :users
+    end
   end
 
   resources :locations do
@@ -72,7 +74,12 @@ Traits::Application.routes.draw do
 
   #match ':controller(/:action(/:id))', via: 'get'
 
+  # resources :users do
+  #   resources :traits
+  # end
+  
   resources :traits do
+
     post :export, :on => :collection
   end
 
