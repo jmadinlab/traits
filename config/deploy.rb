@@ -57,4 +57,9 @@ namespace :deploy do
     end
   end
 
+  desc "Restart Passenger app"
+  task :restart do
+      run "#{ try_sudo } touch #{ File.join(current_path, 'tmp', 'restart.txt') }"
+  end
+
 end
