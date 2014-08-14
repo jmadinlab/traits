@@ -1,6 +1,10 @@
 # Ignore bundler config.
 /.bundle
-
+current
+/releases/
+/repo/
+revisions.log
+/shared/
 # Ignore the default SQLite database.
 /db/*.sqlite3
 /db/*.sqlite3-journal
