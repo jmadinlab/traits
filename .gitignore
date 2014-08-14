@@ -29,7 +29,7 @@ revisions.log
 /app/assets/images/
 /config/local_env.yml
 # Ignore other unneeded files.
-Gemfile.lock
+#Gemfile.lock
 database.yml
 doc/
 *.swp
