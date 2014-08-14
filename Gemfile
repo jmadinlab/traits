@@ -11,6 +11,7 @@ gem 'bootstrap-will_paginate'#, '0.0.9'
 gem 'select2-rails'
 gem 'mandrill_mailer'
 gem 'sunspot_rails'
+gem 'sunspot_solr'
 gem 'progress_bar'
 
 # gem 'select2-sass-bootstrap-rails'
@@ -83,5 +84,5 @@ end
 
 group :production do
   # gem 'rails_12factor', '0.0.2'
-  gem 'sunspot_solr'
+  
 end
