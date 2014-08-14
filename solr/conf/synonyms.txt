@@ -26,11 +26,6 @@ Television, Televisions, TV, TVs
 #notice we use "gib" instead of "GiB" so any WordDelimiterFilter coming
 #after us won't split it into two words.
 
-
-gbr, great barrier reef
-gbr => great barrier reef
-serita, seriata
-
 # Synonym mappings can be used for spelling correction too
 pixima => pixma
 

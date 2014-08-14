@@ -61,19 +61,16 @@
     <!-- *** This fieldType is used by Sunspot! *** -->
     <fieldType name="text" class="solr.TextField" omitNorms="false">
       <analyzer>
-        <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+        <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.StandardFilterFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.NGramFilterFactory" minGramSize="2" maxGramSize="15"/>
-        <filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true" tokenizerFactory="solr.StandardokenizerFactory"/>
-        <filter class="solr.PorterStemFilterFactory"/>
       </analyzer>
 
       <analyzer type="query">
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.StandardFilterFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
-        
       </analyzer>
     </fieldType>
     <!-- *** This fieldType is used by Sunspot! *** -->
