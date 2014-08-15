@@ -1,6 +1,6 @@
 # Ignore bundler config.
 /.bundle
-
+*.bak
 current
 /releases/
 /repo/
@@ -16,12 +16,10 @@ revisions.log
 /db/schema.rb
 #/db
 /config/local_env.yml
-/solr/data/
-/solr/default/
-/solr/development/
-/solr/log/
-/solr/pids/
+
+/solr/
 /log/
+
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
