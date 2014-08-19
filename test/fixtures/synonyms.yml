@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  coral_id: 
+  synonym_name: MyString
+  synonym_notes: MyText
+
+two:
+  coral_id: 
+  synonym_name: MyString
+  synonym_notes: MyText

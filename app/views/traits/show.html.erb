@@ -1,0 +1,104 @@
+<% provide(:title, @trait.trait_name) %>
+
+
+<div class="page-header">
+	<h1>
+		<%= @trait.trait_name %>
+		<% if @coral %>
+			(<em><%= link_to @coral.coral_name, coral_path(@coral) %></em>)
+		<% end %>
+	</h1>
+</div>
+
+<div class="row">
+  <div class="col-md-9">
+		<p>
+			<strong>Default standard:</strong>
+			<% if !@trait.standard.blank? %>
+				<%= @trait.standard.standard_name %> (<%= @trait.standard.standard_unit %>)
+			<% end %>
+		</p>
+
+		<% if @trait.traitvalues.present? %>
+			<p>
+				<strong>Possible trait values:</strong>
+				<% @trait.traitvalues.each do |tv| %>
+					<span class="label label-primary"><%= tv.value_name %></span>
+					<%# if tv.value_description.present? %>
+						<!-- (<%#= tv.value_description %>) -->
+					<%# end %>
+				<% end %>
+			</p>
+		<% end %>
+		
+		<p>
+		  <strong>Class:</strong>
+			<% if @trait.trait_class.present? %>
+		  	<%= @trait.trait_class %>
+			<% else %>
+				<font style="color:lightgrey;">Unclassified</font>
+			<% end %>
+		</p>
+
+		<p>
+			<strong>Description:</strong>
+			<% if @trait.trait_description.present? %>
+				<%= @trait.trait_description %>
+			<% else %>
+				<font style="color:lightgrey;">Not entered</font>
+			<% end %>
+		</p>
+
+		<p>
+			<strong>Methodologies:</strong>
+			<% if not @trait.methodologies.empty? %>
+				<ul>
+					<% @trait.methodologies.each do |methodology| %>
+						<li>
+							<%= link_to methodology.methodology_name, methodology %>
+					</li>
+					<% end %>
+				</ul>
+			<% else %>
+				<font style="color:lightgrey;">None entered</font>
+			<% end %>
+
+		</p>
+
+		<p>
+			<strong>Editor:</strong>
+			<% if !@trait.user.blank? %>
+				<%= @trait.user.name %> (<%= mail_to @trait.user.email, "contact", {:subject => "Coral Trait enquiry"} %>)
+			<% end %>
+			<% if signed_in? && current_user.editor? %>
+				<%= link_to "meta", show_meta_path(@trait), class: "label label-danger" %>
+			<% end %>
+		</p>
+
+		<p>
+      <div class="btn-group">
+				<% if signed_in? && current_user.editor? %>
+					<%= link_to 'Edit', edit_trait_path(@trait), class: "btn btn-sm btn-default" %>
+				<% end %>
+				<%= link_to 'Back', traits_path, class: "btn btn-sm btn-default" %>
+				<%= link_to 'Back to coral', coral_path(@coral), class: "btn btn-sm btn-default" if @coral %>
+      </div>
+		</p>
+	</div>
+
+  <div class="col-md-3">
+	  <%= render "shared/symbol_key" %>
+	</div>
+</div>
+
+
+<h3>Observations</h3>
+
+<% if @observations.empty? %>
+	<p class="alert alert-danger">No records available.</p>
+<% else %>
+
+	<%= will_paginate @observations %>
+	<%= render "shared/observations" %>
+
+<% end %>

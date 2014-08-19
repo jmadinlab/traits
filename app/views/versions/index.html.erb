@@ -1,0 +1,91 @@
+<% provide(:title, 'History') %>
+
+<h1>History</h1>
+
+<%= will_paginate @versions_by_item %> <br/>
+
+Filter by: <%= link_to "All", '/history' %> |  <%= link_to "User", '/history?type=User' %> |  <%= link_to "Coral", '/history?type=Coral' %> | <%= link_to "Measurements", '/history?type=Measurement' %> |  <%= link_to "Trait", '/history?type=Trait' %> |  <%= link_to "Observation", '/history?type=Observation' %> |  <%= link_to "Location", '/history?type=Location' %> |  <%= link_to "Resource", '/history?type=Resource' %> |  
+
+<br/><br/>
+
+<ul class="list-group">
+  <% @versions_by_item.each do |version| %>
+  
+
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <a href="#"><h3 class="panel-title"> Version <%= version.id %> | <%= version.item_type %> </h3></a>
+    </div>
+    <div class = "panel-body">
+      
+      <!--
+        <pre><%= version.changeset %></pre>
+      -->
+      <% if version.changeset.size > 0 %>
+        <table class="table table-condensed">
+          <tr>
+            <th> Field </th>
+            <th> Original Value </th>
+            <th> Updated Value </th>
+
+          </tr>
+
+          <% version.changeset.each do |key, value| %>
+            <% if key != "updated_at" %>
+              <tr>
+                <td> <b> <%= key %> </b>  </td>
+                <td><%= value[0] %> </td>
+                <td><%= value[1] %> </td>
+              </tr>
+            <% end %>
+          <% end %>
+        </table>
+      <% else %>
+        <%= version.item_type %> with id <%= version.item_id %> <b>DELETED</b>  <br/><br/>
+      <% end %>
+  
+
+    
+
+    <div class="alert alert-danger">
+    <b>User:</b>
+    <% if version.whodunnit && version.whodunnit != 'Guest' %>
+      <% user = User.find_by_id(version.whodunnit) %>
+      <% if user %>
+        <%= user.name %>
+        
+      <% end %>
+    <% else %>
+      Guest
+    <% end %>
+    
+   &nbsp;&nbsp;&nbsp;&nbsp;
+    
+    <b>Remote address:</b> <%= version.ip %>
+&nbsp;          
+        <b>Target:</b> <%= version.item_type %>
+        <small>(id: <%= version.item_id %>)</small>; <b>action:</b> <%= version.event %>;
+        &nbsp;          
+        <b>Date:</b> <%= l(version.created_at, format: '%B %e at %l:%M %p') %> 
+        &nbsp;
+
+        <%= link_to 'View Change', "/history/#{version.id}", class: "btn btn-primary" %>
+        
+        <%= link_to 'Revert Back', "/revert/#{version.id}" ,class: "btn btn-danger btn-md ", :method => :post%>
+          
+      </div>
+      </div>
+
+      </div> <!-- End panel -->
+
+            <!--
+            <pre><%= version.object %></pre>
+
+          -->
+        
+      
+      
+  <% end %>
+</ul>
+<%= will_paginate @versions_by_item %>
+

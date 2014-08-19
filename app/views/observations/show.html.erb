@@ -1,0 +1,167 @@
+<div class="row">
+	<div class="col-md-8 col-md-offset-2">
+
+		<div class="page-header">
+		  <h1>Observation record
+			<% if @observation.approval_status == "pending" %>
+				<small><span class="label label-danger pull-right">pending approval</span></small>
+			<% end %>
+			</h1>
+		</div>		
+
+		<p>
+	  	<strong>Coral:</strong>
+		  <em><%= link_to @observation.coral.coral_name, coral_path(@observation.coral) %></em>
+		</p>
+
+		<p>
+		  <strong>Location:</strong>
+			<% if @observation.location.present? %>
+			  <%= link_to @observation.location.location_name, location_path(@observation.location), 'data-no-turbolink' => true %>
+			<% else %>
+					No record
+			<% end %>
+		</p>
+
+		<p>
+		  <strong>Resource:</strong>
+				<% if @observation.resource.present? %>
+		  		<%= link_to "#{@observation.resource.author} (#{@observation.resource.year}) #{@observation.resource.title}. #{@observation.resource.journal}, #{@observation.resource.volume_pages}.", resource_path(@observation.resource) %>
+				<% else %>
+					No record
+				<% end %>
+		</p>
+
+		<p>
+		  <strong>Original user:</strong>
+			<% if @observation.user.present? %>
+		  	<%= link_to @observation.user.name, user_path(@observation.user) %>
+			<% else %>
+				No record
+			<% end %>
+		</p>
+
+		<p>
+		  <strong>Access:</strong>
+			<% if @observation.private == true %>
+				<span class="glyphicon glyphicon-remove-circle" style="color:red;"></span>
+			<% else %>
+				<span class="glyphicon glyphicon-ok-circle" style="color:green;"></span>
+			<% end %>
+		</p>
+
+		
+		<% if @observation.updated_at.present? %>
+			<p>
+			  <strong>Last modified:</strong>
+			  <%= @observation.updated_at %>
+			</p>
+		<% end %>
+
+		<% if @observation.created_at.present? %>
+			<p>
+			  <strong>Created:</strong>
+			  <%= @observation.created_at %>
+			</p>
+		<% end %>
+
+
+		<h3>Measurements</h3>
+
+		<div class="row">
+		  <div class="col-md-12">
+				<ul class="list-group">
+
+					<% if @observation.measurements.count > 0 %>
+					  <% @observation.measurements.each do |mea| %>
+
+						  <li class="list-group-item">							
+								<div class="row">
+								  <div class="col-sm-1" style="color: lightgrey;">
+								  	<%= mea.id %>
+									</div>
+								  <div class="col-sm-3">
+
+										<% if mea.trait.trait_class == "Contextual" %>
+								  		<span class="glyphicon glyphicon-eye-open" style="color:grey;" data-toggle="tooltip" data-placement="top" title="Measurement is contextual"></span>
+										<% end %>
+								  	<%= link_to mea.trait.trait_name, trait_path(mea.trait_id) %>
+									</div>
+								  <div class="col-sm-4">
+										<%= mea.value %>
+										<% if mea.standard.present? %>
+								  		(<%= link_to mea.standard.standard_unit, standard_path(mea.standard_id) %>)
+											<% end %>
+									</div>
+				  
+
+								  <div class="col-sm-2">
+										<% if mea.value_type %>
+											<span class="label label-default"><%= mea.value_type %></span>
+										<% else %>
+											<span class="label label-danger">no value type</span>
+										<% end %>
+									</div>
+
+								  <div class="col-sm-2">
+										<% if mea.methodology %>
+										<%= link_to mea.methodology.methodology_name, methodology_path(mea.methodology_id) %>
+										<% else %>
+											<span class="label label-danger">no method</span>
+										<% end %>
+									</div>
+
+								</div>
+
+								
+								<% if mea.value_type != "raw_value" && mea.precision.present? %>
+									<div class="row">
+									  <div class="col-sm-1">
+										</div>
+									  <div class="col-sm-3">
+								      
+										</div>
+										<div class="col-sm-4">
+								      <%= mea.precision %> (<%= mea.precision_type %>)
+											<% if mea.precision_upper && mea.precision_upper != "" %>
+								      	-<%= mea.precision_upper %>
+								      <% end %>
+										</div>
+
+										<% if mea.replicates && mea.replicates != "" %>
+									  	<div class="col-sm-3">
+								      	replicates: <%= mea.replicates %>
+											</div>
+										<% end %>
+									</div>
+					 			<% end %>
+
+								<% if mea.notes && mea.notes != "" %>
+									<div class="row">
+									  <div class="col-sm-4">
+										</div>
+									  <div class="col-md-8">
+								      <strong>Notes:</strong> <%= mea.notes %>
+										</div>
+									</div>
+					 			<% end %>
+							</li>
+					
+					 	<% end %>
+					<% end %>
+				</ul>
+	    </div>
+    </div>
+
+		<div class="btn-group">
+			<% if signed_in? && current_user.contributor? %>
+				<%= link_to 'Edit', edit_observation_path(@observation), class: "btn btn-sm btn-default" %>
+			<% end %>
+		</div>
+
+
+  </div>
+ </div>
+
+
+

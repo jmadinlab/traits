@@ -1,0 +1,146 @@
+
+<% if @observations.empty? %>
+	<p class="alert alert-danger">No public records.</p>
+<% else %>
+
+	<% temp = [] %>
+	<table class="table table-condensed">
+		<thead>
+			<tr>
+
+		  	<th></th>
+		  	<th>Location</th>
+		  	<th>Resource</th>
+		  	<th>Contributor</th>
+		  	<th>Access</th>
+		  	<th>Trait</th>
+				<th>Value (unit)</th>
+				<th></th>
+			</tr>
+		</thead>
+	
+		
+		<% mark = "" %>
+	  <% Trait.all.sort_by{ |t| [t.trait_class, t.trait_name] }.each do |trait| %>    
+	    
+			<% if trait.trait_class != "Contextual" %>
+				<% if @observations.joins(:measurements).where("measurements.trait_id IS ?", trait.id).size == 1 %>
+
+					<% grp = @observations.joins(:measurements).where("measurements.trait_id IS ?", trait.id).first %>
+
+			    <% grp.measurements.each do |mea| %>    
+		    
+						<% if temp != grp.measurements.first.trait.trait_class %>
+							<% temp = grp.measurements.first.trait.trait_class %>
+							<tr><td style="border:none;"><b>
+								<% if trait.trait_class.blank? %>
+									Unclassified
+								<% else %>
+									<%= grp.measurements.first.trait.trait_class %>
+								<% end %>
+							</b></td></tr>								
+						<% end %>
+
+						<tr>            
+						  <% if grp.id != mark %>
+
+								<td style="min-width:100px;"></td>
+								<td style="text-align:center;">
+				  				<% if !grp.location_id.blank? && grp.location_id != 0 %>
+				  				  <% if grp.location_id == 1 %>
+				  			      <%= link_to "", "/locations/" + grp.location_id.to_s, class: "glyphicon glyphicon-globe" %>
+				  				  <% else %> 
+				  			      <%= link_to "", "/locations/" + grp.location_id.to_s, class: "glyphicon glyphicon-map-marker", 'data-no-turbolink' => true %>
+				  				  <% end %> 
+				  				<% end %> 
+				  			</td>
+				  			<td style="text-align:center;">
+				  				<% if !grp.resource_id.blank? && grp.resource_id != 0 %>
+				  					<%= link_to "", "/resources/" + grp.resource_id.to_s, class: "glyphicon glyphicon-book" %>
+				  				<% end %> 
+				  			</td>        
+				  			<td style="text-align:center;">
+				  				<% if !grp.user_id.blank? && grp.user_id != 0 %>
+				  					<%= link_to "", "/users/" + grp.user_id.to_s, class: "glyphicon glyphicon-user" %>
+				  				<% end %>
+				  			</td>
+
+								<% if grp.private == true %>
+									<td style="color:red;text-align:center;"><span class="glyphicon glyphicon-remove-circle"></span></td>
+								<% else %>
+									<td style="color:green;text-align:center;"><span class="glyphicon glyphicon-ok-circle"></span></td>
+								<% end %>
+
+						  <% else %> 
+				        <td colspan=5 style="border:none;"></td>
+						  <% end %> 
+		      
+				      <td>
+		  					<%= link_to mea.trait.trait_name, "/traits/" + mea.trait_id.to_s %>
+				      </td>
+							
+				      <td>
+				        <%= mea.value %>
+								<% if !mea.standard.blank? %>
+									(<%= mea.standard.standard_unit %>)
+								<% end %> 
+				      </td>
+		    
+						  <% if grp.id != mark %>
+
+
+				  			<td style="text-align:right; min-width: 160px;">
+				      		<div class="btn-group">				
+					  				<% if signed_in? && current_user.contributor? %>
+					  					<%= link_to 'Show', observation_path(grp, :trait => mea.trait_id), class: "btn btn-sm btn-default" %>
+					  	    		<%= link_to 'Edit', edit_observation_path(grp, :trait => mea.trait_id), class: "btn btn-sm btn-default" %>
+					  	    		<%= link_to 'Delete', observation_path(grp, :trait => mea.trait_id), method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-sm btn-danger" %>
+					  				<% end %>
+				  				</div>
+				  			</td>
+
+							<% end %>
+						</tr>
+		    
+						<% mark=grp.id %>
+		   
+					<% end %>
+
+
+				<% end %>
+
+				<% if @observations.joins(:measurements).where("measurements.trait_id IS ?", trait.id).size > 1 %>
+
+
+					<% grp = @observations.joins(:measurements).where("measurements.trait_id IS ?", trait.id) %>
+					
+					<% if temp != grp.first.measurements.first.trait.trait_class %>
+						<% temp = grp.first.measurements.first.trait.trait_class %>
+						<tr><td style="border:none;"><b>
+						<% if trait.trait_class.blank? %>
+							Unclassified
+						<% else %>
+							<%= grp.first.measurements.first.trait.trait_class %>
+						<% end %>
+					<% end %>
+
+					<tr>
+
+						<td style="min-width:100px;"></td>
+						<td colspan="4"></td>
+						<td><%= link_to grp.first.measurements.first.trait.trait_name, "/traits/" + grp.first.measurements.first.trait_id.to_s %></td>
+						<td><span class="badge"><%= grp.size %></span> observations</td>
+		  			<td style="text-align:right;">
+		          <div class="btn-group">
+		            <%= link_to 'Show', coral_trait_path(:coral_id => grp.first.coral_id, :id => trait.id), class: "btn btn-sm btn-default" %>
+		          </div>
+		  			</td>
+					</tr>
+
+
+
+				<% end %>
+			<% end %>
+		<% end %>
+	</table>
+<% end %>

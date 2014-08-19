@@ -1,0 +1,91 @@
+<% provide(:title, 'Meta') %>
+
+<div class="page-header">
+	<h1>Metadata</h1>
+</div>
+
+<p>
+	<%= form_tag meta_path, :method => 'get' do %>
+	  <strong>Editor: </strong><%= select_tag :editor, options_for_select(User.all.where(:id => Trait.all.map(&:user_id).uniq).map { |e| [e.name, e.id] }, params[:editor]), include_blank: true, onchange: "$(this).parent('form').submit();" %>
+	<% end %>
+</p>
+
+<h3><%= params[:status] %></h3>
+
+<div class="row">
+	<div class="col-md-2">
+  </div>
+	<div class="col-md-2">
+	  <strong>Class</strong>
+  </div>
+	<div class="col-md-2">
+	  <strong>Description</strong>
+  </div>
+	<div class="col-md-1">
+	  <strong>Editor</strong>
+  </div>
+	<div class="col-md-1">
+	  <strong>Standard</strong>
+  </div>
+	<div class="col-md-2">
+	  <strong>Value range</strong>
+  </div>
+	<div class="col-md-1">
+	  <strong>Measurements</strong>
+  </div>
+	<div class="col-md-1">
+  </div>
+</div>
+
+<ul class="list-group">
+
+	<% @traits.sort_by{ |h| h[:id] }.each do |trait| %>
+
+	<%# if trait.user == current_user || current_user.admin? %>
+	  <li class="list-group-item">							
+			<div class="row">
+				<div class="col-md-4">
+					<div class="col-sm-1" style="color:lightgrey;">
+				  	<%= trait.id %>
+			  	</div>
+					<div class="col-sm-6">
+				  	<%= link_to trait.trait_name, "/traits/" + trait.id.to_s %>
+			  	</div>
+					<div class="col-sm-4">
+					  <%= trait.trait_class %>
+				  </div>
+			  </div>
+				<div class="col-md-2">
+				  <%= trait.trait_description %>
+			  </div>
+				<div class="col-md-1">
+				  <%= trait.user.name %>
+			  </div>
+				<div class="col-md-1">
+				  <%= trait.standard.standard_name %> (<%= trait.standard.standard_unit %>)
+			  </div>
+				<div class="col-md-2">
+				  <% trait.value_range.to_s.split(',').each do |v| %>
+				  	<span class="label label-primary"><%= v %></span>
+					<% end %>
+					<% if trait.standard.id != 2 && trait.standard.id != 10 && trait.standard.id != 40 %>
+				  	<span class="label label-success">not applicable</span>
+					<% end %>
+
+			  </div>
+				<div class="col-md-1">
+				  <%= Measurement.where(:trait_id => trait.id).size %>
+			  </div>
+				<div class="col-md-1">
+				  <%= link_to 'Status', show_meta_path(trait.id), class: "btn btn-default btn-xs" %>
+				  <%= link_to 'Edit', edit_trait_path(trait), class: "btn btn-default btn-xs" %>
+			  </div>
+		  </div>
+	  </li>
+	<%# end %>
+
+
+	<% end %>
+
+
+</ul>		

@@ -1,0 +1,20 @@
+
+<p>
+  <strong>Trait:</strong>
+  <%= @citation.trait.trait_name %>
+</p>
+
+<p>
+  <strong>Resource:</strong>
+  <%= @citation.resource.author %> (<%= @citation.resource.year %>) <%= @citation.resource.title %>. <%= @citation.resource.journal %>, <%= @citation.resource.volume_pages %>.
+</p>
+
+<p>
+  <strong>User:</strong>
+	<% if @citation.user.present? %>
+		<%= @citation.user.name %>
+	<% end %>
+</p>
+
+<%= link_to 'Edit', edit_citation_path(@citation) %> |
+<%= link_to 'Back', citations_path %>

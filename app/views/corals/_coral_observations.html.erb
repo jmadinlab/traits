@@ -1,0 +1,66 @@
+<% if @observations.empty? %>
+	<p class="alert alert-danger">No public records.</p>
+<% else %>
+
+	<% temp = [] %>
+		
+	<div class="row">
+	  <div class="col-md-12">
+			<% mark = "" %>
+		  <% Trait.all.sort_by{ |t| [t.trait_class, t.trait_name] }.each do |trait| %>    
+		    
+				<% if trait.trait_class != "Contextual" %>
+
+					<% if @observations.joins(:measurements).where("measurements.trait_id IS ?", trait.id).size > 0 %>
+
+						<% grp = @observations.joins(:measurements).where("measurements.trait_id IS ?", trait.id) %>
+
+						
+						<% if temp != grp.first.measurements.first.trait.trait_class %>
+							<% temp = grp.first.measurements.first.trait.trait_class %>
+								<% if trait.trait_class.blank? %>
+									<h4>Miscellaneous</h4>
+									<ul class="list-group">
+								<% else %>
+		    					</ul>
+									<h4><%= grp.first.measurements.first.trait.trait_class %></h4>
+									<ul class="list-group">
+								<% end %>
+						<% end %>
+
+				  	<li class="list-group-item">							
+							<div class="row">
+				        <div class="col-sm-1" style="color: lightgrey;">
+				        	<%= trait.id %>
+				        </div>
+								<div class="col-sm-4">
+									<%= link_to grp.first.measurements.first.trait.trait_name, "/traits/" + grp.first.measurements.first.trait_id.to_s %>
+								</div>
+
+								<div class="col-sm-6">
+									<% if grp.size > 1 %>
+										<%= render "shared/access_counts", :acc => grp %> observations
+									<% else %>
+										<% if grp.first.measurements.first.standard.standard_class == "Nominal class" || grp.first.measurements.first.standard.standard_class == "Ordered class" %>
+											<span class="label label-primary"><%= grp.first.measurements.first.value %></span>
+										<% else %> 
+						        	<%= grp.first.measurements.first.value %>
+											<% if !grp.first.measurements.first.standard.blank? %>
+												(<%= grp.first.measurements.first.standard.standard_unit %>)
+											<% end %> 
+										<% end %> 
+									<% end %>
+								</div>
+				  			<div class="col-sm-1">
+				          <div class="btn-group pull-right">
+				            <%= link_to 'Show', coral_trait_path(:coral_id => grp.first.coral_id, :id => trait.id), class: "btn btn-xs btn-default" %>
+				          </div>
+				  			</div>
+				  		</div>
+						</li>
+					<% end %>
+				<% end %>
+			<% end %>
+		</div>
+	</div>
+<% end %>

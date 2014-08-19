@@ -1,0 +1,66 @@
+<%= form_for(@resource) do |f| %>
+
+	<%= render 'shared/error_messages', object: @resource %>
+
+	<div class="form-group">
+		<%= f.label :author %>
+		<p><small>For example, "Jones AS, Smith TR" without using "and" or "&"</small></p>
+		<%= f.text_field :author, :placeholder => "Required...", class: "form-control" %>
+	</div>
+
+	<div class="form-group">
+		<%= f.label :year %>
+		<%= f.text_field :year, class: "form-control" %>
+	</div>
+
+	<div class="form-group">
+		<%= f.label :title %>
+		<p><small>Without a period at the end</small></p>
+		<%= f.text_field :title, :placeholder => "Required...", class: "form-control" %>
+	</div>
+
+	<div class="form-group">
+		<%= f.label :resource_type %>
+		<%= f.select :resource_type, ['', 'paper', 'monograph', 'book', 'book_chapter', 'webpage', 'CD_rom', 'conference_proceedings', 'thesis', 'technical_report', 'petition', 'pers_obs', 'pers_comm', 'opinion'], {:selected => @resource.resource_type}, class: "form-control" %>
+	</div>
+	
+	<div class="form-group">
+		<%= f.label :doi_isbn %>
+		<p><small>Only the identifier.  Do not append text like "DOI"</small></p>
+		<%= f.text_field :doi_isbn, class: "form-control" %>
+	</div>
+
+	<div class="form-group">
+		<%= f.label :journal %>
+		<p><small>Full name or abbreviation without periods.</small></p>
+		<%= f.text_field :journal, class: "form-control" %>
+	</div>
+
+	<div class="form-group">
+		<%= f.label :volume_pages %>
+		<p><small>For example, "23, 135-156"</small></p>
+		<%= f.text_field :volume_pages, class: "form-control" %>
+	</div>
+
+	<div class="form-group">
+		<%= f.label :resource_notes %>
+		<%= f.text_area :resource_notes, class: "form-control" %>
+	</div>
+
+	<div class="form-group">
+		<% if current_user.admin? %>
+			<%= f.label :enterer %>
+			<% if f.object.id.present? %>
+				<%= f.select :user_id, User.all.collect {|a| [a.name, a.id]}, {}, class: "form-control" %>
+			<% else %>
+				<%= f.select :user_id, User.all.collect {|a| [a.name, a.id]}, {:selected => current_user.id}, class: "form-control" %>
+			<% end %>
+		<% else %>
+			<%#= current_user.name %>
+		  <%= f.hidden_field :user_id, :value => current_user.id %>
+		<% end %>
+	</div>
+
+	<%= f.submit "Submit", class: "btn btn-primary btn-lg" %>
+
+<% end %>

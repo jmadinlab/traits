@@ -1,0 +1,124 @@
+<% provide(:title, "Resource") %>
+
+
+<div class="page-header">
+  <h1>Resource</h1>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+
+		<p>
+		  <strong>Author:</strong>
+		  <%= @resource.author %>
+		</p>
+
+		<p>
+		  <strong>Year:</strong>
+			<% if @resource.year.present? %>
+		  	<%= @resource.year %>
+			<% else %>
+				<font style="color:lightgrey;">Not entered</font>
+			<% end %>
+		</p>
+
+		<p>
+		  <strong>Title:</strong>
+		  <%= @resource.title %>
+		</p>
+
+		<p>
+		  <strong>Resource type:</strong>
+			<% if @resource.resource_type.present? %>
+		  	<%= @resource.resource_type %>
+			<% else %>
+				<font style="color:lightgrey;">Not entered</font>
+			<% end %>
+		</p>
+
+		<p>
+		  <strong>Doi isbn:</strong>
+			<% if @resource.doi_isbn.present? %>
+		  	<%= link_to @resource.doi_isbn, "http://dx.doi.org/" + @resource.doi_isbn, :target => "_blank" %>
+			<% else %>
+				<font style="color:lightgrey;">Not entered</font>
+			<% end %>
+		</p>
+
+		<p>
+		  <strong>Journal:</strong>
+			<% if @resource.journal.present? %>
+		  	<%= @resource.journal %>
+			<% else %>
+				<font style="color:lightgrey;">Not entered</font>
+			<% end %>
+		</p>
+
+		<p>
+		  <strong>Volume pages:</strong>
+			<% if @resource.volume_pages.present? %>
+		  	<%= @resource.volume_pages %>
+			<% else %>
+				<font style="color:lightgrey;">Not entered</font>
+			<% end %>
+		</p>
+
+		<p>
+		  <strong>Resource notes:</strong>
+			<% if @resource.resource_notes.present? %>
+		  	<%= @resource.resource_notes %>
+			<% else %>
+				<font style="color:lightgrey;">Not entered</font>
+			<% end %>
+		</p>
+
+		<% if @resource.user.present? %>
+			<p>
+			  <strong>Contributor:</strong>
+			  <%= @resource.user.name %>
+			</p>
+		<% end %>
+
+		<p>
+			<div class="btn-group">
+				<% if signed_in? && current_user.contributor? %>
+					<%= link_to 'Edit', edit_resource_path(@resource), class: "btn btn-sm btn-default" %>
+				<% end %>
+				<%= link_to 'Back', resources_path, class: "btn btn-sm btn-default" %>
+			</div>
+		</p>
+
+	</div>
+  <div class="col-md-4">
+		<% if @resource.traits %>
+			<div class="well">
+				<p>Used as primary resource for:</p>
+				<ul>
+					<% if @resource.traits.present? %>
+						<% @resource.traits.each do |tra| %>
+							<li><%= link_to tra.trait_name, trait_path(tra) %></li>
+						<% end %>
+					<% else %>
+						<li>No traits entered</li>
+					<% end %>
+				</ul>
+
+				<% if signed_in? && current_user.contributor? %>
+					<%= link_to 'Add Trait', new_citation_path(:resource => @resource), class: "btn btn-default btn-sm" %><br>
+					<%= link_to 'Manage Citations', citations_path(:resource => @resource) %>
+				<% end %>
+			</div>
+		<% end %>
+	</div>
+</div>
+
+<h3>Observations from this resource</h3>
+
+<% if @observations.empty? %>
+	<p class="alert alert-danger">No records available.</p>
+<% else %>
+
+	<%= will_paginate @observations %>
+	<%= render "shared/observations" %>
+
+<% end %>

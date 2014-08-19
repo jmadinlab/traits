@@ -1,0 +1,81 @@
+<% provide(:title, @location.location_name) %>
+
+
+<div class="page-header">
+  <h1><%= @location.location_name %></h1>
+</div>
+
+<div class="row">
+  <div class="col-md-4">
+		<p>
+		  <strong>Latitude:</strong>
+		  <%= @location.latitude.round(4) %>
+		</p>
+
+		<p>
+		  <strong>Longitude:</strong>
+		  <%= @location.longitude.round(4) %>
+		</p>
+		
+		<% if !@location.location_description.blank? %>
+			<p>
+			  <strong>Location description:</strong>
+			  <%= @location.location_description %>
+			</p>
+		<% end %>
+
+		<p>
+		  <strong>User:</strong>
+			<% if !@location.user.blank? %>
+		  	<%= @location.user.name %>
+			<% end %>
+		</p>
+
+    <div class="btn-group">
+	  	<% if signed_in? && current_user.editor? %>
+				<%= link_to 'Edit', edit_location_path(@location), class: "btn btn-sm btn-default" %>
+			<% end %>
+			<%= link_to 'Back', locations_path, class: "btn btn-sm btn-default" %>
+		</div>
+	</div>
+
+  <div class="col-md-8" data-no-turbolink>
+		<div id="map-canvas" class="map-container" data-no-turbolink></div> 
+	</div>
+
+</div>
+
+<br/>
+<h3>Observations from <%= @location.location_name %></h3>
+
+<% if @observations.empty? %>
+	<p class="alert alert-danger">No observations available.</p>
+<% else %>
+
+	<%= will_paginate @observations %>
+	<%= render "shared/observations" %>
+
+<% end %>
+
+
+<script type="text/javascript">
+  var loc = <%= raw [@location.location_name.to_s, @location.latitude.to_s, @location.longitude.to_s, @location.id.to_s] %>;
+
+  var map = new google.maps.Map(document.getElementById('map-canvas'), {
+    zoom: 10,
+    center: new google.maps.LatLng(loc[1], loc[2]),
+    mapTypeId: google.maps.MapTypeId.SATELLITE,
+    streetViewControl: false
+  });
+
+  var infowindow = new google.maps.InfoWindow();
+
+  marker = new google.maps.Marker({
+    position: new google.maps.LatLng(loc[1], loc[2]),
+    map: map
+  });
+</script>
+
+
+
+
