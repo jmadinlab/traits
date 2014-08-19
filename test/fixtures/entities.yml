@@ -1,9 +1,0 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveGroup/FixtureSet.html
-
-one:
-  entity_name: MyString
-  entity_description: MyString
-
-two:
-  entity_name: MyString
-  entity_description: MyString

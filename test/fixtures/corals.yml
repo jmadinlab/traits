@@ -1,9 +1,0 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  coral_name: MyString
-  coral_description: MyText
-
-two:
-  coral_name: MyString
-  coral_description: MyText
