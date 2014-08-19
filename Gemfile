@@ -11,8 +11,11 @@ gem 'bootstrap-will_paginate'#, '0.0.9'
 gem 'select2-rails'
 gem 'mandrill_mailer'
 gem 'sunspot_rails'
+gem 'sunspot_solr'
 gem 'progress_bar'
 
+gem 'capistrano',  '~> 3.1'
+gem 'capistrano-rails', '~> 1.1'
 # gem 'select2-sass-bootstrap-rails'
 # gem 'squeel', github: 'kiela/squeel'
 
@@ -83,5 +86,5 @@ end
 
 group :production do
   # gem 'rails_12factor', '0.0.2'
-  gem 'sunspot_solr'
+  
 end

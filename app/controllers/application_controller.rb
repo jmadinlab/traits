@@ -36,7 +36,15 @@ class ApplicationController < ActionController::Base
 
   def enterer
     @observation = Observation.find(params[:id]) if params[:id]
-    redirect_to(root_url, flash: { danger: "You can't edit or delete other peoples' observations." }) unless (signed_in? && ((@observation.user_id == current_user.id) || current_user.admin?))      
+    if @observation
+      redirect_to(
+        root_url, flash: { danger: "You can't edit or delete other peoples' observations." }
+      ) unless (signed_in? && ((@observation.user_id == current_user.id) || current_user.admin?))      
+    else
+      redirect_to(
+        root_url, flash: { danger: "You can't edit or delete other peoples' observations." }
+      ) unless (signed_in? && current_user.admin?)
+    end
   end
 
 

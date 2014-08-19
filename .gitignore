@@ -1,12 +1,28 @@
 # Ignore bundler config.
 /.bundle
+*.bak
+current
+/releases/
+/repo/
+revisions.log
+/shared/
+
+
+/config/deploy/
 
 # Ignore the default SQLite database.
 /db/*.sqlite3
 /db/*.sqlite3-journal
 /db/schema.rb
 #/db
+<<<<<<< HEAD
 /solr
+=======
+/config/local_env.yml
+
+/solr/
+/log/
+>>>>>>> FETCH_HEAD
 
 # Ignore all logfiles and tempfiles.
 /log/*.log
@@ -14,8 +30,9 @@
 /public/assets/
 /app/assets/images/
 local_env.yml
+
 # Ignore other unneeded files.
-Gemfile.lock
+#Gemfile.lock
 database.yml
 doc/
 *.swp
