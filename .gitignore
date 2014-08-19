@@ -15,14 +15,8 @@ revisions.log
 /db/*.sqlite3-journal
 /db/schema.rb
 #/db
-<<<<<<< HEAD
 /solr
-=======
-/config/local_env.yml
-
-/solr/
-/log/
->>>>>>> FETCH_HEAD
+/log
 
 # Ignore all logfiles and tempfiles.
 /log/*.log
