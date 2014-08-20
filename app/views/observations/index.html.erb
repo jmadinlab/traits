@@ -104,12 +104,19 @@
 						</td>	
 
 						<% if grp.id != mark1 %>	
-							<% if grp.private == true %>
-								<td style="color:red;text-align:center;"><span class="glyphicon glyphicon-remove-circle"></span></td>
-							<% else %>
-								<td style="color:green;text-align:center;"><span class="glyphicon glyphicon-ok-circle"></span></td>
-							<% end %>
+							<td style="text-align:center;" >
+								<% if grp.private == true %>
+									<span class="glyphicon glyphicon-remove-circle" style="color:red;"></span>
+								<% else %>
+									<span class="glyphicon glyphicon-ok-circle" style="color:green;"></span>
+								<% end %>
+								<% if mea.approval_status == 'pending' %>
+										<span class="glyphicon glyphicon-floppy-remove"  style="color:red;text-align:center;" title="Pending Approval"></span>
+								<% end %>
+							</td>
+
 							<td style="min-width: 130px;">
+								
 								<%= link_to 'Show', observation_path(grp, :user => @user) %> |
 					    	<%= link_to 'Edit', edit_observation_path(grp, :user => @user) %> |
 					    	<%= link_to 'Delete', observation_path(grp, :user => @user), method: :delete, data: { confirm: 'Are you sure?' } %>
