@@ -65,7 +65,7 @@ class Import
 
     (2..spreadsheet.last_row).map do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
-      if not $observation_id_map.keys().include? row["observation_id"]
+      if not $observation_id_map.keys().include? row["observation_id"] and row["observation_id"].present?
         o = Observation.new(:user_id => row["user_id"], :location_id => row["location_id"], :coral_id => row["coral_id"], :resource_id => row["resource_id"], :approval_status => "pending")
         measurement_row = {"user_id" => row["user_id"],   "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"],  "approval_status" => "pending"}
         m = Measurement.new
@@ -305,6 +305,8 @@ class Import
 
         # Finally return the product
         product.approval_status = "pending"
+
+        $email_list.append("suren.shopushrestha@mq.edu.au")
         product
       end
 

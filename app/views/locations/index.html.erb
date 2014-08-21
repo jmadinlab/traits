@@ -69,6 +69,10 @@
 								<% if not params[:pp] %>
 				        	<%= render "shared/access_counts", :acc => Observation.where(:location_id => location) %>
 								<% end %>
+
+								<% if location.approval_status == 'pending' %>
+									&nbsp;	<span class="glyphicon glyphicon-floppy-remove"  style="color:red;text-align:center;" title="Pending Approval"></span>
+								<% end %>
 							</div>
 
 			        <div class="col-sm-3">

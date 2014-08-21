@@ -53,6 +53,9 @@
 
 			<div class="col-sm-2">
 				<%#= render "shared/access_counts", :acc => Observation.where(:id => Measurement.where(:standard_id => standard).map(&:observation_id)) %>
+				<% if standard.approval_status == 'pending' %>
+					&nbsp;	<span class="glyphicon glyphicon-floppy-remove"  style="color:red;text-align:center;" title="Pending Approval"></span>
+				<% end %>
 			</div>
 
 			<div class="col-sm-3">
