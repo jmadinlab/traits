@@ -19,7 +19,12 @@ class ResourcesController < ApplicationController
     if params[:search]
       @resources = @search.results
     else
-      @resources = Resource.all.paginate(:page=> params[:page], :per_page => pp)
+      if not signed_in?
+        @resources = Resource.where("resources.approval_status IS NOT ?", 'pending').paginate(:page=> params[:page], :per_page => pp)
+      else
+        @resources = Resource.all.paginate(:page=> params[:page], :per_page => pp)
+      end
+      
     end
 
 

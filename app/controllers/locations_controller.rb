@@ -21,7 +21,11 @@ class LocationsController < ApplicationController
     if params[:search]
       @locations = @search.results
     else
-      @locations = Location.all.paginate(:page=> params[:page], :per_page => pp)
+      if not signed_in?
+        @locations = Location.where("locations.approval_status IS NOT ?", 'pending').paginate(:page=> params[:page], :per_page => pp)
+      else
+        @locations = Location.all.paginate(:page=> params[:page], :per_page => pp)
+      end
     end
 
     # @locations = @locations.sort_by{|l| l[:latitude]} if params[:sort] == "latitude"

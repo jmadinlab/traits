@@ -16,7 +16,14 @@ class StandardsController < ApplicationController
     if params[:search]
       @standards = @search.results
     else
-      @standards = Standard.all
+      if not signed_in?
+        @standards = Standard.where("standards.approval_status IS NOT ?", 'pending')
+        
+      else
+        @standards = Standard.all
+      end
+      
+      
     end
     
     respond_to do |format|
