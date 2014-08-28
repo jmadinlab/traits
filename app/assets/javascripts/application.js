@@ -131,7 +131,7 @@ function get_suggestions(request, response){
 
 $(document).ready(function(){
 
- $( "#search" ).autocomplete({
+ $( ".search" ).autocomplete({
   source: get_suggestions,
    minLength: 2 
   });

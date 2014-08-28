@@ -58,7 +58,7 @@
 					<div class="ui-widget">
 				  	<%= form_tag search_index_path, class: "navbar-form", :method => :get do %>
 						  <div class="form-group">
-						    <%= text_field_tag :search, params[:search], { class: "form-control", placeholder: "Search..." }   %>
+						    <%= text_field_tag :search, params[:search], { class: "form-control search", placeholder: "Search..." }   %>
 			        </div>
 						<% end %>
 					</div>

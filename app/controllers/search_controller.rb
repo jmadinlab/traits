@@ -29,13 +29,27 @@ class SearchController < ApplicationController
 	end
 
 	def json_completion
+		model_names = ['Location', 'Coral', 'Trait', 'Standard']
+		
+		
+		bucket = []
+		model_names.each do |m|
+				@model = m.classify.constantize
+				name = m.downcase + '_search'
+				puts "name: "
+				puts name
+				
+				search = @model.search do
+					keywords(params["search"])
+				end
 
-		search = Coral.search do 
-			keywords(params["search"])
+				if search.results.count > 0
+					bucket << '<<<<< ' + m + ' >>>>>'
+					column_name = @model.column_names[1]
+					bucket << search.results.map{ |x| x.attributes[column_name]}
+				end
 		end
 
-		bucket = []
-		bucket << search.results.map{ |x| x.coral_name}
 		render :json => bucket.flatten
 	end
 end
