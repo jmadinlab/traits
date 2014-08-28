@@ -27,4 +27,15 @@ class SearchController < ApplicationController
 			@location_search = nil
 		end
 	end
+
+	def json_completion
+
+		search = Coral.search do 
+			keywords(params["search"])
+		end
+
+		bucket = []
+		bucket << search.results.map{ |x| x.coral_name}
+		render :json => bucket.flatten
+	end
 end

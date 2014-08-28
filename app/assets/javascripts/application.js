@@ -122,4 +122,19 @@ $(document).bind('cocoon:after-insert', function(e,inserted_item) {
     process_precision()
 });
 
+function get_suggestions(request, response){
+  var params = { search: request.term };
+  $.get("/search/json_completion", params, function(data){
+    response(data);
+  }, "json");
+}
+
+$(document).ready(function(){
+
+ $( "#search" ).autocomplete({
+  source: get_suggestions,
+   minLength: 2 
+  });
+}); 
+
 

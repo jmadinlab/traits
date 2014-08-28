@@ -55,11 +55,13 @@
 				</ul>
 
 				<ul class="nav navbar-nav navbar-left">
-			  	<%= form_tag search_index_path, class: "navbar-form", :method => :get do %>
-					  <div class="form-group">
-					    <%= text_field_tag :search, params[:search], { class: "form-control", placeholder: "Search..." }   %>
-		        </div>
-					<% end %>
+					<div class="ui-widget">
+				  	<%= form_tag search_index_path, class: "navbar-form", :method => :get do %>
+						  <div class="form-group">
+						    <%= text_field_tag :search, params[:search], { class: "form-control", placeholder: "Search..." }   %>
+			        </div>
+						<% end %>
+					</div>
 				</ul>
 		
 				<ul class="nav navbar-nav navbar-right">

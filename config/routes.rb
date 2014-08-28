@@ -5,6 +5,7 @@ Traits::Application.routes.draw do
   match '/imports/approve', to: 'imports#approve', via: ['get', 'post'] , :as => :approve
   match '/imports/:name', to: 'imports#create', :via => :post, :as => :upload
   get '/imports/:name', to: 'imports#new'
+  match '/search/json_completion', to: 'search#json_completion', via: 'get', as: 'json_completion'
   
   resources :imports
   resources :citations
