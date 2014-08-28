@@ -15,14 +15,21 @@ class Observation < ActiveRecord::Base
   validates :measurements, :presence => true
   #validates :resource, :presence => true
     
-  has_many :measurements, :dependent => :destroy
+  has_many :measurements, :dependent => :destroy, :before_add => :set_nest
+
   accepts_nested_attributes_for :measurements, :reject_if => :all_blank, :allow_destroy => true
+  
   
 
   searchable do
     text :measurements do
       measurements.map{ |measurement| measurement.value }
     end
+  end
+  
+
+  def set_nest(item)
+    item.observation ||= self
   end
   
   '''
@@ -35,6 +42,8 @@ class Observation < ActiveRecord::Base
   end  
 
   '''
+
+
   
   
 end
