@@ -1,33 +1,34 @@
-class UserMailer < ActionMailer::Base
-  default from: "from@example.com"
+class UserMailer < MandrillMailer::TemplateMailer
+  default from: 'suren.coral@gmail.com'
 
-  # Subject can be set in your I18n file at config/locales/en.yml
-  # with the following lookup:
-  #
-  #   en.user_mailer.password_reset.subject
-  #
   def password_reset(user)
-    @greeting = "Hi"
     @user = user
 
-    mail to: user.email, :subject => "Coral Trait Database: password reset"
+    #mail to: user.email, :subject => "Coral Trait Database: password reset"
 
-    '''
-    mandrill_mail template: "password-reset",
+    
+    mandrill_mail template: "password_reset",
                   subject: "Coraltraits : Reset Password",
                   to: user.email,
                   vars: {
+                          "USERNAME" => user.name,
                           "EMAIL" => user.email,
                           "EDIT_LINK" => edit_password_reset_url(user.password_reset_token)
                         }
-    '''
+    
                   
   end
 
   def password_reset_confirmation(user)
-    @greeting = "Hi"
-    @user = user
+    
+    # mail to: user.email, :subject => "Coral Trait Database: password reset confirmation"
 
-    mail to: user.email, :subject => "Coral Trait Database: password reset confirmation"
+    mandrill_mail template: "password_reset_confirmation",
+                  subject: "Coraltraits : Password Reset Confirmation",
+                  to: user.email,
+                  vars: {
+                          "USERNAME" => user.name,
+                        }
+    
   end
 end

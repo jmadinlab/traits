@@ -38,7 +38,8 @@ Traits::Application.configure do
     password: ENV["MANDRILL_PASSWORD"]
   }
   '''
-
+  config.mandrill_mailer.default_url_options = { :host => 'localhost' }
+  
   # specify what domain to use for mailer URLs
   config.action_mailer.default_url_options = { host: "localhost:3000" }
 
