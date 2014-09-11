@@ -57,7 +57,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     if @user.save
       sign_in @user
-      SignUpMailer.acknowledge(@user).deliver
+      # SignUpMailer.acknowledge(@user).deliver
       
       flash[:success] = "Welcome to Coral Traits"
       redirect_to @user
