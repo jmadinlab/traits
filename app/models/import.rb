@@ -174,7 +174,7 @@ class Import
         end
         
         
-        puts 'count of row: ', row.count
+        puts 'count of row: ', row
         # Instantiate or find observation and measurement in order to be able to add errors into them
         
         observation = Observation.find_by_id($observation_id_map[row["id"]])
@@ -192,66 +192,13 @@ class Import
           row["private"] = false
         end
         
-        # 2. Validate user_id and report error if user cannot be found
-        begin
-          user = User.find(row["user_id"])
-        rescue
-          observation.errors[:base] << "Cannot find user with the id : " + row["user_id"]
-        end
-
-
         coral_id = row["coral_id"]
         location_id = row["location_id"]
-      
-        # 3. Validate coral_name
-        begin
-          coral = Coral.find(row["coral_id"])
-          #coral_id = Coral.where(:coral_name => row["coral_id"]).take!.id
-        rescue
-          # coral_id = nil
-          observation.errors[:base] << "Cannot find Coral with the id : " + row["coral_id"]
-        end
-        
-        # 4. Validate Location from location_name
-        begin
-          location = Location.find(location_id)
-          #location_id = Location.where(:location_name => row["location_name"]).take!.id
-        rescue
-          # location_id = nil
-          observation.errors[:base] << "Cannot find location with the id : " + row["location_id"]
-        end
-        
-        
-        # 5. Validate Standard from standard_unit
-        # Beware of the encoding scheme
-        begin
-          # Remove an umlaut character introduced by Excel when opening a csv file
-          standard = Standard.find(row["standard_id"])
-          #row["standard_unit"] = row["standard_unit"].delete! "Â"
-          #standard_id = Standard.where(:standard_unit =>  row["standard_unit"]).take!.id
-        rescue
-          #puts "standard error: "
-          #puts row["standard_unit"]
-          #puts row["id"]
-          #standard_id = nil
-          observation.errors[:base] << "Cannot find Standard with that unit : " + row["standard_unit"]
-        end
-
-        # 6. Validate Resource id
-        begin
-          resource = Resource.where(:resource_id => row["resource_id"])
-        rescue
-          if row["resource_id"] == ''
-            row["resource_id"] = nil
-          else 
-            observation.errors[:base] << "Cannot find Resource with that id : " + row["resource_id"]
-          end
-          
-        end
-        
-
         trait_id = row["trait_id"]
-        # 8. Validate Values based on the traits value range
+        observation = validate_model_ids(row, observation)
+        
+        
+        # Validate Values based on the traits value range
         begin
           if trait_id
             trait = Trait.find(trait_id)
@@ -366,6 +313,24 @@ class Import
       puts "latitude error"
     end
   end
+  
+  def validate_model_ids(row, observation)
+    negative_cols = ['methodology_id', 'trait_id']
+    row.each do |col|
+      if col[0].include? 'id' and col[0].length > 2 and not negative_cols.include? col[0]
+        field_name = col[0]
+        model_name = field_name.split('_')[0]
+        model = model_name.singularize.classify.constantize
+        begin
+          item = model.find(col[1])
+        rescue
+          observation.errors[:base] << "Cannot find #{model_name} with that id : " + col[1]
+        end
 
+      end
+    end
+
+    return observation
+  end
 
 end
