@@ -91,23 +91,22 @@ class Import
 
   def save
     $measurements = []
-    puts "controller_name :"
-    puts model_name
+    puts "model_name : ", model_name
+     
+    # Save the unique observation from group of observations in csv
+    if model_name.to_s == 'Observation'
+      observation_error = save_unique_observations
+      if not observation_error
+        return false
+      end    
+    end
     
-    observation_error = save_unique_observations
-    if not observation_error
-      return false
-    end    
 
-    imp_products = imported_products.compact
-    # puts "imported products"
-    # puts imported_products
-
-    # puts "imported product map"
-    # puts $observation_id_map
+    imp_items = imported_items.compact
     
-    any_error = check_add_errors(imp_products)
-    puts "no error in imported_products"
+    # Check for any errors in imported observations
+    any_error = check_add_errors(imp_items)
+    puts "no error in imported_items"
     # If there's any error, dont override its value
     # If there's no any error, check if error is present in measurements
     if not $measurements.empty?
@@ -123,12 +122,13 @@ class Import
     # If no validation errors, see if there is any mapping error
     # If there is a mapping error, display it and then return
     # If there is no any error, then save it
-    #if imported_products.map(&:valid?).all? 
+    #if imported_items.map(&:valid?).all? 
 
-    imp_products.each do |product|
-      product.save! if not Observation.all.include? product
+    imp_items.each do |item|
+      item.save! if not Observation.all.include? item
     end
     
+    # Duplicate Measurements might still cause validation errors.
     begin
       $measurements.each(&:save!)
     rescue => e
@@ -137,19 +137,16 @@ class Import
     end
 
     true
-    #else
-    #  errors.add :base, "Mapping Error"
-    #  false
-    #end
+    
   end
 
-  def imported_products
+  def imported_items
     spreadsheet = open_spreadsheet
     header = spreadsheet.row(1)
-    @imported_products ||= load_imported_products
+    @imported_items ||= load_imported_items
   end
 
-  def load_imported_products
+  def load_imported_items
 
     spreadsheet = open_spreadsheet
     
@@ -249,34 +246,34 @@ class Import
       (2..spreadsheet.last_row).map do |i|
         row = Hash[[header, spreadsheet.row(i)].transpose]
 
-        product = model_name.find_by_id(row["id"]) || model_name.new
+        item = model_name.find_by_id(row["id"]) || model_name.new
         
         begin
-          product.attributes = row.to_hash
+          item.attributes = row.to_hash
         rescue => error
-          product.errors[:base] << "The column headers do not match with fields..."
-          product.errors[:base] << error.message
+          item.errors[:base] << "The column headers do not match with fields..."
+          item.errors[:base] << error.message
           false
         end
         
         # Validate user_id
-        validate_user(product, product.attributes["user_id"])
+        validate_user(item, item.attributes["user_id"])
         
         # Validate latitude
-        if product.attributes["latitude"]
-          validate_long_lat(product, product.attributes["latitude"], "latitude", -90, 90)
+        if item.attributes["latitude"]
+          validate_long_lat(item, item.attributes["latitude"], "latitude", -90, 90)
         end
         
         # Validate longitude
-        if product.attributes["longitude"]
-          validate_long_lat(product, product.attributes["longitude"], "longitude",  -180, 180)
+        if item.attributes["longitude"]
+          validate_long_lat(item, item.attributes["longitude"], "longitude",  -180, 180)
         end
 
-        # Finally return the product
-        product.approval_status = "pending"
+        # Finally return the item
+        item.approval_status = "pending"
 
         $email_list.append("suren.shopushrestha@mq.edu.au")
-        product
+        item
       end
 
     end
@@ -298,18 +295,18 @@ class Import
     end
   end
 
-  def validate_user(product, user_id)
+  def validate_user(item, user_id)
     if User.where(id: user_id).empty?
-      product.errors[:base] << "Invalid user with id: " + user_id.to_s
+      item.errors[:base] << "Invalid user with id: " + user_id.to_s
     end
 
   end
 
-  def validate_long_lat(product, val, item, start, finish)
-    puts "validating #{item}"
+  def validate_long_lat(item, val, item_type, start, finish)
+    puts "validating #{item_type}"
     val = val.to_i
     if val < start or val > finish
-      product.errors[:base] << "Invalid #{item}: "  + val.to_s + " ( has to be between #{start} and #{finish} ) "
+      item.errors[:base] << "Invalid #{item_type}: "  + val.to_s + " ( has to be between #{start} and #{finish} ) "
       puts "latitude error"
     end
   end

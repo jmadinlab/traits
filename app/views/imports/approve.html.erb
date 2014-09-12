@@ -1,11 +1,11 @@
 
 <h3>CSV Upload Admin</h3>
 
-<% if @product_import.errors.any? %>
+<% if @item_import.errors.any? %>
   <div id="error_explanation">
-    <h2><%= pluralize(@product_import.errors.count, "error") %> prohibited this import from completing:</h2>
+    <h2><%= pluralize(@item_import.errors.count, "error") %> prohibited this import from completing:</h2>
     <ul>
-    <% @product_import.errors.full_messages.each do |msg| %>
+    <% @item_import.errors.full_messages.each do |msg| %>
       <li><%= msg %></li>
     <% end %>
     </ul>

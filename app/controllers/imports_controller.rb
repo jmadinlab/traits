@@ -3,7 +3,7 @@ class ImportsController < ApplicationController
 	before_action :signed_in_user
 
 	def new
-		@product_import ||= Import.new
+		@item_import ||= Import.new
 		# Get the model name from URL : /imports/observations => Observation
 		@model_name = request.original_url.split("/").last.singularize.capitalize
 		@model = get_model_name(@model_name)
@@ -12,8 +12,8 @@ class ImportsController < ApplicationController
 
 	def create
 		@model_name = get_model_name(params[:import]['model_name'])
-		@product_import = Import.new(params[:import])
-		@product_import.set_model_name(@model_name)
+		@item_import = Import.new(params[:import])
+		@item_import.set_model_name(@model_name)
 	
 		"""
 		# Save the actual file in the server
@@ -27,13 +27,13 @@ class ImportsController < ApplicationController
 		render :new, notice: 'Your request has been sent to the administrator'
 		"""
 
-		if @product_import.save
+		if @item_import.save
 			# Todo : Change the user to the one responsible for that particular coral/trait/observation
-			UploadApprovalMailer.approve_all(@product_import.get_email_list).deliver
+			UploadApprovalMailer.approve_all(@item_import.get_email_list).deliver
 			redirect_to request.referer, flash: {success: "Imported successfully" } 
 		else
 			render :new
-			#redirect_to request.referer , :@product_import => @product_import
+			#redirect_to request.referer , :@item_import => @item_import
 		end
 	end
 	
@@ -77,14 +77,14 @@ class ImportsController < ApplicationController
 			redirect_to approve_path, flash: {success: message } 
 
 		else
-			@product_import = Import.new
+			@item_import = Import.new
 			render 'approve.html.erb'
 		end
 	end
 
 	def show
 		@files = Dir.glob("../public/uploads/**")
-		@product_import = Import.new
+		@item_import = Import.new
 
 	end
 

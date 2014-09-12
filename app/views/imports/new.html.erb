@@ -1,4 +1,4 @@
-<%# @product_import ||= product_import if product_import%>
+<%# @item_import ||= item_import if item_import%>
 <%= render partial: "sidebar" %>
 <div class="col-md-9">
 	<h1>Upload <%= @model_name %> </h1>
@@ -7,12 +7,12 @@
 
 	<p>If an <strong>id</strong> is supplied it will update the matching record instead of creating a new one.</p>
 
-	<%= form_for @product_import, :url => upload_path do |f| %>
-	  <% if @product_import.errors.any? %>
+	<%= form_for @item_import, :url => upload_path do |f| %>
+	  <% if @item_import.errors.any? %>
 	    <div id="error_explanation">
-	      <h2><%= pluralize(@product_import.errors.count, "error") %> prohibited this import from completing:</h2>
+	      <h2><%= pluralize(@item_import.errors.count, "error") %> prohibited this import from completing:</h2>
 	      <ul>
-	      <% @product_import.errors.full_messages.each do |msg| %>
+	      <% @item_import.errors.full_messages.each do |msg| %>
 	        <li><%= msg %></li>
 	      <% end %>
 	      </ul>
