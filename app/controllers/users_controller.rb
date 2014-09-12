@@ -60,6 +60,7 @@ class UsersController < ApplicationController
       
       SignUpMailer.acknowledge(@user).deliver
       
+      
       flash[:success] = "Welcome to Coral Traits"
       redirect_to @user
     else

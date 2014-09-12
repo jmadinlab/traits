@@ -4,28 +4,17 @@ class ImportsController < ApplicationController
 
 	def new
 		@product_import ||= Import.new
+		# Get the model name from URL : /imports/observations => Observation
 		@model_name = request.original_url.split("/").last.singularize.capitalize
-		
-		begin
-			@model = @model_name.classify.constantize
-		rescue
-			redirect_to imports_path, flash: {danger:  "Corresponding Model Name could not be retrieved" }
-		end
+		@model = get_model_name(@model_name)
 	end
 
 
 	def create
-		begin
-			@model_name = params[:import]["model_name"].classify.constantize
-		rescue
-			render :new, notice: "Corresponding Model Name could not be retrieved"
-		end
-		
+		@model_name = get_model_name(params[:import]['model_name'])
 		@product_import = Import.new(params[:import])
-		
 		@product_import.set_model_name(@model_name)
-		
-
+	
 		"""
 		# Save the actual file in the server
 		uploaded_io = params[:import][:file]
@@ -34,27 +23,21 @@ class ImportsController < ApplicationController
 	  File.open(Rails.root.join('public', 'uploads', uploaded_io.original_filename), 'wb') do |file|
 	    file.write(uploaded_io.read)
 	  end
-		
-
+	
 		render :new, notice: 'Your request has been sent to the administrator'
 		"""
 
 		if @product_import.save
 			# Todo : Change the user to the one responsible for that particular coral/trait/observation
 			UploadApprovalMailer.approve_all(@product_import.get_email_list).deliver
-
-			
 			redirect_to request.referer, flash: {success: "Imported successfully" } 
 		else
 			render :new
 			#redirect_to request.referer , :@product_import => @product_import
-
 		end
-		
 	end
 	
 	def approve
-
 		if not current_user.admin?
 			@corals = Coral.where(:approval_status => "pending", :user_id => current_user.id )
 			@locations = Location.where(:approval_status => "pending", :user_id => current_user.id)
@@ -76,8 +59,7 @@ class ImportsController < ApplicationController
 		#@measurements = Measurement.where(:approval_status => "pending")
 		reject = params[:reject]
 		reject ? message = "Item/s Rejected!!!" : message = "Item/s approved!!!"
-			
-
+		
 		if params[:checked]
 			item_ids = params[:checked]
 			i = 0
@@ -118,15 +100,13 @@ class ImportsController < ApplicationController
 			rescue
 				redirect_to imports_path, flash: {danger: "Corresponding Model Name could not be retrieved" }
 			end
-
-    end
+		end
 
     def find_and_approve_item(model_name, item_id, reject)
     	@item = model_name.find_by_id(item_id)
     	if not reject
 				@item.approval_status = "approved"
 				@item.save!
-				
 				puts "printing model name:"
 				puts model_name
 				if model_name.to_s == "Observation"
@@ -137,11 +117,7 @@ class ImportsController < ApplicationController
 					end
 				end
 			else
-				
-					@item.destroy!
-				
+				@item.destroy!
 			end
     end
-
-
 end
