@@ -40,6 +40,7 @@ class Import
   end
 
 
+
   def get_email_list
     return $email_list.uniq
   end
