@@ -19,18 +19,22 @@ describe "User pages" do
 		let(:user) { FactoryGirl.create(:user) }
 		
 		before { visit signin_path }
-
-		before do
-			fill_in "Email", with: user.email
-			fill_in "Password", with: user.password
-			click_button "Sign in"
-		end
-
 		
-		before { visit user_path(user) }
+		it { should have_content('Forgot password?') }
+		
+		describe "signin" do
+			before do
+				fill_in "Email", with: user.email
+				fill_in "Password", with: user.password
+				click_button "Sign in"
+			end
 
-		it { should have_content(user.name) }
-		it { should have_title(user.name) }
+			
+			before { visit user_path(user) }
+
+			it { should have_content(user.name) }
+			it { should have_title(user.name) }
+		end
 		
   end
 
@@ -84,7 +88,43 @@ describe "User pages" do
 				ActionMailer::Base.deliveries.count.should == 0
 			end
 		end
-	
+	end
 
-  end
+	
+		
+	describe "password reset page" do
+
+		before { visit new_password_reset_path }
+
+		it { should have_content('Password reset') }
+		it { should have_title('Password reset')}
+
+		describe "form" do
+			it { should have_field("email") }
+			it { should have_selector("input[type=submit][value='Send password reset link']")}
+		end
+	end
+	
+	describe "password reset" do
+		let(:user) { FactoryGirl.create(:user) }
+		before { visit new_password_reset_path }
+
+		before do
+			fill_in "email", with: user.email
+			click_button "Send password reset link"
+		end
+
+		it "shoud send email" do
+			ActionMailer::Base.deliveries.count.should == 1
+		end
+
+		it "renders the receiver email" do
+			ActionMailer::Base.deliveries.first.to.first.should == user.email
+		end
+
+		it "renders the sender email" do
+			ActionMailer::Base.deliveries.first.from.first.should == "coraltraits@gmail.com"
+		end
+
+	end
 end
