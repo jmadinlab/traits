@@ -10,6 +10,10 @@ describe "User pages" do
     ActionMailer::Base.deliveries = []
   end
 
+  after(:each) do
+	  ActionMailer::Base.deliveries.clear
+	end
+
   describe "signin page" do
   	
 		let(:user) { FactoryGirl.create(:user) }
@@ -58,11 +62,26 @@ describe "User pages" do
 				click_button submit
 				ActionMailer::Base.deliveries.count.should == 1
 			end
+
+			it "renders the receiver email" do
+				click_button submit
+				ActionMailer::Base.deliveries.first.to.first.should == "test@coraltraits.org"
+			end
+
+			it "renders the sender email" do
+				click_button submit
+				ActionMailer::Base.deliveries.first.from.first.should == "coraltraits@gmail.com"
+			end
 		end
 
 		describe "with invalid information" do
 			it "should not create a user" do
 				expect { click_button submit }.not_to change(User, :count)
+			end
+
+			it "should not send an email" do
+				click_button submit
+				ActionMailer::Base.deliveries.count.should == 0
 			end
 		end
 	
