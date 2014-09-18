@@ -19,7 +19,6 @@ describe "User pages" do
 		let(:user) { FactoryGirl.create(:user) }
 		
 		before { visit signin_path }
-		
 		it { should have_content('Forgot password?') }
 		
 		describe "signin" do
@@ -66,6 +65,7 @@ describe "User pages" do
 				click_button submit
 				ActionMailer::Base.deliveries.count.should == 1
 			end
+
 
 			it "renders the receiver email" do
 				click_button submit
@@ -127,4 +127,5 @@ describe "User pages" do
 		end
 
 	end
+
 end
