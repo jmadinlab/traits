@@ -39,6 +39,15 @@ class Import
     self.model_name = model_name
   end
 
+  # If there's any error in observation or measurement, then rollback the saved observations
+  def rollback
+    puts 'rolling back'
+    $observation_id_map.keys().each do |k|
+      obs = Observation.find($observation_id_map[k])
+      obs.destroy!
+    end
+  end
+
   def check_add_errors(items)
     # First Check if there is any error in the items in the list
     # If any errors are present, don't attempt to save. Just Return False
@@ -48,6 +57,9 @@ class Import
         item.errors.full_messages.each do |message|
           errors.add :base, "Row #{index+2}: #{message}"
         end
+        flag = true
+      elsif not item.valid?
+        errors.add :base, item.errors.full_messages
         flag = true
       end
     end
@@ -77,18 +89,21 @@ class Import
           errors.add :base, e
           return false
         end
-
       end
     end
   end
+
+  
 
   def save
     $measurements = []
      
     # Save the unique observation from group of observations in csv
+    # Do this only if the uploaded csv is a list of observations
     if model_name.to_s == 'Observation'
       observation_error = save_unique_observations
       if not observation_error
+        rollback()
         return false
       end    
     end
@@ -107,6 +122,7 @@ class Import
     
     # If there is any error, dont attempt to save
     if any_error
+      rollback()
       return false
     end    
 
@@ -125,6 +141,7 @@ class Import
       $measurements.each(&:save!)
     rescue => e
       errors.add :base, e
+      rollback()
       return false
     end
 
