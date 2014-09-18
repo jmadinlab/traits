@@ -116,6 +116,7 @@ class Import
       end
     end
     
+
     # First Check if there is any error in the items in the list
     # If any errors are present, don't attempt to save. Just Return False
     def check_add_errors(items)
@@ -135,6 +136,7 @@ class Import
       end
       return flag
     end
+
     
     # If there's any error in observation or measurement, then rollback the saved observations
     def rollback
@@ -190,6 +192,7 @@ class Import
           end
         end
       end
+
     end
 
     def imported_items
@@ -280,6 +283,7 @@ class Import
           # Temporary email list
           $email_list.append("suren.shopushrestha@mq.edu.au")
           observation
+
         end
       elsif model_name.to_s != 'Observation'
         puts 'uploading non observations'
