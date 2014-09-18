@@ -11,7 +11,7 @@
 
     # Assets should be precompiled for production (so we don't need the gems loaded then)
     Bundler.require(*Rails.groups(assets: %w(development test)))
-
+    
     module Traits
       class Application < Rails::Application
         # Settings in config/environments/* take precedence over those specified here.
@@ -32,6 +32,8 @@
         # config.assets.precompile = ['*.js', '*.css', '*.eot', '*.svg', '*.ttf', '*.woff']
         
         # config.assets.paths << "#{Rails.root}/app/assets/pdfs"
+        
+        
 
         config.before_configuration do
           env_file = File.join(Rails.root, 'config', 'local_env.yml')

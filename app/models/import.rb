@@ -17,7 +17,7 @@ class Import
   $measurements = []
   
   # Map the observation group number in csv spreadsheet to a newly created observation id
-  # Format : { '1' : 90613, '2': 90614 }
+  # Format : { '1' => 90613, '2' => 90614 }
   $observation_id_map = {}
   
   $email_list = []
