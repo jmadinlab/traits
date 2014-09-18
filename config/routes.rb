@@ -1,6 +1,5 @@
 Traits::Application.routes.draw do
   default_url_options :host => 'coraltraits.org'
-
   get 'password_resets/new'
 
   #get '/imports/show', to: 'imports#show', :as => :show_imports

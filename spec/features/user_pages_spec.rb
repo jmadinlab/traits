@@ -19,18 +19,31 @@ describe "User pages" do
 		let(:user) { FactoryGirl.create(:user) }
 		
 		before { visit signin_path }
+<<<<<<< HEAD
 		it { should have_content('Forgot password?') }
 		
+=======
+		
+		it { should have_content('Forgot password?') }
+		
+>>>>>>> password reset tests added
 		describe "signin" do
 			before do
 				fill_in "Email", with: user.email
 				fill_in "Password", with: user.password
 				click_button "Sign in"
 			end
+<<<<<<< HEAD
 
 			
 			before { visit user_path(user) }
 
+=======
+
+			
+			before { visit user_path(user) }
+
+>>>>>>> password reset tests added
 			it { should have_content(user.name) }
 			it { should have_title(user.name) }
 		end
@@ -93,6 +106,7 @@ describe "User pages" do
 	
 		
 	describe "password reset page" do
+
 
 		before { visit new_password_reset_path }
 
