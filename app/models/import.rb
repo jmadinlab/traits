@@ -42,7 +42,7 @@ class Import
   # If there's any error in observation or measurement, then rollback the saved observations
   def rollback
     puts 'rolling back'
-    puts 'errors: ',  errors.full_messages
+    puts $observation_id_map
     $observation_id_map.keys().each do |k|
       begin
         obs = Observation.find($observation_id_map[k])
@@ -73,24 +73,30 @@ class Import
   
   # Save the unique observation from group of observations in csv
   def save_unique_observations
+    
     spreadsheet = open_spreadsheet
     header = spreadsheet.row(1)
     $observation_id_map = {}
 
     (2..spreadsheet.last_row).map do |i|
+
       row = Hash[[header, spreadsheet.row(i)].transpose]
+      puts 'row: ', row
       if not $observation_id_map.keys().include? row["observation_id"] and row["observation_id"].present?
         o = Observation.new(:user_id => row["user_id"], :location_id => row["location_id"], :coral_id => row["coral_id"], :resource_id => row["resource_id"], :approval_status => "pending")
         measurement_row = {"user_id" => row["user_id"],   "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"],  "approval_status" => "pending"}
         m = Measurement.new
         m.attributes = measurement_row.to_hash
+        puts "measurement: ", m
         o.measurements << m
         
         begin
+          puts 'saving unique observations'
           o.save!
           $observation_id_map[row["observation_id"]] = o.id
           $ignore_row.append(i)
         rescue => e
+          puts 'error saving unique observations'
           errors.add :base, e
           return false
         end
@@ -118,10 +124,13 @@ class Import
     
     # Check for any errors in imported observations
     any_error = check_add_errors(imp_items)
-    puts "no error in imported_items"
+    if any_error
+      puts "no error in imported_items"
+    end
     # If there's any error, dont override its value
     # If there's no any error, check if error is present in measurements
-    if  not $measurements.empty?
+    if not $measurements.empty?
+      puts 'checking errors for measurements: ' , $measurements
       any_error ? check_add_errors($measurements) : any_error = check_add_errors($measurements)
     end
     
@@ -131,6 +140,7 @@ class Import
       return false
     end    
 
+    puts "no error in measurements"
     
     # If no validation errors, see if there is any mapping error
     # If there is a mapping error, display it and then return
@@ -166,9 +176,10 @@ class Import
     header = spreadsheet.row(1)
     observation_csv_headers = ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates"]
     new_observation_csv_headers = ["observation_id",  "access",  "user_id", "coral_id"  ,"location_id", "resource_id", "trait_id",  "standard_id",  "methodology_id" ,"value" ,"value_type",  "precision" ,"precision_type" , "precision_upper" ,"replicates"]
+    puts 'header: ', header
     
     if header == new_observation_csv_headers
-      puts 'trying to import observation'
+      print 'uploading observations'
       # Rename some headers to correspond the database fields
       header[header.index("observation_id")] = "id"
       header[header.index("access")] = "private"
@@ -204,8 +215,10 @@ class Import
         begin
           if trait_id
             trait = Trait.find(trait_id)
-            if not trait.value_range.include? row["value"] and not trait.value_range.empty?
-              observation.errors[:base] << "Invalid Value for the trait: " + row["trait_name"] + ".. Values should be within " + trait.value_range
+            if not trait.value_range.nil?
+              if not trait.value_range.include? row["value"] and not trait.value_range.empty?
+                observation.errors[:base] << "Invalid Value for the trait: " + row["trait_name"] + ".. Values should be within " + trait.value_range
+              end
             end
             # Uncomment this in production
             # $email_list.append(trait.user.email) if ((not $email_list.include? trait.user.email) && trait.user.editor)
@@ -239,7 +252,7 @@ class Import
         observation
       end
     else
-      puts 'trying to import non observation csv'
+      puts 'uploading non observations'
       (2..spreadsheet.last_row).map do |i|
         row = Hash[[header, spreadsheet.row(i)].transpose]
         item = model_name.find_by_id(row["id"]) || model_name.new
