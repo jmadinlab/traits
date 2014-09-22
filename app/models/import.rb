@@ -146,8 +146,10 @@ class Import
     #if imported_items.map(&:valid?).all? 
 
     imp_items.each do |item|
-      item.save! if not Observation.all.include? item
+      item.save!
     end
+
+    puts 'All observations saved.. Saving Measurements now'
     
     # Duplicate Measurements might still cause validation errors.
     begin
