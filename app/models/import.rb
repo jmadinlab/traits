@@ -60,6 +60,8 @@ class Import
         end
         flag = true
       elsif not item.valid?
+        puts 'item not valid: ', item.inspect
+
         errors.add :base, item.errors.full_messages
         flag = true
       end
@@ -144,8 +146,10 @@ class Import
     #if imported_items.map(&:valid?).all? 
 
     imp_items.each do |item|
-      item.save! if not Observation.all.include? item
+      item.save!
     end
+
+    puts 'All observations saved.. Saving Measurements now'
     
     # Duplicate Measurements might still cause validation errors.
     begin
@@ -189,6 +193,7 @@ class Import
         
         # Instantiate or find observation and measurement in order to be able to add errors into them
         observation = Observation.find_by_id($observation_id_map[row["id"]])
+        puts 'observation found for saving: ', observation.inspect
         #measurement = Measurement.find_by_id(row["measurement_id"]) || Measurement.new
         measurement = Measurement.new
         
@@ -226,9 +231,10 @@ class Import
         
         # new_observation_csv_headears = ["observation_id",  "access",  "user_id", "coral_id"  ,"location_id", "resource_id", "trait_id",  "standard_id",  "method_id" ,"value" ,"value_type",  "precision" ,"precision_type" , "precision_upper" ,"replicates"]
         # Create the actual rows to be sent into the database for observation and measurements
-        observation_row = {"id" => row["id"], "user_id" => row["user_id"], "location_id" => location_id, "coral_id" => coral_id, "resource_id" => row["resource_id"], "private" => row["private"]}
+        observation_row = {"id" => $observation_id_map[row["id"]], "user_id" => row["user_id"], "location_id" => location_id, "coral_id" => coral_id, "resource_id" => row["resource_id"], "private" => row["private"]}
         measurement_row = {"user_id" => row["user_id"], "observation_id" => $observation_id_map[row["id"]],  "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"],  "approval_status" => "pending"}
         
+        puts 'measurement_row: ', measurement_row
         # Additionally check for any mapping errors
         begin
           observation.attributes = observation_row.to_hash
