@@ -42,8 +42,8 @@ class ApplicationController < ActionController::Base
       ) unless (signed_in? && ((@observation.user_id == current_user.id) || current_user.admin?))      
     else
       redirect_to(
-        root_url, flash: { danger: "You can't edit or delete other peoples' observations." }
-      ) unless (signed_in? && current_user.admin?)
+        root_url, flash: { danger: "You need to become a contributor to enter data." }
+      ) unless (signed_in? && current_user.contributor?)
     end
   end
 
