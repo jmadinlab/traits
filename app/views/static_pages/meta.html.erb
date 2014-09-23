@@ -6,41 +6,51 @@
 
 <p>
 	<%= form_tag meta_path, :method => 'get' do %>
-	  <strong>Editor: </strong><%= select_tag :editor, options_for_select(User.all.where(:id => Trait.all.map(&:user_id).uniq).map { |e| [e.name, e.id] }, params[:editor]), include_blank: true, onchange: "$(this).parent('form').submit();" %>
+	  <strong>Subset traits by editor: </strong><%= select_tag :editor, options_for_select(User.all.where(:id => Trait.all.map(&:user_id).uniq).map { |e| [e.name, e.id] }, params[:editor]), include_blank: true, onchange: "$(this).parent('form').submit();" %>
 	<% end %>
 </p>
 
 <h3><%= params[:status] %></h3>
 
-<div class="row">
-	<div class="col-md-2">
-  </div>
-	<div class="col-md-2">
-	  <strong>Class</strong>
-  </div>
-	<div class="col-md-2">
-	  <strong>Description</strong>
-  </div>
-	<div class="col-md-1">
-	  <strong>Editor</strong>
-  </div>
-	<div class="col-md-1">
-	  <strong>Standard</strong>
-  </div>
-	<div class="col-md-2">
-	  <strong>Value range</strong>
-  </div>
-	<div class="col-md-1">
-	  <strong>Measurements</strong>
-  </div>
-	<div class="col-md-1">
-  </div>
-</div>
 
-<ul class="list-group">
+<% rs = "start" %>
 
-	<% @traits.sort_by{ |h| h[:id] }.each do |trait| %>
+	<% @traits.sort_by{ |h| h[:release_status] }.each do |trait| %>
 
+	<% if trait.release_status != rs %>
+		</ul>
+		<% if trait.release_status == "" %>
+			<h3 class="coloured">Status Not Entered Yet</h3>
+		<% else %>
+			<h3 class="coloured"><%= trait.release_status.titleize %></h3>
+		<% end %>
+		<ul class="list-group">
+		<div class="row">
+			<div class="col-md-2">
+		  </div>
+			<div class="col-md-2">
+			  <strong>Class</strong>
+		  </div>
+			<div class="col-md-2">
+			  <strong>Description</strong>
+		  </div>
+			<div class="col-md-1">
+			  <strong>Editor</strong>
+		  </div>
+			<div class="col-md-1">
+			  <strong>Standard</strong>
+		  </div>
+			<div class="col-md-2">
+			  <strong>Value range</strong>
+		  </div>
+			<div class="col-md-1">
+			  <strong>Measurements</strong>
+		  </div>
+			<div class="col-md-1">
+		  </div>
+		</div>
+		<% rs = trait.release_status %>
+	<% end %>
 	<%# if trait.user == current_user || current_user.admin? %>
 	  <li class="list-group-item">							
 			<div class="row">

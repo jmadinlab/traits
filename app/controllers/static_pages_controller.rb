@@ -15,7 +15,7 @@ class StaticPagesController < ApplicationController
   def meta
     # params[:editor] = "ready_for_release" if params[:status].blank?
     query = Trait.all
-    query = query.editor(params[:editor]) if not params[:editor] ==""
+    query = query.editor(params[:editor]) if not params[:editor].blank?
     @traits = query.all
   end
 
