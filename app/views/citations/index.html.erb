@@ -26,38 +26,51 @@
 	<br/>Download citation list as a <%= link_to "csv", citations_path(format: "csv") %>.
 </div>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th style="text-align:right;">Trait</th>
-      <th>Resource</th>
-      <th></th>
-    </tr>
-  </thead>
 
-  <tbody>
-		<% temp = "" %>
-    <% @citations.sort_by{ |h| h.trait.trait_name }.each do |citation| %>
-      <tr>
+<ul class="list-group">
+  <li class="list-group-item">              
+    <div class="row">
+      <div class="col-md-5" style="text-align:right;">
+        <strong>Trait</strong>
+      </div>
+      <div class="col-md-5">
+        <strong>Resource</strong>
+      </div>
+      <div class="col-md-2">
+      </div>
+    </div>
 
-				<% if temp != citation.trait.trait_name %>
-					<% temp = citation.trait.trait_name %>
-					<td style="text-align:right;"><%= link_to citation.trait.trait_name, trait_path(citation.trait) %></td>
-      
-				<% else %>
-					<td style="border:none;"></td>
-				<% end %>
-
-        <td><%= link_to citation.resource.author, resource_path(citation.resource) %></td>
-        <td><%= link_to 'Edit', edit_citation_path(citation) %>
-				<% if !current_user.blank? && current_user.admin? %> |
-	        <%= link_to 'Delete', citation, method: :delete, data: { confirm: 'Are you sure?' } %>
-				<% end %>
-        </td>
-      </tr>
+	<% temp = "" %>
+  <% @citations.sort_by{ |h| h.trait.trait_name }.each do |citation| %>
+	  <% if temp != citation.trait.trait_name %>
+      <% temp = citation.trait.trait_name %>
+      </li>
+      <li class="list-group-item">
+        <div class="row">
+          <div class="col-md-5" style="text-align:right;">
+            <%= link_to citation.trait.trait_name, trait_path(citation.trait) %>
+          </div>
+    <% else %>
+      <div class="row">
+        <div class="col-md-5">
+        </div>
     <% end %>
-  </tbody>
-</table>
+
+    <div class="col-md-5">
+      <%= link_to citation.resource.author, resource_path(citation.resource) %>
+    </div>
+
+    <div class="col-md-2">
+      <div class="btn-group pull-right">
+        <%= link_to 'Edit', edit_citation_path(citation), class: "btn btn-xs btn-default" %>
+        <% if !current_user.blank? && current_user.admin? %>
+          <%= link_to 'Delete', citation, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <% end %>   
+</ul>
 
 
 
