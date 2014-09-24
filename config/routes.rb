@@ -23,7 +23,8 @@ Traits::Application.routes.draw do
   get '/resources/:id/resources', to: 'resources#show'
   
   match '/meta/:id',     to: 'static_pages#show',    via: 'get', :as => :show_meta
-  # get '/meta/:ids', to: 'static_pages#show'
+  match '/duplicate/:id',     to: 'static_pages#duplicate',    via: 'get', :as => :duplicate_meta
+# get '/meta/:ids', to: 'static_pages#show'
 
   
   resources :imports
