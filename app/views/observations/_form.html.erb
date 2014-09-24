@@ -12,17 +12,17 @@
 
   <div class="form-group">
 	  <%= f.label :coral %><br/>
-			<%= f.select :coral_id, Coral.all.map { |u| [u.coral_name, u.id] }, { include_blank: "Choose coral..." }, { id: 'simple-example' } %> <%= link_to 'Add', new_coral_path, class: "label label-default pull-right" %>
+			<%= f.select :coral_id, Coral.all.map { |u| [u.coral_name, u.id] }, { include_blank: "Choose coral..." }, { id: 'simple-example', :style => "width: 300px;" } %> <%= link_to 'Add', new_coral_path, class: "label label-default pull-right" %>
 	</div>
 
   <div class="form-group">
 	  <%= f.label :location %>
-		<br/><%= f.select :location_id, Location.all.map { |u| [u.location_name, u.id] }, { include_blank: "Choose location..." }, { id: 'simple-example' } %> <%= link_to 'Add', new_location_path, class: "label label-default pull-right" %>
+		<br/><%= f.select :location_id, Location.all.map { |u| [u.location_name, u.id] }, { include_blank: "Choose location..." }, { id: 'simple-example', :style => "width: 300px;" } %> <%= link_to 'Add', new_location_path, class: "label label-default pull-right" %>
 	</div>
 
   <div class="form-group">
 	  <%= f.label :resource %>
-		<br/><%= f.select :resource_id, Resource.all.map { |u| ["#{u.author} (#{u.year})", u.id] }, { include_blank: "Choose resource..." }, { id: 'simple-example' } %> <%= link_to 'Add', new_resource_path, class: "label label-default pull-right" %>
+		<br/><%= f.select :resource_id, Resource.all.map { |u| ["#{u.author} (#{u.year}) #{u.title}", u.id] }, { include_blank: "Choose resource..." }, { id: 'simple-example', :style => "width: 600px;" } %> <%= link_to 'Add', new_resource_path, class: "label label-default pull-right" %>
 	</div>
 
   <div class="form-group">
