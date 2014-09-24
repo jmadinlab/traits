@@ -4,11 +4,19 @@
 
 <p>A list of potential database errors for editors to monitor.</p>
 
-<%= link_to "Back", meta_path, class: "btn btn-default btn-sm" %>
+<div class="btn-group">
+	<%= link_to "Back", meta_path, class: "btn btn-default btn-sm" %>
+	<%= link_to 'Check for Duplicates', duplicate_meta_path(@trait.id), class: "btn btn-default btn-sm" %>
+</div>
+
+<p>
+	<small>*Checking for duplicate records may take a while, depending on how many observations there are to contrast.  This looks for observations with the same resource, coral species, trait, measurement value, and standard.</small>
+</p>
 
 <h3>Observation issues</h3>
 
 <ul class="list-group">
+
   <li class="list-group-item">							
 
 		<div class="row">
