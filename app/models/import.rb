@@ -22,7 +22,7 @@ class Import
   
   $email_list = []
   $ignore_row = []
-  
+  $new_observation_csv_headers = ["observation_id",  "access",  "user_id", "coral_id"  ,"location_id", "resource_id", "trait_id",  "standard_id",  "methodology_id" ,"value" ,"value_type",  "precision" ,"precision_type" , "precision_upper" ,"replicates", "notes"]
   attr_accessor :file, :model_name
 
   def initialize(attributes = {})
@@ -37,16 +37,6 @@ class Import
   """
   def set_model_name(model_name)
     self.model_name = model_name
-  end
-
-  # If there's any error in observation or measurement, then rollback the saved observations
-  def rollback
-    puts 'rolling back'
-    puts $observation_id_map
-    $observation_id_map.keys().each do |k|
-      obs = Observation.find($observation_id_map[k])
-      obs.destroy!
-    end
   end
 
   def check_add_errors(items)
@@ -69,36 +59,53 @@ class Import
     return flag
   end
   
+  # If there's any error in observation or measurement, then rollback the saved observations
+  def rollback
+    puts 'rolling back'
+    puts $observation_id_map
+    $observation_id_map.keys().each do |k|
+      obs = Observation.find($observation_id_map[k])
+      obs.destroy!
+    end
+  end
+
   # Save the unique observation from group of observations in csv
   def save_unique_observations
     
     spreadsheet = open_spreadsheet
     header = spreadsheet.row(1)
     $observation_id_map = {}
+    
+    if header == $new_observation_csv_headers
+      (2..spreadsheet.last_row).map do |i|
 
-    (2..spreadsheet.last_row).map do |i|
-
-      row = Hash[[header, spreadsheet.row(i)].transpose]
-      puts 'row: ', row
-      if not $observation_id_map.keys().include? row["observation_id"] and row["observation_id"].present?
-        o = Observation.new(:user_id => row["user_id"], :location_id => row["location_id"], :coral_id => row["coral_id"], :resource_id => row["resource_id"], :approval_status => "pending")
-        measurement_row = {"user_id" => row["user_id"],   "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"],  "approval_status" => "pending"}
-        m = Measurement.new
-        m.attributes = measurement_row.to_hash
-        puts "measurement: ", m
-        o.measurements << m
-        
-        begin
-          puts 'saving unique observations'
-          o.save!
-          $observation_id_map[row["observation_id"]] = o.id
-          $ignore_row.append(i)
-        rescue => e
-          puts 'error saving unique observations'
-          errors.add :base, e
-          return false
+        row = Hash[[header, spreadsheet.row(i)].transpose]
+        puts 'row: ', row
+        if not $observation_id_map.keys().include? row["observation_id"] and row["observation_id"].present?
+          o = Observation.new(:user_id => row["user_id"], :location_id => row["location_id"], :coral_id => row["coral_id"], :resource_id => row["resource_id"], :approval_status => "pending")
+          measurement_row = {"user_id" => row["user_id"], "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"], "notes" => row["notes"], "approval_status" => "pending"}
+          m = Measurement.new
+          
+          
+          begin
+            puts 'saving unique observations'
+            m.attributes = measurement_row.to_hash
+            puts "measurement: ", m
+            o.measurements << m
+            o.save!
+            $observation_id_map[row["observation_id"]] = o.id
+            $ignore_row.append(i)
+          rescue => e
+            puts 'error saving unique observations'
+            errors.add :base, e
+            return false
+          end
         end
       end
+    else
+      errors.add :base, "The column headers do not match..."
+      return false
+  
     end
   end
 
@@ -122,7 +129,7 @@ class Import
     
     # Check for any errors in imported observations
     any_error = check_add_errors(imp_items)
-    if any_error
+    if not any_error
       puts "no error in imported_items"
     end
     # If there's any error, dont override its value
@@ -174,11 +181,11 @@ class Import
 
     spreadsheet = open_spreadsheet
     header = spreadsheet.row(1)
-    observation_csv_headers = ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates"]
-    new_observation_csv_headers = ["observation_id",  "access",  "user_id", "coral_id"  ,"location_id", "resource_id", "trait_id",  "standard_id",  "methodology_id" ,"value" ,"value_type",  "precision" ,"precision_type" , "precision_upper" ,"replicates"]
+    # observation_csv_headers = ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates"]
+    
     puts 'header: ', header
     
-    if header == new_observation_csv_headers
+    if header == $new_observation_csv_headers
       print 'uploading observations'
       # Rename some headers to correspond the database fields
       header[header.index("observation_id")] = "id"
@@ -232,7 +239,7 @@ class Import
         # new_observation_csv_headears = ["observation_id",  "access",  "user_id", "coral_id"  ,"location_id", "resource_id", "trait_id",  "standard_id",  "method_id" ,"value" ,"value_type",  "precision" ,"precision_type" , "precision_upper" ,"replicates"]
         # Create the actual rows to be sent into the database for observation and measurements
         observation_row = {"id" => $observation_id_map[row["id"]], "user_id" => row["user_id"], "location_id" => location_id, "coral_id" => coral_id, "resource_id" => row["resource_id"], "private" => row["private"]}
-        measurement_row = {"user_id" => row["user_id"], "observation_id" => $observation_id_map[row["id"]],  "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"],  "approval_status" => "pending"}
+        measurement_row = {"user_id" => row["user_id"], "observation_id" => $observation_id_map[row["id"]],  "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"], "notes" => row["notes"],  "approval_status" => "pending"}
         
         puts 'measurement_row: ', measurement_row
         # Additionally check for any mapping errors
@@ -244,6 +251,8 @@ class Import
           observation.errors[:base] << error.message
           false
         end
+
+
         
         #measurement.approval_status = "pending"
         $measurements.append(measurement)
@@ -253,7 +262,7 @@ class Import
         $email_list.append("suren.shopushrestha@mq.edu.au")
         observation
       end
-    else
+    elsif model_name.to_s != 'Observation'
       puts 'uploading non observations'
       (2..spreadsheet.last_row).map do |i|
         row = Hash[[header, spreadsheet.row(i)].transpose]
