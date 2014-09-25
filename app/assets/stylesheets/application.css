@@ -16,3 +16,17 @@
 table.observation_example{
 	font-size: 80%;
 }
+
+.upload_form{
+	border: 1px solid;
+	border-radius: 15px;
+	border-color:gray;
+	padding:10px;
+	padding-left:50px;
+
+	box-shadow: 5px 5px 5px #888888;
+}
+
+#import_file{
+	padding-top: 5px;
+}
