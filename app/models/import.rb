@@ -39,78 +39,11 @@ class Import
     self.model_name = model_name
   end
 
-  def check_add_errors(items)
-    # First Check if there is any error in the items in the list
-    # If any errors are present, don't attempt to save. Just Return False
-    flag = false
-    items.each_with_index do |item, index|
-      if item.errors.any?
-        item.errors.full_messages.each do |message|
-          errors.add :base, "Row #{index+2}: #{message}"
-        end
-        flag = true
-      elsif not item.valid?
-        puts 'item not valid: ', item.inspect
 
-        errors.add :base, item.errors.full_messages
-        flag = true
-      end
-    end
-    return flag
+  def get_email_list
+    return $email_list.uniq
   end
   
-  # If there's any error in observation or measurement, then rollback the saved observations
-  def rollback
-    puts 'rolling back'
-    puts $observation_id_map
-    $observation_id_map.keys().each do |k|
-      obs = Observation.find($observation_id_map[k])
-      obs.destroy!
-    end
-  end
-
-  # Save the unique observation from group of observations in csv
-  def save_unique_observations
-    
-    spreadsheet = open_spreadsheet
-    header = spreadsheet.row(1)
-    $observation_id_map = {}
-    
-    if header == $new_observation_csv_headers
-      (2..spreadsheet.last_row).map do |i|
-
-        row = Hash[[header, spreadsheet.row(i)].transpose]
-        puts 'row: ', row
-        if not $observation_id_map.keys().include? row["observation_id"] and row["observation_id"].present?
-          o = Observation.new(:user_id => row["user_id"], :location_id => row["location_id"], :coral_id => row["coral_id"], :resource_id => row["resource_id"], :approval_status => "pending")
-          measurement_row = {"user_id" => row["user_id"], "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"], "notes" => row["notes"], "approval_status" => "pending"}
-          m = Measurement.new
-          
-          
-          begin
-            puts 'saving unique observations'
-            m.attributes = measurement_row.to_hash
-            puts "measurement: ", m
-            o.measurements << m
-            o.save!
-            $observation_id_map[row["observation_id"]] = o.id
-            $ignore_row.append(i)
-          rescue => e
-            puts 'error saving unique observations'
-            errors.add :base, e
-            return false
-          end
-        end
-      end
-    else
-      errors.add :base, "The column headers do not match..."
-      return false
-  
-    end
-  end
-
-  
-
   def save
     $measurements = []
      
@@ -150,7 +83,7 @@ class Import
     # If no validation errors, see if there is any mapping error
     # If there is a mapping error, display it and then return
     # If there is no any error, then save it
-    #if imported_items.map(&:valid?).all? 
+    # if imported_items.map(&:valid?).all? 
 
     imp_items.each do |item|
       item.save!
@@ -170,184 +103,246 @@ class Import
     true
     
   end
+  
+  private
 
-  def imported_items
-    spreadsheet = open_spreadsheet
-    header = spreadsheet.row(1)
-    @imported_items ||= load_imported_items
-  end
+    def open_spreadsheet
+      case File.extname(file.original_filename)
+      when ".csv" then Roo::CSV.new(file.path, csv_options: {encoding: Encoding::ISO_8859_1})
+      when ".xls" then Roo::Excel.new(file.path)
+      when ".xlsx" then Roo::Excelx.new(file.path)
+      else raise "Unknown file type: #{file.original_filename}"
+      end
+    end
+    
+    # First Check if there is any error in the items in the list
+    # If any errors are present, don't attempt to save. Just Return False
+    def check_add_errors(items)
+      flag = false
+      items.each_with_index do |item, index|
+        if item.errors.any?
+          item.errors.full_messages.each do |message|
+            errors.add :base, "Row #{index+2}: #{message}"
+          end
+          flag = true
+        elsif not item.valid?
+          puts 'item not valid: ', item.inspect
 
-  def load_imported_items
+          errors.add :base, item.errors.full_messages
+          flag = true
+        end
+      end
+      return flag
+    end
+    
+    # If there's any error in observation or measurement, then rollback the saved observations
+    def rollback
+      puts 'rolling back'
+      puts $observation_id_map
+      $observation_id_map.keys().each do |k|
+        obs = Observation.find($observation_id_map[k])
+        obs.destroy!
+      end
+    end
 
-    spreadsheet = open_spreadsheet
-    header = spreadsheet.row(1)
-    # observation_csv_headers = ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates"]
-    
-    puts 'header: ', header
-    
-    if header == $new_observation_csv_headers
-      print 'uploading observations'
-      # Rename some headers to correspond the database fields
-      header[header.index("observation_id")] = "id"
-      header[header.index("access")] = "private"
-      # header[header.index("enterer")] = "user_id"
-    
+    # Save the unique observation from group of observations in csv
+    def save_unique_observations
+      
+      spreadsheet = open_spreadsheet
+      header = spreadsheet.row(1)
+      $observation_id_map = {}
+      
+      if header != $new_observation_csv_headers
+        errors.add :base, "The column headers do not match..."
+        return false
+      end
+
       (2..spreadsheet.last_row).map do |i|
         row = Hash[[header, spreadsheet.row(i)].transpose]
-        if $ignore_row.include? i
-          next
-        end
-        
-        # Instantiate or find observation and measurement in order to be able to add errors into them
-        observation = Observation.find_by_id($observation_id_map[row["id"]])
-        puts 'observation found for saving: ', observation.inspect
-        #measurement = Measurement.find_by_id(row["measurement_id"]) || Measurement.new
-        measurement = Measurement.new
-        
-        # Start Validations
+        puts 'row: ', row
+        if not $observation_id_map.keys().include? row["observation_id"] and row["observation_id"].present?
+          o = Observation.new(:user_id => row["user_id"], :location_id => row["location_id"], :coral_id => row["coral_id"], :resource_id => row["resource_id"], :approval_status => "pending")
+          measurement_row = {"user_id" => row["user_id"], "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"], "notes" => row["notes"], "approval_status" => "pending"}
+          m = Measurement.new
 
-        # 1. Convert 0 or 1 to true or false for private field
-        if row["private"] == "0" or row["private"].empty?
-          row["private"] = true
-        else
-          row["private"] = false
+          begin
+            puts 'saving unique observations'
+            m.attributes = measurement_row.to_hash
+            puts "measurement: ", m
+            o.measurements << m
+            o.save!
+            $observation_id_map[row["observation_id"]] = o.id
+            $ignore_row.append(i)
+          rescue => e
+            puts 'error saving unique observations'
+            errors.add :base, e
+            return false
+          end
         end
-        
-        coral_id = row["coral_id"]
-        location_id = row["location_id"]
-        trait_id = row["trait_id"]
-        observation = validate_model_ids(row, observation)
-        
-        
-        # Validate Values based on the traits value range
-        begin
-          if trait_id
-            trait = Trait.find(trait_id)
-            if not trait.value_range.nil?
-              if not trait.value_range.include? row["value"] and not trait.value_range.empty?
-                observation.errors[:base] << "Invalid Value for the trait: " + row["trait_name"] + ".. Values should be within " + trait.value_range
-              end
-            end
-            # Uncomment this in production
-            # $email_list.append(trait.user.email) if ((not $email_list.include? trait.user.email) && trait.user.editor)
+      end
+    end
+
+    def imported_items
+      spreadsheet = open_spreadsheet
+      header = spreadsheet.row(1)
+      @imported_items ||= load_imported_items
+    end
+
+    def load_imported_items
+      spreadsheet = open_spreadsheet
+      header = spreadsheet.row(1)
+      # observation_csv_headers = ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates"]
+      
+      if header == $new_observation_csv_headers
+        print 'uploading observations'
+        # Rename some headers to correspond the database fields
+        header[header.index("observation_id")] = "id"
+        header[header.index("access")] = "private"
+        # header[header.index("enterer")] = "user_id"
+      
+        (2..spreadsheet.last_row).map do |i|
+          row = Hash[[header, spreadsheet.row(i)].transpose]
+          if $ignore_row.include? i
+            next
           end
           
-        rescue
-          observation.errors[:base] << "Error with value"
-        end
-        
-        # new_observation_csv_headears = ["observation_id",  "access",  "user_id", "coral_id"  ,"location_id", "resource_id", "trait_id",  "standard_id",  "method_id" ,"value" ,"value_type",  "precision" ,"precision_type" , "precision_upper" ,"replicates"]
-        # Create the actual rows to be sent into the database for observation and measurements
-        observation_row = {"id" => $observation_id_map[row["id"]], "user_id" => row["user_id"], "location_id" => location_id, "coral_id" => coral_id, "resource_id" => row["resource_id"], "private" => row["private"]}
-        measurement_row = {"user_id" => row["user_id"], "observation_id" => $observation_id_map[row["id"]],  "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"], "notes" => row["notes"],  "approval_status" => "pending"}
-        
-        puts 'measurement_row: ', measurement_row
-        # Additionally check for any mapping errors
-        begin
-          observation.attributes = observation_row.to_hash
-          measurement.attributes = measurement_row.to_hash
-        rescue => error
-          observation.errors[:base] << "The column headers do not match with fields..."
-          observation.errors[:base] << error.message
-          false
-        end
+          # Instantiate or find observation and measurement in order to be able to add errors into them
+          observation = Observation.find_by_id($observation_id_map[row["id"]])
+          puts 'observation found for saving: ', observation.inspect
+          #measurement = Measurement.find_by_id(row["measurement_id"]) || Measurement.new
+          measurement = Measurement.new
+          
+          # Start Validations
+
+          # 1. Convert 0 or 1 to true or false for private field
+          if row["private"] == "0" or row["private"].empty?
+            row["private"] = true
+          else
+            row["private"] = false
+          end
+          
+          coral_id = row["coral_id"]
+          location_id = row["location_id"]
+          trait_id = row["trait_id"]
+          observation = validate_model_ids(row, observation)
+          
+          
+          # Validate Values based on the traits value range
+          begin
+            if trait_id
+              trait = Trait.find(trait_id)
+              if not trait.value_range.nil?
+                if not trait.value_range.include? row["value"] and not trait.value_range.empty?
+                  observation.errors[:base] << "Invalid Value for the trait: " + row["trait_name"] + ".. Values should be within " + trait.value_range
+                end
+              end
+              # Uncomment this in production
+              # $email_list.append(trait.user.email) if ((not $email_list.include? trait.user.email) && trait.user.editor)
+            end
+            
+          rescue
+            observation.errors[:base] << "Error with value"
+          end
+          
+          # new_observation_csv_headears = ["observation_id",  "access",  "user_id", "coral_id"  ,"location_id", "resource_id", "trait_id",  "standard_id",  "method_id" ,"value" ,"value_type",  "precision" ,"precision_type" , "precision_upper" ,"replicates"]
+          # Create the actual rows to be sent into the database for observation and measurements
+          observation_row = {"id" => $observation_id_map[row["id"]], "user_id" => row["user_id"], "location_id" => location_id, "coral_id" => coral_id, "resource_id" => row["resource_id"], "private" => row["private"]}
+          measurement_row = {"user_id" => row["user_id"], "observation_id" => $observation_id_map[row["id"]],  "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"], "notes" => row["notes"],  "approval_status" => "pending"}
+          
+          puts 'measurement_row: ', measurement_row
+          # Additionally check for any mapping errors
+          begin
+            observation.attributes = observation_row.to_hash
+            measurement.attributes = measurement_row.to_hash
+          rescue => error
+            observation.errors[:base] << "The column headers do not match with fields..."
+            observation.errors[:base] << error.message
+            false
+          end
 
 
-        
-        #measurement.approval_status = "pending"
-        $measurements.append(measurement)
-        
-        observation.approval_status = "pending"
-        # Temporary email list
-        $email_list.append("suren.shopushrestha@mq.edu.au")
-        observation
-      end
-    elsif model_name.to_s != 'Observation'
-      puts 'uploading non observations'
-      (2..spreadsheet.last_row).map do |i|
-        row = Hash[[header, spreadsheet.row(i)].transpose]
-        item = model_name.find_by_id(row["id"]) || model_name.new
-        
-        begin
-          item.attributes = row.to_hash
-        rescue => error
-          item.errors[:base] << "The column headers do not match with fields..."
-          item.errors[:base] << error.message
-          false
+          
+          #measurement.approval_status = "pending"
+          $measurements.append(measurement)
+          
+          observation.approval_status = "pending"
+          # Temporary email list
+          $email_list.append("suren.shopushrestha@mq.edu.au")
+          observation
         end
-        
-        # Validate user_id
-        validate_user(item, item.attributes["user_id"])
-        
-        # Validate latitude
-        if item.attributes["latitude"]
-          validate_long_lat(item, item.attributes["latitude"], "latitude", -90, 90)
-        end
-        
-        # Validate longitude
-        if item.attributes["longitude"]
-          validate_long_lat(item, item.attributes["longitude"], "longitude",  -180, 180)
+      elsif model_name.to_s != 'Observation'
+        puts 'uploading non observations'
+        (2..spreadsheet.last_row).map do |i|
+          row = Hash[[header, spreadsheet.row(i)].transpose]
+          item = model_name.find_by_id(row["id"]) || model_name.new
+          
+          begin
+            item.attributes = row.to_hash
+          rescue => error
+            item.errors[:base] << "The column headers do not match with fields..."
+            item.errors[:base] << error.message
+            false
+          end
+          
+          # Validate user_id
+          validate_user(item, item.attributes["user_id"])
+          
+          # Validate latitude
+          if item.attributes["latitude"]
+            validate_long_lat(item, item.attributes["latitude"], "latitude", -90, 90)
+          end
+          
+          # Validate longitude
+          if item.attributes["longitude"]
+            validate_long_lat(item, item.attributes["longitude"], "longitude",  -180, 180)
+          end
+
+          # Finally return the item
+          item.approval_status = "pending"
+
+          $email_list.append("suren.shopushrestha@mq.edu.au")
+          item
         end
 
-        # Finally return the item
-        item.approval_status = "pending"
-
-        $email_list.append("suren.shopushrestha@mq.edu.au")
-        item
       end
 
     end
-
-  end
-  
-  def get_email_list
-    return $email_list.uniq
-  end
     
-  
+    # Validations of values in the fields in csv
 
-  def open_spreadsheet
-    case File.extname(file.original_filename)
-    when ".csv" then Roo::CSV.new(file.path, csv_options: {encoding: Encoding::ISO_8859_1})
-    when ".xls" then Roo::Excel.new(file.path)
-    when ".xlsx" then Roo::Excelx.new(file.path)
-    else raise "Unknown file type: #{file.original_filename}"
-    end
-  end
+    def validate_user(item, user_id)
+      if User.where(id: user_id).empty?
+        item.errors[:base] << "Invalid user with id: " + user_id.to_s
+      end
 
-  def validate_user(item, user_id)
-    if User.where(id: user_id).empty?
-      item.errors[:base] << "Invalid user with id: " + user_id.to_s
     end
 
-  end
-
-  def validate_long_lat(item, val, item_type, start, finish)
-    puts "validating #{item_type}"
-    val = val.to_i
-    if val < start or val > finish
-      item.errors[:base] << "Invalid #{item_type}: "  + val.to_s + " ( has to be between #{start} and #{finish} ) "
-      puts "latitude error"
-    end
-  end
-  
-  def validate_model_ids(row, observation)
-    negative_cols = ['methodology_id', 'trait_id']
-    row.each do |col|
-      if col[0].include? 'id' and col[0].length > 2 and not negative_cols.include? col[0]
-        field_name = col[0]
-        model_name = field_name.split('_')[0]
-        model = model_name.singularize.classify.constantize
-        begin
-          item = model.find(col[1])
-        rescue
-          observation.errors[:base] << "Cannot find #{model_name} with that id : " + col[1]
-        end
-
+    def validate_long_lat(item, val, item_type, start, finish)
+      puts "validating #{item_type}"
+      val = val.to_i
+      if val < start or val > finish
+        item.errors[:base] << "Invalid #{item_type}: "  + val.to_s + " ( has to be between #{start} and #{finish} ) "
+        puts "latitude error"
       end
     end
+    
+    def validate_model_ids(row, observation)
+      negative_cols = ['methodology_id', 'trait_id']
+      row.each do |col|
+        if col[0].include? 'id' and col[0].length > 2 and not negative_cols.include? col[0]
+          field_name = col[0]
+          model_name = field_name.split('_')[0]
+          model = model_name.singularize.classify.constantize
+          begin
+            item = model.find(col[1])
+          rescue
+            observation.errors[:base] << "Cannot find #{model_name} with that id : " + col[1]
+          end
 
-    return observation
-  end
+        end
+      end
+
+      return observation
+    end
 
 end
