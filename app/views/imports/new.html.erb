@@ -40,47 +40,28 @@
 		<p>
 			Each row in the CSV represents a measurement. One Observation is created corresponding to an observation_id. <br/>
 			</p>
-			<div class="alert alert-info">Two rows with <b>same observation_id </b>represents <b>One Observation with Two Measurements.</b></div>
-		
-		<table class="table table-striped table-condensed table-responsive observation_example">
-			<tr>
-				<th>observation_id </th>
-				<th>access</th>
-				<th>user_id</th>
-				<th>coral_id</th>
-				<th>location_id</th>
-				<th>resource_id</th>
-				<th>trait_id</th>
-				<th>standard_id</th>
-				<th>methodology_id</th>
-				<th>value</th>
-				<th>value_type</th>
-				<th>precision</th>
-				<th>precision_type</th>
-				<th>precision_upper</th>
-				<th>replicates</th>
-				
-			</tr>
-			<tr>
-				<td> 1 </td>
+			<div class="alert alert-danger">Two rows with <b>same observation_id </b>represents <b>One Observation with Two Measurements.</b></div>
+			<%= image_tag("observation_example.png", :class => "img-responsive") %> <br/><br/>
 
-			</tr>
-			<tr>
-				<td> 1 </td>
+			<h4>CSV Headers</h4>
+			<ul>
 				
-			</tr>
-			<tr>
-				<td> 2 </td>
-				
-			</tr>
-			<tr>
-				<td> 2 </td>
-				
-			</tr>
-			<tr>
-				<td> 2 </td>
-				
-			</tr>
-		</table>
+				<li>observation_id </li>
+				<li>access</li>
+				<li>user_id</li>
+				<li>coral_id</li>
+				<li>location_id</li>
+				<li>resource_id</li>
+				<li>trait_id</li>
+				<li>standard_id</li>
+				<li>methodology_id</li>
+				<li>value</li>
+				<li>value_type</li>
+				<li>precision</li>
+				<li>precision_type</li>
+				<li>precision_upper</li>
+				<li>replicates</li>
+			</ul>
+		
 	<% end %>
 </div>
