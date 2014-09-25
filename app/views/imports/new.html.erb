@@ -4,8 +4,10 @@
 	<h1>Upload <%= @model_name %> </h1>
 
 	<p>A CSV or Excel file can be used to import records. The first row should be the column name. The following columns are allowed.</p>
-
-	<p>If an <strong>id</strong> is supplied it will update the matching record instead of creating a new one.</p>
+	
+	<% if @model_name.to_s != "Observation" %>
+		<p>If an <strong>id</strong> is supplied it will update the matching record instead of creating a new one.</p>
+	<% end %>
 
 	<%= form_for @item_import, :url => upload_path do |f| %>
 	  <% if @item_import.errors.any? %>
@@ -29,5 +31,56 @@
 	  <br/>
 
 	  <div class="buttons"><%= f.submit "Upload" %></div>
+	<% end %>
+
+	<% if @model_name.to_s == "Observation" %>
+		<br/>
+		<br/>
+		<h4>Important Notes:</h4>
+		<p>
+			Each row in the CSV represents a measurement. One Observation is created corresponding to an observation_id. <br/>
+			</p>
+			<div class="alert alert-info">Two rows with <b>same observation_id </b>represents <b>One Observation with Two Measurements.</b></div>
+		
+		<table class="table table-striped table-condensed table-responsive observation_example">
+			<tr>
+				<th>observation_id </th>
+				<th>access</th>
+				<th>user_id</th>
+				<th>coral_id</th>
+				<th>location_id</th>
+				<th>resource_id</th>
+				<th>trait_id</th>
+				<th>standard_id</th>
+				<th>methodology_id</th>
+				<th>value</th>
+				<th>value_type</th>
+				<th>precision</th>
+				<th>precision_type</th>
+				<th>precision_upper</th>
+				<th>replicates</th>
+				
+			</tr>
+			<tr>
+				<td> 1 </td>
+
+			</tr>
+			<tr>
+				<td> 1 </td>
+				
+			</tr>
+			<tr>
+				<td> 2 </td>
+				
+			</tr>
+			<tr>
+				<td> 2 </td>
+				
+			</tr>
+			<tr>
+				<td> 2 </td>
+				
+			</tr>
+		</table>
 	<% end %>
 </div>
