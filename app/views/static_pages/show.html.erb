@@ -13,9 +13,35 @@
 	<small>*Checking for duplicate records may take a while, depending on how many observations there are to contrast.  This looks for observations with the same resource, coral species, trait, measurement value, and standard.</small>
 </p>
 
+<h3>Reported issues</h3>
+
+<ul class="list-group">
+
+  <li class="list-group-item">							
+
+		<div class="row">
+			<div class="col-md-3" style="text-align:right;">
+				<strong>Issues reported by users:</strong>
+			</div>
+			<div class="col-md-9">
+				<% obs = Observation.where(:id => Measurement.where(:trait_id => @trait.id).map(&:observation_id)) %>
+				<% obs = Observation.where(:id => Measurement.where(:trait_id => @trait.id).map(&:observation_id)).where(:id => Issue.all.map(&:observation_id)) %>
+				<% if !obs.empty? %>
+					<% obs.each do |o| %>
+						<%= link_to o.id, observation_path(o.id), class: "label label-danger" %>
+					<% end %>
+				<% else %>
+					<span class="label label-success">looking good</span>
+				<% end %>
+			</div>
+		</div>
+	</li>
+</ul>
+
 <h3>Observation issues</h3>
 
 <ul class="list-group">
+
 
   <li class="list-group-item">							
 

@@ -1,0 +1,38 @@
+<%= form_for(@issue) do |f| %>
+
+  <%= render 'shared/error_messages', object: f.object %>
+
+  <div class="form-group">
+    <%= f.label "Issue reported by" %>: <%= current_user.name %>
+    <%= f.hidden_field :user_id, :value => current_user.id %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :observation_id %>: <%= link_to params[:observation_id], observation_path(params[:observation_id]) %>
+    <%= f.hidden_field :observation_id, :value => params[:observation_id] %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :issue_description %><br>
+    <%= f.text_field :issue_description, class: "form-control" %>
+  </div>
+
+  <% if current_user.editor? %>
+    <hr>
+    <div class="form-group">
+      <%= f.label "Resolved?" %>
+      <%= f.check_box :resolved %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :resolution_description %><br>
+      <%= f.text_field :resolved_description, class: "form-control" %>
+    </div>
+
+    <%= f.hidden_field :resolved_user, :value => current_user.id %>
+
+  <% end %>
+
+  <%= f.submit "Submit", class: "btn btn-primary btn-lg" %>
+
+<% end %>

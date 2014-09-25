@@ -19,7 +19,7 @@ class Observation < ActiveRecord::Base
 
   accepts_nested_attributes_for :measurements, :reject_if => :all_blank, :allow_destroy => true
   
-  
+  has_many :issues, :dependent => :destroy
 
   searchable do
     text :measurements do
