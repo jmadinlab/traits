@@ -15,7 +15,13 @@ revisions.log
 /db/*.sqlite3-journal
 /db/schema.rb
 #/db
-/solr
+/solr/data
+/solr/default
+/solr/development
+/solr/test
+/solr/pids
+
+
 /log
 
 # Ignore all logfiles and tempfiles.
