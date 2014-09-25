@@ -3,7 +3,7 @@
 
 <div class="page-header">
 	<h1>
-		<%= @trait.trait_name %>
+		<%= @trait.trait_name %> (<%= @trait.id %>)
 		<% if @coral %>
 			(<em><%= link_to @coral.coral_name, coral_path(@coral) %></em>)
 		<% end %>

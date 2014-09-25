@@ -1,4 +1,9 @@
 Traits::Application.routes.draw do
+
+  # resources :observations do
+  #   resources :issues
+  # end
+
   get 'password_resets/new'
 
   #get '/imports/show', to: 'imports#show', :as => :show_imports
@@ -60,8 +65,11 @@ Traits::Application.routes.draw do
   resources :standards
 
   resources :measurements 
+    resources :issues
 
   resources :observations do  
+    resources :issues
+
       post :update_multiple, :on => :collection
       # get :autocomplete_location_name, :on => :collection
       # get :autocomplete_coral_name, :on => :collection
@@ -99,6 +107,7 @@ Traits::Application.routes.draw do
   match '/signout',  to: 'sessions#destroy',     via: 'delete'
   match '/help',     to: 'static_pages#help',    via: 'get'
   match '/about',    to: 'static_pages#about',   via: 'get'
+  match '/procedures',    to: 'static_pages#procedures',   via: 'get'
   match '/meta',     to: 'static_pages#meta',    via: 'get'
 
   
