@@ -38,30 +38,15 @@
 		<br/>
 		<h4>Important Notes:</h4>
 		<p>
-			Each row in the CSV represents a measurement. One Observation is created corresponding to an observation_id. <br/>
+			Each row in the CSV represents a measurement. One Observation is created corresponding to an observation_id. <br/><br/>
+			
+			<code>Two rows with <b>same observation_id </b>represents <b>One Observation with Two Measurements.</b></code>
+			<br/><br/>
 			</p>
-			<div class="alert alert-danger">Two rows with <b>same observation_id </b>represents <b>One Observation with Two Measurements.</b></div>
 			<%= image_tag("observation_example.png", :class => "img-responsive") %> <br/><br/>
 
-			<h4>CSV Headers</h4>
-			<ul>
-				
-				<li>observation_id </li>
-				<li>access</li>
-				<li>user_id</li>
-				<li>coral_id</li>
-				<li>location_id</li>
-				<li>resource_id</li>
-				<li>trait_id</li>
-				<li>standard_id</li>
-				<li>methodology_id</li>
-				<li>value</li>
-				<li>value_type</li>
-				<li>precision</li>
-				<li>precision_type</li>
-				<li>precision_upper</li>
-				<li>replicates</li>
-				<li>notes</li>
+			<h4>Mandatory CSV Headers</h4>
+				<code>observation_id, access, user_id, coral_id, location_id, resource_id, trait_id, standard_id, methodology_id, value, value_type, precision, precision_type, precision_upper, replicates, notes </code>
 			</ul>
 		
 	<% end %>
