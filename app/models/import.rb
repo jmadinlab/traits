@@ -240,7 +240,8 @@ class Import
           begin
             if trait_id
               trait = Trait.find(trait_id)
-              if not trait.value_range.nil? or trait.value_range != ""
+
+             if not trait.value_range.nil? and trait.value_range == "" 
                 if not trait.value_range.include? row["value"] and not trait.value_range.empty?
                   observation.errors[:base] << "Invalid Value for the trait: " + row["trait_name"] + ".. Values should be within " + trait.value_range
                 end
