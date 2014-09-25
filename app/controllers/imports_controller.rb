@@ -15,21 +15,28 @@ class ImportsController < ApplicationController
 		@item_import = Import.new(params[:import])
 		@item_import.set_model_name(@model_name)
 	
-		"""
-		# Save the actual file in the server
-		uploaded_io = params[:import][:file]
-		puts 'uploaded file info'
-		puts uploaded_io
-	  File.open(Rails.root.join('public', 'uploads', uploaded_io.original_filename), 'wb') do |file|
-	    file.write(uploaded_io.read)
-	  end
-	
-		render :new, notice: 'Your request has been sent to the administrator'
-		"""
+		
+		
 
 		if @item_import.save
 			# Todo : Change the user to the one responsible for that particular coral/trait/observation
 			UploadApprovalMailer.approve_all(@item_import.get_email_list).deliver
+
+			# Save the actual file in the server
+			uploaded_io = params[:import][:file]
+			puts 'uploaded file info'
+			puts uploaded_io.original_filename
+			
+			file_name, extension = uploaded_io.original_filename.split(".")
+			file_name = [file_name, current_user.id, Date.today.strftime('%Y%m%d')].join('_')
+			file_with_extension = [file_name, extension].join('.')
+
+		  File.open(Rails.root.join('public', 'uploads', file_with_extension), 'wb') do |file|
+		    file.write(uploaded_io.read)
+		  end
+		
+			# render :new, notice: 'Your request has been sent to the administrator'
+			
 			redirect_to request.referer, flash: {success: "Imported successfully" } 
 		else
 			render :new
