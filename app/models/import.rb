@@ -164,12 +164,21 @@ class Import
           o = Observation.new(:user_id => row["user_id"], :location_id => row["location_id"], :coral_id => row["coral_id"], :resource_id => row["resource_id"], :approval_status => "pending")
           measurement_row = {"user_id" => row["user_id"], "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"], "notes" => row["notes"], "approval_status" => "pending"}
           m = Measurement.new
+          o = validate_model_ids(row, o)
+          
 
           begin
             puts 'saving unique observations'
             m.attributes = measurement_row.to_hash
             puts "measurement: ", m
             o.measurements << m
+            obs_error = check_add_errors([o])
+          
+            if obs_error
+              puts 'validation error while saving unique observation'
+              return false
+            end
+
             o.save!
             $observation_id_map[row["observation_id"]] = o.id
             $ignore_row.append(i)
@@ -327,15 +336,17 @@ class Import
     end
     
     def validate_model_ids(row, observation)
-      negative_cols = ['methodology_id', 'trait_id']
+      negative_cols = ['observation_id', 'methodology_id', 'trait_id']
       row.each do |col|
         if col[0].include? 'id' and col[0].length > 2 and not negative_cols.include? col[0]
           field_name = col[0]
           model_name = field_name.split('_')[0]
           model = model_name.singularize.classify.constantize
+          puts 'trying to validate model'
           begin
             item = model.find(col[1])
           rescue
+            puts 'in validate_model_ids, cant find model with that id'
             observation.errors[:base] << "Cannot find #{model_name} with that id : " + col[1]
           end
 

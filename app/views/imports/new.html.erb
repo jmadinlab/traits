@@ -9,11 +9,9 @@
 		<p>If an <strong>id</strong> is supplied it will update the matching record instead of creating a new one.</p>
 	<% end %>
 	
-	<div class="upload_form col-md-6">
-		<%= form_for @item_import, :url => upload_path, html:{class: "form-horizontal"}  do |f| %>
-		  <% if @item_import.errors.any? %>
+	<% if @item_import.errors.any? %>
 		    <div id="error_explanation">
-		      <h2><%= pluralize(@item_import.errors.count, "error") %> prohibited this import from completing:</h2>
+		      <h3><%= pluralize(@item_import.errors.count, "error") %> prohibited this import from completing:</h3>
 		      <ul>
 		      <% @item_import.errors.full_messages.each do |msg| %>
 		        <li><%= msg %></li>
@@ -22,16 +20,11 @@
 		    </div>
 		  <% end %>
 
-		
-
+	<div class="upload_form col-md-6">
+		<%= form_for @item_import, :url => upload_path, html:{class: "form-horizontal"}  do |f| %>
 		  <%= f.hidden_field :model_name, :value => @model_name %>
 		  <div class="col-md-9"><%= f.file_field :file %> </div>
 		  <div class="col-md-3"><%= f.submit "Upload", :class => 'btn btn-primary'%></div>
-		  
-
-		  
-		  
-
 		  
 		<% end %>
 	</div> <!-- upload form -->
