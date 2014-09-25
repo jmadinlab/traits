@@ -2,7 +2,7 @@
 
 
 <div class="page-header">
-  <h1><%= @location.location_name %>
+  <h1><%= @location.location_name %> (<%= @location.id %>)
 			<% if @location.approval_status == "pending" %>
 				<small><span class="label label-danger pull-right">pending approval</span></small>
 			<% end %>

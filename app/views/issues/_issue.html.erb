@@ -1,0 +1,33 @@
+<div class="row">
+
+	<div class="col-md-1" style="color:lightgrey;">
+		<%= issue.id %>
+	</div>
+
+  <div class="col-md-3">
+    <%= issue.user.name %><small> (<%= mail_to issue.user.email %>)</small>
+  </div>
+
+	<div class="col-md-4">
+		<%= issue.issue_description %>
+	</div>
+
+  <div class="col-md-1">
+    <% if issue.resolved %>
+      <span class="label label-success">resolved</span>
+    <% end %>
+  </div>
+
+	<div class="col-md-3">
+    <% if current_user == issue.user || current_user.editor? %>
+      <div class="btn-group">
+        <%= link_to 'Edit', edit_observation_issue_path(@observation, issue), class: "btn btn-default btn-sm" %>
+        <% if current_user.admin? %>
+          <%= link_to 'X', observation_issue_path(@observation, issue), method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-sm btn-danger" %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+</div>
+

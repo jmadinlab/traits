@@ -63,6 +63,11 @@
 		  					<%= link_to "", observation_path(grp), class: "glyphicon glyphicon-asterisk" %>
 							<% end %>
 		  			</div>
+						<div class="col-sm-2">
+			      	<% if grp.issues.present? %>
+		  					<%= link_to "", observation_path(grp), class: "glyphicon glyphicon-warning-sign", style: "color:red;"  %>
+							<% end %>
+		  			</div>
 
 
 	  			</div>
