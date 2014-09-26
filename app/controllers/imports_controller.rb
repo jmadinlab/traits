@@ -24,17 +24,8 @@ class ImportsController < ApplicationController
 
 			# Save the actual file in the server
 			uploaded_io = params[:import][:file]
-			puts 'uploaded file info'
-			puts uploaded_io.original_filename
+			save_imported_file(uploaded_io)
 			
-			file_name, extension = uploaded_io.original_filename.split(".")
-			file_name = [file_name, current_user.id, Date.today.strftime('%Y%m%d')].join('_')
-			file_with_extension = [file_name, extension].join('.')
-
-		  File.open(Rails.root.join('public', 'uploads', file_with_extension), 'wb') do |file|
-		    file.write(uploaded_io.read)
-		  end
-		
 			# render :new, notice: 'Your request has been sent to the administrator'
 			
 			redirect_to request.referer, flash: {success: "Imported successfully" } 
@@ -126,5 +117,19 @@ class ImportsController < ApplicationController
 			else
 				@item.destroy!
 			end
+    end
+
+    def save_imported_file(uploaded_io)
+    	#uploaded_io = params[:import][:file]
+    	puts 'uploaded file info'
+			puts uploaded_io.original_filename
+			
+			file_name, extension = uploaded_io.original_filename.split(".")
+			file_name = [file_name, current_user.id, Time.now.strftime('%Y%m%d_%H%M%S')].join('_')
+			file_with_extension = [file_name, extension].join('.')
+
+		  File.open(Rails.root.join('public', 'uploads', file_with_extension), 'wb') do |file|
+		    file.write(uploaded_io.read)
+		  end
     end
 end
