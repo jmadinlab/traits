@@ -53,7 +53,7 @@ class ImportsController < ApplicationController
 			@observations = Observation.includes(:measurements).where("measurements.approval_status" => "pending")
 		end
 
-
+		
 		#@measurements = Measurement.where(:approval_status => "pending")
 		reject = params[:reject]
 		reject ? message = "Item/s Rejected!!!" : message = "Item/s approved!!!"

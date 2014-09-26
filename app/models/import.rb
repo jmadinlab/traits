@@ -133,10 +133,11 @@ class Import
     # If any errors are present, don't attempt to save. Just Return False
     def check_add_errors(items)
       flag = false
+
       items.each_with_index do |item, index|
         if item.errors.any?
           item.errors.full_messages.each do |message|
-            errors.add :base, "Row #{index+2}: #{message}"
+            errors.add :base, "#{message}"
           end
           flag = true
         elsif not item.valid?
@@ -178,8 +179,8 @@ class Import
           o = Observation.new(:user_id => row["user_id"], :location_id => row["location_id"], :coral_id => row["coral_id"], :resource_id => row["resource_id"], :approval_status => "pending")
           measurement_row = {"user_id" => row["user_id"], "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"], "notes" => row["notes"], "approval_status" => "pending"}
           m = Measurement.new
-          o = validate_model_ids(row, o)
-          o = validate_methodology_with_trait(row, o)
+          o = validate_model_ids(row, o, i)
+          o = validate_methodology_with_trait(row, o, i)
 
           begin
             puts 'saving unique observations'
@@ -248,7 +249,7 @@ class Import
           coral_id = row["coral_id"]
           location_id = row["location_id"]
           trait_id = row["trait_id"]
-          observation = validate_model_ids(row, observation)
+          observation = validate_model_ids(row, observation, i)
           
           
           # Validate Values based on the traits value range
@@ -257,7 +258,7 @@ class Import
               trait = Trait.find(trait_id)
              if not trait.value_range.nil? and trait.value_range == "" 
                 if not trait.value_range.include? row["value"] and not trait.value_range.empty?
-                  observation.errors[:base] << "Invalid Value for the trait: " + row["trait_name"] + ".. Values should be within " + trait.value_range
+                  observation.errors[:base] << "Row #{i}: Invalid Value for the trait: " + row["trait_name"] + ".. Values should be within " + trait.value_range
                 end
               end
               # Uncomment this in production
@@ -265,12 +266,12 @@ class Import
             end
             
           rescue
-            observation.errors[:base] << "Error with value"
+            observation.errors[:base] << "Row #{i}: Error with value"
           end
 
           # Validate methodology_id against trait_id
 
-          observation = validate_methodology_with_trait(row, observation)
+          observation = validate_methodology_with_trait(row, observation, i)
           
           
           # new_observation_csv_headears = ["observation_id",  "access",  "user_id", "coral_id"  ,"location_id", "resource_id", "trait_id",  "standard_id",  "method_id" ,"value" ,"value_type",  "precision" ,"precision_type" , "precision_upper" ,"replicates"]
@@ -314,16 +315,16 @@ class Import
           end
           
           # Validate user_id
-          validate_user(item, item.attributes["user_id"])
+          validate_user(item, item.attributes["user_id"], i)
           
           # Validate latitude
           if item.attributes["latitude"]
-            validate_long_lat(item, item.attributes["latitude"], "latitude", -90, 90)
+            validate_long_lat(item, item.attributes["latitude"], "latitude", -90, 90, i)
           end
           
           # Validate longitude
           if item.attributes["longitude"]
-            validate_long_lat(item, item.attributes["longitude"], "longitude",  -180, 180)
+            validate_long_lat(item, item.attributes["longitude"], "longitude",  -180, 180, i)
           end
 
           # Finally return the item
@@ -339,23 +340,23 @@ class Import
     
     # Validations of values in the fields in csv
 
-    def validate_user(item, user_id)
+    def validate_user(item, user_id, i)
       if User.where(id: user_id).empty?
-        item.errors[:base] << "Invalid user with id: " + user_id.to_s
+        item.errors[:base] << "Row #{i}: Invalid user with id: " + user_id.to_s
       end
 
     end
 
-    def validate_long_lat(item, val, item_type, start, finish)
+    def validate_long_lat(item, val, item_type, start, finish, i)
       puts "validating #{item_type}"
       val = val.to_i
       if val < start or val > finish
-        item.errors[:base] << "Invalid #{item_type}: "  + val.to_s + " ( has to be between #{start} and #{finish} ) "
+        item.errors[:base] << "Row #{i}: Invalid #{item_type}: "  + val.to_s + " ( has to be between #{start} and #{finish} ) "
         puts "latitude error"
       end
     end
     
-    def validate_model_ids(row, observation)
+    def validate_model_ids(row, observation, i)
       negative_cols = ['observation_id', 'trait_id']
       row.each do |col|
         if col[0].include? 'id' and col[0].length > 2 and not negative_cols.include? col[0]
@@ -367,7 +368,7 @@ class Import
             item = model.find(col[1]) if not col[1].nil?
           rescue
             puts 'in validate_model_ids, cant find model with that id'
-            observation.errors[:base] << "Cannot find #{model_name} with that id : " + col[1]
+            observation.errors[:base] << "Row #{i}: Cannot find #{model_name} with that id : " + col[1]
           end
 
         end
@@ -376,7 +377,7 @@ class Import
       return observation
     end
 
-    def validate_methodology_with_trait(row, observation)
+    def validate_methodology_with_trait(row, observation, i)
       if not row["methodology_id"].nil? and row["methodology_id"] != ""
         puts "methodology ids"
         puts Trait.find(row["trait_id"]).methodology_ids
@@ -390,7 +391,7 @@ class Import
           puts "methodology: " , row["methodology_id"]
 
 
-          observation.errors[:base] << "Trait with id : #{ row["trait_id"]}  doesnot have methodology with id : #{row["methodology_id"]} " 
+          observation.errors[:base] << "Row #{i}: Trait with id : #{ row["trait_id"]}  doesnot have methodology with id : #{row["methodology_id"]} " 
         else
           puts "no error, trait: ", row["trait_id"], " methodology: ", row["methodology_id"]
         end
