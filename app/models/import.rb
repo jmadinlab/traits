@@ -179,7 +179,7 @@ class Import
           measurement_row = {"user_id" => row["user_id"], "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"], "notes" => row["notes"], "approval_status" => "pending"}
           m = Measurement.new
           o = validate_model_ids(row, o)
-          
+          o = validate_methodology_with_trait(row, o)
 
           begin
             puts 'saving unique observations'
@@ -267,6 +267,11 @@ class Import
           rescue
             observation.errors[:base] << "Error with value"
           end
+
+          # Validate methodology_id against trait_id
+
+          observation = validate_methodology_with_trait(row, observation)
+          
           
           # new_observation_csv_headears = ["observation_id",  "access",  "user_id", "coral_id"  ,"location_id", "resource_id", "trait_id",  "standard_id",  "method_id" ,"value" ,"value_type",  "precision" ,"precision_type" , "precision_upper" ,"replicates"]
           # Create the actual rows to be sent into the database for observation and measurements
@@ -370,5 +375,31 @@ class Import
 
       return observation
     end
+
+    def validate_methodology_with_trait(row, observation)
+      if not row["methodology_id"].nil? and row["methodology_id"] != ""
+        puts "methodology ids"
+        puts Trait.find(row["trait_id"]).methodology_ids
+        puts 'trait id to check: ' + row["trait_id"] + ' methodology id to check : ' + row["methodology_id"]
+        puts Trait.find(row["trait_id"]).methodology_ids.include?  row["methodology_id"] 
+
+        if not Trait.find(row["trait_id"]).methodology_ids.include?  row["methodology_id"].to_i
+
+          puts "trait methodology error"
+          puts "trait: " , row["trait_id"]
+          puts "methodology: " , row["methodology_id"]
+
+
+          observation.errors[:base] << "Trait with id : #{ row["trait_id"]}  doesnot have methodology with id : #{row["methodology_id"]} " 
+        else
+          puts "no error, trait: ", row["trait_id"], " methodology: ", row["methodology_id"]
+        end
+      else
+        puts "methodology is not present"
+      end
+
+      return observation
+    end
+
 
 end
