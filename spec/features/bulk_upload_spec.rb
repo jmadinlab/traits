@@ -21,7 +21,8 @@ describe "Bulk Upload" do
 		it "can import observations" do
 			#@file = fixture_file_upload('files/test_file.csv', 'text/csv')
 			attach_file "import_file", 'spec/fixtures/files/observation_test_file.csv'
-			click_button "Upload"
+			expect { click_button "Upload" }.to change(Observation, :count).by(1)
+
 			expect(page).to have_selector('div.alert.alert-success')
 
 		end
@@ -31,10 +32,20 @@ describe "Bulk Upload" do
 			click_button "Upload"
 
 			attach_file "import_file", 'spec/fixtures/files/observation_test_file_2.csv'
-			click_button "Upload"
+			expect { click_button "Upload" }.to_not change(Observation, :count)
+
 			expect(page).to have_selector('div#error_explanation')
 
 		end
+
+		it "should not import observations with column header error" do
+			attach_file "import_file", 'spec/fixtures/files/observation_with_heading_error.csv'
+			expect { click_button "Upload" }.to_not change(Observation, :count)
+			expect(page).to have_selector('div#error_explanation')
+			expect(page).to have_content('The column headers do not match...')
+		end
+
+
 	end
 
 	describe "import locations" do

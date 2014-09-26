@@ -18,7 +18,7 @@ class Measurement < ActiveRecord::Base
   #validates :value_type, :presence => true
   # validates :orig_value, :presence => true
 
-  #validate :check_duplicates, :on => [:create, :update]
+  validate :check_duplicates, :on => [:create, :update]
   
   private
   def check_duplicates

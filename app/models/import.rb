@@ -143,8 +143,12 @@ class Import
       puts 'rolling back'
       puts $observation_id_map
       $observation_id_map.keys().each do |k|
-        obs = Observation.find($observation_id_map[k])
-        obs.destroy!
+        begin
+          obs = Observation.find($observation_id_map[k])
+          obs.destroy!
+        rescue
+          puts 'couldnot find observation'
+        end
       end
     end
 
