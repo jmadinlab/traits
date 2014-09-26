@@ -10,7 +10,7 @@
 </div>
 
 <div class="row">
-  <div class="col-md-4">
+  <div class="col-md-3">
 		<p>
 		  <strong>Latitude:</strong>
 		  <%= @location.latitude.round(4) %>
@@ -40,16 +40,18 @@
 				<%= link_to 'Edit', edit_location_path(@location), class: "btn btn-sm btn-default" %>
 			<% end %>
 			<%= link_to 'Back', locations_path, class: "btn btn-sm btn-default" %>
-		</div>
+		</div><br><br>
+
+    <%= render "shared/symbol_key" %>
+
 	</div>
 
-  <div class="col-md-8" data-no-turbolink>
+  <div class="col-md-9" data-no-turbolink>
 		<div id="map-canvas" class="map-container" data-no-turbolink></div> 
 	</div>
 
 </div>
 
-<br/>
 <h3>Observations from <%= @location.location_name %></h3>
 
 <% if @observations.empty? %>
