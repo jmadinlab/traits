@@ -20,7 +20,7 @@ class ImportsController < ApplicationController
 
 		if @item_import.save
 			# Todo : Change the user to the one responsible for that particular coral/trait/observation
-			UploadApprovalMailer.approve_all(@item_import.get_email_list).deliver
+			#UploadApprovalMailer.approve_all(@item_import.get_email_list).deliver
 
 			# Save the actual file in the server
 			uploaded_io = params[:import][:file]

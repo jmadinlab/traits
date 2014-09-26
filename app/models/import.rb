@@ -22,6 +22,7 @@ class Import
   
   $email_list = []
   $ignore_row = []
+  $total_rows
   $new_observation_csv_headers = ["observation_id",  "access",  "user_id", "coral_id"  ,"location_id", "resource_id", "trait_id",  "standard_id",  "methodology_id" ,"value" ,"value_type",  "precision" ,"precision_type" , "precision_upper" ,"replicates", "notes"]
   attr_accessor :file, :model_name
 
@@ -99,6 +100,19 @@ class Import
       rollback()
       return false
     end
+
+    # Finally verify if the total number of rows is equal to total records imported
+    total_records_imported = Measurement.where('observation_id IN (?)', $observation_id_map.values).count
+    if $total_rows -1 != total_records_imported
+      err_msg = 'Something went wrong during import. 
+                        Total number of records imported is not equal to total number of rows in csv. <br/>
+                        Total rows in csv: <b>' +  ($total_rows - 1).to_s + ' </b> <br/>
+                        Total records imported: <b>' + (total_records_imported).to_s + '</b>'
+      errors.add :base,  err_msg.html_safe
+      rollback()
+      return false
+    end
+
 
     true
     
@@ -200,6 +214,7 @@ class Import
     def load_imported_items
       spreadsheet = open_spreadsheet
       header = spreadsheet.row(1)
+      $total_rows = spreadsheet.last_row
       # observation_csv_headers = ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates"]
       
       if header == $new_observation_csv_headers
@@ -336,7 +351,7 @@ class Import
     end
     
     def validate_model_ids(row, observation)
-      negative_cols = ['observation_id', 'methodology_id', 'trait_id']
+      negative_cols = ['observation_id', 'trait_id']
       row.each do |col|
         if col[0].include? 'id' and col[0].length > 2 and not negative_cols.include? col[0]
           field_name = col[0]
@@ -344,7 +359,7 @@ class Import
           model = model_name.singularize.classify.constantize
           puts 'trying to validate model'
           begin
-            item = model.find(col[1])
+            item = model.find(col[1]) if not col[1].nil?
           rescue
             puts 'in validate_model_ids, cant find model with that id'
             observation.errors[:base] << "Cannot find #{model_name} with that id : " + col[1]
