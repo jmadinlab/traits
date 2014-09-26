@@ -28,6 +28,7 @@ revisions.log
 /log/*.log
 /tmp
 /public/assets/
+/public/uploads/
 /app/assets/images/
 local_env.yml
 
