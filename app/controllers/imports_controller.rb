@@ -81,7 +81,7 @@ class ImportsController < ApplicationController
 	end
 
 	def show
-		@files = Dir.glob("../public/uploads/**")
+		@files = Dir.glob("../public/uploads/*")
 		@item_import = Import.new
 
 	end
