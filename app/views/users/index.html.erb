@@ -2,24 +2,24 @@
 
 <div class="page-header">
 	<h1>
-	  Administration
+	  Users
 	</h1>
 </div>
 
 <%= form_tag update_multiple_users_path do %>
 
-	<div class="row">
-		<div class="col-sm-5">
+  <% if current_user.admin? %>
+		<div class="row">
+			<div class="col-sm-3 col-sm-offset-5" style="text-align:center;">
+				<%= submit_tag "Update Privileges", class: "btn btn-danger btn-md", style: "margin-right: 5px;" %>
+			</div>
 		</div>
-		<div class="col-sm-3" style="text-align:center;">
-			<%= submit_tag "Update Privileges", class: "btn btn-danger btn-md", style: "margin-right: 5px;" %>
-		</div>
-	</div><br>
+	<% end %><br>
 	<div class="row">
 		<div class="col-sm-5">
 		</div>
 		<div class="col-sm-1" style="text-align:center;">
-			<strong>Contributor</strong>
+			<% if current_user.admin? %><strong>Contributor</strong><% end %>
 		</div>
 		<div class="col-sm-1" style="text-align:center;">
 			<% if current_user.admin? %><strong>Editor</strong><% end %>
@@ -50,8 +50,10 @@
 					</div>
 					
 					<div class="col-sm-1" style="text-align:center;">
-					  <% if current_user.editor? %>
+					  <% if current_user.admin? %>
 							<%= check_box_tag "contrib_true_ids[]", user.id, user.contributor %>
+						<% else %>
+							<%= check_box_tag "contrib_true_ids[]", user.id, user.contributor, style: "visibility:hidden;" %>
 						<% end %>
 					</div>
 

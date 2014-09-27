@@ -108,6 +108,7 @@ Traits::Application.routes.draw do
   match '/help',     to: 'static_pages#help',    via: 'get'
   match '/about',    to: 'static_pages#about',   via: 'get'
   match '/procedures',    to: 'static_pages#procedures',   via: 'get'
+  match '/editors',    to: 'static_pages#editors',   via: 'get'
   match '/meta',     to: 'static_pages#meta',    via: 'get'
 
   

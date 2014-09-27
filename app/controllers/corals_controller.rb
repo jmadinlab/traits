@@ -2,7 +2,7 @@ class CoralsController < ApplicationController
 
   before_action :contributor, except: [:index, :show, :export]
   before_action :set_coral, only: [:show, :edit, :update, :destroy]
-  before_action :admin_user, only: :destroy
+  before_action :admin_user, only: [:destroy, :new, :create, :edit, :update]
 
   # GET /corals
   # GET /corals.json
@@ -89,11 +89,11 @@ class CoralsController < ApplicationController
       format.html
       format.csv {
         if request.url.include? 'resources.csv'
-          csv_string = get_resources_csv(@observations, "", "")
+          csv_string = get_resources_csv(@observations)
           filename = 'resources'
         else
-          csv_string = get_main_csv(@observations, "", "")
-          filename = 'data'
+          csv_string = get_main_csv(@observations, "", "", "")
+          filename = 'observations'
         end
         send_data csv_string, 
           :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,

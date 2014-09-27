@@ -23,7 +23,7 @@
 		      <%= text_field_tag :search, params[:search], :placeholder => "Search locations...", class: "form-control" %>
 		      <span class="input-group-btn">
 				    <%= submit_tag "Search", :name => nil, class: "btn btn-default" %>
-						<%= link_to "1 Page", locations_path(search: params[:search], pp: "all"), class: "btn btn-default" %>
+						<%= link_to "See All", locations_path(search: params[:search], pp: "all"), class: "btn btn-warning" %>
 						<%= link_to 'Reset', locations_path, class: "btn btn-default" %>
 		      </span>
 		    </div>

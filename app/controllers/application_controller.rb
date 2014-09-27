@@ -61,12 +61,6 @@ class ApplicationController < ActionController::Base
 
   # Return the main csv string depending upon the model (corals data / traits data / lcation data etc)
   def get_main_csv(observations, taxonomy, contextual, global)
-
-
-#observation_id access  user_id coral_id  location_id resource_id trait_id  standard_id method_id value value_type  precision precision_type  precision_upper replicates
-
-
-
     csv_string = CSV.generate do |csv|
       if taxonomy == "on"
         csv << ["observation_id", "access", "user_id", "coral_id", "coral_name", "major_clade", "family_molecules", "family_morphology", "location_id", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_id", "trait_name", "standard_id", "standard_unit", "methodology_id", "methodology_name", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates", "measurement_notes"]
@@ -76,7 +70,7 @@ class ApplicationController < ActionController::Base
       observations.each do |obs|
         if global != "on" || obs.location_id == 1
           obs.measurements.each do |mea|
-            if contextual != "on" || mea.trait.trait_class != "Contextual"
+            if contextual != nil || mea.trait.trait_class != "Contextual"
               if obs.location.present?
                 loc = obs.location.location_name
                 lat = obs.location.latitude
@@ -117,7 +111,7 @@ class ApplicationController < ActionController::Base
 
 
   # Return the resources csv
-  def get_resources_csv(observations, taxonomy, contextual, global)
+  def get_resources_csv(observations)
     resources_string = CSV.generate do |csv|
         csv << ["resource_id", "author", "year", "title", "resource_type", "resource_ISBN", "resource_journal", "resource_volume_pages", "resource_notes"]
 
@@ -156,7 +150,7 @@ class ApplicationController < ActionController::Base
     
 
     # Process file2 resources.csv
-    resources_string = get_resources_csv(observations, taxonomy, contextual, global)
+    resources_string = get_resources_csv(observations)
     file2 = "resources.csv"
     file2_path = "public/" + file2
     _file2 = File.open(file2_path, "w") { |f| f << resources_string }

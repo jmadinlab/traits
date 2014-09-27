@@ -83,12 +83,13 @@ class MethodologiesController < ApplicationController
       }
       format.csv {
         if request.url.include? 'resources.csv'
-          csv_string = get_resources_csv(@observations, "", "")
+          csv_string = get_resources_csv(@observations)
           filename = 'resources'
         else
-          csv_string = get_main_csv(@observations, "", "")
+          csv_string = get_main_csv(@observations, "", "", "")
           filename = 'data'
         end
+
         send_data csv_string, 
           :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
           :disposition => "attachment; filename=#{filename}_#{Date.today.strftime('%Y%m%d')}.csv"
@@ -97,7 +98,6 @@ class MethodologiesController < ApplicationController
       format.zip{
         send_zip(@observations, 'data.csv', "", "")
       }
-
     end
   end
 

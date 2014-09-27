@@ -3,7 +3,10 @@
 
 <div class="page-header">
 	<h1>
-		<%= @trait.trait_name %> (<%= @trait.id %>)
+		<% if @trait.trait_class == "Contextual" %>
+			<span class="glyphicon glyphicon-eye-open"></span>
+		<% end %>
+		<%= @trait.trait_name %>
 		<% if @coral %>
 			(<em><%= link_to @coral.coral_name, coral_path(@coral) %></em>)
 		<% end %>
@@ -12,6 +15,10 @@
 
 <div class="row">
   <div class="col-md-9">
+	  <p>
+	    <strong>Trait ID:</strong>
+	    	<%= @trait.id %>
+	  </p>
 		<p>
 			<strong>Default standard:</strong>
 			<% if !@trait.standard.blank? %>

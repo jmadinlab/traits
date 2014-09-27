@@ -1,6 +1,8 @@
 <div class="row">
 	<div class="col-md-6 col-md-offset-3">
-		<h3>New location</h3>
+		<h1>New location</h1>
+
+    <p><label class="label label-danger">Warning</label> Have you determined that the location you are about to enter does not already exist?</p><p>Try searching for the location name (above) or click <label class="label label-warning">See All</label> on the <%= link_to "locations page", locations_path %>, and then use the map to ensure your location doesn't already exist.</p>
 
 		<%= render 'form' %>
 

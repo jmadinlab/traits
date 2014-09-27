@@ -18,19 +18,23 @@
   	<% end %>
 
 	<h3>Traits</h3>
-	  <div id = "traits">
-		  <%= f.fields_for :traits do |t| %>
-		  	<%= render "trait_fields", :f => t %>
-		  <% end %>
-		</div>
-	  <div class="links">
-	    <p><%= link_to_add_association "Add another trait", f, :traits,
-	    		'data-association-insertion-method' => "append" %></p>
-	  </div>
+
+	<p><small>Add traits that use this methodology.</small></p>
+
+  <div id = "traits">
+	  <%= f.fields_for :traits do |t| %>
+	  	<%= render "trait_fields", :f => t %>
+	  <% end %>
+	</div>
+
+  <div class="links">
+    <p><%= link_to_add_association "add another trait", f, :traits,
+    		'data-association-insertion-method' => "append" %></p>
+  </div>
 
 	
 
-	<%= f.submit "Submit", class: "btn btn-primary btn-md" %>
-	<%= link_to 'Back', methodologies_path, class: "btn btn-primary btn-md" %>
+	<%= f.submit "Submit", class: "btn btn-primary btn-lg" %>
+	<%= link_to 'Back', methodologies_path %>
 
 <% end %>

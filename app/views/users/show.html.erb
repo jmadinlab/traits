@@ -9,6 +9,10 @@
 
 <div class="row">
 	<div class="col-md-9">
+	  <p>
+	    <strong>User ID:</strong>
+	    	<%= @user.id %>
+	  </p>
 		<p>
 		  <strong>Email:</strong>
 		  <%= @user.email %>
@@ -28,7 +32,7 @@
 			</p>
 	  <% end %>
 
-		<p>Observations that entered by <%= @user.name %> are listed below.  These are original/new observations only (i.e., not  observations that have been modified/edited). Displayed data can be downloaded by clicking <code style="color:green;">Download</code>.  Use the search filter and number of measurements to be returned (above) to limit or expand your download.  You will only see (and be able to download) public <span class="glyphicon glyphicon-ok-circle" style="color:green;"></span> observations as well as the private <span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> observations that you entered.  If these are your observations, then you can also control their access.</p>
+		<p>Observations that entered by <%= @user.name %> are listed below. These are original/new observations only (i.e., not  observations that have been modified/edited). Displayed data can be downloaded by clicking <label class="label label-success">Download</label>. Use the number of observations pull-down to expand what is visible and downloaded. You can also control their access of your observations.</p>
 	</div>
 
 	<div class="col-md-3">
@@ -53,7 +57,7 @@
 				<p>observations per page</p>
 			</div>
 			<div class="col-md-2">
-				<%= link_to "Download", user_path(format: "zip", taxonomy: "on"), class: "btn btn-primary pull-right" %>
+				<%= link_to "Download", user_path(format: "zip", taxonomy: "on"), class: "btn btn-success pull-right" %>
 			</div>
 		</div>
 

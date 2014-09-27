@@ -12,7 +12,8 @@
   <body>
     <%= render 'layouts/header' %>
     <div class="container">
-      <!-- <div class="alert alert-danger">The database is undergoing a major restructure.  Please contact coraltraits@gmail.com if you would like to make changes or upload data.</div> -->
+
+      <div class="alert alert-danger" role="alert">The Coral Traits Database is under review for release in approximately November 2014. Please feel free to use the database, but be aware that major changes might occur.</div>
 
       <% flash.each do |key, value| %>
         <div class="alert alert-<%= key %>"><%= value %></div>

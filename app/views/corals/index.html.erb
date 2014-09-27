@@ -15,16 +15,19 @@
 		      <%= text_field_tag :search, params[:search], :placeholder => "Search species...", class: "form-control" %>
 		      <span class="input-group-btn">
 				    <%= submit_tag "Search", :name => nil, class: "btn btn-default" %>
-						<%= link_to "1 Page", corals_path(search: params[:search], pp: "all"), class: "btn btn-default" %>
+						<%= link_to "See All", corals_path(search: params[:search], pp: "all"), class: "btn btn-warning" %>
 						<%= link_to 'Reset', corals_path, class: "btn btn-default" %>
 		      </span>
 		    </div>
 			<% end %>
-			<br>Download coral list as a <%= link_to "csv", corals_path(format: "csv") %>.
+			<br>Download coral species list as a <%= link_to "csv", corals_path(format: "csv") %>.
 	  </div>
 	  <div class="col-md-6">
-			<% if signed_in? && current_user.contributor? %>	
+			<% if signed_in? && current_user.admin? %>	
 				<%= link_to 'New Coral', new_coral_path, class: "btn btn-primary btn-md pull-right" %>
+			<% else %>
+			<%# if signed_in? && current_user.contributor? %>	
+	  		<strong>Note to Contributors and Editors:</strong> The list of coral species is tightly controlled due to the complex and changing nature of coral taxonomy (see <%= link_to "Procedures", procedures_path %>). If you believe a species is missing from the list, please try searching for the species and try different spellings because we keep track of alternative names. If the species can't be found, please make a request by email to have it added (see <%= link_to "Editors", editors_path %>).
 			<% end %>
 	  </div>
 	</div>

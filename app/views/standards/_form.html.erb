@@ -2,21 +2,19 @@
 
 <%= render 'shared/error_messages', object: @standard %>
 
-	<p><small>Starred (*) fields are required.</small></p>
-
-
 	<div class="form-group">
-		<%= f.label "standard_name *" %>
-		<%= f.text_field :standard_name, class: "form-control" %>
+		<%= f.label "standard_name" %>
+		<%= f.text_field :standard_name, :placeholder => "Required...", class: "form-control" %>
 	</div>
 
 	<div class="form-group">
 		<%= f.label :standard_unit %>
+		<p><small>Use "^" for exponents and spaces between units. For example: mg cm^-2</small></p>
 		<%= f.text_field :standard_unit, class: "form-control" %>
 	</div>
 
 	<div class="form-group">
-		<%= f.label "standard_class *" %>
+		<%= f.label "standard_class (required)" %>
 	  <%= f.select :standard_class, ['', 'Name', 'Nominal class', 'Ordered class', 'Index', 'Datetime', 'Base unit', 'Simple derived unit', 'Complex derived unit'], {}, class: "form-control" %>
 	</div>
 
@@ -35,6 +33,6 @@
 		<% end %>
 	</div>
 
-	<%= f.submit "Submit", class: "btn btn-primary btn-md" %>
+	<%= f.submit "Submit", class: "btn btn-primary btn-lg" %>
 
 <% end %>

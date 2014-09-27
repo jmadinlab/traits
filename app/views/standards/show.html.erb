@@ -1,10 +1,15 @@
 <% provide(:title, 'Standards') %>
 
-<h3>Measurement standard (<%= @standard.id %>)
+<h3>Measurement standard
     <% if @standard.approval_status == "pending" %>
       <small><span class="label label-danger pull-right">pending approval</span></small>
     <% end %>
 </h3>
+
+<p>
+  <strong>Standard ID:</strong>
+    <%= @standard.id %>
+</p>
 
 <p>
   <strong>Standard name:</strong>

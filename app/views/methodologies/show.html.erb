@@ -2,11 +2,16 @@
 
 
 <div class="page-header">
-  <h1>Methodology: <%= @methodology.methodology_name %> (<%= @methodology.id %>)</h1>
+  <h1>Methodology: <%= @methodology.methodology_name %></h1>
 </div>
 
 <div class="row">
   <div class="col-md-9">
+	  <p>
+	    <strong>Methodology ID:</strong>
+	    	<%= @methodology.id %>
+	  </p>
+
 		<% if !@methodology.method_description.blank? %>
 		  <p>
 		    <strong>Description:</strong>

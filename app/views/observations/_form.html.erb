@@ -11,34 +11,37 @@
   <%= render 'shared/error_messages', object: f.object %>
 
   <div class="form-group">
-	  <%= f.label :coral %><br/>
-			<%= f.select :coral_id, Coral.all.map { |u| [u.coral_name, u.id] }, { include_blank: "Choose coral..." }, { id: 'simple-example', :style => "width: 300px;" } %> <%= link_to 'Add', new_coral_path, class: "label label-default pull-right" %>
+	  <%= f.label "coral (required)" %><br>
+		<%= f.select :coral_id, Coral.all.map { |u| ["#{u.coral_name} (#{u.synonyms.collect(&:synonym_name).join(",")})", u.id] }, { include_blank: "Choose coral..." }, { id: 'simple-example', :style => "width: 400px;" } %>
 	</div>
 
   <div class="form-group">
-	  <%= f.label :location %>
-		<br/><%= f.select :location_id, Location.all.map { |u| [u.location_name, u.id] }, { include_blank: "Choose location..." }, { id: 'simple-example', :style => "width: 300px;" } %> <%= link_to 'Add', new_location_path, class: "label label-default pull-right" %>
+    <%= f.label "location (required)" %><br>
+		<%= f.select :location_id, Location.all.map { |u| [u.location_name, u.id] }, { include_blank: "Choose location..." }, { id: 'simple-example', :style => "width: 400px;" } %>
 	</div>
 
   <div class="form-group">
-	  <%= f.label :resource %>
-		<br/><%= f.select :resource_id, Resource.all.map { |u| ["#{u.author} (#{u.year}) #{u.title}", u.id] }, { include_blank: "Choose resource..." }, { id: 'simple-example', :style => "width: 600px;" } %> <%= link_to 'Add', new_resource_path, class: "label label-default pull-right" %>
+    <%= f.label "resource (recommended)" %><br>
+    <p><small>All published data needs a resource.</small></p>
+		<%= f.select :resource_id, Resource.all.map { |u| ["#{u.author} (#{u.year}) #{u.title}", u.id] }, { include_blank: "Choose resource..." }, { id: 'simple-example', :style => "width: 600px;" } %>
 	</div>
 
   <div class="form-group">
-  	<strong>Keep this observation and measurement/s private?</strong>
-  	<br/><%= f.check_box :private %>
+  	<strong>Keep this observation and measurement/s private?</strong> <%= f.check_box :private %>
+    <p><small>Please keep your unpublished data private (check the box above) as per the <%= link_to "Procedures", procedures_path %>.</small></p>
+  	
 	</div>
-
-  <%#= f.label :user %> <%#= current_user.name %></p>
-  <%#= f.hidden_field :user_id, :value => current_user.id %>
 
 	<div class="form-group">
 		<% if current_user.admin? %>
-				<%= f.label :user %>
+			<strong>Entered by:</strong>
+      <% if f.object.id %>
 				<%= f.select :user_id, User.where(:contributor => true).collect {|a| [a.name, a.id]}, {:selected => @observation.user_id}, class: "form-control" %>
+      <% else %>
+        <%= f.select :user_id, User.where(:contributor => true).collect {|a| [a.name, a.id]}, {:selected => current_user.id}, class: "form-control" %>
+      <% end %>
 		<% else %>
-			<!-- <%#= f.label :user %>: <%#= current_user.name %> -->
+			<strong>Entered by:</strong> <%= current_user.name %>
 		  <%= f.hidden_field :user_id, :value => current_user.id %>
 		<% end %>
 	</div>
@@ -49,6 +52,11 @@
 
   
   <h3>Measurements</h3>
+
+  <p><label class="label label-danger">Important</label> An observation of a coral can have more than one measurement, and it's important to make this association clear by entering these measurements in the same observation record. Use the "Add another measurement" link below to enter other measurements of the same individual at the same time.</p>
+  <p><label class="label label-success">Context</label> We also encourage the entry of contextual  measurements (i.e., "traits" of the environment or experiment); for example, the depth of water the coral was found in, the reef habitat, or the year recorded (in the case the same individual was measured at different times). If in doubt, please read the <%= link_to "Procedures", procedures_path %> or contact the relevant <%= link_to "Editor", editors_path %>.</p>
+
+
   <div id = "measurements">
 	  <%= f.fields_for :measurements do |mea| %>
 	  	<% render :partial => "measurement_fields", :locals => { :f => mea } %>

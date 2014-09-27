@@ -2,7 +2,7 @@
 
 
 <div class="page-header">
-  <h1><%= @location.location_name %> (<%= @location.id %>)
+  <h1><%= @location.location_name %>
 			<% if @location.approval_status == "pending" %>
 				<small><span class="label label-danger pull-right">pending approval</span></small>
 			<% end %>
@@ -11,6 +11,10 @@
 
 <div class="row">
   <div class="col-md-3">
+    <p>
+      <strong>Location ID:</strong>
+        <%= @location.id %>
+    </p>
 		<p>
 		  <strong>Latitude:</strong>
 		  <%= @location.latitude.round(4) %>
@@ -46,9 +50,13 @@
 
 	</div>
 
-  <div class="col-md-9" data-no-turbolink>
-		<div id="map-canvas" class="map-container" data-no-turbolink></div> 
-	</div>
+  <% if @location.id != 1 %>
+    <div class="col-md-9" data-no-turbolink>
+  		<div id="map-canvas" class="map-container" data-no-turbolink></div> 
+  	</div>
+  <% else %>
+    <span class="glyphicon glyphicon-globe glyphicon-lg" style="font-size: 5em;"></span>
+  <% end %>
 
 </div>
 

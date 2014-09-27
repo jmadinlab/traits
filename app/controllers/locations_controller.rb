@@ -57,6 +57,8 @@ class LocationsController < ApplicationController
           
   end
 
+
+#localhost:3000/locations/132.csv?taxonomy=on&contextual=on
   # GET /locations/1
   # GET /locations/1.json
   def show
@@ -77,21 +79,19 @@ class LocationsController < ApplicationController
       }
       format.csv {
         if request.url.include? 'resources.csv'
-          csv_string = get_resources_csv(@observations, "", "")
+          csv_string = get_resources_csv(@observations)
           filename = 'resources'
         else
-          csv_string = get_main_csv(@observations, "", "")
-          filename = 'data'
+          csv_string = get_main_csv(@observations, params[:taxonomy], params[:contextual], params[:global])
+          filename = 'observations'
         end
         send_data csv_string, 
           :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
           :disposition => "attachment; filename=#{filename}_#{Date.today.strftime('%Y%m%d')}.csv"
       }
-
       format.zip{
         send_zip(@observations, 'data.csv', "", "")
       }
-
     end
   end
 

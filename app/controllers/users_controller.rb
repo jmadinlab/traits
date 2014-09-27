@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_action :signed_in_user,  only: [:show, :edit, :update]
   before_action :correct_user,    only: [:show, :edit, :update]
-  before_action :editor,          only: :index
+  # before_action :editor,          only: :index
   before_action :admin_user,      only: :destroy
 
   def index
@@ -31,10 +31,10 @@ class UsersController < ApplicationController
       }
       format.csv {
         if request.url.include? 'resources.csv'
-          csv_string = get_resources_csv(@observations, "", "")
+          csv_string = get_resources_csv(@observations)
           filename = 'resources'
         else
-          csv_string = get_main_csv(@observations, "", "")
+          csv_string = get_main_csv(@observations, "", "", "")
           filename = 'data'
         end
         send_data csv_string, 

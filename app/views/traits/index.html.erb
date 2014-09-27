@@ -18,7 +18,7 @@
 		      <%= text_field_tag :search, params[:search], :placeholder => "Search traits...", class: "form-control" %>
 		      <span class="input-group-btn">
 				    <%= submit_tag "Search", :name => nil, class: "btn btn-default" %>
-						<%= link_to "1 Page", traits_path(search: params[:search], pp: "all"), class: "btn btn-default" %>
+						<%= link_to "See All", traits_path(search: params[:search], pp: "all"), class: "btn btn-warning" %>
 						<%= link_to 'Reset', traits_path, class: "btn btn-default" %>
 		      </span>
 		    </div>
@@ -26,8 +26,11 @@
 			<br>Download trait list as a <%= link_to "csv", traits_path(format: "csv") %>.
 	  </div>
 	  <div class="col-md-6">
-	  	<% if signed_in? && current_user.contributor? %>	
+	  	<% if signed_in? && current_user.editor? %>	
 				<%= link_to 'New Trait', new_trait_path, class: "btn btn-primary btn-md pull-right" %>
+			<% else %>
+			<%# if signed_in? && current_user.contributor? %>	
+	  		<strong>Note to Contributors:</strong> The list of traits is controlled to avoid a profilation of redundant traits (see <%= link_to "Procedures", procedures_path %>). If you would like to add a trait, please contact the most relevant <%= link_to "Editor", editors_path %>.
 			<% end %>
 	  </div>
 	</div>

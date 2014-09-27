@@ -22,7 +22,7 @@
     <% end %>
   </div>
   <div class="links">
-    <p><%= link_to_add_association "Add a value range", f, :traitvalues %></p>
+    <p><%= link_to_add_association "add a value option", f, :traitvalues %></p>
   </div>
 
   <div class="form-group">
@@ -51,11 +51,11 @@
       <% end %>
     </div>
     <div class="links">
-      <p><%= link_to_add_association "Add a methodology", f, :methodologies %></p>
+      <p><%= link_to_add_association "add a methodology", f, :methodologies %></p>
     </div>
 
 
 
-	<%= f.submit "Submit", class: "btn btn-primary btn-md" %>
+	<%= f.submit "Submit", class: "btn btn-primary btn-lg" %>
 
 <% end %>

@@ -60,10 +60,10 @@ class ResourcesController < ApplicationController
       }
       format.csv {
         if request.url.include? 'resources.csv'
-          csv_string = get_resources_csv(@observations, "", "")
+          csv_string = get_resources_csv(@observations)
           filename = 'resources'
         else
-          csv_string = get_main_csv(@observations, "", "")
+          csv_string = get_main_csv(@observations, "", "", "")
           filename = 'data'
         end
         send_data csv_string, 

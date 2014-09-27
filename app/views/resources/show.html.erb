@@ -3,7 +3,7 @@
 
 <div class="page-header">
   <h1>
-  	Resource (<%= @resource.id %>)
+  	Resource
 		<% if @resource.approval_status == "pending" %>
 				<small><span class="label label-danger pull-right">pending approval</span></small>
 			<% end %>
@@ -13,6 +13,10 @@
 
 <div class="row">
   <div class="col-md-9">
+	  <p>
+	    <strong>Resource ID:</strong>
+	    	<%= @resource.id %>
+	  </p>
 
 		<p>
 		  <strong>Author:</strong>

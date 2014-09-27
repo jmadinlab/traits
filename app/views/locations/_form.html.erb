@@ -13,6 +13,7 @@
 
 	<div class="form-group">
 		<%= f.label :latitude %>
+		<p><small>Decimal latitude and longitude can easily be copied directly from <%= link_to "Google Maps", "http://maps.google.com", target: "_blank" %>. Find and click on your location on the map, and the latitude and longitude will appear in grey under the search bar at the top left of the page.</small></p>
 		<%= f.text_field :latitude, :placeholder => "Required (decimal degrees)...", class: "form-control" %>
 	</div>
 
