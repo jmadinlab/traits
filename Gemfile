@@ -14,6 +14,7 @@ gem 'sunspot_rails'
 gem 'sunspot_solr'
 gem 'progress_bar'
 gem 'redcarpet'
+gem "google_visualr", "~> 2.1.0"
 
 gem 'capistrano',  '~> 3.1'
 gem 'capistrano-rails', '~> 1.1'

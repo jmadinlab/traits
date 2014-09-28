@@ -59,6 +59,7 @@ GEM
     excon (0.39.5)
     execjs (2.2.1)
     google-analytics-rails (0.0.6)
+    google_visualr (2.1.9)
     highline (1.6.21)
     hike (1.2.3)
     hirb (0.7.2)
@@ -190,6 +191,7 @@ DEPENDENCIES
   cocoon
   coffee-rails
   google-analytics-rails
+  google_visualr (~> 2.1.0)
   hirb
   jbuilder
   jquery-rails (< 3.0.0)

@@ -34,7 +34,7 @@
 				        	<%= trait.id %>
 				        </div>
 								<div class="col-sm-4">
-									<%= link_to grp.first.measurements.first.trait.trait_name, "/traits/" + grp.first.measurements.first.trait_id.to_s %>
+									<%= link_to grp.first.measurements.first.trait.trait_name, "/traits/" + grp.first.measurements.first.trait_id.to_s, 'data-no-turbolink' => true %>
 								</div>
 
 								<div class="col-sm-6">

@@ -89,7 +89,7 @@
 										<% if mea.trait.trait_class == "Contextual" %>
 								  		<span class="glyphicon glyphicon-eye-open" style="color:grey;" data-toggle="tooltip" data-placement="top" title="Measurement is contextual"></span>
 										<% end %>
-								  	<%= link_to mea.trait.trait_name, trait_path(mea.trait_id) %>
+								  	<%= link_to mea.trait.trait_name, trait_path(mea.trait_id), 'data-no-turbolink' => true %>
 									</div>
 								  <div class="col-sm-4">
 										<%= mea.value %>

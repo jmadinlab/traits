@@ -74,6 +74,42 @@ class TraitsController < ApplicationController
       @observations = @observations.where(['observations.private IS ?', false])
     end
     
+    data_table = GoogleVisualr::DataTable.new
+
+   if @trait.standard.standard_unit != "id" && @trait.standard.standard_unit != "text"
+      if @trait.standard.standard_name == "Category" || @trait.standard.standard_name == "Binomial"
+        data_table.new_column('string')
+        data_table.new_column('number')
+
+        @trait.measurements.collect(&:value).uniq.each do |i|
+          data_table.add_row([i, @trait.measurements.where("value LIKE ?", i).size])
+        end
+
+#        data_table.sort(1)
+
+        option = { width: 180, height: 180, legend: 'none' }
+        @chart = GoogleVisualr::Interactive::PieChart.new(data_table, option)
+      else
+        data_table.new_column('number')
+        data_table.new_column('number')
+
+        p = 0
+        @trait.measurements.map(&:value).map{|v| v.to_d}.sort.reverse.each do |i|
+          if @trait.standard.standard_unit == "deg"
+            data_table.add_row([p, i.to_d])
+          else
+            data_table.add_row([p, Math::log10(i.to_d.abs)])
+          end            
+          p = p + 1
+        end
+
+        option = { width: 180, height: 180, legend: 'none', :vAxis => { :title => "#{@trait.trait_name}, log10" }, :hAxis => { textPosition: 'none' } }
+        @chart = GoogleVisualr::Interactive::ScatterChart.new(data_table, option)
+      end
+   end
+
+@data_table = data_table
+
     respond_to do |format|
       format.html {
         @observations = @observations.paginate(:page=> params[:page], :per_page => 20)

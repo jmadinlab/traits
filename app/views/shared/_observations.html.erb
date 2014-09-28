@@ -74,7 +74,7 @@
 		      <% measurement = grp.measurements.first %>
 
 					<div class="col-sm-3">
-						<%= link_to measurement.trait.trait_name, trait_path(measurement.trait_id) %>
+						<%= link_to measurement.trait.trait_name, trait_path(measurement.trait_id), 'data-no-turbolink' => true %>
 		      </div>
 					<div class="col-sm-2">
 						<% if measurement.standard.standard_class == "Nominal class" %>

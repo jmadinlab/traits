@@ -68,7 +68,7 @@
 						<div class="row">
 							<div class="col-sm-1" style="color:lightgrey;"><%= trait.id %></div>
 							<div class="col-sm-5">
-					    	<%= link_to trait.trait_name, trait %>
+					    	<%= link_to trait.trait_name, trait, 'data-no-turbolink' => true %>
 							</div>
 						
 							<div class="col-sm-1">
@@ -83,7 +83,7 @@
 
 	  					<div class="col-sm-3">
 					     	<div class="btn-group pull-right">
-					     		<%= link_to 'Show', trait_path(trait), class: "btn btn-xs btn-default" %>					
+					     		<%= link_to 'Show', trait_path(trait), 'data-no-turbolink' => true, class: "btn btn-xs btn-default" %>					
 									<% if signed_in? && current_user.editor? %>
 						        <%= link_to 'Edit', edit_trait_path(trait), class: "btn btn-xs btn-default" %>
 									<% end %>
