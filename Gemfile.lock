@@ -120,6 +120,7 @@ GEM
     rake (10.3.2)
     rdoc (3.12.2)
       json (~> 1.4)
+    redcarpet (3.1.2)
     roo (1.13.2)
       nokogiri
       rubyzip
@@ -197,6 +198,7 @@ DEPENDENCIES
   paper_trail (~> 3.0.1)
   progress_bar
   rails
+  redcarpet
   roo
   rubyzip (>= 1.0.0)
   sass-rails

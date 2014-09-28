@@ -46,7 +46,7 @@
 	  <div class="col-md-12">
 			<% temp = [] %>
 			<% @traits.sort_by{ |h| [h[:trait_class] || "z", h[:trait_name]] }.each do |trait| %>
-				<% if trait.trait_class != "Contextual" %>
+				<%# if trait.trait_class != "Contextual" %>
 					<% if temp != trait.trait_class %>
 						<% temp = trait.trait_class %>
 						<% if trait.trait_class.blank? %>
@@ -54,7 +54,12 @@
 							<ul class="list-group">
 						<% else %>
 							</ul>
-							<h4><%= trait.trait_class %></h4>
+							<h4>
+								<% if trait.trait_class == "Contextual" %>
+									<span class="glyphicon glyphicon-eye-open"></span>
+								<% end %>
+								<%= trait.trait_class %>
+							</h4>
 							<ul class="list-group">
 						<% end %>
 					<% end %>
@@ -89,7 +94,7 @@
 							</div>
 				  	</div>
 					</li>
-		    <% end %>
+		    <%# end %>
 		  <% end %>
 	  </div>
 	</div>

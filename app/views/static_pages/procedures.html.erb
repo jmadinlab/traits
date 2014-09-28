@@ -1,7 +1,13 @@
 <% provide(:title, 'Procedures') %>
 
-<div class="page-header">
-  <h1>Database procedures</h1>
-</div>
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
 
-<p>Under review</p>
+    <% if signed_in? && current_user.editor? %>
+      <%= markdown File.open(Rails.root + "README.md", 'r').read %>
+    <% else %>
+      <p>Under review</p>
+    <% end %>
+
+  </div>
+</div>

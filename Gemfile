@@ -13,6 +13,7 @@ gem 'mandrill_mailer'
 gem 'sunspot_rails'
 gem 'sunspot_solr'
 gem 'progress_bar'
+gem 'redcarpet'
 
 gem 'capistrano',  '~> 3.1'
 gem 'capistrano-rails', '~> 1.1'

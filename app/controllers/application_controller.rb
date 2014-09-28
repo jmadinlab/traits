@@ -63,26 +63,26 @@ class ApplicationController < ActionController::Base
   def get_main_csv(observations, taxonomy, contextual, global)
     csv_string = CSV.generate do |csv|
       if taxonomy == "on"
-        csv << ["observation_id", "access", "user_id", "coral_id", "coral_name", "major_clade", "family_molecules", "family_morphology", "location_id", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_id", "trait_name", "standard_id", "standard_unit", "methodology_id", "methodology_name", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates", "measurement_notes"]
+        csv << ["observation_id", "access", "user_id", "coral_id", "coral_name", "major_clade", "family_molecules", "family_morphology", "location_id", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_id", "trait_name", "standard_id", "standard_unit", "methodology_id", "methodology_name", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates", "notes"]
       else
-        csv << ["observation_id", "access", "user_id", "coral_id", "coral_name", "location_id", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_id", "trait_name", "standard_id", "standard_unit", "methodology_id", "methodology_name", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates", "measurement_notes"]
+        csv << ["observation_id", "access", "user_id", "coral_id", "coral_name", "location_id", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_id", "trait_name", "standard_id", "standard_unit", "methodology_id", "methodology_name", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates", "notes"]
       end
       observations.each do |obs|
         if global != "on" || obs.location_id == 1
           obs.measurements.each do |mea|
-            if contextual != nil || mea.trait.trait_class != "Contextual"
+            if (contextual != nil && contextual != "off") || mea.trait.trait_class != "Contextual"
               if obs.location.present?
                 loc = obs.location.location_name
                 lat = obs.location.latitude
                 lon = obs.location.longitude
                 if obs.location.id == 1
-                  lat = ""
-                  lon = ""
+                  lat = nil
+                  lon = nil
                 end
               else
-                loc = ""
-                lat = ""
-                lon = ""
+                loc = nil
+                lat = nil
+                lon = nil
               end
               if obs.private == true
                 acc = 0
@@ -90,7 +90,7 @@ class ApplicationController < ActionController::Base
                 acc = 1
               end
 
-              method = ""
+              method = nil
               if mea.methodology.present?
                 method = mea.methodology.methodology_name
               end

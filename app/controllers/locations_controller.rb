@@ -58,7 +58,6 @@ class LocationsController < ApplicationController
   end
 
 
-#localhost:3000/locations/132.csv?taxonomy=on&contextual=on
   # GET /locations/1
   # GET /locations/1.json
   def show

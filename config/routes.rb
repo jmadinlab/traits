@@ -102,16 +102,17 @@ Traits::Application.routes.draw do
   resources :sessions,      only: [:new, :create, :destroy]
 
   root to: 'static_pages#home'
-  match '/signup',   to: 'users#new',            via: 'get'
-  match '/signin',   to: 'sessions#new',         via: 'get'
-  match '/signout',  to: 'sessions#destroy',     via: 'delete'
-  match '/help',     to: 'static_pages#help',    via: 'get'
-  match '/about',    to: 'static_pages#about',   via: 'get'
-  match '/procedures',    to: 'static_pages#procedures',   via: 'get'
-  match '/editors',    to: 'static_pages#editors',   via: 'get'
-  match '/meta',     to: 'static_pages#meta',    via: 'get'
+  match '/signup',      to: 'users#new',            via: 'get'
+  match '/signin',      to: 'sessions#new',         via: 'get'
+  match '/signout',     to: 'sessions#destroy',     via: 'delete'
 
-  
+  match '/meta',        to: 'static_pages#meta',    via: 'get'
+
+  match '/procedures',  to: 'static_pages#procedures',   via: 'get'
+  match '/editors',     to: 'static_pages#editors',   via: 'get'
+  match '/download',    to: 'static_pages#download',   via: 'get'
+  match '/bulk_import', to: 'static_pages#bulk_import',   via: 'get'
+   
 
 
   # dynamic pull-down for trait select

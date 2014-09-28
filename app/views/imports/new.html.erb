@@ -11,75 +11,14 @@
   </div>
 <% end %>
 
-<h1><span class="glyphicon glyphicon-cloud-upload"></span> Import observations and measurements</h1>
-
 <div class="row">
-	<div class="col-sm-8">
-		<p>A bulk import of observations and measurements is the fastest way to get your data into the database. The function imports either CSV (preferred) or Excel spreadsheets and runs numerous tests to make sure your data fit correctly into the database. You can export CSV files from Excel using "Save as...".</p>
-	</div>
-
-	<div class="col-sm-4">
-		<div class="well">
-			<%= form_for @item_import, :url => upload_path, html:{class: "form-horizontal"}  do |f| %>
-			  <%= f.hidden_field :model_name, :value => @model_name %>
-			  <p><%= f.file_field :file %></p>
-			  <%= f.submit "Import", :class => 'btn btn-primary btn-lg'%>
-			<% end %>
-		</div>
-	</div>
+  <div class="col-md-8 col-md-offset-2">
+    <%= form_for @item_import, :url => upload_path, html:{class: "form-horizontal"}  do |f| %>
+      <%= f.hidden_field :model_name, :value => @model_name %>
+      <p><%= f.file_field :file %></p>
+      <%= f.submit "Import", :class => 'btn btn-primary btn-lg'%>
+    <% end %>
+    <%= markdown File.open(Rails.root + "public/bulk_import.md", 'r').read %>
+  </div>
 </div>
 
-<h3>Spreadsheet headers</h3>
-
-<p>The spreadsheet you import must have a header with exactly (and only) the following column names.</p>
-
-<p><code style="color:grey;">observation_id, access, user_id, coral_id, location_id, resource_id, trait_id, standard_id, methodology_id, value, value_type, precision, precision_type, precision_upper, replicates, notes</code></p>
-
-<h3>Observation-level data</h3>
-<ul>
-	<li><code style="color:grey;">observation_id</code> is an unique integer that groups a set of measurements into one observation. In the example below, the first three rows belong to the same observation of a coral.</li>
-	<li><code style="color:grey;">access</code> is a boolean value indicating if the observation should be private (0) or public (1). The Access value must be the same for all rows within an observation group. Assess can be changed once uploaded from your observations page.  In the example below, the data are public.</li>
-	<li><code style="color:grey;">user_id</code> is the unique ID (integer) of the person uploading the data. You are currently signed in with user_id <label class="label label-default"><%= current_user.id %></label>. Your ID can be found at the top of your "<%= link_to "my observations", user_path(current_user) %>" page.</li>
-	<li><code style="color:grey;">coral_id</code> is the unique ID (integer) of the coral species of which the observation was taken, which occur in grey to the left of corals (<%= link_to "here", corals_path %>) or at the top of a given coral's observations page. In the example below, coral_id 37 is <em><%= link_to "Acropora cervicornis", coral_path(37) %></em>.</li>
-	<li><code style="color:grey;">location_id</code> is the unique ID (integer) of the location where the observation took place, which occur in grey to the left of locations (<%= link_to "here", locations_path %>) or at the top of a given location's observations page. The location ID 248 in the example is <%= link_to "Buck Island", location_path(248) %>, St. Croix.</li>
-	<li><code style="color:grey;">resource_id</code> is the unique ID (integer) of the resource (paper) where the observation was published, which occur in grey to the left of resources (<%= link_to "here", resources_path %>) or at the top of a given resource's observations page. In teh example, resource 590 is <%= link_to "Gladfelter (1982)", resource_path(590) %>. Resource can be empty for unpublished data, in which case access must be private (0) until the data are published and a resource entered.</li>
-	</ul>
-  
-  <p><label class="label label-danger">Warning</label> All measurements corresponding to a given observation should have exactly the same observation-level data. Use copy and paste to avoid errors.</p>
-
-<h3>Measurement-level data</h3>
-
-<ul>
-	<li><code style="color:grey;">trait_id</code> is the unique ID (integer) of the trait (or contextual "trait") that was measured, which occur in grey to the left of traits (<%= link_to "here", traits_path %>) or at the top of a given trait's observations page.</li>
-	<li><code style="color:grey;">standard_id</code> is the unique ID (integer) of the standard (unit) that was used to measure the trait, which occur in grey to the left of standards (<%= link_to "here", standards_path %>).</li>
-	<li><code style="color:grey;">methodology_id</code> is the unique ID (integer) of the methodology used to measure the trait, which occur in grey to the left of methodologies (<%= link_to "here", methodologies_path %>) or at the top of a given methodology's observations page.</li>
-	<li><code style="color:grey;">value</code> is the actual measurement (number, text, true/false, etc.). If the value is an option of a categorical trait (e.g., growth form), then the value must exactly match the value options for the trait (e.g., massive).  If the value option does not exist, can you use an existing option? If not, then value options can be added by editing the trait. We strongly suggest that you have an <%= link_to "Editor", editors_path %> do this for you.</li>
-	<li><code style="color:grey;">value_type</code> describes the type of value. Options are:</li>
-  <ul>
-		<li><code style="color:green;">raw_value</code> for direct measurements.</li>
-		<li><code style="color:green;">mean</code> when the value represents the mean of more than one value. Also, enter precision estimates and the number of measurements that the value represents.</li>
-		<li><code style="color:green;">median</code> when the value represents the median of more than one value. Also, enter precision estimates and the number of measurements that the value represents.</li>
-		<li><code style="color:green;">maximum</code> when the value represents the maximum of more than one value.</li>
-		<li><code style="color:green;">minimum</code> when the value represents the minimum of more than one value.</li>
-		<li><code style="color:green;">model_derived</code> when the value is derived from a model.  Precision should be included and the resource (paper) should clearly explain how the value was derived.</li>
-		<li><code style="color:green;">expert_opinion</code> when the actual value has not been measured directly, but an expert feels confident of the value, perhaps based on phylogenetic relatedness.</li>
-		<li><code style="color:green;">group_opinion</code> when the actual value has not been measured directly, but a group of experts feel confident of the value.</li>
-  </ul>
-	<li><code style="color:grey;">precision</code> is the level of variation associated with the value if it is made up from more than one measurement (e.g., mean).</li>
-	<li><code style="color:grey;">precision_type</code> is the kind of variation that the precision estimate (above) corresponds with. Options are:</li>
-  <ul>
-		<li><code style="color:green;">standard_error</code></li>
-		<li><code style="color:green;">standard_deviation</code></li>
-		<li><code style="color:green;">95_ci</code></li>
-		<li><code style="color:green;">range</code></li>
-  </ul>
-	<li><code style="color:grey;">precision_upper</code> is used to capture the maximum (upper) value if range is used (above).</li>
-	<li><code style="color:grey;">replicates</code> is the number of measurement (replicates) that were used to calculate the value.  Leave this field blank if equal to one (e.g., a raw_value).</li>
-	<li><code style="color:grey;">notes</code></li>
-</ul>
-
-<h3>Example</h3>
-
-<p>The image below is a screenshot of an import spreadsheet for coral <%= link_to "skeletal densities", trait_path(61) %> of <em><%= link_to "Acropora cervicornis", coral_path(37) %></em> in a study on <%= link_to "Buck Island", location_path(248) %>, St. Croix (<%= link_to "Gladfelter 1982", resource_path(590) %>). Density measurements were taken using a <%= link_to "Kobe porosimeter", methodology_path(5) %>. Context for density measurements include the <%= link_to "part of the corallite", trait_path(159) %> (e.g., calyx), <%= link_to "distance from tip", trait_path(157) %> of branch, and the <%= link_to "water depth", trait_path(143) %> where corals were collected.</p>
-
-<%= link_to image_tag("import_example.png", :class => "img-responsive"), image_path("import_example.png") %>

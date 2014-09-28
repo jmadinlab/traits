@@ -1,30 +1,29 @@
 <% provide(:title, 'Editors') %>
 
-<div class="page-header">
-  <h1>Editors</h1>
-</div>
-
-<p>Under review</p>
-
-<p>The Coral Trait Database replies on expert volunteers who monitor contributions to the database. Editors are assigned one or more traits to monitor for data quality and issue reports. If you add a new trait to the database, you might be asked to volunteer as the editor for this trait.  Editors are automatically emailed when new data for their traits are entered.</p>
-
 <div class="row">
-  <div class="col col-md-12">
-    <div class="list-group">
-      <% User.where(:editor => true).each do |ed| %>
-        <div class="list-group-item">
-          <div class="row">
-            <div class="col col-md-2">
-              <%= ed.name %>
-            </div>      
-            <div class="col col-md-10">
-              <% Trait.where("user_id IS ? AND trait_class IS NOT?", ed.id, "Contextual").each do |tr| %>
-              <%= link_to tr.trait_name, trait_path(tr), class: "label label-primary" %>
-            <% end %>
-            </div>      
-          </div>      
-        </div>
-      <% end %>
-    </div>      
+  <div class="col-md-8 col-md-offset-2">
+
+    <%= markdown File.open(Rails.root + "public/editors.md", 'r').read %>
+
+    <div class="row">
+      <div class="col col-md-12">
+        <div class="list-group">
+          <% User.where(:editor => true).each do |ed| %>
+            <div class="list-group-item">
+              <div class="row">
+                <div class="col col-md-2">
+                  <%= ed.name %>
+                </div>      
+                <div class="col col-md-10">
+                  <% Trait.where("user_id IS ? AND trait_class IS NOT?", ed.id, "Contextual").each do |tr| %>
+                  <%= link_to tr.trait_name, trait_path(tr), class: "label label-primary" %>
+                <% end %>
+                </div>      
+              </div>      
+            </div>
+          <% end %>
+        </div>      
+      </div>      
+    </div>
   </div>      
 </div>

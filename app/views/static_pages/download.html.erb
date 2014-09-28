@@ -1,0 +1,9 @@
+<% provide(:title, 'Download') %>
+
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+
+    <%= markdown File.open(Rails.root + "public/download.md", 'r').read %>
+
+  </div>
+</div>

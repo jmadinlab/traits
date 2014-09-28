@@ -98,14 +98,15 @@
 					<ul class="nav navbar-nav navbar-right">
 			    	<li id="fat-menu" class="dropdown">
 			       	<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-			         Information<b class="caret"></b>
+			         About<b class="caret"></b>
 			       	</a>
 			       	<ul class="dropdown-menu" style="text-align: left;">
 							 	<li><%= link_to "Procedures", procedures_path %></li>
 							 	<li><%= link_to "Editors", editors_path %></li>
-							 	<li><%= link_to "Help", help_path %></li>
+							 	<li><%= link_to "Download", download_path %></li>
+							 	<li><%= link_to "Data Imports", bulk_import_path %></li>
 							 
-			         	<% if signed_in? && current_user.contributor? %>
+			         	<% if signed_in? && current_user.editor? %>
 			         		<li><%= link_to "Metadata", meta_path %></li>
 							 	<% end %>
 			       	</ul>
