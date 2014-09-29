@@ -1,6 +1,6 @@
 <% provide(:title, 'Meta') %>
 
-<h1><%= @trait.trait_name %> (ID: <%= @trait.id %>)</h1>
+<h1><%= link_to @trait.trait_name, trait_path(@trait), 'data-no-turbolink' => true %> (ID: <%= @trait.id %>)</h1>
 
 <p>A list of potential database errors for editors to monitor.</p>
 

@@ -1,8 +1,8 @@
 <% provide(:title, 'Meta') %>
 
-<h1><%= @trait.trait_name %> (ID: <%= @trait.id %>)</h1>
+<h1><%= link_to @trait.trait_name, trait_path(@trait), 'data-no-turbolink' => true %> (ID: <%= @trait.id %>)</h1>
 
-<p>A list of potential database errors for editors to monitor.</p>
+<p>A list of potential database errors for Editors to monitor. Duplicates have the same coral, location, resource, trait and value. This does happen, so carefully consider deleting observations.</p>
 
 <%= link_to 'Back', show_meta_path(@trait.id), class: "btn btn-default btn-sm" %>
 
