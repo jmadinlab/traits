@@ -24,7 +24,7 @@
 			<p>
 	 			<strong>Used for traits:</strong>
  				<% @methodology.traits.each do |trait| %>
-	 				<%= link_to trait.trait_name, trait, class: "label label-primary" %>
+	 				<%= link_to trait.trait_name, trait, class: "label label-primary", 'data-no-turbolink' => true %>
 	    		<% end %>
 			</p>
 	    <% end %>

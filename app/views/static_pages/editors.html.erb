@@ -16,7 +16,7 @@
                 </div>      
                 <div class="col col-md-10">
                   <% Trait.where("user_id IS ? AND trait_class IS NOT?", ed.id, "Contextual").each do |tr| %>
-                  <%= link_to tr.trait_name, trait_path(tr), class: "label label-primary" %>
+                  <%= link_to tr.trait_name, trait_path(tr), class: "label label-primary", 'data-no-turbolink' => true %>
                 <% end %>
                 </div>      
               </div>      

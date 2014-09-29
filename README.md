@@ -1,7 +1,7 @@
 # Database procedures
 ***
 
-The Coral Trait Database is an open source research initiative that aims to make all observations and measurements of corals accessible in order to more rapidly advance coral reef science. Anyone collecting coral trait data (e.g., collected in field and laboratory studies, extracted from the literature, or by other means) can join and contribute to the growing data compilation. Contributors have control over the privacy of their data and greatly benefit from being able to download complementary public data from the database in a standard format for use in their analyses. We hope that private data will become public once the contributor has published them in a paper, which will subsequently be cited when their data are used in analyses by other people. We have carefully designed a citation system that ensures full transparency about the origin of each individual data point as well as larger data compilations and compilations of other peoples' data (such as data extracted from literature). By becoming a data contributor, you become a member of the Coral Trait Database Consortium.
+The Coral Trait Database is an open source research initiative that aims to make all observations and measurements of corals accessible in order to more rapidly advance coral reef science. Anyone collecting coral trait data (e.g., collected in field and laboratory studies, extracted from the literature, or by other means) can join and contribute to the growing data compilation. Contributors have control over the privacy of their data and greatly benefit from being able to download complementary public data from the database in a standard format for use in their analyses. We hope that private data will become public once the contributor has published them, which will subsequently be cited when their data are used in analyses by other people. We have carefully designed a citation system that ensures full transparency about the origin of each individual data point as well as larger data compilations and compilations of other peoples' data (such as data extracted from literature for meta-analyses). By becoming a data contributor, you become a member of the Coral Trait Database Consortium.
 
 > The Coral Trait Database Consortium (2014) The Coral Trait Database. http://coraltraits.org
 
@@ -16,7 +16,7 @@ The Coral Trait Database is an open source research initiative that aims to make
     - [Database programmers](#database-programmers)
 - [Traits](#data)
     - [Current traits](#current-traits)
-- [For data contributors](#for-data-contributors)
+- [Data entry](#data-entry)
     - [Imports](#imports)
     - [Downloads](#downloads)
 - [For editors](#for-editors)
@@ -45,7 +45,7 @@ The Coral Trait Database is an open source research initiative that aims to make
 
 ### Administrator
 
-- Toni Mizerek
+- Toni Mizerek (part-time)
 
 ### Managerial Board
 
@@ -82,7 +82,7 @@ The Coral Trait Database is an open source research initiative that aims to make
 ### Database programmers
 
 - Joshua Madin
-- Surendra Shrestha
+- Surendra Shrestha (part-time)
 
 *[Top](#)*
 
@@ -90,7 +90,7 @@ The Coral Trait Database is an open source research initiative that aims to make
 
 > The Coral Traits Consortium is flexible about the definition of trait.
 
-A true trait is a heritable quality of an organism. However, including species-level characteristics, such as geographical range size and conservation status, in the same database makes analyses of true traits much more effective. In addition, the database captures contextual (ancillary) data about the environment in which a trait measurement was recorded (i.e., "traits" of habitat, seawater or an experiment). Contextual "traits" are important for understanding true traits (e.g., as predictors or co-variates in analyses). Individual-level (true) traits, species-level characteristics and contextual data are all considered traits in the database.
+A true trait is a heritable quality of an organism. However, including species-level characteristics, such as geographical range size and conservation status, in the same database makes analyses of true traits much more effective. In addition, the database captures contextual (ancillary) data about the environment in which a trait measurement was recorded (e.g., "traits" of habitat, seawater or an experiment). Contextual "traits" are important for understanding true traits (e.g., as predictors or co-variates). Individual-level (true) traits, species-level characteristics and contextual data are all considered traits in the database.
 
 ### Current traits
 
@@ -104,45 +104,73 @@ The database currently accepts individual-level and species-level measurements o
 
 Unpublished can also be imported into the database if it is kept private. Private data can be made public once published and associated with a resource. The benefit of accepting unpublished data is the ability for the owner to download the data alongside other public data in the database for analysis. The other benefit is improved data longevity.
 
-`Individual-level` measurements typically include other measurements of the environment that provide useful context. One (or more) trait measurements of a coral and other contextual measurements are bound together as an observation. For example, an measurement of [larval swimming speed](/observations/97883) was measured within the context of swimming direction and water temperature, both of which provide important information about the swimming speed.
+`Individual-level` measurements typically include other measurements of the environment that provide useful context. One (or more) trait measurements of a coral and other contextual measurements are bound together as an observation. For example, an measurement of [larval swimming speed](/observations/97883) was measured within the context of swimming direction and water temperature, both of which provide important information about that particular swimming speed measurement.
 
-`Species-level` measurements are either traits that do not vary among individuals (such as [zooxanthellate](/traits/41) and [sexual system](/traits/8)) or emergent characteristics of individuals within a species (such as geographical [range size](/traits/138), [conservation status](/traits/77), [wave exposure preference](/traits/96) and [lower depth](/traits/92)).
+`Species-level` measurements are either traits that do not vary among individuals over ecological time-scales (such as [sexual system](/traits/8) and if [zooxanthellate](/traits/41) or not) or emergent characteristics of individuals within a species (such as geographical [range size](/traits/138), [conservation status](/traits/77), [wave exposure preference](/traits/96) and [lower depth](/traits/92)).
 
 ### Observations and measurements
 
-Observations bind related measurements. For example, observing the same coral and measuring its height and weight results in one observation with two measurement (each corresponing with a different trait of the coral). If water temperature was also measurement, then this also belongs to the same observation, but as a contextual trait.
+Observations bind related measurements. For example, observing the same coral and measuring its height and weight results in one observation with two measurement (each corresponding with a different trait of the coral). If water temperature was also measured, then this also belongs to the same observation, but as a contextual trait.
 
-`Observation-level` data include the coral species, location and resource. These data are the same for all measurements corresponding to the observation.
+`Observation-level` data include the coral species, location and resource. These data are the same for all measurements corresponding to the observation. When entering or importing trait data, the following is required.
 
-`Measurement-level` data include the trait, value, standard (unit), methodology, and estimates of precision (if applicable).
-
-### Required data
-
-When entering or importing trait data, the following is required.
-
-- Observation-level
   - User
-  - Access
-  - Coral
+  - Access (public or private)
+  - Coral species
   - Location
-  - *Resource 
+  - *Resource
 
 *Resource can be left blank for unpublished data, but data must be kept private.
 
-- Measurement-level
+`Measurement-level` data include the trait, value, standard (unit), methodology, and estimates of precision (if applicable). When entering or importing trait data, the following is required.
+
   - Trait
   - Value
   - Standard
 
-# Protocols for contributing someone else's data
+*[Top](#)*
+
+# Data entry
+
+> The Coral Traits Database is not a meta-data catalogue.
+
+**A meta-data catalogue captures high-level information** about your data set, so that people can easily find your data and potentially contact you to use it. Examples of meta-data catalogues include DRYAD, Ecological Archives and Nature Scientific Data.
+
+**The Coral Traits Database captures data-level information** so that measurements from multiple data sets can be easily extracted, compared and analysed. One way to think of it is a very large data-set being cobbled together by the coral reef community for everyone to use.
+
+### Accepted data
+
+To contribute data, you need to make a database account (*[here](/signup)*) and then contact the database [Administrator](#administrator). Signing up alone does not enable you to contribute data.
+
+- Raw data you collected yourself that has been published
+- Model-derived data that has been published
+- Expert or group opinion data that has been published
+- Data extracted from existing publications (usually not raw; e.g., means from tables and figures)
+- Unpublished data if kept private until published
+
+> Having a primary, peer-reviewed resource is essential for maintaining data quality, contributor recognition and scientific rigour
+
+### Single observations
+
+If you are only entering one or a few observations, use the [Add Observation](/observation/new) link in the menu bar. The [bulk import](/bulk_import) instructions will help you understand the general data entry protocols. For instance, you need to enter the locations and resources for your data first, and also ensure the traits your require exist.
+
+### Bulk imports (recommended)
+
+Information about importing large amount of data is *[here](/bulk_import)*.
+
+> Bulk imports retain a copy of the import that allow you to try again if errors are made.
+
+### Backend imports
+
+If your data is well-managed, you can ask one of the [database programmers](#database-programmers) to upload it for you.
+
+### Protocols for contributing someone else's data
 
 Entering published data not already in the database in strongely encouraged to improve the data's longevity and augment potential analyses. A case in which this might occur is a meta-analysis. The data enterer may wish to keep the data private until their study is published.
 
-> The key ojective is to extract the data in such a way as to avoid people ever needing to go back to the resource again.
+> The key ojective is to extract the data in such a way as to avoid people ever needing to go back to the primary resource again.
 
-For example, taking only the mean value of a trait from a paper, without any measure of variation or context of where the trait was measured, will mean that the data are useless for most purposes. Someone else will need to go back and extract the other information.
-
-### Protocols
+For example, extracting only the mean value of a trait from a paper, without extracting any measure of variation or the context in which the trait was measured, will mean that the data may not be useful for broader analyses. Someone else might need to go back and extract the information again.
 
 - **Primary resources only.** Often people enter data from summary tables in papers that come from other primary resources. It is important to enter the data from the primary resource for two reasons: (1) so that the primary resource's author is credited for their work, and (2) to avoid data duplication, where the same data are entered from both the primary and secondary resource. Secondary resources, such as meta-analyses, can be credited for accummulating data by using database [citation manager](/citations).
 
@@ -150,19 +178,16 @@ For example, taking only the mean value of a trait from a paper, without any mea
 
 - **Gather important context.** Enter contextual data as well. This might be as simple as the depth at which corals were measured and the same for all observations. However, contextual information can get complicated quickly.  For example, when the area of a colony is measured each year for 10 years, context will include an [indivudal identifier](/traits/172) to capture that they same colony was measured, as well as the [year](/traits/174) to determine the order in which measurements were made. Examples of capture a range of contextual situations can be found on the [Imports](/imports/observations) page.
 
+*[Top](#)*
 
-# Data imports
-
-> Information about importing data is *[here](/bulk_import)*.
-
-# Data downloads
+# Downloading data
 
 > Information about downloading data is *[here](/download)*.
 
 
 Will we allow unpublished data?
 
-- Why? 
+- Why?
 - Useful to have your data alongside other data in database. 
 - More likely to contribute data at end of project
 

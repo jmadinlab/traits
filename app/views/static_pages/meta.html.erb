@@ -59,7 +59,7 @@
 				  	<%= trait.id %>
 			  	</div>
 					<div class="col-sm-6">
-				  	<%= link_to trait.trait_name, "/traits/" + trait.id.to_s %>
+				  	<%= link_to trait.trait_name, trait_path(trait), 'data-no-turbolink' => true %>
 			  	</div>
 					<div class="col-sm-4">
 					  <%= trait.trait_class %>

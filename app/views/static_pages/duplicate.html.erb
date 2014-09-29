@@ -8,8 +8,16 @@
 
 <h3>Potential duplicate measurements</h3>
 
-<% Measurement.where(:trait_id => @trait.id).joins(:observation).group(:value, :standard_id, :coral_id, :resource_id).having("count(*) > 1").each do |i| %>
-	<% obs = Observation.where(:id => i.observation_id).first %>
-	<% @observations = Observation.joins(:measurements).where("value IS ? AND standard_id IS ? AND trait_id IS ? AND coral_id IS ? AND resource_id IS ?", i.value, i.standard_id, i.trait_id, obs.coral_id, obs.resource_id) %>
-	<%= render "shared/observations" %>
+<% @measurements = Measurement.where(:trait_id => @trait.id).joins(:observation).group(:value, :standard_id, :coral_id, :resource_id).having("count(*) > 1") %>
+
+<% if @measurements.any? %>
+
+  <% @measurements.each do |i| %>
+  	<% obs = Observation.where(:id => i.observation_id).first %>
+  	<% @observations = Observation.joins(:measurements).where("value IS ? AND standard_id IS ? AND trait_id IS ? AND coral_id IS ? AND resource_id IS ?", i.value, i.standard_id, i.trait_id, obs.coral_id, obs.resource_id) %>
+    	<%= render "shared/observations" %>
+  <% end %>
+
+<% else %>
+  <span class="label label-success">looking good</span>
 <% end %>
