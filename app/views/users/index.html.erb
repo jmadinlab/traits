@@ -47,6 +47,9 @@
 					<div class="col-sm-4">
 						<%= link_to user.name, user %>
 					  <small>(<%= mail_to user.email, user.email, {:subject => "Coral Trait enquiry"} %>)</small>
+					  <% if current_user.admin? && user.last_seen_at %>
+							<br>Last seen: <%= distance_of_time_in_words(user.last_seen_at, Time.now) %> ago
+						<% end %>
 					</div>
 					
 					<div class="col-sm-1" style="text-align:center;">

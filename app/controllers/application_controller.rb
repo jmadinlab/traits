@@ -6,6 +6,8 @@ class ApplicationController < ActionController::Base
 
   WillPaginate.per_page = 15
 
+  before_filter :set_last_seen_at, if: proc { |p| signed_in? && (session[:last_seen_at] == nil || session[:last_seen_at] < 15.minutes.ago) }
+
   def update_values
     @values = Trait.find(params[:trait_id]).value_range.split(',').map(&:strip)
     @standard = Standard.find(Trait.find(params[:trait_id]).standard_id)
@@ -196,6 +198,13 @@ class ApplicationController < ActionController::Base
   
    return csv_string
   end
+
+  private
+
+    def set_last_seen_at
+      current_user.update_attribute(:last_seen_at, Time.now)
+      session[:last_seen_at] = Time.now
+    end
 
   
 end
