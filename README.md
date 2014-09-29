@@ -1,11 +1,13 @@
 # Database procedures
 ***
 
+*[Download PDF version](http://coraltraits.org/coraltraits_README.pdf)*
+
 The Coral Trait Database is an open source research initiative that aims to make all observations and measurements of corals accessible in order to more rapidly advance coral reef science. Anyone collecting coral trait data (e.g., collected in field and laboratory studies, extracted from the literature, or by other means) can join and contribute to the growing data compilation. Contributors have control over the privacy of their data and greatly benefit from being able to download complementary public data from the database in a standard format for use in their analyses. We hope that private data will become public once the contributor has published them, which will subsequently be cited when their data are used in analyses by other people. We have carefully designed a citation system that ensures full transparency about the origin of each individual data point as well as larger data compilations and compilations of other peoples' data (such as data extracted from literature for meta-analyses). By becoming a data contributor, you become a member of the Coral Trait Database Consortium.
 
-> The Coral Trait Database Consortium (2014) The Coral Trait Database. http://coraltraits.org
+> The Coral Trait Database Consortium (2014) The Coral Trait Database. [http://coraltraits.org](http://coraltraits.org)
 
-### Contents
+**Contents**
 
 - [Mission](#mission)
 - [Governance](#governance)
@@ -18,18 +20,17 @@ The Coral Trait Database is an open source research initiative that aims to make
     - [Current traits](#current-traits)
 - [Data entry](#data-entry)
     - [Imports](#imports)
-    - [Downloads](#downloads)
+- [Downloading data](#downloading-data)
 - [For editors](#for-editors)
 - [Database design](#database-design)
     - [Database design references](#database-design-references)
-    - [Database code](#database-code)
+- [Database code](#database-code)
 - [License](#license)
-
 
 
 # Mission
 
-> The core values of the Coral Traits Consortium.
+> Big data need to be organised.
 
 - Advance coral reef science through the gathering and dissemination of data resources
 - Provide an open access portal providing unrestricted interactive and automated access to information about corals
@@ -58,7 +59,7 @@ The Coral Trait Database is an open source research initiative that aims to make
 
 ### Editorial Board
 
-> Editors listed *[here](/editors)* are responsible for quality control of trait data.
+> Editors listed *[here](http://coraltraits.org/editors)* are responsible for quality control of trait data.
 
 ### Taxonomy Advisory Board
 
@@ -84,7 +85,7 @@ The Coral Trait Database is an open source research initiative that aims to make
 - Joshua Madin
 - Surendra Shrestha (part-time)
 
-*[Top](#)*
+*[Top](#database-procedures)*
 
 # Traits
 
@@ -106,7 +107,7 @@ Unpublished can also be imported into the database if it is kept private. Privat
 
 `Individual-level` measurements typically include other measurements of the environment that provide useful context. One (or more) trait measurements of a coral and other contextual measurements are bound together as an observation. For example, an measurement of [larval swimming speed](/observations/97883) was measured within the context of swimming direction and water temperature, both of which provide important information about that particular swimming speed measurement.
 
-`Species-level` measurements are either traits that do not vary among individuals over ecological time-scales (such as [sexual system](/traits/8) and if [zooxanthellate](/traits/41) or not) or emergent characteristics of individuals within a species (such as geographical [range size](/traits/138), [conservation status](/traits/77), [wave exposure preference](/traits/96) and [lower depth](/traits/92)).
+`Species-level` measurements are either traits that do not vary among individuals over ecological time-scales (such as [sexual system](http://coraltraits.org/traits/8) and if [zooxanthellate](http://coraltraits.org/traits/41) or not) or emergent characteristics of individuals within a species (such as geographical [range size](http://coraltraits.org/traits/138), [conservation status](http://coraltraits.org/traits/77), [wave exposure preference](http://coraltraits.org/traits/96) and [lower depth](http://coraltraits.org/traits/92)).
 
 ### Observations and measurements
 
@@ -128,7 +129,7 @@ Observations bind related measurements. For example, observing the same coral an
   - Value
   - Standard
 
-*[Top](#)*
+*[Top](#database-procedures)*
 
 # Data entry
 
@@ -140,7 +141,7 @@ Observations bind related measurements. For example, observing the same coral an
 
 ### Accepted data
 
-To contribute data, you need to make a database account (*[here](/signup)*) and then contact the database [Administrator](#administrator). Signing up alone does not enable you to contribute data.
+To contribute data, you need to make a database account (*[here](http://coraltraits.org/signup)*) and then contact the database [Administrator](#administrator). Signing up alone does not enable you to contribute data.
 
 - Raw data you collected yourself that has been published
 - Model-derived data that has been published
@@ -152,11 +153,11 @@ To contribute data, you need to make a database account (*[here](/signup)*) and 
 
 ### Single observations
 
-If you are only entering one or a few observations, use the [Add Observation](/observation/new) link in the menu bar. The [bulk import](/bulk_import) instructions will help you understand the general data entry protocols. For instance, you need to enter the locations and resources for your data first, and also ensure the traits your require exist.
+If you are only entering one or a few observations, use the [Add Observation](http://coraltraits.org/observation/new) link in the menu bar. The [bulk import](/bulk_import) instructions will help you understand the general data entry protocols. For instance, you need to enter the locations and resources for your data first, and also ensure the traits your require exist.
 
 ### Bulk imports (recommended)
 
-Information about importing large amount of data is *[here](/bulk_import)*.
+Information about importing large amount of data is *[here](http://coraltraits.org/bulk_import)*.
 
 > Bulk imports retain a copy of the import that allow you to try again if errors are made.
 
@@ -172,17 +173,17 @@ Entering published data not already in the database in strongely encouraged to i
 
 For example, extracting only the mean value of a trait from a paper, without extracting any measure of variation or the context in which the trait was measured, will mean that the data may not be useful for broader analyses. Someone else might need to go back and extract the information again.
 
-- **Primary resources only.** Often people enter data from summary tables in papers that come from other primary resources. It is important to enter the data from the primary resource for two reasons: (1) so that the primary resource's author is credited for their work, and (2) to avoid data duplication, where the same data are entered from both the primary and secondary resource. Secondary resources, such as meta-analyses, can be credited for accummulating data by using database [citation manager](/citations).
+- **Primary resources only.** Often people enter data from summary tables in papers that come from other primary resources. It is important to enter the data from the primary resource for two reasons: (1) so that the primary resource's author is credited for their work, and (2) to avoid data duplication, where the same data are entered from both the primary and secondary resource. Secondary resources, such as meta-analyses, can be credited for accummulating data by using database [citation manager](http://coraltraits.org/citations).
 
 - **Careful extraction.** Copy values from tables carefully and double check. Extracting data from figures can be done with software like ImageJ, where a scale can be set based on axis values and measurements of plotted data made.
 
-- **Gather important context.** Enter contextual data as well. This might be as simple as the depth at which corals were measured and the same for all observations. However, contextual information can get complicated quickly.  For example, when the area of a colony is measured each year for 10 years, context will include an [indivudal identifier](/traits/172) to capture that they same colony was measured, as well as the [year](/traits/174) to determine the order in which measurements were made. Examples of capture a range of contextual situations can be found on the [Imports](/imports/observations) page.
+- **Gather important context.** Enter contextual data as well. This might be as simple as the depth at which corals were measured and the same for all observations. However, contextual information can get complicated quickly.  For example, when the area of a colony is measured each year for 10 years, context will include an [indivudal identifier](http://coraltraits.org/traits/172) to capture that they same colony was measured, as well as the [year](/traits/174) to determine the order in which measurements were made. Examples of capture a range of contextual situations can be found on the [Imports](http://coraltraits.org/imports/observations) page.
 
-*[Top](#)*
+*[Top](#database-procedures)*
 
 # Downloading data
 
-> Information about downloading data is *[here](/download)*.
+> Information about downloading data is *[here](http://coraltraits.org/download)*.
 
 
 Will we allow unpublished data?
@@ -308,7 +309,7 @@ Our only requirement is that data must be published before it can become public.
 
 
 
-*[Top](#)*
+*[Top](#database-procedures)*
 
 # Database design
     
@@ -323,15 +324,29 @@ Several contextual constraints have been implemented in the Coral Trait Database
 - Madin JS, Bowers S, Schildhauer M, Krivov S, Pennington D and Villa F (2007) An ontology for describing and synthesizing ecological observational data. Ecological Informatics 2:279-296.
 - The foundation for this web application (e.g., session and user models) was developed using Michael Hartl's ruby of rails tutorial.
 
-### Database code
-    
-The database was developed using Ruby on Rails, is open source, and can be downloaded from <a href="https://github.com/jmadin/coraltraits">Github<a>.</p>
+*[Top](#database-procedures)*
+
+# Database code
+   
+![rails](public/images/rails.png)
+![github](public/images/github.png)
+
+The database was developed using Ruby on Rails, is open source, and can be found on [Github](https://github.com/jmadin/coraltraits).
  
-*[Top](#)*
+*[Top](#database-procedures)*
 
 # License
 
-- Sci Data requires data released under CC0 to promote potential reuse. Need to ensure all sources comply.
-- If allowing unpublished / private data, need to ensure one-way public access to avoid broken datasets (this the way CC0 works, once applied cannot be revoked)
+[![Screenshot import 1](public/images/CC0.png)](https://creativecommons.org/publicdomain/zero/1.0/)
 
-*[Top](#)*
+> Basically, if you enter data into the database and make it public, the data can be reused by others if they cite it correctly.
+
+A couple of key points:
+
+- Content must be associated with a published scientific or other scholarly research Document
+- Content may only be entered by an individual who represents and warrants that s/he is the creator and owner of the Content or otherwise has sufficient rights to be able to make the
+Content available under a [CC0 Waiver](https://creativecommons.org/publicdomain/zero/1.0/)
+- The primary language of the Content must be English.
+- Once CC0 is applied by making data public and associating it with a published research Document, the data can not be made private again.
+
+*[Top](#database-procedures)*
