@@ -32,9 +32,9 @@
 			         <li><%= link_to "Standards", standards_path %></li>
 			         <li><%= link_to "Methodologies", methodologies_path %></li>
 			         <% if signed_in? && current_user.contributor? %>
-			         	<li><%= link_to "Citation manager", citations_path %></li>
+			         	<li><%= link_to "Citation Manager", citations_path %></li>
 								<li class="divider"></li>
-			         	<li><%= link_to "Bulk import", "/imports/observations" %></li>
+			         	<li><%= link_to "Bulk Import", "/imports/observations" %></li>
 							 <% end %>
 							 <li><%#= link_to "Search", search_index_path %></li>
 			       </ul>
@@ -44,7 +44,7 @@
 
 				<ul class="nav navbar-nav navbar-left">
 					<% if signed_in? && current_user.contributor? %>
-						<li><%= link_to "New observation", new_observation_path, :data => { :no_turbolink => true } %></li>
+						<li><%= link_to "New Observation", new_observation_path, :data => { :no_turbolink => true } %></li>
 					<% end %>
 				</ul>
 
@@ -65,11 +65,11 @@
 								<%= current_user.name %><b class="caret"></b>
 					    </a>
 					    <ul class="dropdown-menu">
-					      <li><%= link_to "My observations", current_user, data: { no_turbolink: true } %></li>
+					      <li><%= link_to "My Observations", current_user, data: { no_turbolink: true } %></li>
 					      <li><%= link_to "Settings", edit_user_path(current_user) %></li>
 								<% if current_user.editor? %>
 					      	<li><%= link_to "History", history_path %></li>
-					      	<li><%= link_to "Outstanding issues", issues_path %></li>
+					      	<li><%= link_to "Outstanding Issues", issues_path %></li>
 								<% end %>
 
 								<% if current_user.admin? %>
@@ -78,12 +78,12 @@
 
 					      <li class="divider"></li>
 					      <li>
-					        <%= link_to "Sign out", signout_path, method: "delete" %>
+					        <%= link_to "Sign Out", signout_path, method: "delete" %>
 					      </li>
 					    </ul>
 					  </li>
 					<% else %>
-					  <li><%= link_to "Sign in", signin_path %></li>
+					  <li><%= link_to "Sign In", signin_path %></li>
 					<% end %>
 				</ul>
 
@@ -101,10 +101,10 @@
 			         About<b class="caret"></b>
 			       	</a>
 			       	<ul class="dropdown-menu" style="text-align: left;">
-							 	<li><%= link_to "Database procedures", procedures_path %></li>
-							 	<li><%= link_to "Downloading data", download_path %></li>
-							 	<li><%= link_to "Importing data", bulk_import_path %></li>
-							 	<li><%= link_to "Trait editors", editors_path %></li>
+							 	<li><%= link_to "Procedures", procedures_path %></li>
+							 	<li><%= link_to "Downloading", download_path %></li>
+							 	<li><%= link_to "Importing", bulk_import_path %></li>
+							 	<li><%= link_to "Editors", editors_path %></li>
 							 
 			         	<% if signed_in? && current_user.editor? %>
 									<li class="divider"></li>
