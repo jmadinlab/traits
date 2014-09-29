@@ -18,10 +18,17 @@ The Coral Trait Database is an open source research initiative that aims to make
     - [Database programmers](#database-programmers)
 - [Traits](#data)
     - [Current traits](#current-traits)
-- [Data entry](#data-entry)
-    - [Imports](#imports)
+    - [What information can be contributed](#what-information-can-be-contributed)
+    - [Observations and measurements](#observations-and-measurements)
+- [Data submission](#data-submission)
+    - [Accepted data](#accepted-data)
+    - [Small submissions](#small-submissions)
+    - [Bulk submissions (recommended)](#bulk-submissions-(recommended))
+    - [Back-end imports](#back-end-imports)
+    - [Submitting other people's data](#submitting-other-people's-data)
+    - [Quality control](#quality-control)
+    - [Error checking](#error-checking)
 - [Downloading data](#downloading-data)
-- [For editors](#for-editors)
 - [Database design](#database-design)
     - [Database design references](#database-design-references)
 - [Database code](#database-code)
@@ -30,7 +37,7 @@ The Coral Trait Database is an open source research initiative that aims to make
 
 # Mission
 
-> Big data need to be organised.
+> To be useful, big data need to be organised in a big way.
 
 - Advance coral reef science through the gathering and dissemination of data resources
 - Provide an open access portal providing unrestricted interactive and automated access to information about corals
@@ -39,6 +46,8 @@ The Coral Trait Database is an open source research initiative that aims to make
 - Provide a platform for community engagement in data quality control
 - Facilitate reproducible science
 - Do the above with a sustainable future for the database in mind, in terms of management and longevity
+
+*[Top](#database-procedures)*
 
 # Governance
 
@@ -97,13 +106,17 @@ A true trait is a heritable quality of an organism. However, including species-l
 
 > The current list of traits can be found *[here](http://coraltraits.org/traits)*.
 
-### What information can be contributed?
+### What information can be contributed
 
 The database currently accepts individual-level and species-level measurements of both zooxanthellate and azooxanthellate Schleractinain corals. 
 
 > Public data must be citable.
 
-Unpublished can also be imported into the database if it is kept private. Private data can be made public once published and associated with a resource. The benefit of accepting unpublished data is the ability for the owner to download the data alongside other public data in the database for analysis. The other benefit is improved data longevity.
+Unpublished can also be imported into the database if it is kept private. Private data can be made public once published and associated with a resource. Benefits of accepting unpublished data include:
+
+- Being able to easily download the data alongside useful public data for analysis
+- Being more likely to contribute the data at end of project and improve its longevity
+- Identify duplicate research efforts
 
 `Individual-level` measurements typically include other measurements of the environment that provide useful context. One (or more) trait measurements of a coral and other contextual measurements are bound together as an observation. For example, an measurement of [larval swimming speed](/observations/97883) was measured within the context of swimming direction and water temperature, both of which provide important information about that particular swimming speed measurement.
 
@@ -131,7 +144,7 @@ Observations bind related measurements. For example, observing the same coral an
 
 *[Top](#database-procedures)*
 
-# Data entry
+# Data submission
 
 > The Coral Traits Database is not a meta-data catalogue.
 
@@ -141,173 +154,63 @@ Observations bind related measurements. For example, observing the same coral an
 
 ### Accepted data
 
-To contribute data, you need to make a database account (*[here](http://coraltraits.org/signup)*) and then contact the database [Administrator](#administrator). Signing up alone does not enable you to contribute data.
-
 - Raw data you collected yourself that has been published
 - Model-derived data that has been published
 - Expert or group opinion data that has been published
 - Data extracted from existing publications (usually not raw; e.g., means from tables and figures)
 - Unpublished data if kept private until published
 
+To contribute data, you need to make a database account (*[here](http://coraltraits.org/signup)*) and then contact the database [Administrator](#administrator). Signing up alone does not enable you to contribute data.
+
 > Having a primary, peer-reviewed resource is essential for maintaining data quality, contributor recognition and scientific rigour
 
-### Single observations
+### Small submissions
 
-If you are only entering one or a few observations, use the [Add Observation](http://coraltraits.org/observation/new) link in the menu bar. The [bulk import](/bulk_import) instructions will help you understand the general data entry protocols. For instance, you need to enter the locations and resources for your data first, and also ensure the traits your require exist.
+If you are only entering one or a few observations, use the [Add Observation](http://coraltraits.org/observations/new) link in the menu bar. The [bulk import](http://coraltraits.org/bulk_import) instructions will help you understand the general data entry protocols. For instance, you need to enter the locations and resources, and also ensure the traits your require exist, before you can enter an observation.
 
-### Bulk imports (recommended)
+### Bulk submissions (recommended)
 
 Information about importing large amount of data is *[here](http://coraltraits.org/bulk_import)*.
 
 > Bulk imports retain a copy of the import that allow you to try again if errors are made.
 
-### Backend imports
+### Back-end imports
 
 If your data is well-managed, you can ask one of the [database programmers](#database-programmers) to upload it for you.
 
-### Protocols for contributing someone else's data
+***
+
+### Submitting other people's data
 
 Entering published data not already in the database in strongely encouraged to improve the data's longevity and augment potential analyses. A case in which this might occur is a meta-analysis. The data enterer may wish to keep the data private until their study is published.
 
 > The key ojective is to extract the data in such a way as to avoid people ever needing to go back to the primary resource again.
 
-For example, extracting only the mean value of a trait from a paper, without extracting any measure of variation or the context in which the trait was measured, will mean that the data may not be useful for broader analyses. Someone else might need to go back and extract the information again.
+For example, extracting only the mean value of a trait from a paper, without extracting any measure of variation or the context in which the trait was measured, will mean that the data may not be useful for other purposes. Someone else might need to go back and extract the information again. There is a highly likelihood of your efforts being cited if people can use the data you entered more broadly.
 
 - **Primary resources only.** Often people enter data from summary tables in papers that come from other primary resources. It is important to enter the data from the primary resource for two reasons: (1) so that the primary resource's author is credited for their work, and (2) to avoid data duplication, where the same data are entered from both the primary and secondary resource. Secondary resources, such as meta-analyses, can be credited for accummulating data by using database [citation manager](http://coraltraits.org/citations).
 
-- **Careful extraction.** Copy values from tables carefully and double check. Extracting data from figures can be done with software like ImageJ, where a scale can be set based on axis values and measurements of plotted data made.
+- **Careful extraction.** Copy values from tables carefully and double check. Extracting data from figures can be done with software like ImageJ, where a scale can be set based on axis values and measurements of plotted data made, including error bars. 
 
 - **Gather important context.** Enter contextual data as well. This might be as simple as the depth at which corals were measured and the same for all observations. However, contextual information can get complicated quickly.  For example, when the area of a colony is measured each year for 10 years, context will include an [indivudal identifier](http://coraltraits.org/traits/172) to capture that they same colony was measured, as well as the [year](/traits/174) to determine the order in which measurements were made. Examples of capture a range of contextual situations can be found on the [Imports](http://coraltraits.org/imports/observations) page.
+
+### Quality control
+
+There are three levels of data review.
+
+1. Contributor level at time of submission,  Once submitted, data are tagged as `pending`
+2. Editors for traits entered in your submission are automatically notified by email, and will review the submission. The contributor may be contacted by the Editor if there are issues with the submission. The Editor will `approve` the submission once satisfied. 
+3. Any signed-in database user can report an issue with an observation record, and the submitter and the Editor will be notified.
+
+### Error checking
+
+Basic error checking will ensure data submissions fit into the database. Error checking will improve as different issues arise. Measurement records with the same coral species, location, resource and value will be flagged as duplicates.
 
 *[Top](#database-procedures)*
 
 # Downloading data
 
 > Information about downloading data is *[here](http://coraltraits.org/download)*.
-
-
-Will we allow unpublished data?
-
-- Why?
-- Useful to have your data alongside other data in database. 
-- More likely to contribute data at end of project
-
-- Easier to identify duplications?
-
-BUT 
-
-- how much work on back end?
-- Limit to cases where you are collector
-- Unclear - will coral traits be primary source?
-
-### Published data
-
-- Available in digital form with DOI 
-  - port initial
-  - modifications
-- Available in spreadsheet, no DOI (via email)
-  - spreadsheet template / upload 
-- Only in print (dark data)
-
-
-# For users
-
-- how to import into R, reshape code
-- citation requirements/recommendation (original sources, database) (we can’t enforce anything, just encourage best practice, also encourage reviewers/editors to enforce this )
-- recommendations for reproducible research
-- how to provide feedback on errors, data quality etc (see below)
-- helpdesk?
-
-# Major question: Do we make ourselves expendable or essential?, i.e. 
-- commit to providing long-term access 
- - register as recognised archival location?
- - solid API
- - long-term commitment
-- OR, make coraltraits.org expendenable
- - all data archived elsewhere
-
-### Version control and archiving
-
-- Github
-
-Of data and API
-
-Present possible options to technical advisory board and get feedback.
-
-Aim: to provide stable API and versioning within 3 months, i.e. before data paper is released
-
-Option1:
-
-Add date to database query.  So can replicate download in the future for a particular analysis.
-
-Option 2:
-
-
-# Quality control
-
-Three levels of data review.
-
-1. Contributor level at time of submission
-2. Editorial review of user contributions by curator
-3. User feedback (issues reporting) with notification back to trait editor
-
-- look first for approval by original curator first, then after given to next in line (curator)
-- archive discussions around this so that transparent
-
-### Error checking
-
-- automated tests: allowed values
-- duplications: flags, does this ref already exist
-
-### Engagement with potential users
-
-### Strategy
-
-### End users
-
-- Scientists
-- Reef monitoring programs (e.g., Austalian Insitute of Marine Science)
-
-### Data distributors
-
-Need review
-
-- Trait bank
-- RopenSci
-
-# Recording usage
-
-Website and data download activity are tracked using Google Analytics
-
-
-### Uploading data
-
-> We welcome the import of any and all coral trait data. You maintain control over the data's privacy.
-
-Our only requirement is that data must be published before it can become public.
-
-### New corals tightly controlled
-
-
-### Global estimate (location)
-
-
-
-
-
- collected (i.e., where contributor gleaned the data from the literature)
-
-
-
-- Porting data published elsewhere (e.g., dryad)
-- Templates for uploading
-- Flag data that are duplicated / errors etc for approval
-
-### Data sources
-
-
-
-
 
 *[Top](#database-procedures)*
 
@@ -328,8 +231,8 @@ Several contextual constraints have been implemented in the Coral Trait Database
 
 # Database code
    
-![rails](public/images/rails.png)
-![github](public/images/github.png)
+![rails](images/rails.png)
+![github](images/github.png)
 
 The database was developed using Ruby on Rails, is open source, and can be found on [Github](https://github.com/jmadin/coraltraits).
  
@@ -337,7 +240,7 @@ The database was developed using Ruby on Rails, is open source, and can be found
 
 # License
 
-[![Screenshot import 1](public/images/CC0.png)](https://creativecommons.org/publicdomain/zero/1.0/)
+[![Screenshot import 1](images/CC0.png)](https://creativecommons.org/publicdomain/zero/1.0/)
 
 > Basically, if you enter data into the database and make it public, the data can be reused by others if they cite it correctly.
 

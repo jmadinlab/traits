@@ -1,4 +1,4 @@
-# Data imports
+# Importing data
 ***
 
 A bulk import of observations and measurements is the fastest way to get your data into the database. The import function accepts either CSV (preferred) or Excel spreadsheets and runs numerous tests to make sure your data fit correctly into the database correctly (note that you can export CSV formatted files from Excel using "Save as..."). Any errors will reject the import and the system will attempt to tell you where the errors occur, so you can fix these and try again.</p>

@@ -1,4 +1,4 @@
-# Data download
+# Downloading data
 ***
 
 > There are a number of ways to extract data from the database
