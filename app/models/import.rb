@@ -46,6 +46,14 @@ class Import
   end
   
   def save
+    allowed_file_extensions = ['csv', 'xls', 'xlsx']
+    if not file
+      errors.add :base, 'Please Select a File'
+      return false
+    elsif not allowed_file_extensions.include? File.extname(file.original_filename)
+      errors.add :base, 'File Type Not Allowed. Only files of type ' + allowed_file_extensions.to_s + ' are allowed'
+      return false
+    end
     $measurements = []
      
     # Save the unique observation from group of observations in csv
@@ -121,12 +129,14 @@ class Import
   private
 
     def open_spreadsheet
+    
       case File.extname(file.original_filename)
-      when ".csv" then Roo::CSV.new(file.path, csv_options: {encoding: Encoding::ISO_8859_1})
-      when ".xls" then Roo::Excel.new(file.path)
-      when ".xlsx" then Roo::Excelx.new(file.path)
+        when ".csv" then Roo::CSV.new(file.path, csv_options: {encoding: Encoding::ISO_8859_1})
+        when ".xls" then Roo::Excel.new(file.path)
+        when ".xlsx" then Roo::Excelx.new(file.path)
       else raise "Unknown file type: #{file.original_filename}"
       end
+
     end
     
     # First Check if there is any error in the items in the list
