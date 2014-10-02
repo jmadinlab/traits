@@ -36,7 +36,7 @@ class CitationsController < ApplicationController
     @citation = Citation.new(citation_params)
 
     if @citation.save
-      redirect_to @trait, flash: {success: "Citation was successfully created." }
+      redirect_to citations_path, flash: {success: "Citation was successfully created." }
     else
       render action: 'new' 
     end
@@ -46,7 +46,7 @@ class CitationsController < ApplicationController
   # PATCH/PUT /citations/1.json
   def update
     if @citation.update(citation_params)
-      redirect_to @citation, flash: {success: "Citation was successfully updated." }
+      redirect_to citations_path, flash: {success: "Citation was successfully updated." }
     else
       render action: 'edit'
     end

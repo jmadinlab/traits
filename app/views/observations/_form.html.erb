@@ -27,6 +27,12 @@
 	</div>
 
   <div class="form-group">
+    <%= f.label "secondary resource (if applicable)" %><br>
+    <p><small>For observations that are part of secondary compilations.</small></p>
+    <%= f.select :secondary_id, Resource.all.map { |u| ["#{u.author} (#{u.year}) #{u.title}", u.id] }, { include_blank: "Choose resource..." }, { id: 'simple-example', :style => "width: 600px;" } %>
+  </div>
+
+  <div class="form-group">
   	<strong>Keep this observation and measurement/s private?</strong> <%= f.check_box :private %>
     <p><small>Please keep your unpublished data private (check the box above) as per the <%= link_to "Procedures", procedures_path %>.</small></p>
   	

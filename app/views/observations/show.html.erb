@@ -28,13 +28,21 @@
 		</p>
 
 		<p>
-		  <strong>Resource:</strong>
+		  <strong>Primary resource:</strong>
 				<% if @observation.resource.present? %>
 		  		<%= link_to "#{@observation.resource.author} (#{@observation.resource.year}) #{@observation.resource.title}. #{@observation.resource.journal}, #{@observation.resource.volume_pages}.", resource_path(@observation.resource) %>
 				<% else %>
 					No record
 				<% end %>
 		</p>
+
+		<% if @observation.secondary_id %>
+			<% @secondary = Resource.where(:id => @observation.secondary_id).first %>
+			<p>
+			  <strong>Secondary resource:</strong>
+		  		<%= link_to "#{@secondary.author} (#{@secondary.year}) #{@secondary.title}. #{@secondary.journal}, #{@secondary.volume_pages}.", resource_path(@secondary.id) %>
+			</p>
+		<% end %>
 
 		<p>
 		  <strong>Original user:</strong>

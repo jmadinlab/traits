@@ -40,8 +40,6 @@ The Coral Trait Database is an open source research initiative that aims to make
 
 # 1. Mission
 
-> To be useful, big data need to be organised in a big way.
-
 - Advance coral reef science through the gathering and dissemination of data resources
 - Provide an open access portal providing unrestricted interactive and automated access to information about corals
 - Avoid redundant data gathering efforts
@@ -164,10 +162,15 @@ Observations bind related measurements. For example, observing the same coral an
 ### Accepted data
 
 - Individual-level raw data you collected yourself that has been published
-- Individual-level data extracted from existing publications (typically not raw; e.g., means from tables and figures)
+- Individual-level or aggregated (e.g., means) data extracted from existing publications (e.g., from tables, figures or supplementary online material)
 - Species-level model-derived data that has been published
 - Species-level expert or group opinion data that has been published
 - Unpublished data if kept private until published
+
+Data not accepted:
+
+- Future predictions
+- Others?
 
 To contribute data, you need to make a database account (*[here](http://coraltraits.org/signup)*) and then contact the database [Administrator](#administrator). Signing up alone does not enable you to contribute data.
 
