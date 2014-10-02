@@ -163,7 +163,7 @@
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def observation_params
-      params.require(:observation).permit(:user_id, :location_id, :coral_id, :resource_id, :private, :approval_status, measurements_attributes: [:id, :user_id, :orig_user_id, :trait_id, :standard_id, :value, :value_type, :orig_value, :precision_type, :precision, :precision_upper, :replicates, :notes, :methodology_id, :approval_status, :_destroy])
+      params.require(:observation).permit(:user_id, :location_id, :coral_id, :resource_id, :private, :approval_status, :secondary_id, measurements_attributes: [:id, :user_id, :orig_user_id, :trait_id, :standard_id, :value, :value_type, :orig_value, :precision_type, :precision, :precision_upper, :replicates, :notes, :methodology_id, :approval_status, :_destroy])
     end
 
 

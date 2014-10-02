@@ -23,7 +23,7 @@
 	<div class="form-group">
 		<% if current_user.admin? %>
 				<%= f.label :user %>
-				<%= f.select :user_id, User.all.collect {|a| [a.name, a.id]}, {:selected => current_user.id}, class: "form-control" %>
+				<%= f.select :user_id, User.where(:contributor => true).collect {|a| [a.name, a.id]}, {:selected => current_user.id}, class: "form-control" %>
 		<% else %>
 			<%= f.label :user %>: <%= current_user.name %>
 		  <%= f.hidden_field :user_id, :value => current_user.id %>
@@ -31,6 +31,6 @@
 	</div>
 
   <div class="actions">
-    <%= f.submit "Submit", class: "btn btn-primary btn-md" %>
+    <%= f.submit "Submit", class: "btn btn-primary btn-lg" %>
   </div>
 <% end %>

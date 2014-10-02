@@ -4,14 +4,7 @@
 
 		<%= render 'form' %>
 
-		<% if !params[:trait].blank? %>
-			<%= link_to 'Back', trait_path(params[:trait]) %>
-		<% else %>
-			<% if !params[:resource].blank? %>
-			<%= link_to 'Back', resource_path(params[:resource]) %>
-			<% else %>
-				<%= link_to 'Back', citations_path %>
-			<% end %>
-		<% end %>
+		<%= link_to 'Back', citations_path %>
+
 	</div>
 </div>
