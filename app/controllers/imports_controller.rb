@@ -14,11 +14,11 @@ class ImportsController < ApplicationController
 		@model_name = get_model_name(params[:import]['model_name'])
 		@item_import = Import.new(params[:import])
 		@item_import.set_model_name(@model_name)
-	
-		
+		@item_import.current_user = current_user
+		import_type = params[:import_type]
 		
 
-		if @item_import.save
+		if @item_import.save(import_type)
 			# Todo : Change the user to the one responsible for that particular coral/trait/observation
 			#UploadApprovalMailer.approve_all(@item_import.get_email_list).deliver
 

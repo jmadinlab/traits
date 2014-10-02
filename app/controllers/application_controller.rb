@@ -62,7 +62,7 @@ class ApplicationController < ActionController::Base
   end
 
   # Return the main csv string depending upon the model (corals data / traits data / lcation data etc)
-  def get_main_csv(observations, taxonomy, contextual, global)
+  def get_main_csv(observations, taxonomy=nil, contextual=nil, global=nil)
     csv_string = CSV.generate do |csv|
       if taxonomy == "on"
         csv << ["observation_id", "access", "user_id", "coral_id", "coral_name", "major_clade", "family_molecules", "family_morphology", "location_id", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_id", "trait_name", "standard_id", "standard_unit", "methodology_id", "methodology_name", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates", "notes"]

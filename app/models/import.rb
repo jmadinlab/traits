@@ -16,6 +16,8 @@ class Import
   # Declare a global variable measurements to store all the measurement objects
   $measurements = []
   
+  $new_observations = []
+
   # Map the observation group number in csv spreadsheet to a newly created observation id
   # Format : { '1' : 90613, '2': 90614 }
   $observation_id_map = {}
@@ -23,8 +25,9 @@ class Import
   $email_list = []
   $ignore_row = []
   $total_rows
+  $import_type
   $new_observation_csv_headers = ["observation_id",  "access",  "user_id", "coral_id"  ,"location_id", "resource_id", "trait_id",  "standard_id",  "methodology_id" ,"value" ,"value_type",  "precision" ,"precision_type" , "precision_upper" ,"replicates", "notes"]
-  attr_accessor :file, :model_name
+  attr_accessor :file, :model_name, :current_user
 
   def initialize(attributes = {})
     attributes.each { |name, value| send("#{name}=", value) }
@@ -45,8 +48,11 @@ class Import
     return $email_list.uniq
   end
   
-  def save
-    allowed_file_extensions = ['csv', 'xls', 'xlsx']
+  def save(import_type)
+    puts 'import_type: ', import_type
+    $import_type = import_type
+
+    allowed_file_extensions = ['.csv', '.xls', '.xlsx']
     if not file
       errors.add :base, 'Please Select a File'
       return false
@@ -54,11 +60,13 @@ class Import
       errors.add :base, 'File Type Not Allowed. Only files of type ' + allowed_file_extensions.to_s + ' are allowed'
       return false
     end
+
+
     $measurements = []
      
     # Save the unique observation from group of observations in csv
     # Do this only if the uploaded csv is a list of observations
-    if model_name.to_s == 'Observation'
+    if model_name.to_s == 'Observation' and import_type == 'new'
       observation_error = save_unique_observations
       if not observation_error
         rollback()
@@ -67,7 +75,7 @@ class Import
     end
     
 
-    imp_items = imported_items.compact
+    imp_items = imported_items
     
     # Check for any errors in imported observations
     any_error = check_add_errors(imp_items)
@@ -94,13 +102,21 @@ class Import
     # If there is no any error, then save it
     # if imported_items.map(&:valid?).all? 
 
-    imp_items.each do |item|
-      item.save!
-    end
+    
+    
+    
+    #imp_items.map(&:destroy!)
+    Observation.destroy imp_items.uniq.map { |item| item.id }
+    
 
-    puts 'All observations saved.. Saving Measurements now'
+    # trying to delete all measurements of the observations first
+    # then save all measurements
+    # finally save all observations
+    puts 'All Observations saved.. Saving Measurements now'
+    
     
     # Duplicate Measurements might still cause validation errors.
+    """
     begin
       $measurements.each(&:save!)
     rescue => e
@@ -108,7 +124,11 @@ class Import
       rollback()
       return false
     end
+    """
 
+    $new_observations.each do |item|
+      item.save!
+    end
     # Finally verify if the total number of rows is equal to total records imported
     total_records_imported = Measurement.where('observation_id IN (?)', $observation_id_map.values).count
     if $total_rows -1 != total_records_imported
@@ -117,7 +137,9 @@ class Import
                         Total rows in csv: <b>' +  ($total_rows - 1).to_s + ' </b> <br/>
                         Total records imported: <b>' + (total_records_imported).to_s + '</b>'
       errors.add :base,  err_msg.html_safe
-      rollback()
+      if $import_type == 'new'
+        rollback()
+      end
       return false
     end
 
@@ -164,6 +186,9 @@ class Import
     def rollback
       puts 'rolling back'
       puts $observation_id_map
+      if $import_type != 'new'
+        return
+      end
       $observation_id_map.keys().each do |k|
         obs = Observation.find($observation_id_map[k])
         obs.destroy!
@@ -228,8 +253,8 @@ class Import
       $total_rows = spreadsheet.last_row
       # observation_csv_headers = ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates"]
       
-      if header == $new_observation_csv_headers
-        print 'uploading observations'
+      if $import_type == 'new'
+        puts 'uploading observations'
         # Rename some headers to correspond the database fields
         header[header.index("observation_id")] = "id"
         header[header.index("access")] = "private"
@@ -310,6 +335,108 @@ class Import
           $email_list.append("suren.shopushrestha@mq.edu.au")
           observation
         end
+      elsif $import_type == 'overwrite'
+        puts 'overwriting observations'
+        # Rename some headers to correspond the database fields
+        header[header.index("observation_id")] = "id"
+        header[header.index("access")] = "private"
+        $observation_id_map = {}
+        x = 1
+        # header[header.index("enterer")] = "user_id"
+      
+        (2..spreadsheet.last_row).map do |i|
+          row = Hash[[header, spreadsheet.row(i)].transpose]
+          
+          # Instantiate or find observation and measurement in order to be able to add errors into them
+          observation = Observation.find_by_id(row["id"])
+          
+          if not $observation_id_map.values().include? row["id"]
+            $observation_id_map[x] = row["id"]
+            obs_new =  Observation.new
+            x = x + 1
+          else
+            obs_new = $new_observations[$observation_id_map.values().index(row['id'])]
+          end
+
+          puts 'observation found for saving: ', observation.inspect
+          measurement = Measurement.find_by_id(row["measurement_id"]) || Measurement.new
+          #measurement = Measurement.new
+          
+          # Check if the signed in user is the owner of the observation
+          puts 'current_user: ' + current_user.id.to_s
+          puts 'user_id : ' + row['user_id'].to_s
+          if current_user.id.to_s != row['user_id'] and not current_user.admin?
+            observation.errors[:base] << "Row #{i} : Only owner of the observation or admin can overwrite "
+            observation
+          end
+
+          # Start Validations
+
+          # 1. Convert 0 or 1 to true or false for private field
+          if row["private"] == "0" or row["private"].empty?
+            row["private"] = true
+          else
+            row["private"] = false
+          end
+          
+          coral_id = row["coral_id"]
+          location_id = row["location_id"]
+          trait_id = row["trait_id"]
+          observation = validate_model_ids(row, observation, i)
+          
+          
+          # Validate Values based on the traits value range
+          begin
+            if trait_id
+              trait = Trait.find(trait_id)
+             if not trait.value_range.nil? and trait.value_range == "" 
+                if not trait.value_range.include? row["value"] and not trait.value_range.empty?
+                  observation.errors[:base] << "Row #{i}: Invalid Value for the trait: " + row["trait_name"] + ".. Values should be within " + trait.value_range
+                end
+              end
+              # Uncomment this in production
+              # $email_list.append(trait.user.email) if ((not $email_list.include? trait.user.email) && trait.user.editor)
+            end
+            
+          rescue
+            observation.errors[:base] << "Row #{i}: Error with value"
+          end
+
+          # Validate methodology_id against trait_id
+
+          observation = validate_methodology_with_trait(row, observation, i)
+          
+          
+          # new_observation_csv_headears = ["observation_id",  "access",  "user_id", "coral_id"  ,"location_id", "resource_id", "trait_id",  "standard_id",  "method_id" ,"value" ,"value_type",  "precision" ,"precision_type" , "precision_upper" ,"replicates"]
+          # Create the actual rows to be sent into the database for observation and measurements
+          observation_row = {"id" => row["id"], "user_id" => row["user_id"], "location_id" => location_id, "coral_id" => coral_id, "resource_id" => row["resource_id"], "private" => row["private"]}
+          measurement_row = {"user_id" => row["user_id"], "observation_id" => row["id"],  "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"], "notes" => row["notes"],  "approval_status" => "pending"}
+          
+          puts 'measurement_row: ', measurement_row
+          # Additionally check for any mapping errors
+          begin
+            observation.attributes = observation_row.to_hash
+            measurement.attributes = measurement_row.to_hash
+            obs_new.attributes = observation_row.to_hash
+            obs_new.measurements << measurement
+          rescue => error
+            observation.errors[:base] << "The column headers do not match with fields..."
+            observation.errors[:base] << error.message
+            false
+          end
+
+
+          
+          #measurement.approval_status = "pending"
+          $measurements.append(measurement)
+          $new_observations.append(obs_new)
+
+          observation.approval_status = "pending"
+          # Temporary email list
+          $email_list.append("suren.shopushrestha@mq.edu.au")
+          puts 'sending back observation: ' , observation.inspect
+          observation
+        end
       elsif model_name.to_s != 'Observation'
         puts 'uploading non observations'
         (2..spreadsheet.last_row).map do |i|
@@ -367,7 +494,7 @@ class Import
     end
     
     def validate_model_ids(row, observation, i)
-      negative_cols = ['observation_id', 'trait_id']
+      negative_cols = ['observation_id', 'trait_id', 'measurement_id']
       row.each do |col|
         if col[0].include? 'id' and col[0].length > 2 and not negative_cols.include? col[0]
           field_name = col[0]
