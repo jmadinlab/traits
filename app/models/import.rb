@@ -211,21 +211,30 @@ class Import
       spreadsheet = open_spreadsheet
       header = spreadsheet.row(1)
       $observation_id_map = {}
-      
+      """
       if header != $new_observation_csv_headers
-        errors.add :base, "The column headers do not match..."
+        errors.add :base, 'The column headers do not match...'
         return false
       end
+      """
 
       (2..spreadsheet.last_row).map do |i|
         row = Hash[[header, spreadsheet.row(i)].transpose]
         puts 'row: ', row
         if not $observation_id_map.keys().include? row["observation_id"] and row["observation_id"].present?
-          o = Observation.new(:user_id => row["user_id"], :location_id => row["location_id"], :coral_id => row["coral_id"], :resource_id => row["resource_id"], :approval_status => "pending")
-          measurement_row = {"user_id" => row["user_id"], "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"], "notes" => row["notes"], "approval_status" => "pending"}
+          coral_id = row["coral_id"]
+          trait_id = row["trait_id"]
+          
+          o = Observation.new()
+          o, coral_id, trait_id = validate_trait_coral_id_name(row, o, i)
+
+          observation_row = { "user_id" => row["user_id"], "location_id" => row["location_id"], "coral_id" => coral_id, "resource_id" => row["resource_id"], "secondary_id" => row["secondary_id"], "approval_status" => "pending"}
+          o.attributes = observation_row.to_hash
+
+          measurement_row = {"user_id" => row["user_id"], "trait_id" => trait_id, "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"], "notes" => row["notes"], "approval_status" => "pending"}
           m = Measurement.new
           o = validate_model_ids(row, o, i)
-          o = validate_methodology_with_trait(row, o, i)
+          o = validate_methodology_with_trait(row, o, trait_id, i)
 
           begin
             puts 'saving unique observations'
@@ -294,12 +303,17 @@ class Import
           observation = validate_model_ids(row, observation, i)
           observation = validate_trait_id(trait_id, row, observation, i)
           
+          observation, coral_id, trait_id = validate_trait_coral_id_name(row, observation, i)
+          
           # Validate methodology_id against trait_id
-          observation = validate_methodology_with_trait(row, observation, i)
+          observation = validate_methodology_with_trait(row, observation, trait_id, i)
+
+          puts 'coral_id : ' , coral_id
+          puts 'trait_id: ', trait_id
           
           # Create the actual rows to be sent into the database for observation and measurements
-          observation_row = {"id" => $observation_id_map[row["id"]], "user_id" => row["user_id"], "location_id" => location_id, "coral_id" => coral_id, "resource_id" => row["resource_id"], "private" => row["private"]}
-          measurement_row = {"user_id" => row["user_id"], "observation_id" => $observation_id_map[row["id"]],  "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"], "notes" => row["notes"],  "approval_status" => "pending"}
+          observation_row = {"id" => $observation_id_map[row["id"]], "user_id" => row["user_id"], "location_id" => location_id, "coral_id" => coral_id, "resource_id" => row["resource_id"], "secondary_id" => row["secondary_id"] , "private" => row["private"]}
+          measurement_row = {"user_id" => row["user_id"], "observation_id" => $observation_id_map[row["id"]],  "trait_id" => trait_id, "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"], "notes" => row["notes"],  "approval_status" => "pending"}
           
           puts 'measurement_row: ', measurement_row
           # Additionally check for any mapping errors
@@ -373,12 +387,12 @@ class Import
           observation = validate_trait_id(trait_id, row, observation, i)
           # Validate methodology_id against trait_id
 
-          observation = validate_methodology_with_trait(row, observation, i)
+          observation = validate_methodology_with_trait(row, observation, trait_id, i)
           
           
           # new_observation_csv_headears = ["observation_id",  "access",  "user_id", "coral_id"  ,"location_id", "resource_id", "trait_id",  "standard_id",  "method_id" ,"value" ,"value_type",  "precision" ,"precision_type" , "precision_upper" ,"replicates"]
           # Create the actual rows to be sent into the database for observation and measurements
-          observation_row = {"id" => row["id"], "user_id" => row["user_id"], "location_id" => location_id, "coral_id" => coral_id, "resource_id" => row["resource_id"], "private" => row["private"]}
+          observation_row = {"id" => row["id"], "user_id" => row["user_id"], "location_id" => location_id, "coral_id" => coral_id, "resource_id" => row["resource_id"], "secondary_id" => row["secondary_id"] , "private" => row["private"]}
           measurement_row = {"user_id" => row["user_id"], "observation_id" => row["id"],  "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"], "notes" => row["notes"],  "approval_status" => "pending"}
           
           puts 'measurement_row: ', measurement_row
@@ -477,6 +491,60 @@ class Import
 
       return observation
     end
+
+    def validate_trait_coral_id_name(row, observation, i)
+      begin
+        trait_id = row['trait_id']
+        trait_name = row['trait_name']
+        coral_id = row['coral_id']
+        coral_name = row['coral_name']
+        puts 'trait_id', trait_id
+        puts 'trait_name ', trait_name
+
+        if trait_id and trait_name
+          puts 'both trait_id and trait_name'
+          trait = Trait.find(trait_id)
+          if trait_name != trait.name
+            puts 'trait_id,  trait_name MISMATCH'
+            observation.errors[:base] << "Row #{i}: Trait_id and Trait_name do not match"
+
+          end
+        elsif trait_name and not trait_id
+          traits = Trait.where(:trait_name => trait_name)
+          puts 'only trait_name'
+          puts traits.count
+          if traits.count == 0
+            puts 'no trait with that trait_name'
+            observation.errors[:base] << "Row #{i}: Trait with corresponding Trait_name not found in database"
+            trait_id = nil
+          else
+            puts 'trait found with trait_name'
+            trait_id = traits[0].id
+          end
+        end
+
+        if coral_id and coral_name
+          coral = Coral.find(coral_id)
+          if coral_name != coral.name
+            observation.errors[:base] << "Row #{i}: Coral_id and Coral_name do not match"
+
+          end
+        elsif coral_name and not coral_id
+          corals = Coral.where(:coral_name => coral_name).take!
+          if corals.count == 0
+            observation.errors[:base] << "Row #{i}: Coral with corresponding Coral_name not found in database"
+            coral_id = nil
+          else
+            coral_id  = corals.id
+          end
+        end
+      rescue
+        observation.errors[:base] << "Unknown error. Please check trait and coral columns"
+
+      end
+      puts 'trait id name validation: ', trait_id
+      return observation, coral_id, trait_id
+    end
   
     def validate_user(item, user_id, i)
       if User.where(id: user_id).empty?
@@ -515,20 +583,13 @@ class Import
       return observation
     end
 
-    def validate_methodology_with_trait(row, observation, i)
+    def validate_methodology_with_trait(row, observation, trait_id, i)
+      puts 'trait_id : ', trait_id
       if not row["methodology_id"].nil? and row["methodology_id"] != ""
-        puts "methodology ids"
-        puts Trait.find(row["trait_id"]).methodology_ids
-        puts 'trait id to check: ' + row["trait_id"] + ' methodology id to check : ' + row["methodology_id"]
-        puts Trait.find(row["trait_id"]).methodology_ids.include?  row["methodology_id"] 
+        
+        if not Trait.find(trait_id).methodology_ids.include?  row["methodology_id"].to_i
 
-        if not Trait.find(row["trait_id"]).methodology_ids.include?  row["methodology_id"].to_i
-
-          puts "trait methodology error"
-          puts "trait: " , row["trait_id"]
-          puts "methodology: " , row["methodology_id"]
-
-
+        
           observation.errors[:base] << "Row #{i}: Trait with id : #{ row["trait_id"]}  doesnot have methodology with id : #{row["methodology_id"]} " 
         else
           puts "no error, trait: ", row["trait_id"], " methodology: ", row["methodology_id"]
