@@ -77,6 +77,7 @@ class Import
 
     imp_items = imported_items
     
+    puts 'Checking for any errors in imported observations'
     # Check for any errors in imported observations
     any_error = check_add_errors(imp_items)
     if not any_error
@@ -105,30 +106,36 @@ class Import
     
     
     
-    #imp_items.map(&:destroy!)
-    Observation.destroy imp_items.uniq.map { |item| item.id }
+    if $import_type == 'overwrite'
+      # First Destroy all the observations and their measurements
+      Observation.destroy imp_items.uniq.map { |item| item.id }
+
+      $new_observations.each do |item|
+        item.save!
+      end
+    else
+      imp_items.compact.each do |item|
+        item.save!
+      end
+
+      # Duplicate Measurements might still cause validation errors.
+      begin
+        $measurements.each(&:save!)
+      rescue => e
+        errors.add :base, e
+        rollback()
+        return false
+      end
+
+
+    end
     
 
-    # trying to delete all measurements of the observations first
-    # then save all measurements
-    # finally save all observations
     puts 'All Observations saved.. Saving Measurements now'
     
     
-    # Duplicate Measurements might still cause validation errors.
-    """
-    begin
-      $measurements.each(&:save!)
-    rescue => e
-      errors.add :base, e
-      rollback()
-      return false
-    end
-    """
-
-    $new_observations.each do |item|
-      item.save!
-    end
+    
+    
     # Finally verify if the total number of rows is equal to total records imported
     total_records_imported = Measurement.where('observation_id IN (?)', $observation_id_map.values).count
     if $total_rows -1 != total_records_imported
@@ -165,14 +172,17 @@ class Import
     # If any errors are present, don't attempt to save. Just Return False
     def check_add_errors(items)
       flag = false
-
+      items = items.compact
       items.each_with_index do |item, index|
+        
         if item.errors.any?
           item.errors.full_messages.each do |message|
             errors.add :base, "#{message}"
           end
           flag = true
-        elsif not item.valid?
+        end
+          
+        if not item.valid?
           puts 'item not valid: ', item.inspect
 
           errors.add :base, item.errors.full_messages
@@ -262,6 +272,7 @@ class Import
       
         (2..spreadsheet.last_row).map do |i|
           row = Hash[[header, spreadsheet.row(i)].transpose]
+          
           if $ignore_row.include? i
             next
           end
@@ -272,44 +283,20 @@ class Import
           #measurement = Measurement.find_by_id(row["measurement_id"]) || Measurement.new
           measurement = Measurement.new
           
-          # Start Validations
-
-          # 1. Convert 0 or 1 to true or false for private field
-          if row["private"] == "0" or row["private"].empty?
-            row["private"] = true
-          else
-            row["private"] = false
-          end
-          
           coral_id = row["coral_id"]
           location_id = row["location_id"]
           trait_id = row["trait_id"]
+
+          # Start Validations
+
+          row = process_private(row)
+          
           observation = validate_model_ids(row, observation, i)
+          observation = validate_trait_id(trait_id, row, observation, i)
           
-          
-          # Validate Values based on the traits value range
-          begin
-            if trait_id
-              trait = Trait.find(trait_id)
-             if not trait.value_range.nil? and trait.value_range == "" 
-                if not trait.value_range.include? row["value"] and not trait.value_range.empty?
-                  observation.errors[:base] << "Row #{i}: Invalid Value for the trait: " + row["trait_name"] + ".. Values should be within " + trait.value_range
-                end
-              end
-              # Uncomment this in production
-              # $email_list.append(trait.user.email) if ((not $email_list.include? trait.user.email) && trait.user.editor)
-            end
-            
-          rescue
-            observation.errors[:base] << "Row #{i}: Error with value"
-          end
-
           # Validate methodology_id against trait_id
-
           observation = validate_methodology_with_trait(row, observation, i)
           
-          
-          # new_observation_csv_headears = ["observation_id",  "access",  "user_id", "coral_id"  ,"location_id", "resource_id", "trait_id",  "standard_id",  "method_id" ,"value" ,"value_type",  "precision" ,"precision_type" , "precision_upper" ,"replicates"]
           # Create the actual rows to be sent into the database for observation and measurements
           observation_row = {"id" => $observation_id_map[row["id"]], "user_id" => row["user_id"], "location_id" => location_id, "coral_id" => coral_id, "resource_id" => row["resource_id"], "private" => row["private"]}
           measurement_row = {"user_id" => row["user_id"], "observation_id" => $observation_id_map[row["id"]],  "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"], "notes" => row["notes"],  "approval_status" => "pending"}
@@ -341,6 +328,7 @@ class Import
         header[header.index("observation_id")] = "id"
         header[header.index("access")] = "private"
         $observation_id_map = {}
+        $new_observations = []
         x = 1
         # header[header.index("enterer")] = "user_id"
       
@@ -360,6 +348,7 @@ class Import
 
           puts 'observation found for saving: ', observation.inspect
           measurement = Measurement.find_by_id(row["measurement_id"]) || Measurement.new
+          puts 'measurement found: ', measurement.inspect
           #measurement = Measurement.new
           
           # Check if the signed in user is the owner of the observation
@@ -370,38 +359,18 @@ class Import
             observation
           end
 
-          # Start Validations
 
-          # 1. Convert 0 or 1 to true or false for private field
-          if row["private"] == "0" or row["private"].empty?
-            row["private"] = true
-          else
-            row["private"] = false
-          end
-          
           coral_id = row["coral_id"]
           location_id = row["location_id"]
           trait_id = row["trait_id"]
+          
+          # Start Validations
+
+          row = process_private(row)
+
           observation = validate_model_ids(row, observation, i)
           
-          
-          # Validate Values based on the traits value range
-          begin
-            if trait_id
-              trait = Trait.find(trait_id)
-             if not trait.value_range.nil? and trait.value_range == "" 
-                if not trait.value_range.include? row["value"] and not trait.value_range.empty?
-                  observation.errors[:base] << "Row #{i}: Invalid Value for the trait: " + row["trait_name"] + ".. Values should be within " + trait.value_range
-                end
-              end
-              # Uncomment this in production
-              # $email_list.append(trait.user.email) if ((not $email_list.include? trait.user.email) && trait.user.editor)
-            end
-            
-          rescue
-            observation.errors[:base] << "Row #{i}: Error with value"
-          end
-
+          observation = validate_trait_id(trait_id, row, observation, i)
           # Validate methodology_id against trait_id
 
           observation = validate_methodology_with_trait(row, observation, i)
@@ -477,6 +446,38 @@ class Import
     
     # Validations of values in the fields in csv
 
+    def process_private(row)
+      # 1. Convert 0 or 1 to true or false for private field
+      if row["private"] == "0" or row["private"].empty?
+        row["private"] = true
+      else
+        row["private"] = false
+      end
+
+      return row
+    end
+
+    def validate_trait_id(trait_id, row, observation, i)
+      # Validate Values based on the traits value range
+      begin
+        if trait_id
+          trait = Trait.find(trait_id)
+         if not trait.value_range.nil? and trait.value_range == "" 
+            if not trait.value_range.include? row["value"] and not trait.value_range.empty?
+              observation.errors[:base] << "Row #{i}: Invalid Value for the trait: " + row["trait_name"] + ".. Values should be within " + trait.value_range
+            end
+          end
+          # Uncomment this in production
+          # $email_list.append(trait.user.email) if ((not $email_list.include? trait.user.email) && trait.user.editor)
+        end
+        
+      rescue
+        observation.errors[:base] << "Row #{i}: Error with value"
+      end
+
+      return observation
+    end
+  
     def validate_user(item, user_id, i)
       if User.where(id: user_id).empty?
         item.errors[:base] << "Row #{i}: Invalid user with id: " + user_id.to_s
