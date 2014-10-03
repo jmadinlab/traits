@@ -393,7 +393,7 @@ class Import
           # new_observation_csv_headears = ["observation_id",  "access",  "user_id", "coral_id"  ,"location_id", "resource_id", "trait_id",  "standard_id",  "method_id" ,"value" ,"value_type",  "precision" ,"precision_type" , "precision_upper" ,"replicates"]
           # Create the actual rows to be sent into the database for observation and measurements
           observation_row = {"id" => row["id"], "user_id" => row["user_id"], "location_id" => location_id, "coral_id" => coral_id, "resource_id" => row["resource_id"], "secondary_id" => row["secondary_id"] , "private" => row["private"]}
-          measurement_row = {"user_id" => row["user_id"], "observation_id" => row["id"],  "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"], "notes" => row["notes"],  "approval_status" => "pending"}
+          measurement_row = {"id" => measurement.id, "user_id" => row["user_id"], "observation_id" => row["id"],  "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"], "notes" => row["notes"],  "approval_status" => "pending"}
           
           puts 'measurement_row: ', measurement_row
           # Additionally check for any mapping errors
@@ -504,13 +504,13 @@ class Import
         if trait_id and trait_name
           puts 'both trait_id and trait_name'
           trait = Trait.find(trait_id)
-          if trait_name != trait.name
+          if trait_name.strip.downcase != trait.trait_name.strip.downcase
             puts 'trait_id,  trait_name MISMATCH'
             observation.errors[:base] << "Row #{i}: Trait_id and Trait_name do not match"
 
           end
         elsif trait_name and not trait_id
-          traits = Trait.where(:trait_name => trait_name)
+          traits = Trait.where("lower(trait_name)  => ?", trait_name.strip.downcase)
           puts 'only trait_name'
           puts traits.count
           if traits.count == 0
@@ -525,21 +525,25 @@ class Import
 
         if coral_id and coral_name
           coral = Coral.find(coral_id)
-          if coral_name != coral.name
+          puts 'both coral_id and coral_name'
+          if coral_name.strip.downcase != coral.coral_name.strip.downcase
+            puts ' coral_id and coral_name MISMATCH'
             observation.errors[:base] << "Row #{i}: Coral_id and Coral_name do not match"
 
           end
         elsif coral_name and not coral_id
-          corals = Coral.where(:coral_name => coral_name).take!
+          corals = Coral.where("lower(coral_name)  => ?", coral_name.strip.downcase)
+          puts 'only coral_name'
           if corals.count == 0
+            puts 'coral_name error'
             observation.errors[:base] << "Row #{i}: Coral with corresponding Coral_name not found in database"
             coral_id = nil
           else
-            coral_id  = corals.id
+            coral_id  = corals[0].id
           end
         end
-      rescue
-        observation.errors[:base] << "Unknown error. Please check trait and coral columns"
+      rescue => e
+        observation.errors[:base] << e
 
       end
       puts 'trait id name validation: ', trait_id
