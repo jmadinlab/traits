@@ -514,7 +514,7 @@ class Import
 
           end
         elsif trait_name and not trait_id
-          traits = Trait.where("lower(trait_name)  => ?", trait_name.strip.downcase)
+          traits = Trait.where("lower(trait_name)  IS ?", trait_name.strip.downcase)
           puts 'only trait_name'
           puts traits.count
           if traits.count == 0
@@ -536,7 +536,7 @@ class Import
 
           end
         elsif coral_name and not coral_id
-          corals = Coral.where("lower(coral_name)  => ?", coral_name.strip.downcase)
+          corals = Coral.where("lower(coral_name)  IS ?", coral_name.strip.downcase)
           puts 'only coral_name'
           if corals.count == 0
             puts 'coral_name error'
