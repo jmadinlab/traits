@@ -105,7 +105,7 @@ class Import
 
     
     
-    
+    # Main Code to save the observations 'overwrite / new' begins here
     if $import_type == 'overwrite'
       # First Destroy all the observations and their measurements
       Observation.destroy imp_items.uniq.map { |item| item.id }
@@ -322,6 +322,8 @@ class Import
           begin
             observation.attributes = observation_row.to_hash
             measurement.attributes = measurement_row.to_hash
+            # TODO : check if following holds true
+            observation.measurements << measurement
           rescue => error
             observation.errors[:base] << "The column headers do not match with fields..."
             observation.errors[:base] << error.message
