@@ -87,7 +87,7 @@ class TraitsController < ApplicationController
 
 #        data_table.sort(1)
 
-        option = { width: 180, height: 180, legend: 'none' }
+        option = { width: 250, height: 250, legend: 'none' }
         @chart = GoogleVisualr::Interactive::PieChart.new(data_table, option)
       else
         data_table.new_column('number')
@@ -98,12 +98,13 @@ class TraitsController < ApplicationController
           if @trait.standard.standard_unit == "deg"
             data_table.add_row([p, i.to_d])
           else
-            data_table.add_row([p, Math::log10(i.to_d.abs)])
+            # data_table.add_row([p, Math::log10(i.to_d.abs)])
+            data_table.add_row([p, i.to_d])
           end            
           p = p + 1
         end
 
-        option = { width: 180, height: 180, legend: 'none', :vAxis => { :title => "#{@trait.trait_name}, log10" }, :hAxis => { textPosition: 'none' } }
+        option = { width: 250, height: 250, legend: 'none', :vAxis => { :title => "#{@trait.trait_name}" }, :hAxis => { textPosition: 'none' } }
         @chart = GoogleVisualr::Interactive::ScatterChart.new(data_table, option)
       end
    end

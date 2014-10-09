@@ -14,64 +14,50 @@
 </div>
 
 <div class="row">
-  <div class="col-md-9">
-		<div class="row">
-		  <div class="col-md-9">
-			  <p>
-			    <strong>Trait ID:</strong>
-			    	<%= @trait.id %>
-			  </p>
+  <div class="col-md-8">
+	  <p>
+	    <strong>Trait ID:</strong>
+	    	<%= @trait.id %>
+	  </p>
 
-				<p>
-					<strong>Editor:</strong>
-					<% if !@trait.user.blank? %>
-						<%= @trait.user.name %> (<%= mail_to @trait.user.email, "contact", {:subject => "Coral Trait enquiry"} %>)
-					<% end %>
-					<% if signed_in? && current_user.editor? %>
-						<%= link_to "meta", show_meta_path(@trait), class: "label label-danger" %>
-					<% end %>
-				</p>
+		<p>
+			<strong>Editor:</strong>
+			<% if !@trait.user.blank? %>
+				<%= @trait.user.name %> (<%= mail_to @trait.user.email, "contact", {:subject => "Coral Trait enquiry"} %>)
+			<% end %>
+			<% if signed_in? && current_user.editor? %>
+				<%= link_to "meta", show_meta_path(@trait), class: "label label-danger" %>
+			<% end %>
+		</p>
 
-				<p>
-				  <strong>Class:</strong>
-					<% if @trait.trait_class.present? %>
-				  	<%= @trait.trait_class %>
-					<% else %>
-						<font style="color:lightgrey;">Unclassified</font>
-					<% end %>
-				</p>
+		<p>
+		  <strong>Class:</strong>
+			<% if @trait.trait_class.present? %>
+		  	<%= @trait.trait_class %>
+			<% else %>
+				<font style="color:lightgrey;">Unclassified</font>
+			<% end %>
+		</p>
 
-				<p>
-					<strong>Default standard:</strong>
-					<% if !@trait.standard.blank? %>
-						<%= @trait.standard.standard_name %> (<%= @trait.standard.standard_unit %>)
-					<% end %>
-				</p>
+		<p>
+			<strong>Default standard:</strong>
+			<% if !@trait.standard.blank? %>
+				<%= @trait.standard.standard_name %> (<%= @trait.standard.standard_unit %>)
+			<% end %>
+		</p>
 
-				<% if @trait.traitvalues.present? %>
-					<p>
-						<strong>Possible trait values:</strong>
-						<% @trait.traitvalues.each do |tv| %>
-							<span class="label label-primary"><%= tv.value_name %></span>
-							<%# if tv.value_description.present? %>
-								<!-- (<%#= tv.value_description %>) -->
-							<%# end %>
-						<% end %>
-					</p>
+		<% if @trait.traitvalues.present? %>
+			<p>
+				<strong>Possible trait values:</strong>
+				<% @trait.traitvalues.each do |tv| %>
+					<span class="label label-primary"><%= tv.value_name %></span>
+					<%# if tv.value_description.present? %>
+						<!-- (<%#= tv.value_description %>) -->
+					<%# end %>
 				<% end %>
-				
-
-	
-			</div>
-		  <div class="col-md-3">
-				<% if @chart %>
-					<script src='http://www.google.com/jsapi'></script>
-					<div id='chart'></div>
-					<%= render_chart @chart, 'chart' %>
-				<% end %>
-			</div>
-		</div>
-
+			</p>
+		<% end %>
+		
 
 		<p>
 			<strong>Description:</strong>
@@ -110,8 +96,15 @@
 		</p>
 	</div>
 
-  <div class="col-md-3">
-	  <%= render "shared/symbol_key" %>
+  <div class="col-md-4">
+	  <%#= render "shared/symbol_key" %>
+	  <div class="col-md-3">
+			<% if @chart %>
+				<script src='http://www.google.com/jsapi'></script>
+				<div id='chart'></div>
+				<%= render_chart @chart, 'chart' %>
+			<% end %>
+		</div>
 	</div>
 </div>
 

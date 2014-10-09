@@ -45,7 +45,7 @@
 		<% end %>
 
 		<p>
-		  <strong>Original user:</strong>
+		  <strong>Contributor:</strong>
 			<% if @observation.user.present? %>
 		  	<%= link_to @observation.user.name, user_path(@observation.user) %>
 			<% else %>

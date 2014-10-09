@@ -18,6 +18,12 @@
 
 					<div class="col-sm-1">
 						<label class="checkbox-inline">
+			      	<% if grp.issues.present? %>
+			  				<span data-toggle="tooltip" data-placement="top" title="Issue reported">
+		  						<%= link_to "", observation_path(grp), class: "glyphicon glyphicon-warning-sign", style: "color:red;"  %>
+		  					</span>
+							<% end %>
+
 							<% if @user %>
 								<%= check_box_tag "pri_ids[]", grp.id, grp.private %>
 							<% end %>
@@ -26,6 +32,7 @@
 							<% else %>
 								<span class="glyphicon glyphicon-ok-circle" style="color:green;"></span>
 							<% end %>
+
 						</label>
 		  		</div>
 
@@ -34,49 +41,70 @@
 	        </div>
 
 					<div class="col-sm-3">
+
+						<div class="col-sm-2">
+		  				<% if !grp.user_id.blank? && grp.user_id != 0 %>
+				  			<span data-toggle="tooltip" data-placement="top" title="Contributor">
+			  					<%= link_to "", user_path(grp.user_id), class: "glyphicon glyphicon-user" %>
+			  				</span>
+		  				<% end %>
+		  			</div>
+
 						<div class="col-sm-2">
 		  				<% if !grp.location_id.blank? && grp.location_id != 0 %>
 		  				  <% if grp.location_id == 1 %>
-					      	<%= link_to "", location_path(grp.location_id), class: "glyphicon glyphicon-globe", 'data-no-turbolink' => true %>
-		  				  <% else %> 
-		  			      <%= link_to "", location_path(grp.location_id), class: "glyphicon glyphicon-map-marker", 'data-no-turbolink' => true %>
+				  				<span data-toggle="tooltip" data-placement="top" title="Global estimate">
+						      	<%= link_to "", location_path(grp.location_id), class: "glyphicon glyphicon-globe", 'data-no-turbolink' => true %>
+			  					</span>
+			  				<% else %> 
+				  				<span data-toggle="tooltip" data-placement="top" title="Location specific estimate">
+			  			      <%= link_to "", location_path(grp.location_id), class: "glyphicon glyphicon-map-marker", 'data-no-turbolink' => true %>
+			  					</span>
 		  				  <% end %> 
 		  				<% end %> 
 		  			</div>
+
 						<div class="col-sm-2">
 		  				<% if !grp.resource_id.blank? && grp.resource_id != 0 %>
-		  					<%= link_to "", resource_path(grp.resource_id), class: "glyphicon glyphicon-book" %>
+			  				<span data-toggle="tooltip" data-placement="top" title="Primary resource">
+			  					<%= link_to "", resource_path(grp.resource_id), class: "glyphicon glyphicon-tag" %>
+		  					</span>
 		  				<% end %> 
-		  			</div>        
+		  			</div>    
+
 						<div class="col-sm-2">
-		  				<% if !grp.user_id.blank? && grp.user_id != 0 %>
-		  					<%= link_to "", user_path(grp.user_id), class: "glyphicon glyphicon-user" %>
-		  				<% end %>
-		  			</div>
+		  				<% if !grp.secondary_id.blank? %>
+			  				<span data-toggle="tooltip" data-placement="top" title="Secondary resource">
+			  					<%= link_to "", resource_path(grp.secondary_id), class: "glyphicon glyphicon-tags" %>
+		  					</span>
+		  				<% end %> 
+		  			</div>    
+
 						<div class="col-sm-2">
 			      	<% if grp.measurements.size > 1 %>
-		  					<%= link_to "", observation_path(grp), class: "glyphicon glyphicon-eye-open" %>
+			  				<span data-toggle="tooltip" data-placement="top" title="Context included">
+		  						<%= link_to "", observation_path(grp), class: "glyphicon glyphicon-eye-open" %>
+		  					</span>
 							<% end %>
 		  			</div>
+
 						<div class="col-sm-2">
 			      	<% if grp.approval_status == "pending" %>
-		  					<%= link_to "", observation_path(grp), class: "glyphicon glyphicon-asterisk" %>
+			  				<span data-toggle="tooltip" data-placement="top" title="Pending">
+		  						<%= link_to "", observation_path(grp), class: "glyphicon glyphicon-asterisk" %>
+		  						</span>
 							<% end %>
 		  			</div>
-						<div class="col-sm-2">
-			      	<% if grp.issues.present? %>
-		  					<%= link_to "", observation_path(grp), class: "glyphicon glyphicon-warning-sign", style: "color:red;"  %>
-							<% end %>
-		  			</div>
-
 
 	  			</div>
+
 		      <% measurement = grp.measurements.first %>
 
 					<div class="col-sm-3">
 						<%= link_to measurement.trait.trait_name, trait_path(measurement.trait_id), 'data-no-turbolink' => true %>
 		      </div>
 					<div class="col-sm-2">
+
 						<% if measurement.standard.standard_class == "Nominal class" %>
 							<span class="label label-primary"><%= measurement.value %></span>
 						<% else %> 
@@ -85,7 +113,9 @@
 								(<%= measurement.standard.standard_unit %>)
 							<% end %> 
 						<% end %> 
+
 		      </div>
+
 					<div class="col-sm-2">
 	      		<div class="btn-group pull-right">				
 	  					<%= link_to 'Show', observation_path(grp), class: "btn btn-xs btn-default" %>
