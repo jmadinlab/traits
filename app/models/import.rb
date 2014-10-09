@@ -196,6 +196,8 @@ class Import
     def rollback
       puts 'rolling back'
       puts $observation_id_map
+      
+      # Todo: Make this efficient
       if $import_type != 'new'
         return
       end
