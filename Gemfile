@@ -46,7 +46,9 @@ gem 'hirb'
 group :development, :test do
   gem 'sqlite3'#, '1.3.8'
   #gem 'sunspot_solr'
-  gem 'rspec-rails', '2.13.1'
+  gem 'minitest'
+  gem 'rspec-rails', '3.1.0'
+
   # The following optional lines are part of the advanced setup.
   # gem 'guard-rspec', '2.5.0'
   # gem 'spork-rails', '4.0.0'
@@ -55,9 +57,9 @@ group :development, :test do
 end
 
 group :test do
-  # gem 'selenium-webdriver', '2.35.1'
-  gem 'capybara', '2.1.0'
-  gem 'factory_girl_rails', '4.2.0'
+  gem 'selenium-webdriver'
+  gem 'capybara'
+  gem 'factory_girl_rails'
   # gem 'cucumber-rails', '1.3.0', :require => false
   # gem 'database_cleaner', github: 'bmabey/database_cleaner'
 

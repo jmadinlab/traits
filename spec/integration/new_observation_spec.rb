@@ -17,7 +17,7 @@ describe "New Observation Page" do
 		it { should have_content('New Observation')}
 		it { should have_content('Measurements')}
 
-		find('#measurements .nested-fields select[id*=trait_id]').set("8")
+		page.find('#measurements .nested-fields select[id*=trait_id]').set("8")
 
 	end
 
