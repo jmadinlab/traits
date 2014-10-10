@@ -108,11 +108,30 @@ class Import
     # Main Code to save the observations 'overwrite / new' begins here
     if $import_type == 'overwrite'
       # First Destroy all the observations and their measurements
-      Observation.destroy imp_items.uniq.map { |item| item.id }
 
-      $new_observations.each do |item|
+      puts "==================================================="
+      puts "inspecting new observations"
+      puts $new_observations.inspect
+      puts "==================================================="
+      
+      imp_items.compact.each do |item|
         item.save!
       end
+
+      $measurements.each(&:save!)
+      
+
+      """
+      Observation.update imp_items.uniq.map { |item| item.id }
+      
+      $new_observations.each do |item|
+        puts 'saving new observation'
+        puts item.inspect
+        puts 'corresponding measurements'
+        puts item.measurements.inspect
+        item.save!
+      end
+      """
     else
       imp_items.compact.each do |item|
         item.save!
@@ -360,8 +379,10 @@ class Import
             $observation_id_map[x] = row["id"]
             obs_new =  Observation.new
             x = x + 1
+            
           else
             obs_new = $new_observations[$observation_id_map.values().index(row['id'])]
+            
           end
 
           puts 'observation found for saving: ', observation.inspect
@@ -397,7 +418,7 @@ class Import
           # new_observation_csv_headears = ["observation_id",  "access",  "user_id", "coral_id"  ,"location_id", "resource_id", "trait_id",  "standard_id",  "method_id" ,"value" ,"value_type",  "precision" ,"precision_type" , "precision_upper" ,"replicates"]
           # Create the actual rows to be sent into the database for observation and measurements
           observation_row = {"id" => row["id"], "user_id" => row["user_id"], "location_id" => location_id, "coral_id" => coral_id, "resource_id" => row["resource_id"], "secondary_id" => row["secondary_id"] , "private" => row["private"]}
-          measurement_row = {"id" => measurement.id, "user_id" => row["user_id"], "observation_id" => row["id"],  "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"], "notes" => row["notes"],  "approval_status" => "pending"}
+          measurement_row = {"id" => measurement.id, "user_id" => row["user_id"],  "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"], "notes" => row["notes"],  "approval_status" => "pending"}
           
           puts 'measurement_row: ', measurement_row
           # Additionally check for any mapping errors
@@ -417,7 +438,7 @@ class Import
           #measurement.approval_status = "pending"
           $measurements.append(measurement)
           $new_observations.append(obs_new)
-
+          
           observation.approval_status = "pending"
           # Temporary email list
           $email_list.append("suren.shopushrestha@mq.edu.au")
