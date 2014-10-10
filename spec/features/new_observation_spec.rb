@@ -21,8 +21,9 @@ describe "New Observation Page" do
 		it { should have_selector("select[class=my_trait]") }
 
 		#select('8', :from => "observation_measurements_attributes_0_trait_id" )
-		
-		find("observation_measurements_attributes_0_trait_id" )
+		it {
+			find("#observation_measurements_attributes_0_trait_id" )
+		}
 
 	end
 
