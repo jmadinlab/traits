@@ -41,8 +41,8 @@ describe "User pages" do
   describe "signup page" do
     before { visit signup_path }
 
-    it { should have_content('Sign Up') }
-    it { should have_title('Sign Up') }
+    it { should have_content('New user') }
+    it { should have_title('Coral Trait Database | Sign up') }
   end
 
   describe "signup" do
