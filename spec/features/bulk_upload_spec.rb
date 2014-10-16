@@ -19,6 +19,7 @@ describe 'Bulk Upload' do
 		
 		it 'can import observations' do
 			#@file = fixture_file_upload('files/test_file.csv', 'text/csv')
+			# New Import
 			attach_file 'import_file', 'spec/fixtures/files/observation_test_file.csv'
 			expect { click_button 'Import' }.to change(Observation, :count).by(1)
 			expect(page).to have_selector('div.alert.alert-success')
@@ -26,6 +27,7 @@ describe 'Bulk Upload' do
 		end
 
 		it 'should not import observations with duplicates' do
+			# New Import
 			attach_file 'import_file', 'spec/fixtures/files/observation_test_file.csv'
 			click_button 'Import'
 
@@ -35,6 +37,8 @@ describe 'Bulk Upload' do
 			expect(page).to have_selector('div#error_explanation')
 
 		end
+
+		
 
 		
 		# No Longer Valid
