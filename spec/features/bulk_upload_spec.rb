@@ -4,18 +4,33 @@ describe 'Bulk Upload' do
 	
 	subject { page }
 	let(:admin) { FactoryGirl.create(:admin) }
+	let(:id) { '111' }
 	
 	specify { expect(admin.admin? ).to equal(true) }
 
 	before do
+		admin.stub(:id).and_return(id)
+		User.stub(:find).and_return(admin)
+
 		visit signin_path
 		fill_in 'Email', with: admin.email
 		fill_in 'Password', with: admin.password
 		click_button 'Sign in'
+		
+		puts '====================='
+		puts admin.id
+		puts '====================='
+		 
 	end
 	
-	describe 'import observations' do
+	describe 'import observations' do 
 		before { visit '/imports/observations'}
+	
+
+
+		it 'can find import file field' do
+			find('#import_file')
+		end
 		
 		it 'can import observations' do
 			#@file = fixture_file_upload('files/test_file.csv', 'text/csv')
@@ -37,8 +52,6 @@ describe 'Bulk Upload' do
 			expect(page).to have_selector('div#error_explanation')
 
 		end
-
-		
 
 		
 		# No Longer Valid

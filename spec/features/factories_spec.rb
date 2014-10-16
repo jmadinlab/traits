@@ -13,8 +13,7 @@ describe 'Factories Test' do
 	 FactoryGirl.create(:citation)
 	
 
-	FactoryGirl.create(:observation)
-	 
+	
 	 
 	 
 	 

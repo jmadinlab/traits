@@ -1,6 +1,7 @@
 # Ignore bundler config.
 /.bundle
 *.bak
+*.sqlite3
 current
 /releases/
 /repo/

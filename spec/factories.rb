@@ -1,7 +1,14 @@
 FactoryGirl.define do
+	
+	sequence :email do |n|
+		"test#{n}@coraltraits.org"
+	end
+	
+	
 	factory :user do
+		
 		name "Test User"
-		email "test111@coraltraits.org"
+		email # "tes1_1@coraltraits.org"
 		password 'test123'
 		password_confirmation 'test123'
 
@@ -107,6 +114,9 @@ FactoryGirl.define do
 		trait FactoryGirl.build(:trait).id 
 		value_description 'Test description'
 	end
+
+
+	
 	
 
 end
