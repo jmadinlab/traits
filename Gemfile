@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.1.0'
+ruby '2.0.0'
 
 gem 'rails'#, '4.0.2'
 gem 'bootstrap-sass'#, '2.3.2.0'
@@ -20,6 +20,7 @@ gem 'capistrano',  '~> 3.1'
 gem 'capistrano-rails', '~> 1.1'
 # gem 'select2-sass-bootstrap-rails'
 # gem 'squeel', github: 'kiela/squeel'
+gem 'pg'
 
 gem 'roo'
 # using paper_trail for versioning database
