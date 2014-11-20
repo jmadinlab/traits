@@ -13,17 +13,15 @@
 
 					<% if @observations.joins(:measurements).where("measurements.trait_id IS ?", trait.id).size > 0 %>
 
-						<% grp = @observations.joins(:measurements).where("measurements.trait_id IS ?", trait.id) %>
-
 						
-						<% if temp != grp.first.measurements.first.trait.trait_class %>
-							<% temp = grp.first.measurements.first.trait.trait_class %>
+						<% if temp != trait.trait_class %>
+							<% temp = trait.trait_class %>
 								<% if trait.trait_class.blank? %>
 									<h4>Miscellaneous</h4>
 									<ul class="list-group">
 								<% else %>
 		    					</ul>
-									<h4><%= grp.first.measurements.first.trait.trait_class %></h4>
+									<h4><%= trait.trait_class %></h4>
 									<ul class="list-group">
 								<% end %>
 						<% end %>
@@ -34,8 +32,10 @@
 				        	<%= trait.id %>
 				        </div>
 								<div class="col-sm-4">
-									<%= link_to grp.first.measurements.first.trait.trait_name, "/traits/" + grp.first.measurements.first.trait_id.to_s, 'data-no-turbolink' => true %>
+									<%= link_to trait.trait_name, trait, 'data-no-turbolink' => true %>
 								</div>
+
+								<% grp = @observations.joins(:measurements).where("measurements.trait_id IS ?", trait.id) %>
 
 								<div class="col-sm-6">
 									<% if grp.size > 1 %>

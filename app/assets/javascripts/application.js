@@ -27,6 +27,15 @@
 // });
 // 
 
+
+function EventHandler(e, chart, data) {
+  var selection = chart.getSelection();
+  if (selection.length > 0) {
+    var row = selection[0].row;
+    var obs = data.getValue(row, 2);
+    window.open("/observations/" + obs)
+  }
+}
    
 $(document).ready(function(){
     $('span').tooltip();
@@ -36,7 +45,7 @@ $(document).ready(function(){
 
 function checkUncheckAll(theElement) { 
 	var theForm = theElement.form, z = 0; 
-		for(z=0; z<theForm.length;z++){ 
+	for(z=0; z<theForm.length;z++){ 
 		if(theForm[z].type == 'checkbox' && theForm[z].name != 'checkall'){ 
 			theForm[z].checked = theElement.checked; 
 		} 

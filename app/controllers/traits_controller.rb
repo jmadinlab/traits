@@ -76,7 +76,7 @@ class TraitsController < ApplicationController
     
     data_table = GoogleVisualr::DataTable.new
 
-   if @trait.standard.standard_unit != "id" && @trait.standard.standard_unit != "text"
+    if @trait.standard.standard_unit != "id" && @trait.standard.standard_unit != "text"
       if @trait.standard.standard_name == "Category" || @trait.standard.standard_name == "Binomial"
         data_table.new_column('string')
         data_table.new_column('number')
@@ -94,22 +94,23 @@ class TraitsController < ApplicationController
         data_table.new_column('number')
 
         p = 0
-        @trait.measurements.map(&:value).map{|v| v.to_d}.sort.reverse.each do |i|
+        # @trait.measurements.map(&:value).map{|v| v.to_d}.sort.reverse.each do |i|
+        @trait.measurements.sort_by{ |a| a.value.to_d }.each do |i|
           if @trait.standard.standard_unit == "deg"
             data_table.add_row([p, i.to_d])
           else
-            # data_table.add_row([p, Math::log10(i.to_d.abs)])
-            data_table.add_row([p, i.to_d])
+            data_table.add_row([p, i.value.to_d])
           end            
           p = p + 1
         end
 
         option = { width: 250, height: 250, legend: 'none', :vAxis => { :title => "#{@trait.trait_name}" }, :hAxis => { textPosition: 'none' } }
         @chart = GoogleVisualr::Interactive::ScatterChart.new(data_table, option)
+        # @chart.add_listener("select", "function(e) { EventHandler(e, chart, data_table) }")
       end
    end
 
-@data_table = data_table
+    # @data_table = data_table
 
     respond_to do |format|
       format.html {
