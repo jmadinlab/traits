@@ -11,9 +11,9 @@
 		    
 				<% if trait.trait_class != "Contextual" %>
 
-					<% if @observations.joins(:measurements).where("measurements.trait_id IS ?", trait.id).size > 0 %>
+					<% if @observations.joins(:measurements).where("measurements.trait_id = ?", trait.id).size > 0 %>
 
-						<% grp = @observations.joins(:measurements).where("measurements.trait_id IS ?", trait.id) %>
+						<% grp = @observations.joins(:measurements).where("measurements.trait_id = ?", trait.id) %>
 
 						
 						<% if temp != grp.first.measurements.first.trait.trait_class %>

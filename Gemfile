@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
-ruby '2.1.0'
-
+ruby '2.0.0'
+#gem 'rack','1.0.1'
+gem 'yaml_db'
 gem 'rails'#, '4.0.2'
 gem 'bootstrap-sass'#, '2.3.2.0'
 gem 'bcrypt-ruby'#, '3.1.2'
@@ -12,7 +13,8 @@ gem 'select2-rails'
 gem 'mandrill_mailer'
 gem 'sunspot_rails'
 gem 'sunspot_solr'
-gem 'progress_bar'
+#gem 'progress_bar'
+gem 'sqlite3'
 gem 'redcarpet'
 gem "google_visualr", "~> 2.1.0"
 
@@ -44,7 +46,8 @@ gem 'hirb'
 #gem "ar-octopus", :git => "git://github.com/tchandy/octopus.git", :require => "octopus"
 
 group :development, :test do
-  gem 'sqlite3'#, '1.3.8'
+  #gem 'sqlite3'#, '1.3.8'
+  gem 'pg'
   #gem 'sunspot_solr'
   gem 'minitest'
   gem 'rspec-rails', '2.13.1'

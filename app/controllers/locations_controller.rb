@@ -22,7 +22,7 @@ class LocationsController < ApplicationController
       @locations = @search.results
     else
       if not signed_in?
-        @locations = Location.where("locations.approval_status IS NOT ?", 'pending').paginate(:page=> params[:page], :per_page => pp)
+        @locations = Location.where("approval_status NOT IN (?) OR approval_status IS NULL", 'pending').paginate(:page=> params[:page], :per_page => pp)
       else
         @locations = Location.all.paginate(:page=> params[:page], :per_page => pp)
       end
@@ -62,14 +62,14 @@ class LocationsController < ApplicationController
   # GET /locations/1.json
   def show
 
-    @observations = Observation.where('location_id IS ?', @location.id)
+    @observations = Observation.where('location_id = ?', @location.id)
 
     if signed_in? && current_user.admin?
     elsif signed_in? && current_user.editor?
     elsif signed_in? && current_user.contributor?
-      @observations = @observations.where(['observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?)', false, current_user.id, true])
+      @observations = @observations.where(['observations.private IS false OR (observations.user_id = ? AND observations.private IS true)', current_user.id ])
     else
-      @observations = @observations.where(['observations.private IS ?', false])
+      @observations = @observations.where(['observations.private IS false'])
     end
 
     respond_to do |format|

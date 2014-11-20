@@ -17,7 +17,7 @@ class StandardsController < ApplicationController
       @standards = @search.results
     else
       if not signed_in?
-        @standards = Standard.where("standards.approval_status IS NOT ?", 'pending')
+        @standards = Standard.where("approval_status NOT IN (?) OR approval_status IS NULL", 'pending')
         
       else
         @standards = Standard.all

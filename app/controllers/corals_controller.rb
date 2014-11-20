@@ -78,7 +78,8 @@ class CoralsController < ApplicationController
     end
     
     if signed_in? && current_user.contributor?
-      @observations = Observation.where(['observations.coral_id IS ? AND (observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?))', @coral.id, false, current_user.id, true])
+      #@observations = Observation.where(['observations.coral_id IS ? AND (observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?))', @coral.id, false, current_user.id, true])
+      @observations = Observation.where(['observations.coral_id = ? AND (observations.private IS false OR (observations.user_id = ? AND observations.private IS true))', @coral.id,  current_user.id])
     end
 
     if signed_in? && current_user.admin?

@@ -61,17 +61,17 @@ class TraitsController < ApplicationController
 
     if params[:coral_id]
       @coral = Coral.find(params[:coral_id])
-      @observations = Observation.includes(:coral).joins(:measurements).where('observations.coral_id IS ? AND measurements.trait_id IS ?', @coral.id, @trait.id)
+      @observations = Observation.includes(:coral).joins(:measurements).where('observations.coral_id = ? AND measurements.trait_id = ?', @coral.id, @trait.id)
     else
-      @observations = Observation.joins(:measurements).where('measurements.trait_id IS ?', @trait.id)
+      @observations = Observation.joins(:measurements).where('measurements.trait_id = ?', @trait.id)
     end
 
     if signed_in? && current_user.admin?
     elsif signed_in? && current_user.editor?
     elsif signed_in? && current_user.contributor?
-      @observations = @observations.where(['observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?)', false, current_user.id, true])
+      @observations = @observations.where(['observations.private IS false OR (observations.user_id = ? AND observations.private IS true)',  current_user.id])
     else
-      @observations = @observations.where(['observations.private IS ?', false])
+      @observations = @observations.where(['observations.private IS false'])
     end
     
     data_table = GoogleVisualr::DataTable.new
