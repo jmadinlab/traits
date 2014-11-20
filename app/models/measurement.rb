@@ -18,15 +18,15 @@ class Measurement < ActiveRecord::Base
   #validates :value_type, :presence => true
   # validates :orig_value, :presence => true
 
-  #validate :check_duplicates, :on => [:create, :update]
+  validate :check_duplicates, :on => [:create, :update]
   
   private
   def check_duplicates
     puts 'checking duplication'
     puts self.observation
     observations = Observation.where( :coral_id => self.observation.coral_id,
-                                      :resource_id => self.observation.resource_id).joins(:measurements).where('measurements.trait_id IS ? AND
-                                                                                        measurements.standard_id IS ? AND measurements.value IS ?', self.trait_id, self.standard_id, self.value)
+                                      :resource_id => self.observation.resource_id).joins(:measurements).where('measurements.trait_id = ? AND
+                                                                                        measurements.standard_id = ? AND measurements.value LIKE ?', self.trait_id, self.standard_id, self.value)
     
     if observations.count > 0
       puts "there is a duplicate value"

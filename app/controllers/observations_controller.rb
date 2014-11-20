@@ -44,11 +44,11 @@
     n = 9999999 if params[:n] == "all"
 
     if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
-      @observations = Observation.where(['observations.private IS ?', false]).includes(:coral).joins(:measurements).where('measurements.value LIKE ?', "%#{params[:search]}%").limit(n)
+      @observations = Observation.where(['observations.private IS false']).includes(:coral).joins(:measurements).where('measurements.value LIKE ?', "%#{params[:search]}%").limit(n)
     end
     
     if signed_in? && current_user.contributor?
-      @observations = Observation.where(['observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?)', false, current_user.id, true]).includes(:coral).joins(:measurements).where('measurements.value LIKE ?', "%#{params[:search]}%").limit(n)
+      @observations = Observation.where(['observations.private IS false OR (observations.user_id = ? AND observations.private true ?)', current_user.id]).includes(:coral).joins(:measurements).where('measurements.value LIKE ?', "%#{params[:search]}%").limit(n)
     end
 
     if signed_in? && current_user.admin?

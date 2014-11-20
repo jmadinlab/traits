@@ -101,7 +101,7 @@
 		      <% if @trait %>
 		      	<% measurements = obs.measurements %>
 					<% else %> 
-		      	<% measurements = obs.measurements.joins(:trait).where("trait_class IS NOT ?", "Contextual") %>
+		      	<% measurements = obs.measurements.joins(:trait).where("trait_class NOT LIKE ?", "Contextual") %>
 					<% end %> 
 
 	      	<% if measurements.size == 1 %>

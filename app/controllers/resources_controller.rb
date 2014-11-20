@@ -44,14 +44,14 @@ class ResourcesController < ApplicationController
   # GET /resources/1.json
   def show
 
-    @observations = Observation.where('resource_id IS ?', @resource.id)
+    @observations = Observation.where('resource_id = ?', @resource.id)
 
     if signed_in? && current_user.admin?
     elsif signed_in? && current_user.editor?
     elsif signed_in? && current_user.contributor?
-      @observations = @observations.where(['observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?)', false, current_user.id, true])
+      @observations = @observations.where(['observations.private IS false OR (observations.user_id = ? AND observations.private IS true)', current_user.id ])
     else
-      @observations = @observations.where(['observations.private IS ?', false])
+      @observations = @observations.where(['observations.private IS false'])
     end
 
     respond_to do |format|
