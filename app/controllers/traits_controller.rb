@@ -97,7 +97,7 @@ class TraitsController < ApplicationController
         # @trait.measurements.map(&:value).map{|v| v.to_d}.sort.reverse.each do |i|
         @trait.measurements.sort_by{ |a| a.value.to_d }.each do |i|
           if @trait.standard.standard_unit == "deg"
-            data_table.add_row([p, i.to_d])
+            data_table.add_row([p, i.value.to_d])
           else
             data_table.add_row([p, i.value.to_d])
           end            
