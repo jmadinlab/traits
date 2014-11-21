@@ -37,7 +37,7 @@ class TraitsController < ApplicationController
     end
     
     if signed_in? && current_user.contributor? & !current_user.admin?
-      @observations = Observation.where(['observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?)', false, current_user.id, true]).joins(:measurements).where(:measurements => {:trait_id => params[:checked]})
+      @observations = Observation.where(['observations.private IS false OR (observations.user_id = ? AND observations.private IS true)', current_user.id]).joins(:measurements).where(:measurements => {:trait_id => params[:checked]})
     end
 
     if signed_in? && current_user.admin?

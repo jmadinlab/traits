@@ -121,7 +121,7 @@
 			      </div>
 	      	<% else %>
 		      	<% if @trait %>
-			      	<% measurements = measurements.joins(:trait).where("trait_name IS ?", @trait.trait_name) %>
+			      	<% measurements = measurements.joins(:trait).where("trait_name LIKE ?", @trait.trait_name) %>
 		 					<div class="col-sm-3">
 								<%= link_to measurements.first.trait.trait_name, trait_path(measurements.first.trait_id), 'data-no-turbolink' => true %>
 				      </div>
