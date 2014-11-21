@@ -34,6 +34,9 @@ Traits::Application.configure do
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
 
+  # specify what domain to use for mailer URLs
+  config.action_mailer.default_url_options = { host: "localhost:3000" }
+
   # Speed up tests by lowering bcrypt's cost function.
   ActiveModel::SecurePassword.min_cost = true
 end

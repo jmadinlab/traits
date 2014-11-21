@@ -61,22 +61,22 @@ class TraitsController < ApplicationController
 
     if params[:coral_id]
       @coral = Coral.find(params[:coral_id])
-      @observations = Observation.includes(:coral).joins(:measurements).where('observations.coral_id IS ? AND measurements.trait_id IS ?', @coral.id, @trait.id)
+      @observations = Observation.includes(:coral).joins(:measurements).where('observations.coral_id = ? AND measurements.trait_id = ?', @coral.id, @trait.id)
     else
-      @observations = Observation.joins(:measurements).where('measurements.trait_id IS ?', @trait.id)
+      @observations = Observation.joins(:measurements).where('measurements.trait_id = ?', @trait.id)
     end
 
     if signed_in? && current_user.admin?
     elsif signed_in? && current_user.editor?
     elsif signed_in? && current_user.contributor?
-      @observations = @observations.where(['observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?)', false, current_user.id, true])
+      @observations = @observations.where(['observations.private IS false OR (observations.user_id = ? AND observations.private IS true)',  current_user.id])
     else
-      @observations = @observations.where(['observations.private IS ?', false])
+      @observations = @observations.where(['observations.private IS false'])
     end
     
     data_table = GoogleVisualr::DataTable.new
 
-   if @trait.standard.standard_unit != "id" && @trait.standard.standard_unit != "text"
+    if @trait.standard.standard_unit != "id" && @trait.standard.standard_unit != "text"
       if @trait.standard.standard_name == "Category" || @trait.standard.standard_name == "Binomial"
         data_table.new_column('string')
         data_table.new_column('number')
@@ -94,22 +94,23 @@ class TraitsController < ApplicationController
         data_table.new_column('number')
 
         p = 0
-        @trait.measurements.map(&:value).map{|v| v.to_d}.sort.reverse.each do |i|
+        # @trait.measurements.map(&:value).map{|v| v.to_d}.sort.reverse.each do |i|
+        @trait.measurements.sort_by{ |a| a.value.to_d }.each do |i|
           if @trait.standard.standard_unit == "deg"
             data_table.add_row([p, i.to_d])
           else
-            # data_table.add_row([p, Math::log10(i.to_d.abs)])
-            data_table.add_row([p, i.to_d])
+            data_table.add_row([p, i.value.to_d])
           end            
           p = p + 1
         end
 
         option = { width: 250, height: 250, legend: 'none', :vAxis => { :title => "#{@trait.trait_name}" }, :hAxis => { textPosition: 'none' } }
         @chart = GoogleVisualr::Interactive::ScatterChart.new(data_table, option)
+        # @chart.add_listener("select", "function(e) { EventHandler(e, chart, data_table) }")
       end
    end
 
-@data_table = data_table
+    # @data_table = data_table
 
     respond_to do |format|
       format.html {

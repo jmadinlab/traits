@@ -4,7 +4,7 @@
 		<div class="page-header">
 		  <h1>
 		  	<% if @observation.issues.present? %>
-			  	<span class="glyphicon glyphicon-warning-sign" style="color:red;"></span>
+			  	<span class="glyphicon glyphicon-warning-sign" style="color:red;" data-toggle="tooltip" data-placement="top" title="Issue reported"></span>
 				<% end %>
 				Observation record (<%= @observation.id %>)
 			<% if @observation.approval_status == "pending" %>
@@ -85,7 +85,7 @@
 				<ul class="list-group">
 
 					<% if @observation.measurements.count > 0 %>
-					  <% @observation.measurements.each do |mea| %>
+					  <% @observation.measurements.joins(:trait).order("trait_class != 'Contextual' DESC").each do |mea| %>
 
 						  <li class="list-group-item">							
 								<div class="row">
@@ -95,7 +95,7 @@
 								  <div class="col-sm-3">
 
 										<% if mea.trait.trait_class == "Contextual" %>
-								  		<span class="glyphicon glyphicon-eye-open" style="color:grey;" data-toggle="tooltip" data-placement="top" title="Measurement is contextual"></span>
+								  		<span class="glyphicon glyphicon-eye-open" data-toggle="tooltip" data-placement="top" title="Measurement is contextual"></span>
 										<% end %>
 								  	<%= link_to mea.trait.trait_name, trait_path(mea.trait_id), 'data-no-turbolink' => true %>
 									</div>

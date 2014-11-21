@@ -1,133 +1,160 @@
 <div class="row">
   <div class="col-md-12">
 		<% mark = "" %>
-	  <% @observations.each do |grp| %>    
+	  <% @observations.each do |obs| %>    
 
 			<% if @user %>
-				<%= hidden_field_tag "all_ids[]", grp.id %>
+				<%= hidden_field_tag "all_ids[]", obs.id %>
 			<% end %>
 
-			<% if grp.coral.coral_name != mark %>
+			<% if obs.coral.coral_name != mark %>
 				</ul>
-				<h4><em><%= link_to grp.coral.coral_name, "/corals/" + grp.coral_id.to_s %></em></h4>
+				<h4><em><%= link_to obs.coral.coral_name, "/corals/" + obs.coral_id.to_s %></em></h4>
 				<ul class="list-group">
 			<% end %>
 
 	  	<li class="list-group-item">							
 				<div class="row">
-
 					<div class="col-sm-1">
 						<label class="checkbox-inline">
-			      	<% if grp.issues.present? %>
+			      	<% if obs.issues.present? %>
 			  				<span data-toggle="tooltip" data-placement="top" title="Issue reported">
-		  						<%= link_to "", observation_path(grp), class: "glyphicon glyphicon-warning-sign", style: "color:red;"  %>
+		  						<%= link_to "", observation_path(obs), class: "glyphicon glyphicon-warning-sign", style: "color:red;"  %>
 		  					</span>
 							<% end %>
 
 							<% if @user %>
-								<%= check_box_tag "pri_ids[]", grp.id, grp.private %>
+								<%= check_box_tag "pri_ids[]", obs.id, obs.private %>
 							<% end %>
-							<% if grp.private == true %>
+
+							<% if obs.private == true %>
 								<span class="glyphicon glyphicon-remove-circle" style="color:red;"></span>
 							<% else %>
 								<span class="glyphicon glyphicon-ok-circle" style="color:green;"></span>
 							<% end %>
-
 						</label>
 		  		</div>
 
 	        <div class="col-sm-1" style="color: lightgrey;">
-	        	<%= grp.id %>
+	        	<%= obs.id %>
 	        </div>
 
 					<div class="col-sm-3">
 
 						<div class="col-sm-2">
-		  				<% if !grp.user_id.blank? && grp.user_id != 0 %>
+		  				<% if !obs.user_id.blank? && obs.user_id != 0 %>
 				  			<span data-toggle="tooltip" data-placement="top" title="Contributor">
-			  					<%= link_to "", user_path(grp.user_id), class: "glyphicon glyphicon-user" %>
+			  					<%= link_to "", user_path(obs.user_id), class: "glyphicon glyphicon-user" %>
 			  				</span>
 		  				<% end %>
 		  			</div>
 
 						<div class="col-sm-2">
-		  				<% if !grp.location_id.blank? && grp.location_id != 0 %>
-		  				  <% if grp.location_id == 1 %>
+		  				<% if !obs.location_id.blank? && obs.location_id != 0 %>
+		  				  <% if obs.location_id == 1 %>
 				  				<span data-toggle="tooltip" data-placement="top" title="Global estimate">
-						      	<%= link_to "", location_path(grp.location_id), class: "glyphicon glyphicon-globe", 'data-no-turbolink' => true %>
+						      	<%= link_to "", location_path(obs.location_id), class: "glyphicon glyphicon-globe", 'data-no-turbolink' => true %>
 			  					</span>
 			  				<% else %> 
 				  				<span data-toggle="tooltip" data-placement="top" title="Location specific estimate">
-			  			      <%= link_to "", location_path(grp.location_id), class: "glyphicon glyphicon-map-marker", 'data-no-turbolink' => true %>
+			  			      <%= link_to "", location_path(obs.location_id), class: "glyphicon glyphicon-map-marker", 'data-no-turbolink' => true %>
 			  					</span>
 		  				  <% end %> 
 		  				<% end %> 
 		  			</div>
 
 						<div class="col-sm-2">
-		  				<% if !grp.resource_id.blank? && grp.resource_id != 0 %>
+		  				<% if !obs.resource_id.blank? && obs.resource_id != 0 %>
 			  				<span data-toggle="tooltip" data-placement="top" title="Primary resource">
-			  					<%= link_to "", resource_path(grp.resource_id), class: "glyphicon glyphicon-tag" %>
+			  					<%= link_to "", resource_path(obs.resource_id), class: "glyphicon glyphicon-tag" %>
 		  					</span>
 		  				<% end %> 
 		  			</div>    
 
 						<div class="col-sm-2">
-		  				<% if !grp.secondary_id.blank? %>
+		  				<% if !obs.secondary_id.blank? %>
 			  				<span data-toggle="tooltip" data-placement="top" title="Secondary resource">
-			  					<%= link_to "", resource_path(grp.secondary_id), class: "glyphicon glyphicon-tags" %>
+			  					<%= link_to "", resource_path(obs.secondary_id), class: "glyphicon glyphicon-tags" %>
 		  					</span>
 		  				<% end %> 
 		  			</div>    
 
 						<div class="col-sm-2">
-			      	<% if grp.measurements.size > 1 %>
+			      	<% if obs.measurements.size > 1 %>
 			  				<span data-toggle="tooltip" data-placement="top" title="Context included">
-		  						<%= link_to "", observation_path(grp), class: "glyphicon glyphicon-eye-open" %>
+		  						<%= link_to "", observation_path(obs), class: "glyphicon glyphicon-eye-open" %>
 		  					</span>
 							<% end %>
 		  			</div>
 
 						<div class="col-sm-2">
-			      	<% if grp.approval_status == "pending" %>
+			      	<% if obs.approval_status == "pending" %>
 			  				<span data-toggle="tooltip" data-placement="top" title="Pending">
-		  						<%= link_to "", observation_path(grp), class: "glyphicon glyphicon-asterisk" %>
+		  						<%= link_to "", observation_path(obs), class: "glyphicon glyphicon-asterisk" %>
 		  						</span>
 							<% end %>
 		  			</div>
 
 	  			</div>
 
-		      <% measurement = grp.measurements.first %>
 
-					<div class="col-sm-3">
-						<%= link_to measurement.trait.trait_name, trait_path(measurement.trait_id), 'data-no-turbolink' => true %>
-		      </div>
-					<div class="col-sm-2">
+		      <% if @trait %>
+		      	<% measurements = obs.measurements %>
+					<% else %> 
+		      	<% measurements = obs.measurements.joins(:trait).where("trait_class NOT LIKE ?", "Contextual") %>
+					<% end %> 
 
-						<% if measurement.standard.standard_class == "Nominal class" %>
-							<span class="label label-primary"><%= measurement.value %></span>
-						<% else %> 
-		        	<%= measurement.value %>
-							<% if !measurement.standard.blank? %>
-								(<%= measurement.standard.standard_unit %>)
+	      	<% if measurements.size == 1 %>
+	 					<div class="col-sm-3">
+							<%= link_to measurements.first.trait.trait_name, trait_path(measurements.first.trait_id), 'data-no-turbolink' => true %>
+			      </div>
+
+						<div class="col-sm-2">
+							<% if measurements.first.standard.standard_class == "Nominal class" %>
+								<span class="label label-primary"><%= measurements.first.value %></span>
+							<% else %> 
+			        	<%= measurements.first.value %>
+								<% if !measurements.first.standard.blank? %>
+									(<%= measurements.first.standard.standard_unit %>)
+								<% end %> 
 							<% end %> 
-						<% end %> 
+			      </div>
+	      	<% else %>
+		      	<% if @trait %>
+			      	<% measurements = measurements.joins(:trait).where("trait_name IS ?", @trait.trait_name) %>
+		 					<div class="col-sm-3">
+								<%= link_to measurements.first.trait.trait_name, trait_path(measurements.first.trait_id), 'data-no-turbolink' => true %>
+				      </div>
 
-		      </div>
+							<div class="col-sm-2">
+								<% if measurements.first.standard.standard_class == "Nominal class" %>
+									<span class="label label-primary"><%= measurements.first.value %></span>
+								<% else %> 
+				        	<%= measurements.first.value %>
+									<% if !measurements.first.standard.blank? %>
+										(<%= measurements.first.standard.standard_unit %>)
+									<% end %> 
+								<% end %> 
+				      </div>
+		      	<% else %>
+							<div class="col-sm-5">
+								<span class="label label-primary"><%= measurements.size %></span> trait measurements
+				      </div>
+		      	<% end %>
+	      	<% end %>
 
 					<div class="col-sm-2">
 	      		<div class="btn-group pull-right">				
-	  					<%= link_to 'Show', observation_path(grp), class: "btn btn-xs btn-default" %>
+	  					<%= link_to 'Show', observation_path(obs), class: "btn btn-xs btn-default" %>
 		  				<% if signed_in? && current_user.contributor? %>
-		  	    		<%= link_to 'Edit', edit_observation_path(grp), class: "btn btn-xs btn-default" %>
-		  	    		<%= link_to 'X', observation_path(grp), method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
+		  	    		<%= link_to 'Edit', edit_observation_path(obs), class: "btn btn-xs btn-default" %>
+		  	    		<%= link_to 'X', observation_path(obs), method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
 		  				<% end %>
 	  				</div>
 	  			</div>
 				</div>
 			</li>
-			<% mark = grp.coral.coral_name %>
+			<% mark = obs.coral.coral_name %>
   	<% end %>
 	</div>
 </div>

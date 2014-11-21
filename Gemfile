@@ -12,7 +12,8 @@ gem 'select2-rails'
 gem 'mandrill_mailer'
 gem 'sunspot_rails'
 gem 'sunspot_solr'
-gem 'progress_bar'
+#gem 'progress_bar'
+gem 'sqlite3'
 gem 'redcarpet'
 gem "google_visualr", "~> 2.1.0"
 
@@ -20,6 +21,7 @@ gem 'capistrano',  '~> 3.1'
 gem 'capistrano-rails', '~> 1.1'
 # gem 'select2-sass-bootstrap-rails'
 # gem 'squeel', github: 'kiela/squeel'
+gem 'pg'
 
 gem 'roo'
 # using paper_trail for versioning database
@@ -44,9 +46,12 @@ gem 'hirb'
 #gem "ar-octopus", :git => "git://github.com/tchandy/octopus.git", :require => "octopus"
 
 group :development, :test do
-  gem 'sqlite3'#, '1.3.8'
+  #gem 'sqlite3'#, '1.3.8'
+  gem 'pg'
   #gem 'sunspot_solr'
-  # gem 'rspec-rails', '2.13.1'
+  gem 'minitest'
+  gem 'rspec-rails', '2.13.1'
+
   # The following optional lines are part of the advanced setup.
   # gem 'guard-rspec', '2.5.0'
   # gem 'spork-rails', '4.0.0'
@@ -55,11 +60,11 @@ group :development, :test do
 end
 
 group :test do
-  # gem 'selenium-webdriver', '2.35.1'
-  # gem 'capybara', '2.1.0'
-  # gem 'factory_girl_rails', '4.2.0'
+  gem 'selenium-webdriver'
+  gem 'capybara', '2.1.0'
+  gem 'factory_girl_rails', '4.2.0'
   # gem 'cucumber-rails', '1.3.0', :require => false
-  # gem 'database_cleaner', github: 'bmabey/database_cleaner'
+ # gem 'database_cleaner', github: 'bmabey/database_cleaner'
 
   # Uncomment this line on OS X.
   # gem 'growl', '1.0.3'

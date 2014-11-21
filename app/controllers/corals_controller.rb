@@ -43,7 +43,7 @@ class CoralsController < ApplicationController
     end
     
     if signed_in? && current_user.contributor?
-      @observations = Observation.where(['observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?)', false, current_user.id, true]).where(:coral_id => params[:checked])
+      @observations = Observation.where(['observations.private IS false OR (observations.user_id = ? AND observations.private true)', current_user.id]).where(:coral_id => params[:checked])
     end
 
     if signed_in? && current_user.admin?
@@ -78,7 +78,8 @@ class CoralsController < ApplicationController
     end
     
     if signed_in? && current_user.contributor?
-      @observations = Observation.where(['observations.coral_id IS ? AND (observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?))', @coral.id, false, current_user.id, true])
+      #@observations = Observation.where(['observations.coral_id IS ? AND (observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?))', @coral.id, false, current_user.id, true])
+      @observations = Observation.where(['observations.coral_id = ? AND (observations.private IS false OR (observations.user_id = ? AND observations.private IS true))', @coral.id,  current_user.id])
     end
 
     if signed_in? && current_user.admin?

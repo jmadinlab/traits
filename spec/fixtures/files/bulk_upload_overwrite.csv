@@ -1,0 +1,2 @@
+observation_id,access,user_id,coral_id,coral_name,location_id,location_name,latitude,longitude,resource_id,measurement_id,trait_id,trait_name,standard_id,standard_unit,methodology_id,methodology_name,value,value_type,precision,precision_type,precision_upper,replicates,notes
+100276,1,77,1569,Test Coral,1113,Test Location,10.0,10.0,672,115989,175,Test Trait,66,kg,,,overwritten value,,,,,,

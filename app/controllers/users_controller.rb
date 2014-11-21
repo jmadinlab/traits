@@ -15,14 +15,14 @@ class UsersController < ApplicationController
     n = 9999999 if params[:n] == "all"
 
     @user = User.find(params[:id])
-    @observations = Observation.where('user_id IS ?', @user.id)
+    @observations = Observation.where('user_id = ?', @user.id)
 
     if signed_in? && current_user.admin?
     elsif signed_in? && current_user.editor?
     elsif signed_in? && current_user.contributor?
-      @observations = @observations.where(['observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?)', false, current_user.id, true])
+      @observations = @observations.where(['observations.private IS  false OR (observations.user_id = ? AND observations.private IS true)',current_user.id])
     else
-      @observations = @observations.where(['observations.private IS ?', false])
+      @observations = @observations.where(['observations.private IS false'])
     end
 
     respond_to do |format|

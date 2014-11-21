@@ -97,12 +97,12 @@
 	</div>
 
   <div class="col-md-4">
-	  <%#= render "shared/symbol_key" %>
 	  <div class="col-md-3">
 			<% if @chart %>
 				<script src='http://www.google.com/jsapi'></script>
 				<div id='chart'></div>
 				<%= render_chart @chart, 'chart' %>
+				<%#= @data_table %>
 			<% end %>
 		</div>
 	</div>
@@ -114,8 +114,6 @@
 <% if @observations.empty? %>
 	<p class="alert alert-danger">No records available.</p>
 <% else %>
-
 	<%= will_paginate @observations %>
 	<%= render "shared/observations" %>
-
 <% end %>
