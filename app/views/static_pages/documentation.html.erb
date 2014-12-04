@@ -1,0 +1,17 @@
+<% provide(:title, 'Documentation') %>
+
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+
+    <% if signed_in? && current_user.admin? %>
+    	<%= markdown File.open(Rails.root + "public/documentation.md", 'r').read %>
+    <% else %>
+	    <div class="alert alert-danger" role="alert">
+	    	Sorry, You are not authorised to view this page
+	    </div>
+
+
+    <% end %>
+
+  </div>
+</div>
