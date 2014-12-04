@@ -46,3 +46,6 @@ doc/
 .ruby-*
 .secret
 notes_josh.md
+*.sql
+*.dump
+postgres/

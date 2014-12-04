@@ -112,6 +112,7 @@ Traits::Application.routes.draw do
   match '/editors',     to: 'static_pages#editors',   via: 'get'
   match '/download',    to: 'static_pages#download',   via: 'get'
   match '/bulk_import', to: 'static_pages#bulk_import',   via: 'get'
+  match '/documentation',    to: 'static_pages#documentation',   via: 'get'
 
   match '/export_trait', to: 'static_pages#export_trait',   via: 'get'
   match '/export_coral_trait', to: 'static_pages#export_coral_trait',   via: 'get'

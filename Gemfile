@@ -22,7 +22,7 @@ gem 'capistrano',  '~> 3.1'
 gem 'capistrano-rails', '~> 1.1'
 # gem 'select2-sass-bootstrap-rails'
 # gem 'squeel', github: 'kiela/squeel'
-gem 'pg'
+gem 'pg','=0.14.1' 
 
 gem 'roo'
 # using paper_trail for versioning database
@@ -48,7 +48,7 @@ gem 'hirb'
 
 group :development, :test do
   #gem 'sqlite3'#, '1.3.8'
-  gem 'pg'
+  
   #gem 'sunspot_solr'
   gem 'minitest'
   gem 'rspec-rails', '2.13.1'
