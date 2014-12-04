@@ -85,3 +85,6 @@
 		</div>
 	</div>
 <% end %>
+<% if @resources.blank? %>
+  <div class="alert alert-danger" role="alert">No resources entered.</div>
+<% end %>

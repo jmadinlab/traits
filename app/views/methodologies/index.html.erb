@@ -82,3 +82,7 @@
 	</div>
 <% end %>
 
+<% if @methodologies.blank? %>
+  <div class="alert alert-danger" role="alert">No methodologies entered.</div>
+<% end %>
+

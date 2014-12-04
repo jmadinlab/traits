@@ -74,7 +74,9 @@
 	</li>
 <% end %>
 
-
+<% if @standards.blank? %>
+  <div class="alert alert-danger" role="alert">No standards entered.</div>
+<% end %>
 
 
 

@@ -99,3 +99,7 @@
 	  </div>
 	</div>
 <% end %>
+
+<% if @traits.blank? %>
+  <div class="alert alert-danger" role="alert">No traits entered.</div>
+<% end %>

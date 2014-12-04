@@ -92,6 +92,10 @@
 	</div>
 <% end %>
 
+<% if @locations.blank? %>
+  <div class="alert alert-danger" role="alert">No locations entered.</div>
+<% end %>
+
 <script type="text/javascript">
   var locations = <%= raw @locations.map {|i| [i.location_name.to_s, i.latitude.to_s, i.longitude.to_s, i.id.to_s] } %>;
 
