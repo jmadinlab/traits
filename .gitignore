@@ -2,6 +2,7 @@
 /.bundle
 *.bak
 *.sqlite3
+*.dump
 current
 /releases/
 /repo/

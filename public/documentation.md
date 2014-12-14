@@ -6,6 +6,9 @@ Hostname : `ctdwsprd1001a`
 Server IP: `10.26.2.85`  
 Public IP : `137.111.200.166`  
 
+OLD: 137.111.92.75
+
+
 	The VM is a Linux machine with Oracle Linux (much similar to Red Hat ). So any application has to be installed through 'yum'  
 
 **1. Connect to Orbit VPN through OpenVPN software**  

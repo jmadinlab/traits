@@ -22,7 +22,7 @@ gem 'capistrano',  '~> 3.1'
 gem 'capistrano-rails', '~> 1.1'
 # gem 'select2-sass-bootstrap-rails'
 # gem 'squeel', github: 'kiela/squeel'
-gem 'pg','=0.14.1' 
+gem 'pg'#,'=0.14.1' 
 
 gem 'roo'
 # using paper_trail for versioning database
