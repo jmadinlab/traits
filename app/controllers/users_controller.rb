@@ -20,9 +20,9 @@ class UsersController < ApplicationController
     if signed_in? && current_user.admin?
     elsif signed_in? && current_user.editor?
     elsif signed_in? && current_user.contributor?
-      @observations = @observations.where(['observations.private IS  false OR (observations.user_id = ? AND observations.private IS true)',current_user.id])
+      @observations = @observations.where('private IS ? OR (user_id = ? AND private IS ?)', false, current_user.id, true)
     else
-      @observations = @observations.where(['observations.private IS false'])
+      @observations = @observations.where('private IS ?', false)
     end
 
     respond_to do |format|
