@@ -265,8 +265,8 @@ Website and data download activity are tracked using Google Analytics.
 
 # 7. Database code
    
-![rails](images/rails.png)
-![github](images/github.png)
+![rails](public/images/rails.png)
+![github](public/images/github.png)
 
 The database was developed using Ruby on Rails, is open source, and can be found at [Github](https://github.com/jmadin/coraltraits).
  
@@ -276,7 +276,7 @@ The database was developed using Ruby on Rails, is open source, and can be found
 
 # 8. License
 
-[![Screenshot import 1](images/CC0.png)](https://creativecommons.org/publicdomain/zero/1.0/)
+[![Screenshot import 1](public/images/CC0.png)](https://creativecommons.org/publicdomain/zero/1.0/)
 
 > Basically, if you enter data into the database and make it public, the data can be reused by others if they cite it correctly.
 
