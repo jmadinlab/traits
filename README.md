@@ -82,15 +82,7 @@ The Coral Trait Database is an open source research initiative that aims to make
 
 > The database relies on external people with breadth of experience and technical know-how, and who appreciate the subtle difficulties of managing large data compilations.
 
-- Matt Kosnik
-
-*People to potentially approach:*
-
-- Matt Jones
-- Mark Schildhauer
-- John Alroy
-- Ethan White
-- Scott Chamberlain or Karthik Ram (ropensci)
+- TBD
 
 ### Database programmers
 
