@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
 
   has_many :observations
-  has_many :corals
+  has_many :species
   has_many :traits
   has_many :resources
   has_many :locations

@@ -75,7 +75,7 @@ class StaticPagesController < ApplicationController
     
     traits = Trait.where("release_status IS ? OR release_status IS ?", "ready_for_release", "needs_work_before_release")
     # traits = Trait.where("trait_class IS NOT ?", "Contextual")
-    corals = Coral.all
+    corals = Specie.all
 
     csv_string = CSV.generate do |csv|
 

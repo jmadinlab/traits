@@ -7,7 +7,7 @@
   # before_action :admin, :destroy
 
   # autocomplete :location, :name, :full => true
-  # autocomplete :coral, :name, :full => true
+  # autocomplete :specie, :name, :full => true
   # autocomplete :resource, :author, :full => true, :extra_data => [:year], :display_value => :resource_fill
 
 
@@ -44,15 +44,15 @@
     n = 9999999 if params[:n] == "all"
 
     if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
-      @observations = Observation.where(['observations.private IS false']).includes(:coral).joins(:measurements).where('measurements.value LIKE ?', "%#{params[:search]}%").limit(n)
+      @observations = Observation.where(['observations.private IS false']).includes(:specie).joins(:measurements).where('measurements.value LIKE ?', "%#{params[:search]}%").limit(n)
     end
     
     if signed_in? && current_user.contributor?
-      @observations = Observation.where(['observations.private IS false OR (observations.user_id = ? AND observations.private true ?)', current_user.id]).includes(:coral).joins(:measurements).where('measurements.value LIKE ?', "%#{params[:search]}%").limit(n)
+      @observations = Observation.where(['observations.private IS false OR (observations.user_id = ? AND observations.private true ?)', current_user.id]).includes(:specie).joins(:measurements).where('measurements.value LIKE ?', "%#{params[:search]}%").limit(n)
     end
 
     if signed_in? && current_user.admin?
-      @observations = Observation.includes(:coral).joins(:measurements).where('measurements.value LIKE ?', "%#{params[:search]}%").limit(n)
+      @observations = Observation.includes(:specie).joins(:measurements).where('measurements.value LIKE ?', "%#{params[:search]}%").limit(n)
     end
 
     
@@ -84,7 +84,7 @@
       flash[:danger] = 'You need to be the original contributor of an observation to edit it.'
       if params[:user].blank?
         if params[:trait].blank?
-          redirect_to coral_path(@observation.coral_id)
+          redirect_to specie_path(@observation.specie_id)
         else
           redirect_to trait_path(params[:trait])
         end
@@ -144,7 +144,7 @@
       flash[:danger] = 'Observation NOT deleted. You need to be the original contributor of an observation to delete it.'
       if params[:user].blank?
         if params[:trait].blank?
-          redirect_to coral_path(@observation.coral_id)
+          redirect_to specie_path(@observation.specie_id)
         else
           redirect_to trait_path(params[:trait])
         end
@@ -163,7 +163,7 @@
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def observation_params
-      params.require(:observation).permit(:user_id, :location_id, :coral_id, :resource_id, :private, :approval_status, :secondary_id, measurements_attributes: [:id, :user_id, :orig_user_id, :trait_id, :standard_id, :value, :value_type, :orig_value, :precision_type, :precision, :precision_upper, :replicates, :notes, :methodology_id, :approval_status, :_destroy])
+      params.require(:observation).permit(:user_id, :location_id, :specie_id, :resource_id, :private, :approval_status, :secondary_id, measurements_attributes: [:id, :user_id, :orig_user_id, :trait_id, :standard_id, :value, :value_type, :orig_value, :precision_type, :precision, :precision_upper, :replicates, :notes, :methodology_id, :approval_status, :_destroy])
     end
 
 

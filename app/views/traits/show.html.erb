@@ -7,8 +7,8 @@
   		<span class="glyphicon glyphicon-eye-open" data-toggle="tooltip" data-placement="bottom" title="Contextual trait"></span>
 		<% end %>
 		<%= @trait.trait_name %>
-		<% if @coral %>
-			(<em><%= link_to @coral.coral_name, coral_path(@coral) %></em>)
+		<% if @specie %>
+			(<em><%= link_to @specie.specie_name, specie_path(@specie) %></em>)
 		<% end %>
 	</h1>
 </div>
@@ -91,7 +91,7 @@
 					<%= link_to 'Edit', edit_trait_path(@trait), class: "btn btn-sm btn-default" %>
 				<% end %>
 				<%= link_to 'Back', traits_path, class: "btn btn-sm btn-default" %>
-				<%= link_to 'Back to coral', coral_path(@coral), class: "btn btn-sm btn-default" if @coral %>
+				<%= link_to 'Back to specie', specie_path(@specie), class: "btn btn-sm btn-default" if @specie %>
       </div>
 		</p>
 	</div>

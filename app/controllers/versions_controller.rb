@@ -53,8 +53,8 @@ class VersionsController < ApplicationController
   end
 
   # Create revert back link for version history
-  #def make_revert_link(coral_id)
-  #  @item = Coral.find_by_id(coral_id)
-    #view_context.link_to 'Revert Back', revert_back_path(@coral.versions.last), method: :post
+  #def make_revert_link(specie_id)
+  #  @item = Specie.find_by_id(specie_id)
+    #view_context.link_to 'Revert Back', revert_back_path(@specie.versions.last), method: :post
   #end
 end

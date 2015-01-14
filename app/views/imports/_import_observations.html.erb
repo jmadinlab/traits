@@ -33,9 +33,9 @@
 			<% @observations.each do |grp| %>    
 			  <% grp.measurements.each do |mea| %>    
 					<tr>
-						<% if grp.coral.coral_name != mark %>
+						<% if grp.specie.specie_name != mark %>
 							<td style="text-align: right;">
-								<em><%= link_to grp.coral.coral_name, "/corals/" + grp.coral_id.to_s %></em>
+								<em><%= link_to grp.specie.specie_name, "/species/" + grp.specie_id.to_s %></em>
 							</td>				
 						<% else %>
 							<td style="border:none;">
@@ -106,7 +106,7 @@
 
 					</tr>
 
-					<% mark = grp.coral.coral_name %>
+					<% mark = grp.specie.specie_name %>
 					<% mark1 = grp.id %>
 					<% mark2 = mea.trait.trait_name %>
 				<% end %>

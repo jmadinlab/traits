@@ -37,14 +37,14 @@ class ImportsController < ApplicationController
 	
 	def approve
 		if not current_user.admin?
-			@corals = Coral.where(:approval_status => "pending", :user_id => current_user.id )
+			@corals = Specie.where(:approval_status => "pending", :user_id => current_user.id )
 			@locations = Location.where(:approval_status => "pending", :user_id => current_user.id)
 			@traits = Trait.where(:approval_status => "pending", :user_id => current_user.id)
 			@standards = Standard.where(:approval_status => "pending", :user_id => current_user.id)
 			@resources = Resource.where(:approval_status => "pending", :user_id => current_user.id)
 			@observations = Observation.includes(:measurements).where("measurements.approval_status" => "pending")
 		else
-			@corals = Coral.where(:approval_status => "pending")
+			@corals = Specie.where(:approval_status => "pending")
 			@locations = Location.where(:approval_status => "pending")
 			@traits = Trait.where(:approval_status => "pending")
 			@standards = Standard.where(:approval_status => "pending")

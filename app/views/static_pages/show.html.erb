@@ -68,7 +68,7 @@
 				<strong>Observations with no coral:</strong>
 			</div>
 			<div class="col-md-9">
-				<% obs = Observation.where(:id => Measurement.where(:trait_id => @trait.id).map(&:observation_id)).where("coral_id IS NULL OR coral_id IS ?", "") %>
+				<% obs = Observation.where(:id => Measurement.where(:trait_id => @trait.id).map(&:observation_id)).where("specie_id IS NULL OR specie_id IS ?", "") %>
 				<% if !obs.empty? %>
 					<% obs.each do |o| %>
 						<%= link_to o.id, observation_path(o.id), class: "label label-danger" %>
@@ -123,11 +123,11 @@
 				For use when only one should exist, like growth form
 			</div>
 			<div class="col-md-9">
-				<% dup = Observation.where(:id => Measurement.where(:trait_id => @trait.id).map(&:observation_id)).map(&:coral_id) %>
-				<% corals = dup.select{|element| dup.count(element) > 1 } %>
-				<% if !corals.empty? %>
-					<% Coral.where("id IN (?)", corals).each do |coral| %>
-						<%= link_to coral.coral_name, coral_trait_path(coral, @trait), class: "label label-warning" %>
+				<% dup = Observation.where(:id => Measurement.where(:trait_id => @trait.id).map(&:observation_id)).map(&:specie_id) %>
+				<% species = dup.select{|element| dup.count(element) > 1 } %>
+				<% if !species.empty? %>
+					<% Specie.where("id IN (?)", species).each do |specie| %>
+						<%= link_to specie.specie_name, specie_trait_path(specie, @trait), class: "label label-warning" %>
 					<% end %>
 				<% else %>
 					<span class="label label-success">looking good</span>
@@ -215,15 +215,15 @@
 </ul>
 
 
-<% with = Observation.where(:id => Measurement.where(:trait_id => @trait.id).map(&:observation_id)).map(&:coral_id).uniq %>
-<% corals = (Coral.all.map(&:id) - with) %>
-<h3>Corals without this trait (<%= corals.count %> of <%= Coral.all.count %>)</h3>
+<% with = Observation.where(:id => Measurement.where(:trait_id => @trait.id).map(&:observation_id)).map(&:specie_id).uniq %>
+<% species = (Specie.all.map(&:id) - with) %>
+<h3>Species without this trait (<%= species.count %> of <%= Specie.all.count %>)</h3>
 <ul class="list-group">
   <li class="list-group-item">							
 		<div class="row">
 			<div class="col-md-12">
-				<% Coral.where(:id => corals).each do |coral| %>
-					<%= link_to coral.coral_name, coral_path(coral), class: "label label-warning" %>
+				<% Specie.where(:id => species).each do |specie| %>
+					<%= link_to specie.specie_name, specie_path(specie), class: "label label-warning" %>
 				<% end %>
 			</div>
 		</div>

@@ -6,10 +6,10 @@
 
 		<%= render 'form' %>
 
-		<% if params[:coral].blank? %>
+		<% if params[:specie].blank? %>
 			<%= link_to 'Back', locations_path %>
 		<% else %>
-			<%= link_to 'Back', new_observation_path(:coral => params[:coral]) %>
+			<%= link_to 'Back', new_observation_path(:specie => params[:specie]) %>
 		<% end %>
 
 	</div>

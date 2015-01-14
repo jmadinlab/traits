@@ -2,19 +2,19 @@
 
 <h1><%= link_to @trait.trait_name, trait_path(@trait), 'data-no-turbolink' => true %> (ID: <%= @trait.id %>)</h1>
 
-<p>A list of potential database errors for Editors to monitor. Duplicates have the same coral, location, resource, trait and value. This does happen, so carefully consider deleting observations.</p>
+<p>A list of potential database errors for Editors to monitor. Duplicates have the same species, location, resource, trait and value. This does happen, so carefully consider deleting observations.</p>
 
 <%= link_to 'Back', show_meta_path(@trait.id), class: "btn btn-default btn-sm" %>
 
 <h3>Potential duplicate measurements</h3>
 
-<% @measurements = Measurement.where(:trait_id => @trait.id).joins(:observation).group(:value, :standard_id, :coral_id, :resource_id).having("count(*) > 1") %>
+<% @measurements = Measurement.where(:trait_id => @trait.id).joins(:observation).group(:value, :standard_id, :specie_id, :resource_id).having("count(*) > 1") %>
 
 <% if @measurements.any? %>
 
   <% @measurements.each do |i| %>
   	<% obs = Observation.where(:id => i.observation_id).first %>
-  	<% @observations = Observation.joins(:measurements).where("value IS ? AND standard_id IS ? AND trait_id IS ? AND coral_id IS ? AND resource_id IS ?", i.value, i.standard_id, i.trait_id, obs.coral_id, obs.resource_id) %>
+  	<% @observations = Observation.joins(:measurements).where("value IS ? AND standard_id IS ? AND trait_id IS ? AND specie_id IS ? AND resource_id IS ?", i.value, i.standard_id, i.trait_id, obs.specie_id, obs.resource_id) %>
     	<%= render "shared/observations" %>
   <% end %>
 

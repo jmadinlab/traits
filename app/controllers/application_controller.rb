@@ -61,13 +61,13 @@ class ApplicationController < ActionController::Base
     signed_in? ? current_user.id : 'Guest'
   end
 
-  # Return the main csv string depending upon the model (corals data / traits data / lcation data etc)
+  # Return the main csv string depending upon the model (species data / traits data / lcation data etc)
   def get_main_csv(observations, taxonomy=nil, contextual=nil, global=nil)
     csv_string = CSV.generate do |csv|
       if taxonomy == "on"
-        csv << ["observation_id", "access", "user_id", "coral_id", "coral_name", "major_clade", "family_molecules", "family_morphology", "location_id", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_id", "trait_name", "standard_id", "standard_unit", "methodology_id", "methodology_name", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates", "notes"]
+        csv << ["observation_id", "access", "user_id", "specie_id", "specie_name", "major_clade", "family_molecules", "family_morphology", "location_id", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_id", "trait_name", "standard_id", "standard_unit", "methodology_id", "methodology_name", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates", "notes"]
       else
-        csv << ["observation_id", "access", "user_id", "coral_id", "coral_name", "location_id", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_id", "trait_name", "standard_id", "standard_unit", "methodology_id", "methodology_name", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates", "notes"]
+        csv << ["observation_id", "access", "user_id", "specie_id", "specie_name", "location_id", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_id", "trait_name", "standard_id", "standard_unit", "methodology_id", "methodology_name", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates", "notes"]
       end
       observations.each do |obs|
         if global != "on" || obs.location_id == 1
@@ -97,9 +97,9 @@ class ApplicationController < ActionController::Base
                 method = mea.methodology.methodology_name
               end
               if taxonomy == "on"
-                csv << [obs.id, acc, obs.user_id, obs.coral.id, obs.coral.coral_name, obs.coral.major_clade, obs.coral.family_molecules, obs.coral.family_morphology, obs.location_id, loc, lat, lon, obs.resource_id, mea.id, mea.trait.id, mea.trait.trait_name, mea.standard.id, mea.standard.standard_unit, mea.methodology_id, method, mea.value, mea.value_type, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates, mea.notes]
+                csv << [obs.id, acc, obs.user_id, obs.specie.id, obs.specie.specie_name, obs.specie.major_clade, obs.specie.family_molecules, obs.specie.family_morphology, obs.location_id, loc, lat, lon, obs.resource_id, mea.id, mea.trait.id, mea.trait.trait_name, mea.standard.id, mea.standard.standard_unit, mea.methodology_id, method, mea.value, mea.value_type, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates, mea.notes]
               else
-                csv << [obs.id, acc, obs.user_id, obs.coral.id, obs.coral.coral_name, obs.location_id, loc, lat, lon, obs.resource_id, mea.id, mea.trait.id, mea.trait.trait_name, mea.standard.id, mea.standard.standard_unit, mea.methodology_id, method, mea.value, mea.value_type, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates, mea.notes]
+                csv << [obs.id, acc, obs.user_id, obs.specie.id, obs.specie.specie_name, obs.location_id, loc, lat, lon, obs.resource_id, mea.id, mea.trait.id, mea.trait.trait_name, mea.standard.id, mea.standard.standard_unit, mea.methodology_id, method, mea.value, mea.value_type, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates, mea.notes]
               end
             end
           end
@@ -144,7 +144,7 @@ class ApplicationController < ActionController::Base
     require 'rubygems'
     require 'zip'
 
-    # Process file1 (corals.csv, traits.csv, locations.csv)
+    # Process file1 (species.csv, traits.csv, locations.csv)
     csv_string = get_main_csv(observations, taxonomy, contextual, global)
     file1 = file_name
     file1_path = "public/" + file1
@@ -184,15 +184,15 @@ class ApplicationController < ActionController::Base
   end
 
 
-  def get_coral_csv(corals)
+  def get_specie_csv(species)
     csv_string = CSV.generate do |csv|
-        csv << ["coral_id", "master_species", "major_clade", "family_molecules", "family_morphology", "synonym_species", "coral_notes"]
-        corals.each do |cor|
+        csv << ["species_id", "master_species", "major_clade", "family_molecules", "family_morphology", "synonym_species", "specie_notes"]
+        species.each do |specie|
           syn_vec = []
-          cor.synonyms.each do |syn|
+          specie.synonyms.each do |syn|
             syn_vec << syn.synonym_name
           end
-          csv << [cor.id, cor.coral_name, cor.major_clade, cor.family_molecules, cor.family_morphology, syn_vec.join(", "), cor.coral_description]
+          csv << [specie.id, specie.specie_name, specie.major_clade, specie.family_molecules, specie.family_morphology, syn_vec.join(", "), specie.specie_description]
         end
       end
   

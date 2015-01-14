@@ -24,7 +24,7 @@ class Measurement < ActiveRecord::Base
   def check_duplicates
     puts 'checking duplication'
     puts self.observation
-    observations = Observation.where( :coral_id => self.observation.coral_id,
+    observations = Observation.where( :specie_id => self.observation.specie_id,
                                       :resource_id => self.observation.resource_id).joins(:measurements).where('measurements.trait_id = ? AND
                                                                                         measurements.standard_id = ? AND measurements.value LIKE ?', self.trait_id, self.standard_id, self.value)
     

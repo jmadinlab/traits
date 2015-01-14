@@ -27,7 +27,7 @@
       <% end %>
 
       on <%= l(version.created_at, format: '%B %e at %l:%M %p') %> 
-      <%= link_to 'Revert Back', "/corals/revert/#{version.id}" , :method => :post%>
+      <%= link_to 'Revert Back', "/species/revert/#{version.id}" , :method => :post%>
 
     </li>
 

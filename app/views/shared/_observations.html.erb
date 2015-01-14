@@ -7,9 +7,9 @@
 				<%= hidden_field_tag "all_ids[]", obs.id %>
 			<% end %>
 
-			<% if obs.coral.coral_name != mark %>
+			<% if obs.specie.specie_name != mark %>
 				</ul>
-				<h4><em><%= link_to obs.coral.coral_name, "/corals/" + obs.coral_id.to_s %></em></h4>
+				<h4><em><%= link_to obs.specie.specie_name, "/species/" + obs.specie_id.to_s %></em></h4>
 				<ul class="list-group">
 			<% end %>
 
@@ -154,7 +154,7 @@
 	  			</div>
 				</div>
 			</li>
-			<% mark = obs.coral.coral_name %>
+			<% mark = obs.specie.specie_name %>
   	<% end %>
 	</div>
 </div>

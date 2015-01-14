@@ -1,11 +1,11 @@
-<%= form_for(@coral) do |f| %>
+<%= form_for(@specie) do |f| %>
 
   <%= render 'shared/error_messages', object: f.object %>
 
 
 	<div class="form-group">
-		<%= f.label :coral_species_name %><br>
-		<%= f.text_field :coral_name, :placeholder => "Required...", class: "form-control" %>
+		<%= f.label :species_name %><br>
+		<%= f.text_field :specie_name, :placeholder => "Required...", class: "form-control" %>
 	</div>
 
 	<div class="form-group">
@@ -33,7 +33,7 @@
 
 	<div class="form-group">
 		<%= f.label :notes %><br>
-		<%= f.text_area :coral_description, class: "form-control" %>
+		<%= f.text_area :specie_description, class: "form-control" %>
 	</div>
 
 	<div class="form-group">

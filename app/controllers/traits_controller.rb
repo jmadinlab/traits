@@ -60,7 +60,7 @@ class TraitsController < ApplicationController
   def show
 
     if params[:coral_id]
-      @coral = Coral.find(params[:coral_id])
+      @coral = Specie.find(params[:coral_id])
       @observations = Observation.includes(:coral).joins(:measurements).where('observations.coral_id = ? AND measurements.trait_id = ?', @coral.id, @trait.id)
     else
       @observations = Observation.joins(:measurements).where('measurements.trait_id = ?', @trait.id)

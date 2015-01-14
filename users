@@ -1,0 +1,56 @@
+_HiStOrY_V2_
+exit
+quit
+quit;
+\q
+\dt
+SELECT * FROM pg_catalog.pg_tables
+\q
+ALTER ROLE rails_deployer with LOGIN CREATEDB;
+\q
+ALTER ROLE rails_deployer with LOGIN CREATEDB
+\du
+\q
+\dt
+\dt
+\du
+\dt "."
+\dt "\."
+\dt "_"
+\dt .
+\dt *
+\list
+\c coraltraits_development
+\dt
+select id from users;
+\l
+\q
+\du
+\q
+\list
+\q
+\t
+\d
+/d
+/t
+\d
+\q
+\list
+\l
+\du
+select * from users;
+\c coraltraits_development
+select * from users;
+select * from users;
+  
+\d
+\q
+\c coraltraits_development
+\d
+\q
+\c coraltraits_development
+\d
+select * from species;
+\q
+\c coraltraits_development
+\s users

@@ -21,7 +21,7 @@ Traits::Application.routes.draw do
   get '/history', to:'versions#index'
   get '/history/:version_id', to: 'versions#show'
   post '/revert/:version_id', to: 'versions#revert_back'
-  get '/corals/:id/resources', to: 'corals#show'
+  get '/species/:id/resources', to: 'species#show'
   get '/traits/:id/resources', to: 'traits#show'
   get '/locations/:id/resources', to: 'locations#show'
   get '/resources/:id/resources', to: 'resources#show'
@@ -42,13 +42,11 @@ Traits::Application.routes.draw do
 
   resources :password_resets
 
-
-
-  resources :corals do
+  resources :species do
     post :export, :on => :collection
   end
 
-  resources :corals do
+  resources :species do
     resources :traits do
       resources :users
     end
@@ -72,7 +70,7 @@ Traits::Application.routes.draw do
 
       post :update_multiple, :on => :collection
       # get :autocomplete_location_name, :on => :collection
-      # get :autocomplete_coral_name, :on => :collection
+      # get :autocomplete_specie_name, :on => :collection
       # get :autocomplete_resource_author, :on => :collection
 
       get :update_values, :on => :collection
@@ -115,7 +113,7 @@ Traits::Application.routes.draw do
   match '/documentation',    to: 'static_pages#documentation',   via: 'get'
 
   match '/export_trait', to: 'static_pages#export_trait',   via: 'get'
-  match '/export_coral_trait', to: 'static_pages#export_coral_trait',   via: 'get'
+  match '/export_specie_trait', to: 'static_pages#export_specie_trait',   via: 'get'
   match '/export_location_trait', to: 'static_pages#export_location_trait',   via: 'get'
 
 

@@ -26,7 +26,7 @@ class Import
   $ignore_row = []
   $total_rows
   $import_type
-  $new_observation_csv_headers = ["observation_id",  "access",  "user_id", "coral_id"  ,"location_id", "resource_id", "trait_id",  "standard_id",  "methodology_id" ,"value" ,"value_type",  "precision" ,"precision_type" , "precision_upper" ,"replicates", "notes"]
+  $new_observation_csv_headers = ["observation_id",  "access",  "user_id", "specie_id"  ,"location_id", "resource_id", "trait_id",  "standard_id",  "methodology_id" ,"value" ,"value_type",  "precision" ,"precision_type" , "precision_upper" ,"replicates", "notes"]
   attr_accessor :file, :model_name, :current_user
 
   def initialize(attributes = {})
@@ -243,13 +243,13 @@ class Import
         row = Hash[[header, spreadsheet.row(i)].transpose]
         puts 'row: ', row
         if not $observation_id_map.keys().include? row["observation_id"] and row["observation_id"].present?
-          coral_id = row["coral_id"]
+          specie_id = row["specie_id"]
           trait_id = row["trait_id"]
           
           o = Observation.new()
-          o, coral_id, trait_id = validate_trait_coral_id_name(row, o, i)
+          o, specie_id, trait_id = validate_trait_specie_id_name(row, o, i)
 
-          observation_row = { "user_id" => row["user_id"], "location_id" => row["location_id"], "coral_id" => coral_id, "resource_id" => row["resource_id"], "secondary_id" => row["secondary_id"], "approval_status" => "pending"}
+          observation_row = { "user_id" => row["user_id"], "location_id" => row["location_id"], "specie_id" => specie_id, "resource_id" => row["resource_id"], "secondary_id" => row["secondary_id"], "approval_status" => "pending"}
           o.attributes = observation_row.to_hash
 
           measurement_row = {"user_id" => row["user_id"], "trait_id" => trait_id, "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"], "notes" => row["notes"], "approval_status" => "pending"}
@@ -291,7 +291,7 @@ class Import
       spreadsheet = open_spreadsheet
       header = spreadsheet.row(1)
       $total_rows = spreadsheet.last_row
-      # observation_csv_headers = ["observation_id", "access", "enterer", "coral", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates"]
+      # observation_csv_headers = ["observation_id", "access", "enterer", "specie", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_name", "standard_unit", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates"]
       
       if $import_type == 'new'
         puts 'uploading observations'
@@ -313,7 +313,7 @@ class Import
           #measurement = Measurement.find_by_id(row["measurement_id"]) || Measurement.new
           measurement = Measurement.new
           
-          coral_id = row["coral_id"]
+          specie_id = row["specie_id"]
           location_id = row["location_id"]
           trait_id = row["trait_id"]
 
@@ -324,16 +324,16 @@ class Import
           observation = validate_model_ids(row, observation, i)
           observation = validate_trait_id(trait_id, row, observation, i)
           
-          observation, coral_id, trait_id = validate_trait_coral_id_name(row, observation, i)
+          observation, specie_id, trait_id = validate_trait_specie_id_name(row, observation, i)
           
           # Validate methodology_id against trait_id
           observation = validate_methodology_with_trait(row, observation, trait_id, i)
 
-          puts 'coral_id : ' , coral_id
+          puts 'specie_id : ' , specie_id
           puts 'trait_id: ', trait_id
           
           # Create the actual rows to be sent into the database for observation and measurements
-          observation_row = {"id" => $observation_id_map[row["id"]], "user_id" => row["user_id"], "location_id" => location_id, "coral_id" => coral_id, "resource_id" => row["resource_id"], "secondary_id" => row["secondary_id"] , "private" => row["private"]}
+          observation_row = {"id" => $observation_id_map[row["id"]], "user_id" => row["user_id"], "location_id" => location_id, "specie_id" => specie_id, "resource_id" => row["resource_id"], "secondary_id" => row["secondary_id"] , "private" => row["private"]}
           measurement_row = {"user_id" => row["user_id"], "observation_id" => $observation_id_map[row["id"]],  "trait_id" => trait_id, "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"], "notes" => row["notes"],  "approval_status" => "pending"}
           
           puts 'measurement_row: ', measurement_row
@@ -399,7 +399,7 @@ class Import
           end
 
 
-          coral_id = row["coral_id"]
+          specie_id = row["specie_id"]
           location_id = row["location_id"]
           trait_id = row["trait_id"]
           
@@ -415,9 +415,9 @@ class Import
           observation = validate_methodology_with_trait(row, observation, trait_id, i)
           
           
-          # new_observation_csv_headears = ["observation_id",  "access",  "user_id", "coral_id"  ,"location_id", "resource_id", "trait_id",  "standard_id",  "method_id" ,"value" ,"value_type",  "precision" ,"precision_type" , "precision_upper" ,"replicates"]
+          # new_observation_csv_headears = ["observation_id",  "access",  "user_id", "specie_id"  ,"location_id", "resource_id", "trait_id",  "standard_id",  "method_id" ,"value" ,"value_type",  "precision" ,"precision_type" , "precision_upper" ,"replicates"]
           # Create the actual rows to be sent into the database for observation and measurements
-          observation_row = {"id" => row["id"], "user_id" => row["user_id"], "location_id" => location_id, "coral_id" => coral_id, "resource_id" => row["resource_id"], "secondary_id" => row["secondary_id"] , "private" => row["private"]}
+          observation_row = {"id" => row["id"], "user_id" => row["user_id"], "location_id" => location_id, "specie_id" => specie_id, "resource_id" => row["resource_id"], "secondary_id" => row["secondary_id"] , "private" => row["private"]}
           measurement_row = {"id" => measurement.id, "user_id" => row["user_id"],  "trait_id" => row["trait_id"], "standard_id" => row["standard_id"],  "value" => row["value"], "value_type" => row["value_type"], "precision" => row["precision"], "precision_type" => row["precision_type"], "precision_upper" => row["precision_upper"], "replicates" => row["replicates"], "methodology_id" => row["methodology_id"], "notes" => row["notes"],  "approval_status" => "pending"}
           
           puts 'measurement_row: ', measurement_row
@@ -517,12 +517,12 @@ class Import
       return observation
     end
 
-    def validate_trait_coral_id_name(row, observation, i)
+    def validate_trait_specie_id_name(row, observation, i)
       begin
         trait_id = row['trait_id']
         trait_name = row['trait_name']
-        coral_id = row['coral_id']
-        coral_name = row['coral_name']
+        specie_id = row['specie_id']
+        specie_name = row['specie_name']
         puts 'trait_id', trait_id
         puts 'trait_name ', trait_name
 
@@ -548,23 +548,23 @@ class Import
           end
         end
 
-        if coral_id and coral_name
-          coral = Coral.find(coral_id)
-          puts 'both coral_id and coral_name'
-          if coral_name.strip.downcase != coral.coral_name.strip.downcase
-            puts ' coral_id and coral_name MISMATCH'
-            observation.errors[:base] << "Row #{i}: Coral_id and Coral_name do not match"
+        if specie_id and specie_name
+          specie = Specie.find(specie_id)
+          puts 'both specie_id and specie_name'
+          if specie_name.strip.downcase != specie.specie_name.strip.downcase
+            puts ' specie_id and specie_name MISMATCH'
+            observation.errors[:base] << "Row #{i}: Specie_id and Specie_name do not match"
 
           end
-        elsif coral_name and not coral_id
-          corals = Coral.where("lower(coral_name)  IS ?", coral_name.strip.downcase)
-          puts 'only coral_name'
-          if corals.count == 0
-            puts 'coral_name error'
-            observation.errors[:base] << "Row #{i}: Coral with corresponding Coral_name not found in database"
-            coral_id = nil
+        elsif specie_name and not specie_id
+          species = Specie.where("lower(specie_name)  IS ?", specie_name.strip.downcase)
+          puts 'only specie_name'
+          if species.count == 0
+            puts 'specie_name error'
+            observation.errors[:base] << "Row #{i}: Species with corresponding Specie_name not found in database"
+            specie_id = nil
           else
-            coral_id  = corals[0].id
+            specie_id  = species[0].id
           end
         end
       rescue => e
@@ -572,7 +572,7 @@ class Import
 
       end
       puts 'trait id name validation: ', trait_id
-      return observation, coral_id, trait_id
+      return observation, specie_id, trait_id
     end
   
     def validate_user(item, user_id, i)

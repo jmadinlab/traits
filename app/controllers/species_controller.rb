@@ -1,35 +1,35 @@
-class CoralsController < ApplicationController
+class SpeciesController < ApplicationController
 
   before_action :contributor, except: [:index, :show, :export]
-  before_action :set_coral, only: [:show, :edit, :update, :destroy]
+  before_action :set_specie, only: [:show, :edit, :update, :destroy]
   before_action :admin_user, only: [:destroy, :new, :create, :edit, :update]
 
-  # GET /corals
-  # GET /corals.json
+  # GET /species
+  # GET /species.json
   def index
-    # @corals = Coral.search(params[:search])
+    # @species = Specie.search(params[:search])
 
     pp = 15
     pp = 9999 if params[:pp]
     
-    @search = Coral.search do
+    @search = Specie.search do
       fulltext params[:search]
       paginate page: params[:page], per_page: pp
     end
     
     if params[:search]
-      @corals = @search.results
+      @species = @search.results
     else
-      @corals = Coral.all.paginate(:page=> params[:page], :per_page => pp)
+      @species = Specie.all.paginate(:page=> params[:page], :per_page => pp)
     end
     
-    @corals = PaperTrail::Version.find(params[:version]).reify if params[:version]
+    @species = PaperTrail::Version.find(params[:version]).reify if params[:version]
 
-    # @corals = @corals.paginate(:page=> params[:page], :per_page => 20)
+    # @species = @species.paginate(:page=> params[:page], :per_page => 20)
 
     respond_to do |format|
       format.html
-      format.csv { send_data get_coral_csv(@corals) }
+      format.csv { send_data get_specie_csv(@species) }
       
     end    
   end
@@ -39,15 +39,15 @@ class CoralsController < ApplicationController
 
 
     if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
-      @observations = Observation.where(:private => false).where(:coral_id => params[:checked])        
+      @observations = Observation.where(:private => false).where(:specie_id => params[:checked])        
     end
     
     if signed_in? && current_user.contributor?
-      @observations = Observation.where(['observations.private IS false OR (observations.user_id = ? AND observations.private true)', current_user.id]).where(:coral_id => params[:checked])
+      @observations = Observation.where(['observations.private IS false OR (observations.user_id = ? AND observations.private true)', current_user.id]).where(:specie_id => params[:checked])
     end
 
     if signed_in? && current_user.admin?
-      @observations = Observation.where(:coral_id => params[:checked])        
+      @observations = Observation.where(:specie_id => params[:checked])        
     end
     
     # csv_string = get_main_csv(@observations, params[:contextual], params[:global])
@@ -61,29 +61,29 @@ class CoralsController < ApplicationController
           
   end
 
-  # GET /corals/1
-  # GET /corals/1.json
+  # GET /species/1
+  # GET /species/1.json
   def show
     @vfiles = Dir.glob("app/assets/images/veron/*")
     @hfiles = Dir.glob("app/assets/images/hughes/*")
     
-    @coral = @item if @item
-    @coral = Coral.find(params[:id]) if params[:id]
+    @specie = @item if @item
+    @specie = Specie.find(params[:id]) if params[:id]
     
 
     if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
-      #@observations = Observation.where(['observations.coral_id IS ? AND observations.private IS ?', @coral.id, false])
+      #@observations = Observation.where(['observations.specie_id IS ? AND observations.private IS ?', @specie.id, false])
       # just a better approach to find active `
-      @observations = @coral.observations.where(private: false)
+      @observations = @specie.observations.where(private: false)
     end
     
     if signed_in? && current_user.contributor?
-      #@observations = Observation.where(['observations.coral_id IS ? AND (observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?))', @coral.id, false, current_user.id, true])
-      @observations = Observation.where(['observations.coral_id = ? AND (observations.private IS false OR (observations.user_id = ? AND observations.private IS true))', @coral.id,  current_user.id])
+      #@observations = Observation.where(['observations.specie_id IS ? AND (observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?))', @specie.id, false, current_user.id, true])
+      @observations = Observation.where(['observations.specie_id = ? AND (observations.private IS false OR (observations.user_id = ? AND observations.private IS true))', @specie.id,  current_user.id])
     end
 
     if signed_in? && current_user.admin?
-      @observations = Observation.where(:coral_id => @coral.id)
+      @observations = Observation.where(:specie_id => @specie.id)
     end
 
     respond_to do |format|
@@ -109,43 +109,43 @@ class CoralsController < ApplicationController
 
   end
 
-  # GET /corals/new
+  # GET /species/new
   def new
-    @coral = Coral.new
+    @specie = Specie.new
   end
 
-  # GET /corals/1/edit
+  # GET /species/1/edit
   def edit
   end
 
-  # POST /corals
-  # POST /corals.json
+  # POST /species
+  # POST /species.json
   def create
-    @coral = Coral.new(coral_params)
+    @specie = Specie.new(specie_params)
 
-    if @coral.save
-      redirect_to @coral, flash: {success: "Coral was successfully created." }
+    if @specie.save
+      redirect_to @specie, flash: {success: "Species was successfully created." }
     else
       render action: 'new' 
     end
   end
 
-  # PATCH/PUT /corals/1
-  # PATCH/PUT /corals/1.json
+  # PATCH/PUT /species/1
+  # PATCH/PUT /species/1.json
   def update
-    if @coral.update(coral_params)
-      redirect_to @coral, flash: {success: "Coral was successfully updated." }
+    if @specie.update(specie_params)
+      redirect_to @specie, flash: {success: "Species was successfully updated." }
     else
       render action: 'edit'
     end
   end
 
-  # DELETE /corals/1
-  # DELETE /corals/1.json
+  # DELETE /species/1
+  # DELETE /species/1.json
   def destroy
-    @coral.destroy
+    @specie.destroy
     respond_to do |format|
-      format.html { redirect_to corals_url }
+      format.html { redirect_to species_url }
       format.json { head :no_content }
     end
   end
@@ -156,13 +156,13 @@ class CoralsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_coral
-      @coral = Coral.find(params[:id])
+    def set_specie
+      @specie = Specie.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
-    def coral_params
-      params.require(:coral).permit(:coral_name, :coral_description, :user_id, :approval_status, :major_clade, :family_molecules, :family_morphology, synonyms_attributes: [:id, :synonym_name, :synonym_notes, :_destroy])
+    def specie_params
+      params.require(:specie).permit(:specie_name, :specie_description, :user_id, :approval_status, :major_clade, :family_molecules, :family_morphology, synonyms_attributes: [:id, :synonym_name, :synonym_notes, :_destroy])
     end
 
     

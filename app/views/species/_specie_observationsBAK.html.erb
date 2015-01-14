@@ -82,9 +82,9 @@
 
 		  			<td style="text-align:right; min-width: 150px;">
 		  				<% if signed_in? && current_user.contributor? %>
-		  					<%= link_to 'Show', observation_path(grp, :coral => grp.coral_id) %> |
-		  	    		<%= link_to 'Edit', edit_observation_path(grp, :coral => grp.coral_id) %> |
-		  	    		<%= link_to 'Delete', observation_path(grp, :coral => grp.coral_id), method: :delete, data: { confirm: 'Are you sure?' } %>
+		  					<%= link_to 'Show', observation_path(grp, :specie => grp.specie_id) %> |
+		  	    		<%= link_to 'Edit', edit_observation_path(grp, :specie => grp.specie_id) %> |
+		  	    		<%= link_to 'Delete', observation_path(grp, :specie => grp.specie_id), method: :delete, data: { confirm: 'Are you sure?' } %>
 		  				<% end %>
 		  			</td>
 					<% end %>

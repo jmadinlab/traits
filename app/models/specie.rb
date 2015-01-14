@@ -1,15 +1,15 @@
-class Coral < ActiveRecord::Base
+class Specie < ActiveRecord::Base
   has_many :observations
   has_paper_trail
-  validates :coral_name, :presence => true
+  validates :specie_name, :presence => true
 
   has_many :synonyms, :dependent => :destroy
   accepts_nested_attributes_for :synonyms, :reject_if => :all_blank, :allow_destroy => true
 
-  default_scope -> { order('coral_name ASC') }
+  default_scope -> { order('specie_name ASC') }
   
   searchable do
-    text :coral_name
+    text :specie_name
     text :synonyms do
       synonyms.map{ |synonym| synonym.synonym_name }
     end
@@ -19,7 +19,7 @@ class Coral < ActiveRecord::Base
   '''
   def self.search(search)
       if search
-        (where("coral_name LIKE ?", "%#{search}%") +
+        (where("specie_name LIKE ?", "%#{search}%") +
         joins(:synonyms).where("synonyms.synonym_name LIKE ?", "%#{search}%")).uniq
       else
         all

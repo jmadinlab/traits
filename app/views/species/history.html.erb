@@ -59,7 +59,7 @@
           &nbsp;          
           <b>Date:</b> <%= l(version.created_at, format: '%B %e at %l:%M %p') %> 
           &nbsp;
-          <%= link_to 'Revert Back', "/corals/revert/#{version.id}" ,class: "btn btn-danger btn-md ", :method => :post%>
+          <%= link_to 'Revert Back', "/species/revert/#{version.id}" ,class: "btn btn-danger btn-md ", :method => :post%>
             
         </div>
         </div>

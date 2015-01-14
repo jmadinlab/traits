@@ -10,7 +10,7 @@
 		    
 				<div class="form-group">
 			    <strong>Limit to (optional):</strong>
-			    <%= select_tag 'model_name', options_for_select(['Coral', 'Trait', 'Observation', 'Resource', 'Standard', 'Location']), { :multiple => true, :size =>7, class: "form-control"} %>
+			    <%= select_tag 'model_name', options_for_select(['Specie', 'Trait', 'Observation', 'Resource', 'Standard', 'Location']), { :multiple => true, :size =>7, class: "form-control"} %>
 				</div>
 
 		    <%= submit_tag "Search", class: "btn btn-primary btn-lg" %>
@@ -28,16 +28,16 @@
 			<div class="alert alert-danger">Your query did not result any results.</div>
 		<% end %>
 
-		<% if @coral_search  %>
-			<% if not @coral_search.results.blank? %>
-				<h4 class="coloured">Corals</h4>
+		<% if @specie_search  %>
+			<% if not @specie_search.results.blank? %>
+				<h4 class="coloured">Species</h4>
 			<% end %>
 			<ul class="list-group">
-				<% @coral_search.results.each do |s| %>
+				<% @specie_search.results.each do |s| %>
 		     	<li class="list-group-item">							
-						<%= link_to s.coral_name, s %>
+						<%= link_to s.specie_name, s %>
 	     			<div class="btn-group pull-right">							
-							<%= link_to "Show", s, class: "btn btn-xs btn-default" %><%#= link_to "Edit", edit_coral_path(s), class: "btn btn-xs btn-default" %>
+							<%= link_to "Show", s, class: "btn btn-xs btn-default" %><%#= link_to "Edit", edit_specie_path(s), class: "btn btn-xs btn-default" %>
 						</div>
 					</li>
 				<% end %>
@@ -89,7 +89,7 @@
 					<% s.measurements.each do |m| %>				
 			     	<li class="list-group-item">							
 							<%= link_to "Observation #{s.id}", s %><br>
-							<em><%= link_to s.coral.coral_name, coral_path(s.coral) %></em>
+							<em><%= link_to s.specie.specie_name, specie_path(s.specie) %></em>
 							<% if s.location %>
 								| <%= link_to s.location.location_name, location_path(s.location) %>
 							<% end %>

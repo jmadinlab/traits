@@ -11,8 +11,8 @@
   <%= render 'shared/error_messages', object: f.object %>
 
   <div class="form-group">
-	  <%= f.label "coral (required)" %><br>
-		<%= f.select :coral_id, Coral.all.map { |u| ["#{u.coral_name} (#{u.synonyms.collect(&:synonym_name).join(",")})", u.id] }, { include_blank: "Choose coral..." }, { id: 'simple-example', :style => "width: 400px;" } %>
+	  <%= f.label "species (required)" %><br>
+		<%= f.select :specie_id, Specie.all.map { |u| ["#{u.specie_name} (#{u.synonyms.collect(&:synonym_name).join(",")})", u.id] }, { include_blank: "Choose species..." }, { id: 'simple-example', :style => "width: 400px;" } %>
 	</div>
 
   <div class="form-group">
@@ -59,8 +59,8 @@
   
   <h3>Measurements</h3>
 
-  <p><label class="label label-danger">Important</label> An observation of a coral can have more than one measurement, and it's important to make this association clear by entering these measurements in the same observation record. Use the "Add another measurement" link below to enter other measurements of the same individual at the same time.</p>
-  <p><label class="label label-success">Context</label> We also encourage the entry of contextual  measurements (i.e., "traits" of the environment or experiment); for example, the depth of water the coral was found in, the reef habitat, or the year recorded (in the case the same individual was measured at different times). If in doubt, please read the <%= link_to "Procedures", procedures_path %> or contact the relevant <%= link_to "Editor", editors_path %>.</p>
+  <p><label class="label label-danger">Important</label> An observation of a species can have more than one measurement, and it's important to make this association clear by entering these measurements in the same observation record. Use the "Add another measurement" link below to enter other measurements of the same individual at the same time.</p>
+  <p><label class="label label-success">Context</label> We also encourage the entry of contextual  measurements (i.e., "traits" of the environment or experiment); for example, the depth of water the species was found in, the reef habitat, or the year recorded (in the case the same individual was measured at different times). If in doubt, please read the <%= link_to "Procedures", procedures_path %> or contact the relevant <%= link_to "Editor", editors_path %>.</p>
 
 
   <div id = "measurements">
