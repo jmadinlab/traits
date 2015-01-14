@@ -1,7 +1,7 @@
 # Trait Database quick start guide
 ---
 
-The following quick start guide creates a development database (using sqlite3).  The assumption is that you are trying out the database, and so don't need to get fancy at this stage. The first step is to set up rails on you computer or server (if you haven't already).  An excellent rails installation guide can be found here: [http://installrails.com]()
+The following quick start guide creates a development database (using sqlite3).  The assumption is that you are trying out the database, and so don't need to get fancy at this stage. The first step is to set up rails on you computer or server (if you haven't already).  A rails installation guide can be found here: [http://installrails.com]()
 
 The below quick start guide was last updated for ruby-2.2.0.
 
@@ -12,8 +12,9 @@ The below quick start guide was last updated for ruby-2.2.0.
     cd coraltraits
 
     # Make sqlite3 database configuration file and local environment file
-    cp config/database.yml.sqlite config/database.yml
-    cp config/local_env.yml.example config/local_env.yml
+    cd config
+    cp database.yml.sqlite database.yml
+    cp local_env.yml.example local_env.yml
 
     # Return to base directory and install gems
     cd ..
@@ -37,3 +38,4 @@ Sign-up user ([http://localhost:3000/signup](http://localhost:3000/signup))
     update users set admin='t' where id=1;
     update users set contributor='t' where id=1;
     update users set editor='t' where id=1;
+
