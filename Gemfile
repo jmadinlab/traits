@@ -1,37 +1,48 @@
 source 'https://rubygems.org'
-# ruby '2.1.4'
-# ruby '2.0.0'
 
-gem 'rails'#, '4.0.2'
-gem 'bootstrap-sass'#, '2.3.2.0'
-gem 'bcrypt-ruby'#, '3.1.2'
-gem 'cocoon'#, github: 'nathanvda/cocoon'
-gem 'will_paginate'#, '3.0.4'
-gem 'bootstrap-will_paginate'#, '0.0.9'
+gem 'rails'
+gem 'bootstrap-sass'
+gem 'bcrypt'
+gem 'cocoon'
+gem 'will_paginate'
+gem 'bootstrap-will_paginate'
 
 gem 'select2-rails'
-gem 'mandrill_mailer'
 gem 'sunspot_rails'
 gem 'sunspot_solr'
-#gem 'progress_bar'
+gem 'progress_bar'
 gem 'sqlite3'
 gem 'redcarpet'
-gem "google_visualr", "~> 2.1.0"
+gem 'google_visualr', '~> 2.1.0'
+
+gem 'sass-rails'
+gem 'uglifier'
+gem 'coffee-rails'
+gem 'jquery-rails', '< 3.0.0'
+gem 'turbolinks'
+gem 'jbuilder'
+gem 'jquery-turbolinks'
+
 
 gem 'capistrano',  '~> 3.1'
 gem 'capistrano-rails', '~> 1.1'
-# gem 'select2-sass-bootstrap-rails'
-# gem 'squeel', github: 'kiela/squeel'
-gem 'pg'#,'=0.14.1' 
+
+# database setup (postgres), and for Heroku
+gem 'pg'
+gem 'rails_12factor', group: :production
 
 gem 'roo'
-# using paper_trail for versioning database
+
+# using paper_trail for database versioning
 gem 'paper_trail', '~> 3.0.1'
+
+# using mandrill for mailer
+#gem 'mandrill_mailer'
 
 # using google analytics gem
 gem 'google-analytics-rails'
 
-# using zip to send multiple csv files in one click (eg: corals.csv + resources.csv, observation.csv + resources.csv etc)
+# using zip to send multiple csv files in one click
 gem 'rubyzip', '>= 1.0.0'
 gem 'zip-zip'
 
@@ -47,11 +58,10 @@ gem 'hirb'
 #gem "ar-octopus", :git => "git://github.com/tchandy/octopus.git", :require => "octopus"
 
 group :development, :test do
-  #gem 'sqlite3'#, '1.3.8'
   
-  #gem 'sunspot_solr'
   gem 'minitest'
   gem 'rspec-rails', '2.13.1'
+  gem 'spring'
 
   # The following optional lines are part of the advanced setup.
   # gem 'guard-rspec', '2.5.0'
@@ -65,7 +75,7 @@ group :test do
   gem 'capybara', '2.1.0'
   gem 'factory_girl_rails', '4.2.0'
   # gem 'cucumber-rails', '1.3.0', :require => false
- # gem 'database_cleaner', github: 'bmabey/database_cleaner'
+  # gem 'database_cleaner', github: 'bmabey/database_cleaner'
 
   # Uncomment this line on OS X.
   # gem 'growl', '1.0.3'
@@ -79,21 +89,5 @@ group :test do
   # gem 'wdm', '0.1.0'
 end
 
-gem 'sass-rails'#, '4.0.1'
-gem 'uglifier'#, '2.1.1'
-gem 'coffee-rails'#, '4.0.1'
-gem 'jquery-rails', '< 3.0.0'
-gem 'turbolinks'#, '1.1.1'
-gem 'jbuilder'#, '1.0.2'
-# gem 'rails3-jquery-autocomplete', git: 'https://github.com/francisd/rails3-jquery-autocomplete'
-gem 'jquery-turbolinks'
+gem 'sdoc', '~> 0.4.0',          group: :doc
 
-group :doc do
-  gem 'sdoc', '0.3.20', require: false
-end
-
-group :production do
-  # gem 'rails_12factor', '0.0.2'
-
-  
-end

@@ -1,11 +1,16 @@
-Welcome <b><%= @user.name %>, </b><br/>
-
 <p>
-	Thank you for signing up with Coraltraits.
+  Dear <%= @user.name %>,
 </p>
 
 <p>
-  Regards <br/>
-	The Coraltraits Team <br/>
-	<a href="http://coraltraits.org">www.coraltraits.org</a>
+  Thank you for signing up with the <%= ENV["SITE_NAME"] %>. You can now sign-in with your email and password here: <%= ENV["SITE_URL"] %>/signin
+</p>
+
+<p>
+  With best wishes,
+</p>
+
+<p>
+  The <%= ENV["SITE_NAME"] %> team<br>
+  <%= ENV["SITE_URL"] %>
 </p>

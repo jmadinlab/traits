@@ -38,7 +38,7 @@ Traits::Application.configure do
     password: ENV["MANDRILL_PASSWORD"]
   }
   '''
-  config.mandrill_mailer.default_url_options = { :host => 'localhost' }
+  # config.mandrill_mailer.default_url_options = { :host => 'localhost' }
   
   # specify what domain to use for mailer URLs
   config.action_mailer.default_url_options = { host: "localhost:3000" }
@@ -58,6 +58,6 @@ Traits::Application.configure do
   GA.tracker = "UA-51287714-1"
 end
 
-MandrillMailer.configure do |config|
-  config.api_key = ENV['MANDRILL_API_KEY']
-end
+# MandrillMailer.configure do |config|
+#   config.api_key = ENV['MANDRILL_API_KEY']
+# end

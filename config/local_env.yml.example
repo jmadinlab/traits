@@ -1,5 +1,6 @@
 # Your database name here:
-SITE_NAME: 'Coral Trait Database'
+SITE_NAME: 'Example Database'
+SITE_URL: 'example.org'
 
 # Is your database in beta?
 SITE_BETA: 'true'
