@@ -31,7 +31,9 @@ revisions.log
 /tmp
 /public/assets/
 /public/uploads/
-/app/assets/images/
+/app/assets/images/hughes/
+/app/assets/images/veron/
+/app/assets/images/traits/
 local_env.yml
 
 # Ignore other unneeded files.
