@@ -1,0 +1,15 @@
+# Your database name here:
+SITE_NAME: 'Coral Trait Database'
+
+# Is your database in beta?
+SITE_BETA: 'true'
+
+# Gmail details here:
+GMAIL_USERNAME: 'example@gmail.com'
+GMAIL_PASSWORD: 'password'
+
+# Mandrill details here:
+# MANDRILL_USERNAME:  'example@gmail.com'
+# MANDRILL_PASSWORD:  'password'
+# MANDRILL_API_KEY: 'api_key'
+
