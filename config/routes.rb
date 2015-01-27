@@ -113,6 +113,7 @@ Traits::Application.routes.draw do
   match '/signout',     to: 'sessions#destroy',     via: 'delete'
 
   match '/meta',        to: 'static_pages#meta',    via: 'get'
+  match '/uploads',        to: 'static_pages#uploads',    via: 'get'
 
   match '/procedures',  to: 'static_pages#procedures',   via: 'get'
   match '/editors',     to: 'static_pages#editors',   via: 'get'
