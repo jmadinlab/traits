@@ -15,7 +15,7 @@
 		      <%= text_field_tag :search, params[:search], :placeholder => "Search resources...", class: "form-control" %>
 		      <span class="input-group-btn">
 				    <%= submit_tag "Search", :name => nil, class: "btn btn-default" %>
-						<%= link_to "See All", resources_path(search: params[:search], pp: "all"), class: "btn btn-warning" %>
+						<%= link_to "See All", resources_path(search: params[:search], all: true), class: "btn btn-warning" %>
 						<%= link_to 'Reset', resources_path, class: "btn btn-default" %>
 		      </span>
 		    </div>
@@ -41,7 +41,7 @@
 	<div class="row">
 	  <div class="col-sm-12">
 			<ul class="list-group">
-	    	<% @resources.each do |resource| %>
+	    	<% @resources.sort_by{|e| e[:author]}.each do |resource| %>
 				  <li class="list-group-item">							
 						<div class="row">
 			        <div class="col-sm-1" style="color: lightgrey;">
@@ -61,7 +61,7 @@
 							</div>
 
 							<div class="col-sm-2">
-								<% if not params[:pp] %>
+								<% if not params[:all] %>
 				        	<%= render "shared/access_counts", :acc => Observation.where(:resource_id => resource) %>
 								<% end %>
 								<% if resource.approval_status == 'pending' %>
@@ -72,8 +72,10 @@
 			        <div class="col-sm-3">
 						    <div class="btn-group pull-right">
 						     	<%= link_to 'Show', resource_path(resource), class: "btn btn-xs btn-default" %>
-								  <% if signed_in? && current_user.admin? %>
+								  <% if signed_in? && current_user.editor? %>
 					        	<%= link_to 'Edit', edit_resource_path(resource), class: "btn btn-xs btn-default" %>
+									<% end %>
+								  <% if signed_in? && current_user.admin? %>
 					        	<%= link_to 'Delete', resource, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
 									<% end %>
 				        </div>
@@ -85,6 +87,9 @@
 		</div>
 	</div>
 <% end %>
+
+<%= will_paginate @resources %>
+
 <% if @resources.blank? %>
   <div class="alert alert-danger" role="alert">No resources entered.</div>
 <% end %>

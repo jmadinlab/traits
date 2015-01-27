@@ -15,7 +15,7 @@
 	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
 				<ul class="nav navbar-nav">
-					<li><%= link_to "Home", root_path %></li>
+					<li><%= link_to ENV['SITE_NAME'], root_path %></li>
 				</ul>
 
 				<ul class="nav navbar-nav">
@@ -23,30 +23,27 @@
 		       	<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 		       		Data<b class="caret"></b>
 		       	</a>
-		       	<ul class="dropdown-menu" style="text-align: right;">
+		       	<ul class="dropdown-menu" style="text-align: left;">
 							<li><%= link_to "Species", species_path %></li>
 							<li><%= link_to "Traits", traits_path %></li>
 							<li><%= link_to "Locations", locations_path %></li>
 							<li><%= link_to "Resources", resources_path %></li>
 							<li><%= link_to "Standards", standards_path %></li>
 							<li><%= link_to "Methodologies", methodologies_path %></li>
+		         	<% if signed_in? && current_user.admin? %>
+								<li class="divider"></li>
+		         		<li><%= link_to "Observations", observations_path %></li>
+						 	<% end %>
 		         	<% if signed_in? && current_user.contributor? %>
 								<li class="divider"></li>
-		         		<li><%= link_to "Secondary Resource Manager", citations_path %></li>
-		         		<li><%= link_to "Bulk Import", "/imports/observations" %></li>
+		         		<li><%= link_to "New Observation", new_observation_path, :data => { :no_turbolink => true } %></li>
+		         		<li><%= link_to "Import Observations", new_observation_import_path %></li>
 						 	<% end %>
 						</ul>
 		     	</li>
 				</ul>
-
-				<% if signed_in? && current_user.contributor? %>
-					<ul class="nav navbar-nav navbar-right">
-						<li><%= link_to "New Observation", new_observation_path, :data => { :no_turbolink => true } %></li>
-					</ul>
-				<% end %>
-
 	
-				<ul class="nav navbar-nav">
+				<ul class="nav navbar-nav navbar-right">
 					<% if signed_in? %>
 					  <li id="fat-menu" class="dropdown" style="text-align: left;">
 					    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -54,11 +51,14 @@
 					    </a>
 					    <ul class="dropdown-menu">
 					      <li><%= link_to "My Observations", current_user, data: { no_turbolink: true } %></li>
-					      <li><%= link_to "Settings", edit_user_path(current_user) %></li>
+					      <li><%= link_to "Edit Profile", edit_user_path(current_user) %></li>
 								<% if current_user.editor? %>
-				    			<li><%= link_to "Users", users_path %></li>
-					      	<li><%= link_to "History", history_path %></li>
-					      	<li><%= link_to "Outstanding Issues", issues_path %></li>
+				    			<li><%= link_to "Database Users", users_path %></li>
+				    			<li><%= link_to "Approvals", observation_imports_approve_path %></li>
+					      	<li><%= link_to "Change History", history_path %></li>
+				    			<% issues_count = Issue.all.size %>
+				    			<li><%= link_to "Issues <span class='badge pull-right'>#{issues_count}</span>".html_safe, issues_path %></li>
+
 								<% end %>
 
 								<% if current_user.admin? %>
@@ -86,7 +86,6 @@
 						 	<li><%= link_to "Downloading", download_path %></li>
 						 	<li><%= link_to "Importing", bulk_import_path %></li>
 						 	<li><%= link_to "Editors", editors_path %></li>
-						 	<li><%= link_to "Documentation", documentation_path %></li>
 						 
 		         	<% if signed_in? && current_user.editor? %>
 								<li class="divider"></li>
@@ -96,13 +95,15 @@
 		     	</li>
 				</ul>
 
-				<ul class="nav navbar-nav navbar-right">
-					<li><%= image_tag "beta.png", :style => "border:0px;margin:10px;height:30px;" %></li>
-				</ul>
+				<% if ENV["SITE_BETA"] == 'true' %>
+					<ul class="nav navbar-nav navbar-right">
+						<li><%= image_tag "beta.png", :style => "border:0px;margin:10px;height:30px;" %></li>
+					</ul>
+				<% end %>
 
 		  	<%= form_tag search_index_path, class: "navbar-form navbar-left", :method => :get do %>
 				  <div class="form-group">
-				    <%= text_field_tag :search, params[:search], { class: "form-control", placeholder: "Search..." }   %>
+				    <%= text_field_tag :search, params[:search], { class: "form-control search", placeholder: "Search..." }   %>
 	        </div>
 				<% end %>
 

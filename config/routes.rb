@@ -6,10 +6,13 @@ Traits::Application.routes.draw do
 
   get 'password_resets/new'
 
+  match '/observation_imports/approve', to: 'observation_imports#approve', via: ['get', 'post'] , :as => :observation_imports_approve
+
   #get '/imports/show', to: 'imports#show', :as => :show_imports
-  match '/imports/approve', to: 'imports#approve', via: ['get', 'post'] , :as => :approve
+  # match '/imports/approve', to: 'imports#approve', via: ['get', 'post'] , :as => :approve
   match '/imports/:name', to: 'imports#create', :via => :post, :as => :upload
   get '/imports/:name', to: 'imports#new'
+  
   match '/search/json_completion', to: 'search#json_completion', via: 'get', as: 'json_completion'
   
   resources :imports
@@ -32,7 +35,6 @@ Traits::Application.routes.draw do
 
   
   resources :imports
-
 
   resources :methodologies
   post '/methodology/:id/trait', to: 'methodologies#remove_trait', :as => :remove_methodology_trait
@@ -60,10 +62,16 @@ Traits::Application.routes.draw do
     post :export, :on => :collection
   end
 
-  resources :standards
+  
+  resources :standards do
+    post :export, :on => :collection
+  end
 
   resources :measurements 
-    resources :issues
+
+  resources :issues
+
+  resources :observation_imports
 
   resources :observations do  
     resources :issues

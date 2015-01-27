@@ -5,6 +5,7 @@ class Trait < ActiveRecord::Base
   
   has_many :measurements, :dependent => :destroy
   validates :trait_name, :presence => true
+  validates :standard_id, :presence => true
 
   has_many :citations#, :dependent => true
   has_many :resources, :through => :citations
@@ -22,6 +23,9 @@ class Trait < ActiveRecord::Base
   searchable do
     text :trait_name
     text :trait_class
+    string :trait_class_sortable do 
+      trait_class
+    end
   end
 
   '''

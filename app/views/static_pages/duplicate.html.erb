@@ -8,16 +8,28 @@
 
 <h3>Potential duplicate measurements</h3>
 
-<% @measurements = Measurement.where(:trait_id => @trait.id).joins(:observation).group(:value, :standard_id, :specie_id, :resource_id).having("count(*) > 1") %>
+<% @measurements = Measurement.where(:trait_id => @trait.id).select(:value, :standard_id).group(:value, :standard_id).having("count(*) > 1") %>
+<% puts @measurements.inspect %>
 
 <% if @measurements.any? %>
 
   <% @measurements.each do |i| %>
-  	<% obs = Observation.where(:id => i.observation_id).first %>
-  	<% @observations = Observation.joins(:measurements).where("value IS ? AND standard_id IS ? AND trait_id IS ? AND specie_id IS ? AND resource_id IS ?", i.value, i.standard_id, i.trait_id, obs.specie_id, obs.resource_id) %>
-    	<%= render "shared/observations" %>
+    <% @temp = Measurement.where("value = ? AND standard_id = ? AND trait_id = ?", i.value, i.standard_id, @trait.id).joins(:observation).select(:resource_id, :location_id).group(:resource_id, :location_id).having("count(*) > 1") %>
+
+    <% if @temp.any? %>
+
+      <% @temp.each do |j| %>
+
+          <% @observations = Observation.where("resource_id = ? AND location_id = ?", j.resource_id, j.location_id).joins(:measurements).where("value = ? AND standard_id = ? AND trait_id = ?", i.value, i.standard_id, @trait.id) %>
+          <%= render "shared/observations" %>
+      <% end %>
+      <hr>
+    <% end %>
   <% end %>
 
 <% else %>
   <span class="label label-success">looking good</span>
 <% end %>
+
+    <%# obs = Observation.where(:id => i.id).first %>
+    <%# @observations = Observation.joins(:measurements).where("value = ? AND standard_id = ? AND trait_id = ? AND specie_id = ? AND resource_id = ?", i.value, i.standard_id, i.trait_id, obs.specie_id, obs.resource_id) %>

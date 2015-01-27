@@ -22,6 +22,8 @@ class Observation < ActiveRecord::Base
   has_many :issues, :dependent => :destroy
 
   searchable do
+    boolean :private  
+    integer :user_id  
     text :measurements do
       measurements.map{ |measurement| measurement.value }
     end
@@ -31,19 +33,5 @@ class Observation < ActiveRecord::Base
   def set_nest(item)
     item.observation ||= self
   end
-  
-  '''
-  def self.search(search)
-      if search
-        joins(:measurements).where("value LIKE ? OR orig_value LIKE ?", "%#{search}%", "%#{search}%")
-      else
-        all
-      end
-  end  
-
-  '''
-
-
-  
   
 end

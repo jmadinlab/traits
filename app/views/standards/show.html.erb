@@ -1,19 +1,12 @@
 <% provide(:title, 'Standards') %>
 
-<h3>Measurement standard
-    <% if @standard.approval_status == "pending" %>
-      <small><span class="label label-danger pull-right">pending approval</span></small>
-    <% end %>
-</h3>
+<div class="page-header">
+  <h1>Standard: <%= @standard.standard_name %></h1>
+</div>
 
 <p>
   <strong>Standard ID:</strong>
     <%= @standard.id %>
-</p>
-
-<p>
-  <strong>Standard name:</strong>
-  <%= @standard.standard_name %>
 </p>
 
 <p>
@@ -31,12 +24,20 @@
   <%= @standard.standard_description %>
 </p>
 
-<p>
-  <strong>User:</strong>
-  <% if !@standard.user.blank? %>
-	  <%= @standard.user.name %>
+<div class="btn-group">
+  <% if signed_in? && current_user.editor? %>
+    <%= link_to 'Edit', edit_standard_path(@standard), class: "btn btn-sm btn-default" %>
   <% end %>
-</p>
+  <%= link_to 'Back', standards_path, class: "btn btn-sm btn-default" %>
+</div>
 
-<p><%= link_to 'Edit', edit_standard_path(@standard) %> |
-<%= link_to 'Back', standards_path %></p>
+<h3>Observations</h3>
+
+<% if @observations.empty? %>
+  <p class="alert alert-danger"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> No observations available</p>
+<% else %>
+  <%= will_paginate @observations %>
+  <%= render "shared/observations" %>
+  <br>
+  <%= will_paginate @observations %>
+<% end %>

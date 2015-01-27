@@ -23,7 +23,7 @@
 		      <%= text_field_tag :search, params[:search], :placeholder => "Search locations...", class: "form-control" %>
 		      <span class="input-group-btn">
 				    <%= submit_tag "Search", :name => nil, class: "btn btn-default" %>
-						<%= link_to "See All", locations_path(search: params[:search], pp: "all"), class: "btn btn-warning" %>
+						<%= link_to "See All", locations_path(search: params[:search], all: true), class: "btn btn-warning" %>
 						<%= link_to 'Reset', locations_path, class: "btn btn-default" %>
 		      </span>
 		    </div>
@@ -48,7 +48,7 @@
 	<div class="row">
 	  <div class="col-md-12">
 			<ul class="list-group">
-	    	<% @locations.each do |location| %>
+	    	<% @locations.sort_by{|e| e[:location_name]}.each do |location| %>
 				  <li class="list-group-item">							
 						<div class="row">
 			        <div class="col-sm-1" style="color: lightgrey;">
@@ -57,8 +57,10 @@
 
 			        <div class="col-sm-5">
 			        	<%= link_to location.location_name, location, 'data-no-turbolink' => true %>
-	        			<small>(<%= location.latitude.round(3) %>,
-	        			<%= location.longitude.round(3) %>)</small>
+                <% if location.latitude %>
+                  <small>(<%= location.latitude.round(3) %>,
+                  <%= location.longitude.round(3) %>)</small>
+                <% end %>
 			        </div>
 
 						 	<div class="col-sm-1">
@@ -66,7 +68,7 @@
 							</div>
 
 							<div class="col-sm-2">
-								<% if not params[:pp] %>
+								<% if not params[:all] %>
 				        	<%= render "shared/access_counts", :acc => Observation.where(:location_id => location) %>
 								<% end %>
 
@@ -78,8 +80,10 @@
 			        <div class="col-sm-3">
 						    <div class="btn-group pull-right">
 						     	<%= link_to 'Show', location_path(location), 'data-no-turbolink' => true, class: "btn btn-xs btn-default" %>
-								  <% if signed_in? && current_user.admin? %>
+								  <% if signed_in? && current_user.editor? %>
 					        	<%= link_to 'Edit', edit_location_path(location), class: "btn btn-xs btn-default" %>
+                  <% end %>
+                  <% if signed_in? && current_user.admin? %>
 					        	<%= link_to 'Delete', location, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
 									<% end %>
 				        </div>
@@ -91,6 +95,8 @@
 		</div>
 	</div>
 <% end %>
+
+<%= will_paginate @locations %>
 
 <% if @locations.blank? %>
   <div class="alert alert-danger" role="alert">No locations entered.</div>

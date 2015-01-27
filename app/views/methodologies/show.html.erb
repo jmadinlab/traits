@@ -5,52 +5,46 @@
   <h1>Methodology: <%= @methodology.methodology_name %></h1>
 </div>
 
-<div class="row">
-  <div class="col-md-9">
-	  <p>
-	    <strong>Methodology ID:</strong>
-	    	<%= @methodology.id %>
-	  </p>
+<p>
+  <strong>Methodology ID:</strong>
+  	<%= @methodology.id %>
+</p>
 
-		<% if !@methodology.method_description.blank? %>
-		  <p>
-		    <strong>Description:</strong>
-	    	<%= @methodology.method_description %>
-		  </p>
+<% if !@methodology.method_description.blank? %>
+  <p>
+    <strong>Description:</strong>
+  	<%= @methodology.method_description %>
+  </p>
+<% end %>
+
+<% if not @methodology.traits.empty? %>
+	<p>
+			<strong>Used for traits:</strong>
+			<% @methodology.traits.each do |trait| %>
+				<%= link_to trait.trait_name, trait, class: "label label-primary", 'data-no-turbolink' => true %>
+  		<% end %>
+	</p>
+  <% end %>
+
+<p>
+	<div class="btn-group">
+		<% if signed_in? && current_user.contributor? %>
+			<%= link_to 'Edit', edit_methodology_path(@methodology), class: "btn btn-sm btn-default" %>
 		<% end %>
-
-
-		<% if not @methodology.traits.empty? %>
-			<p>
-	 			<strong>Used for traits:</strong>
- 				<% @methodology.traits.each do |trait| %>
-	 				<%= link_to trait.trait_name, trait, class: "label label-primary", 'data-no-turbolink' => true %>
-	    		<% end %>
-			</p>
-	    <% end %>
-
-		<p>
-			<div class="btn-group">
-				<% if signed_in? && current_user.contributor? %>
-					<%= link_to 'Edit', edit_methodology_path(@methodology), class: "btn btn-sm btn-default" %>
-				<% end %>
-				<%= link_to 'Back', methodologies_path, class: "btn btn-sm btn-default" %>
-			</div>
-		</p>
+		<%= link_to 'Back', methodologies_path, class: "btn btn-sm btn-default" %>
+	</div>
+</p>
 		
-	</div>
-  <div class="col-md-3">
-	  <%= render "shared/symbol_key" %>
-	</div>
-</div>
 
 <h3>Observations using this methodology</h3>
 
 <% if @observations.empty? %>
-	<p class="alert alert-danger">No records available.</p>
+	<p class="alert alert-danger"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> No observations available</p>
 <% else %>
 
 	<%= will_paginate @observations %>
 	<%= render "shared/observations" %>
+	<br>
+	<%= will_paginate @observations %>
 
 <% end %>

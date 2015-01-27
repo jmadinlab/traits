@@ -1,7 +1,10 @@
+		<div class="page-header">
+  		<h1>Search</h1>
+		</div>
+
 
 <div class="row">
 	<div class="col-md-3">
-		<strong>Search term/s</strong>
 		<div class="ui-widget">
 	  	<%= form_tag search_index_path, :method => :get do %>
 				<div class="form-group">
@@ -33,7 +36,7 @@
 				<h4 class="coloured">Species</h4>
 			<% end %>
 			<ul class="list-group">
-				<% @specie_search.results.each do |s| %>
+				<% @specie_search.results.sort_by{|e| e[:specie_name]}.each do |s| %>
 		     	<li class="list-group-item">							
 						<%= link_to s.specie_name, s %>
 	     			<div class="btn-group pull-right">							
@@ -49,7 +52,7 @@
 				<h4 class="coloured">Traits</h4>
 			<% end %>
 			<ul class="list-group">
-				<% @trait_search.results.each do |s| %>
+				<% @trait_search.results.sort_by{|e| e[:trait_name]}.each do |s| %>
 		     	<li class="list-group-item">							
 						<%= link_to s.trait_name, s %>
 	     			<div class="btn-group pull-right">							
@@ -65,7 +68,7 @@
 				<h4 class="coloured">Standards</h4>
 			<% end %>
 			<ul class="list-group">
-				<% @standard_search.results.each do |s| %>
+				<% @standard_search.results.sort_by{|e| e[:standard_name]}.each do |s| %>
 		     	<li class="list-group-item">							
 						<%= link_to s.standard_name, s %>
 						<% if s.standard_unit %>
@@ -78,7 +81,6 @@
 				<% end %>
 			</ul>
 		<% end %>
-
 
 		<% if @observation_search %>
 			<% if not @observation_search.results.blank? %>
@@ -111,7 +113,7 @@
 				<h4 class="coloured">Locations</h4>
 			<% end %>
 			<ul class="list-group">
-				<% @location_search.results.each do |s| %>
+				<% @location_search.results.sort_by{|e| e[:location_name]}.each do |s| %>
 		     	<li class="list-group-item">							
 						<%= link_to s.location_name, s %><br>
 						Latitude: <%= s.latitude %> | Longitude: <%= s.longitude %>
@@ -128,7 +130,7 @@
 				<h4 class="coloured">Resources</h4>
 			<% end %>
 			<ul class="list-group">
-				<% @resource_search.results.each do |s| %>
+				<% @resource_search.results.sort_by{|e| e[:title]}.each do |s| %>
 		     	<li class="list-group-item">							
 						<%= link_to s.title, s %><br>
 						Year: <%= s.year %> | Author: <%= s.author %>

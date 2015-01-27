@@ -10,26 +10,12 @@ class Specie < ActiveRecord::Base
   
   searchable do
     text :specie_name
+    string :specie_name_sortable do 
+      specie_name
+    end
     text :synonyms do
       synonyms.map{ |synonym| synonym.synonym_name }
     end
   end
-  
-  
-  '''
-  def self.search(search)
-      if search
-        (where("specie_name LIKE ?", "%#{search}%") +
-        joins(:synonyms).where("synonyms.synonym_name LIKE ?", "%#{search}%")).uniq
-      else
-        all
-      end
-  end  
-  '''
+    
 end
-
-
-    #   joins(:owner).where('dogs.name LIKE ? or owners.name LIKE ?', "%#{search}%", "%#{search}%")
-    # else
-    #   find(:all)
-# @projects = Project. :joins => :categories, :conditions => ['projects.name LIKE ? OR categories.name LIKE ?', "%#{params[:search]}%", "%#{params[:search]}%"], :order => 'projects.id DESC'

@@ -2,16 +2,14 @@
 
 <div class="page-header">
   <h1>
+		<span class="glyphicon glyphicon-book" data-toggle="tooltip" data-placement="bottom" title="Resource"></span>
   	Resource
-		<% if @resource.approval_status == "pending" %>
-				<small><span class="label label-danger pull-right">pending approval</span></small>
-			<% end %>
   </h1>
   
 </div>
 
 <div class="row">
-  <div class="col-md-9">
+  <div class="col-md-12">
 	  <p>
 	    <strong>Resource ID:</strong>
 	    	<%= @resource.id %>
@@ -98,38 +96,41 @@
 		</p>
 
 	</div>
-  <div class="col-md-3">
-
-		<% if @resource.traits %>
-			<div class="well">
-				<p>Used as primary resource for:</p>
-				<ul>
-					<% if @resource.traits.present? %>
-						<% @resource.traits.each do |tra| %>
-							<li><%= link_to tra.trait_name, trait_path(tra) %></li>
-						<% end %>
-					<% else %>
-						<li>No traits entered</li>
-					<% end %>
-				</ul>
-
-				<% if signed_in? && current_user.contributor? %>
-					<%= link_to 'Add Trait', new_citation_path(:resource => @resource), class: "btn btn-default btn-sm" %><br>
-					<%= link_to 'Manage Citations', citations_path(:resource => @resource) %>
-				<% end %>
-			</div>
-		<% end %>
-
-	</div>
 </div>
 
 <h3>Observations from this resource</h3>
 
-<% if @observations.empty? %>
-	<p class="alert alert-danger">No records available.</p>
-<% else %>
+<ul class="nav nav-tabs">
+  <li role="presentation" class="active"><a href="#primary" data-toggle="tab">Primary <span class="badge"><%= @primary.count %></span></a></li>
+  <li role="presentation"><a href="#secondary" data-toggle="tab">Secondary <span class="badge"><%= @secondary.count %></span></a></li>
+</ul>
 
-	<%= will_paginate @observations %>
-	<%= render "shared/observations" %>
+<div class="tab-content">
+  <div class="tab-pane active fade in" id="primary">
+		<br>
+		<% @observations = @primary %>
+		<% if @observations.empty? %>
+			<p class="alert alert-danger"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> No observations available</p>
+		<% else %>
+			<%= will_paginate @observations %>
+			<%= render "shared/observations" %>
+			<br>
+			<%= will_paginate @observations %>
+		<% end %>  
+  </div>
+  
+  <div class="tab-pane" id="secondary">
+		<br>
+		<% @observations = @secondary %>
+		<% if @observations.empty? %>
+			<p class="alert alert-danger"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> No observations available</p>
+		<% else %>
+			<%= will_paginate @observations %>
+			<%= render "shared/observations" %>
+			<br>
+			<%= will_paginate @observations %>
+		<% end %>  
+		  	<%= puts "HERE".red %>
+  </div>
+</div>
 
-<% end %>

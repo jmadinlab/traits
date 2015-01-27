@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_action :signed_in_user,  only: [:show, :edit, :update]
   before_action :correct_user,    only: [:show, :edit, :update]
-  # before_action :editor,          only: :index
+  before_action :editor,          only: :index
   before_action :admin_user,      only: :destroy
 
   def index
@@ -16,36 +16,13 @@ class UsersController < ApplicationController
 
     @user = User.find(params[:id])
     @observations = Observation.where('user_id = ?', @user.id)
-
-    if signed_in? && current_user.admin?
-    elsif signed_in? && current_user.editor?
-    elsif signed_in? && current_user.contributor?
-      @observations = @observations.where('private IS ? OR (user_id = ? AND private IS ?)', false, current_user.id, true)
-    else
-      @observations = @observations.where('private IS ?', false)
-    end
+    @observations = observation_filter(@observations)
+    @observations = @observations.order('created_at DESC')
 
     respond_to do |format|
-      format.html {
-        @observations = @observations.paginate(:page=> params[:page], :per_page => n)
-      }
-      format.csv {
-        if request.url.include? 'resources.csv'
-          csv_string = get_resources_csv(@observations)
-          filename = 'resources'
-        else
-          csv_string = get_main_csv(@observations, "", "", "")
-          filename = 'data'
-        end
-        send_data csv_string, 
-          :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
-          :disposition => "attachment; filename=#{filename}_#{Date.today.strftime('%Y%m%d')}.csv"
-      }
-
-      format.zip{
-        send_zip(@observations, 'traits.csv', params[:taxonomy], params[:contextual], params[:global])
-      }
-
+      format.html { @observations = @observations.paginate(page: params[:page]) }
+      format.csv { download_observations(@observations, params[:taxonomy], params[:contextual] || "on", params[:global]) }
+      format.zip{ send_zip(@observations, params[:taxonomy], params[:contextual] || "on", params[:global]) }
     end
   end
 
@@ -60,7 +37,7 @@ class UsersController < ApplicationController
       
       SignUpMailer.acknowledge(@user).deliver
       
-      flash[:success] = "Welcome to the" + ENV[SITE_NAME]
+      flash[:success] = "Welcome to the " + ENV["SITE_NAME"]
       redirect_to @user
     else
       render 'new'

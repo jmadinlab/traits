@@ -1,0 +1,30 @@
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <div class="page-header">
+      <h1>Import observations</h1>
+    </div>
+
+    <%= render 'shared/error_messages', object: @observation_import %>
+
+    <%= form_for @observation_import do |f| %>
+
+      <div class="row">
+        <div class="col-md-12">
+            <%= f.radio_button :import_type, "new", :checked => true %>
+            <%= f.label :import_type, "Import new observations"  %><br>
+            <%= f.radio_button :import_type, "overwrite" %>
+            <%= f.label :import_type, "Overwrite existing observations" %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.file_field :file, class: "form-control" %>
+      </div>
+
+      <%= f.submit "Import", class: "btn btn-primary" %>
+
+      <%= markdown File.open(Rails.root + "public/bulk_import.md", 'r').read %>
+
+    <% end %>
+  </div>
+</div>

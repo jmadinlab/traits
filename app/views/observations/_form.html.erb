@@ -1,4 +1,4 @@
- <% @my_var = @temp_var %>
+<% @my_var = @temp_var %>
 
 <%= form_for @observation, class: "form-group" do |f| %>
 	
@@ -10,47 +10,80 @@
 	
   <%= render 'shared/error_messages', object: f.object %>
 
-  <div class="form-group">
-	  <%= f.label "species (required)" %><br>
-		<%= f.select :specie_id, Specie.all.map { |u| ["#{u.specie_name} (#{u.synonyms.collect(&:synonym_name).join(",")})", u.id] }, { include_blank: "Choose species..." }, { id: 'simple-example', :style => "width: 400px;" } %>
-	</div>
+  <div class="well">
+  <div class="row">
+    <div class="col-md-6">
 
-  <div class="form-group">
-    <%= f.label "location (required)" %><br>
-		<%= f.select :location_id, Location.all.map { |u| [u.location_name, u.id] }, { include_blank: "Choose location..." }, { id: 'simple-example', :style => "width: 400px;" } %>
-	</div>
+      <div class="form-group">
+    	  <%= f.label "species (required)" %><br>
+    		<%= f.select :specie_id, Specie.all.map { |u| ["#{u.specie_name} (#{u.synonyms.collect(&:synonym_name).join(",")})", u.id] }, { include_blank: "Choose species..." }, { id: 'simple-example', :style => "width: 300px;" } %>
+    	</div>
+    </div>
 
-  <div class="form-group">
-    <%= f.label "resource (recommended)" %><br>
-    <p><small>All published data needs a resource.</small></p>
-		<%= f.select :resource_id, Resource.all.map { |u| ["#{u.author} (#{u.year}) #{u.title}", u.id] }, { include_blank: "Choose resource..." }, { id: 'simple-example', :style => "width: 600px;" } %>
-	</div>
-
-  <div class="form-group">
-    <%= f.label "secondary resource (if applicable)" %><br>
-    <p><small>For observations that are part of secondary compilations.</small></p>
-    <%= f.select :secondary_id, Resource.all.map { |u| ["#{u.author} (#{u.year}) #{u.title}", u.id] }, { include_blank: "Choose resource..." }, { id: 'simple-example', :style => "width: 600px;" } %>
+    <div class="col-md-6">
+      <div class="form-group">
+        <%= f.label "location (required)" %><br>
+    		<%= f.select :location_id, Location.all.map { |u| [u.location_name, u.id] }, { include_blank: "Choose location..." }, { id: 'simple-example', :style => "width: 300px;" } %>
+    	</div>
+    </div>
   </div>
 
-  <div class="form-group">
-  	<strong>Keep this observation and measurement/s private?</strong> <%= f.check_box :private %>
-    <p><small>Please keep your unpublished data private (check the box above) as per the <%= link_to "Procedures", procedures_path %>.</small></p>
-  	
-	</div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <%= f.label "resource (recommended)" %><br>
+        <p><small>All published data needs a resource.</small></p>
+        <%= f.select :resource_id, Resource.all.map { |u| ["#{u.author} (#{u.year}) #{u.title}", u.id] }, { include_blank: "Choose resource..." }, { id: 'simple-example', :style => "width: 300px;" } %>
+      </div>
+    </div>
 
-	<div class="form-group">
-		<% if current_user.admin? %>
-			<strong>Entered by:</strong>
-      <% if f.object.id %>
-				<%= f.select :user_id, User.where(:contributor => true).collect {|a| [a.name, a.id]}, {:selected => @observation.user_id}, class: "form-control" %>
-      <% else %>
-        <%= f.select :user_id, User.where(:contributor => true).collect {|a| [a.name, a.id]}, {:selected => current_user.id}, class: "form-control" %>
-      <% end %>
-		<% else %>
-			<strong>Entered by:</strong> <%= current_user.name %>
-		  <%= f.hidden_field :user_id, :value => current_user.id %>
-		<% end %>
-	</div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <%= f.label "secondary resource (if applicable)" %><br>
+        <p><small>For observations that are part of secondary compilations.</small></p>
+        <%= f.select :resource_secondary_id, Resource.all.map { |u| ["#{u.author} (#{u.year}) #{u.title}", u.id] }, { include_blank: "Choose resource..." }, { id: 'simple-example', :style => "width: 300px;" } %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <strong>Keep this observation and measurement/s private?</strong> <%= f.check_box :private %>
+        <p><small>Please keep unpublished data private (check the box above) as per the <%= link_to "Procedures", procedures_path %>.</small></p>
+        
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group">
+        <% if current_user.admin? %>
+          <strong>Entered by:</strong>
+          <% if f.object.id %>
+            <%= f.select :user_id, User.where(:contributor => true).collect {|a| [a.name, a.id]}, {:selected => @observation.user_id}, class: "form-control" %>
+          <% else %>
+            <%= f.select :user_id, User.where(:contributor => true).collect {|a| [a.name, a.id]}, {:selected => current_user.id}, class: "form-control" %>
+          <% end %>
+        <% else %>
+          <strong>Entered by:</strong> <%= current_user.name %>
+          <%= f.hidden_field :user_id, :value => current_user.id %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <% if signed_in? && current_user.admin? %>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <strong>Approval_status:</strong>
+          <%= f.select :approval_status, ['pending', 'approved'], {:selected => @observation.approval_status}, class: "form-control" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  </div>
 
   <% if f.object.measurements.blank? %>      
     <% f.object.measurements.build %>

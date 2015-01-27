@@ -1,7 +1,7 @@
 <div class="page-header">
   <h1>
-  	<% if @observation.issues.present? %>
-	  	<span class="glyphicon glyphicon-warning-sign" style="color:red;" data-toggle="tooltip" data-placement="top" title="Issue reported"></span>
+  	<% if @observation.issues.where("resolved != ?", true).present? %>
+	  	<span class="glyphicon glyphicon-warning-sign" style="color:red;" data-toggle="tooltip" data-placement="top" title="Unresolved issue"></span>
 		<% end %>
 		Observation record (<%= @observation.id %>)
 	<% if @observation.approval_status == "pending" %>
@@ -33,8 +33,8 @@
 		<% end %>
 </p>
 
-<% if @observation.secondary_id %>
-	<% @secondary = Resource.where(:id => @observation.secondary_id).first %>
+<% if @observation.resource_secondary_id %>
+	<% @secondary = Resource.where(:id => @observation.resource_secondary_id).first %>
 	<p>
 	  <strong>Secondary resource:</strong>
   		<%= link_to "#{@secondary.author} (#{@secondary.year}) #{@secondary.title}. #{@secondary.journal}, #{@secondary.volume_pages}.", resource_path(@secondary.id) %>
@@ -74,6 +74,12 @@
 	</p>
 <% end %>
 
+
+<div class="btn-group">
+	<% if signed_in? && ((current_user.contributor? && @observation.user_id == current_user.id) || current_user.admin?) %>
+		<%= link_to 'Edit', edit_observation_path(@observation), class: "btn btn-sm btn-default" %>
+	<% end %>
+</div>
 
 <h3>Measurements</h3>
 
@@ -162,15 +168,14 @@
   </div>
 </div>
 
-<div class="btn-group">
-	<% if signed_in? && current_user.contributor? %>
-		<%= link_to 'Edit Observation', edit_observation_path(@observation), class: "btn btn-sm btn-default" %>
-	<% end %>
-</div>
-
 <% if signed_in? %>
-	<hr>
-	<%= render @observation.issues %>
+	<% if @observation.issues.size > 0 %>
+		<h3>Issues</h3>
+	<% end %>
+
+	<ul class="list-group">
+		<%= render @observation.issues %>
+	</ul>
 
 	<%= form_for([@observation, @observation.issues.build]) do |f| %>
     <%= f.hidden_field :user_id, :value => current_user.id %>
@@ -180,7 +185,7 @@
 			<div class="col-md-1" style="color:lightgrey;">
 			</div>
 
-		  <div class="col-md-3">
+		  <div class="col-md-4">
 		  </div>
 
 			<div class="col-md-5">
@@ -189,7 +194,7 @@
 			  </div>
 			</div>
 
-			<div class="col-md-3">
+			<div class="col-md-2">
 		    <%= f.submit "Submit", class: "btn btn-primary btn-sm" %>
 		  </div>
 		</div>

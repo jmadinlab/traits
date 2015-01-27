@@ -8,6 +8,8 @@
 <p>Download species/trait measurements matrix <%= link_to 'CSV', '/export_specie_trait', :action => 'export_specie_trait' %></p>
 <p>Download location/trait measurements matrix <%= link_to 'CSV', '/export_location_trait', :action => 'export_location_trait' %></p>
 
+<p>approvals_count: <%= Observation.where("approval_status = ? and id IN (?)", "pending", Measurement.joins(:trait).where("traits.user_id = ?", current_user.id).map(&:observation_id)).size %></p>
+
 <p>
 	<%= form_tag meta_path, :method => 'get' do %>
 	  <strong>Subset traits by editor: </strong><%= select_tag :editor, options_for_select(User.all.where(:id => Trait.all.map(&:user_id).uniq).map { |e| [e.name, e.id] }, params[:editor]), include_blank: true, onchange: "$(this).parent('form').submit();" %>

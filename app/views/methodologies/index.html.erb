@@ -19,13 +19,12 @@
 		      <%= text_field_tag :search, params[:search], :placeholder => "Search methodologies...", class: "form-control" %>
 		      <span class="input-group-btn">
 				    <%= submit_tag "Search", :name => nil, class: "btn btn-default" %>
-						<%= link_to "See All", methodologies_path(search: params[:search], pp: "all"), class: "btn btn-warning" %>
+						<%= link_to "See All", methodologies_path(search: params[:search], all: true), class: "btn btn-warning" %>
 						<%= link_to 'Reset', methodologies_path, class: "btn btn-default" %>
 		      </span>
 		    </div><br>
-				<!-- <p>Sort by: <%#= select_tag :sort, options_for_select(["id", "name"], params[:sort]), onchange: "$(this).parent('form').submit();" %></p> -->
 			<% end %>
-			<p>Download resource list as a <%= link_to "csv", methodologies_path(format: "csv") %>.</p>
+			<p>Download methodology list as a <%= link_to "csv", methodologies_path(format: "csv") %>.</p>
 	  </div>
 	  <div class="col-md-6">
 	  	<% if signed_in? && current_user.contributor? %>	
@@ -44,7 +43,7 @@
 	<div class="row">
 	  <div class="col-sm-12">
 			<ul class="list-group">
-	    	<% @methodologies.each do |methodology| %>
+	    	<% @methodologies.sort_by{|e| e[:methodology_name]}.each do |methodology| %>
 				  <li class="list-group-item">							
 						<div class="row">
 			        <div class="col-sm-1" style="color: lightgrey;">
@@ -60,7 +59,7 @@
 
 
 							<div class="col-sm-2">
-								<% if not params[:pp] %>
+								<% if not params[:all] %>
 				        	<%= render "shared/access_counts", :acc => Observation.where(:id => Measurement.where(:methodology_id => methodology).map(&:observation_id)) %>
 								<% end %>
 							</div>
@@ -68,8 +67,10 @@
 			        <div class="col-sm-3">
 						    <div class="btn-group pull-right">
 						     	<%= link_to 'Show', methodology_path(methodology), class: "btn btn-xs btn-default" %>
-								  <% if signed_in? && current_user.admin? %>
+								  <% if signed_in? && current_user.editor? %>
 					        	<%= link_to 'Edit', edit_methodology_path(methodology), class: "btn btn-xs btn-default" %>
+									<% end %>
+								  <% if signed_in? && current_user.admin? %>
 					        	<%= link_to 'Delete', methodology, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
 									<% end %>
 				        </div>
@@ -81,6 +82,8 @@
 		</div>
 	</div>
 <% end %>
+
+<%= will_paginate @methodologies %>
 
 <% if @methodologies.blank? %>
   <div class="alert alert-danger" role="alert">No methodologies entered.</div>

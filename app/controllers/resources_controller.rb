@@ -1,38 +1,22 @@
 class ResourcesController < ApplicationController
-  # before_action :signed_in_user
+
   before_action :contributor, except: [:index, :show, :export]
-  before_action :set_resource, only: [:show, :edit, :update, :destroy]
   before_action :admin_user, only: :destroy
+  before_action :set_resource, only: [:show, :edit, :update, :destroy]
 
-  # GET /resources
-  # GET /resources.json
   def index
-
-    pp = 15
-    pp = 9999 if params[:pp]
 
     @search = Resource.search do
       fulltext params[:search]
-      paginate page: params[:page], per_page: pp
-    end
-    
-    if params[:search]
-      @resources = @search.results
-    else
-      if not signed_in?
-        @resources = Resource.where("approval_status NOT IN (?) OR approval_status IS NULL", 'pending').paginate(:page=> params[:page], :per_page => pp)
-      else
-        @resources = Resource.all.paginate(:page=> params[:page], :per_page => pp)
-      end
+      order_by :author_sortable, :asc
       
+      if params[:all]
+        paginate page: params[:page], per_page: 9999
+      else
+        paginate page: params[:page]
+      end
     end
-
-
-    # @resources = @resources.sort_by{|l| l[:id]} if params[:sort] == "id"
-    # @resources = @resources.sort_by{|l| l[:author]} if params[:sort] == "author"
-    # @resources = @resources.sort_by{|l| l[:year] || 0 } if params[:sort] == "year"
-    # @resources = @resources.sort_by{|l| l[:title]} if params[:sort] == "title"
-    # @resources = @resources.reverse if params[:order] == "descending"
+    @resources = @search.results
 
     respond_to do |format|
       format.html
@@ -40,41 +24,21 @@ class ResourcesController < ApplicationController
     end    
   end
 
-  # GET /resources/1
-  # GET /resources/1.json
   def show
 
-    @observations = Observation.where('resource_id = ?', @resource.id)
+    @primary = Observation.where('resource_id = ?', @resource.id)
+    @secondary = Observation.where('resource_secondary_id = ?', @resource.id)
 
-    if signed_in? && current_user.admin?
-    elsif signed_in? && current_user.editor?
-    elsif signed_in? && current_user.contributor?
-      @observations = @observations.where(['observations.private IS false OR (observations.user_id = ? AND observations.private IS true)', current_user.id ])
-    else
-      @observations = @observations.where(['observations.private IS false'])
-    end
+    @primary = observation_filter(@primary)
+    @secondary = observation_filter(@secondary)
 
     respond_to do |format|
       format.html {
-        @observations = @observations.paginate(:page=> params[:page], :per_page => 20)
+        @primary = @primary.paginate(:page=> params[:page], :per_page => 20)
+        @secondary = @secondary.paginate(:page=> params[:page], :per_page => 20)
       }
-      format.csv {
-        if request.url.include? 'resources.csv'
-          csv_string = get_resources_csv(@observations)
-          filename = 'resources'
-        else
-          csv_string = get_main_csv(@observations, "", "", "")
-          filename = 'data'
-        end
-        send_data csv_string, 
-          :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
-          :disposition => "attachment; filename=#{filename}_#{Date.today.strftime('%Y%m%d')}.csv"
-      }
-
-      format.zip{
-        send_zip(@observations, 'data.csv', "", "")
-      }
-
+      format.csv { download_observations(@primary, params[:taxonomy], params[:contextual] || "on", params[:global]) }
+      format.zip{ send_zip(@primary, params[:taxonomy], params[:contextual] || "on", params[:global]) }
     end
 
   end
@@ -125,19 +89,17 @@ class ResourcesController < ApplicationController
       
     if signed_in? && current_user.contributor?
       if current_user.admin?
-        #@observations = Observation.where{location_id.in my{params[:checked]}}
         @observations = Observation.where(:resource_id => params[:checked])
       else
         #@observations = Observation.where{ (private == 'f') | ((user_id == my{current_user.id}) & (private == 't')) }.        
         #where{location_id.in my{params[:checked]}}
-        @observations = Observation.where(" (private = 'f' or (private = 't' and user_id = ? )) ", current_user.id).where(:resource_id => params[:checked])
-
+        @observations = Observation.where("private IS ? or (private IS ? and user_id IS ?)", false, true, current_user.id).where(:resource_id => params[:checked])
       end
     else
       @observations = Observation.where(:private => false).where(:resource_id => params[:checked])        
     end        
     
-    send_zip(@observations, 'traits.csv', params[:taxonomy], params[:contextual], params[:global])
+    send_zip(@observations, params[:taxonomy], params[:contextual], params[:global])
           
   end
 

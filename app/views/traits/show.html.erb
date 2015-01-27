@@ -23,7 +23,7 @@
 		<p>
 			<strong>Editor:</strong>
 			<% if !@trait.user.blank? %>
-				<%= @trait.user.name %> (<%= mail_to @trait.user.email, "contact", {:subject => "Coral Trait enquiry"} %>)
+				<%= @trait.user.name %> (<%= mail_to @trait.user.email, "contact", {:subject => "#{ENV["SITE_NAME"]} enquiry"} %>)
 			<% end %>
 			<% if signed_in? && current_user.editor? %>
 				<%= link_to "meta", show_meta_path(@trait), class: "label label-danger" %>
@@ -91,7 +91,6 @@
 					<%= link_to 'Edit', edit_trait_path(@trait), class: "btn btn-sm btn-default" %>
 				<% end %>
 				<%= link_to 'Back', traits_path, class: "btn btn-sm btn-default" %>
-				<%= link_to 'Back to specie', specie_path(@specie), class: "btn btn-sm btn-default" if @specie %>
       </div>
 		</p>
 	</div>
@@ -112,8 +111,10 @@
 <h3>Observations</h3>
 
 <% if @observations.empty? %>
-	<p class="alert alert-danger">No records available.</p>
+	<p class="alert alert-danger"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> No observations available</p>
 <% else %>
 	<%= will_paginate @observations %>
 	<%= render "shared/observations" %>
+	<br>
+	<%= will_paginate @observations %>
 <% end %>

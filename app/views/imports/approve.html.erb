@@ -1,19 +1,9 @@
 
 <h3>CSV Upload Admin</h3>
 
-<% if @item_import.errors.any? %>
-  <div id="error_explanation">
-    <h2><%= pluralize(@item_import.errors.count, "error") %> prohibited this import from completing:</h2>
-    <ul>
-    <% @item_import.errors.full_messages.each do |msg| %>
-      <li><%= msg %></li>
-    <% end %>
-    </ul>
-  </div>
-<% end %>
 
 <% item_present = false %>
-<% list = [ @species , @locations, @traits, @standards, @resources ] %>
+<% list = [@species, @locations, @traits, @standards, @resources] %>
 <% list.each do |l| %>
 	<% if not l.empty? %>
 		<% item_present = true %>

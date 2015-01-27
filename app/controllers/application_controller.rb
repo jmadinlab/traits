@@ -3,8 +3,8 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
   include SessionsHelper
-
-  WillPaginate.per_page = 15
+  
+  WillPaginate.per_page = 30
 
   before_filter :set_last_seen_at, if: proc { |p| signed_in? && (session[:last_seen_at] == nil || session[:last_seen_at] < 15.minutes.ago) }
 
@@ -15,9 +15,22 @@ class ApplicationController < ActionController::Base
   
   # Before filters
 
+  def observation_filter(observations)
+    if signed_in?
+      if current_user.admin?
+        observations = observations
+      elsif current_user.editor? | current_user.contributor?
+        observations = observations.where("observations.private = ? OR (observations.user_id = ? AND observations.private = ?)", false, current_user.id, true)
+      end
+    else
+      observations = observations.where("observations.private = ?", false)
+    end
+    observations
+  end
+
   def correct_user
     @user = User.find(params[:id])
-    redirect_to(root_url) unless (current_user?(@user) || current_user.admin?)
+    redirect_to(root_url, flash: {danger: "You can't access other user pages." }) unless (current_user?(@user) || current_user.admin?)
   end
 
   def admin_user
@@ -26,7 +39,7 @@ class ApplicationController < ActionController::Base
 
   def contributor
       redirect_to(
-        root_url,flash: {danger: "You need to be a contributor to access this area of the database." }
+        root_url, flash: {danger: "You need to be a contributor to access this area of the database." }
       ) unless (signed_in? && (current_user.contributor? || current_user.admin?))  
   end
 
@@ -62,6 +75,21 @@ class ApplicationController < ActionController::Base
   end
 
   # Return the main csv string depending upon the model (species data / traits data / lcation data etc)
+
+  def download_observations(observations, taxonomy=nil, contextual=nil, global=nil)
+
+    if request.url.include? 'resources.csv'
+      csv_string = get_resources_csv(@observations)
+      filename = 'resources'
+    else
+      csv_string = get_main_csv(@observations, taxonomy, contextual, global)
+      filename = 'data'
+    end
+    send_data csv_string, 
+      :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
+      :disposition => "attachment; filename=#{filename}_#{Date.today.strftime('%Y%m%d')}.csv"
+  end
+
   def get_main_csv(observations, taxonomy=nil, contextual=nil, global=nil)
     csv_string = CSV.generate do |csv|
       if taxonomy == "on"
@@ -140,41 +168,34 @@ class ApplicationController < ActionController::Base
 
 
   # Return the zip file
-  def send_zip(observations, file_name='file1.csv', taxonomy, contextual, global)
+  def send_zip(observations, taxonomy=nil, contextual=nil, global=nil)
     require 'rubygems'
     require 'zip'
 
     # Process file1 (species.csv, traits.csv, locations.csv)
-    csv_string = get_main_csv(observations, taxonomy, contextual, global)
-    file1 = file_name
-    file1_path = "public/" + file1
-    _file1 = File.open(file1_path, "w") { |f| f << csv_string }
+    data_string = get_main_csv(observations, taxonomy, contextual, global)
+    data_file_path = "public/data.csv"
+    _file1 = File.open(data_file_path, "w") { |f| f << data_string }
     
-
     # Process file2 resources.csv
     resources_string = get_resources_csv(observations)
-    file2 = "resources.csv"
-    file2_path = "public/" + file2
-    _file2 = File.open(file2_path, "w") { |f| f << resources_string }
+    resource_file_path = "public/resources.csv"
+    _file2 = File.open(resource_file_path, "w") { |f| f << resources_string }
     
     # Combine file1 and file2 into zip file
     zipfile_name = 'zippedfiles.zip'
-    folder = 'public'
-    input_filenames = [file1, file2]
     Zip::File.open(zipfile_name, Zip::File::CREATE) do |zipfile|
-      input_filenames.each do |filename|
-        zipfile.add(filename, folder + "/" + filename)
-      end
+      zipfile.add("data.csv", data_file_path)
+      zipfile.add("resources.csv", resource_file_path)
     end
 
-    
     File.open(zipfile_name, 'r') do |f|
       send_data f.read, type: "application/zip", :stream => true,
       :disposition => "attachment; filename = ctdb.zip"
     end
     File.delete(zipfile_name)
-    FileUtils.rm_f(file2_path)
-    FileUtils.rm_f(file1_path)
+    FileUtils.rm_f(data_file_path)
+    FileUtils.rm_f(resource_file_path)
 
   end
 
@@ -184,20 +205,6 @@ class ApplicationController < ActionController::Base
   end
 
 
-  def get_specie_csv(species)
-    csv_string = CSV.generate do |csv|
-        csv << ["species_id", "master_species", "major_clade", "family_molecules", "family_morphology", "synonym_species", "specie_notes"]
-        species.each do |specie|
-          syn_vec = []
-          specie.synonyms.each do |syn|
-            syn_vec << syn.synonym_name
-          end
-          csv << [specie.id, specie.specie_name, specie.major_clade, specie.family_molecules, specie.family_morphology, syn_vec.join(", "), specie.specie_description]
-        end
-      end
-  
-   return csv_string
-  end
 
   private
 

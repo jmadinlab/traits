@@ -27,6 +27,8 @@ gem 'jquery-turbolinks'
 gem 'capistrano',  '~> 3.1'
 gem 'capistrano-rails', '~> 1.1'
 
+gem 'colorize'
+
 # database setup (postgres), and for Heroku
 gem 'pg'
 gem 'rails_12factor', group: :production

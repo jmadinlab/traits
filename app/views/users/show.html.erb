@@ -7,43 +7,35 @@
 	</h1>
 </div>
 
-<div class="row">
-	<div class="col-md-9">
-	  <p>
-	    <strong>User ID:</strong>
-	    	<%= @user.id %>
-	  </p>
-		<p>
-		  <strong>Email:</strong>
-		  <%= @user.email %>
-		</p>
+<p>
+  <strong>User ID:</strong>
+  	<%= @user.id %>
+</p>
+<p>
+  <strong>Email:</strong>
+  <%= @user.email %>
+</p>
 
-		<p>
-		  <strong>Observations:</strong>
-		  <%= render "shared/access_counts", :acc => Observation.where(:user_id => @user.id) %>
-		</p>
+<p>
+  <strong>Observations:</strong>
+  <%= render "shared/access_counts", :acc => Observation.where(:user_id => @user.id) %>
+</p>
 
-		<% if @user.editor? %>
-			<p>
-			  <strong>Editor for:</strong>
-			  <% @user.traits.each do |t| %>
-			  	<%= link_to t.trait_name, trait_path(t), class: "label label-primary" %>
-			  <% end %>
-			</p>
+<% if @user.editor? %>
+	<p>
+	  <strong>Editor for:</strong>
+	  <% @user.traits.each do |t| %>
+	  	<%= link_to t.trait_name, trait_path(t), class: "label label-primary" %>
 	  <% end %>
+	</p>
+<% end %>
 
-		<p>Observations that entered by <%= @user.name %> are listed below. These are original/new observations only (i.e., not  observations that have been modified/edited). Displayed data can be downloaded by clicking <label class="label label-success">Download</label>. Use the number of observations pull-down to expand what is visible and downloaded. You can also control their access of your observations.</p>
-	</div>
-
-	<div class="col-md-3">
-		<%= render "shared/symbol_key" %>
-	</div>
-</div>
+<p>Observations that entered by <%= @user.name %> are listed below. These are original/new observations only (i.e., not  observations that have been modified/edited). Displayed data can be downloaded by clicking <label class="label label-success">Download</label>. Use the number of observations pull-down to expand what is visible and downloaded. You can also control their access of your observations.</p>
 
 <h3>Observations</h3>
 
 <% if @observations.blank? %>
-	<div class="alert alert-danger">No records available.</div>
+	<p class="alert alert-danger"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> No observations available</p>
 <% else %>
 
 	<div class="well">
@@ -75,8 +67,10 @@
 		</div>
 	</div>
 
-			<%= will_paginate @observations %>
-			<%= render "shared/observations" %>
+	<%= will_paginate @observations %>
+	<%= render "shared/observations" %>
+	<br>
+	<%= will_paginate @observations %>
 	
-		<% end %>	
+	<% end %>	
 <% end %>

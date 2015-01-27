@@ -246,6 +246,7 @@ DEPENDENCIES
   capybara (= 2.1.0)
   cocoon
   coffee-rails
+  colorize
   factory_girl_rails (= 4.2.0)
   google-analytics-rails
   google_visualr (~> 2.1.0)

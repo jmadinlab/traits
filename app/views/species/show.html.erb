@@ -67,7 +67,7 @@
 					<% if !fac.blank? %>
 						AIMS factsheet and images:
 						<% fac.each do |f| %>
-							<%= link_to f.value, "http://specie.aims.gov.au/factsheet.jsp?speciesCode=" + f.value.to_s.rjust(4, '0'), target: "_blank" %>
+							<%= link_to f.value, "http://coral.aims.gov.au/factsheet.jsp?speciesCode=" + f.value.to_s.rjust(4, '0'), target: "_blank" %>
 						<% end %>
 					<% else %>
 						AIMS factsheet and images (not available)
@@ -113,7 +113,6 @@
 		<% else %>
 				<p>No Hughes map</p>
 		<% end %>
-
 
 <%= render "specie_observations" %>
 

@@ -5,6 +5,9 @@ class Methodology < ActiveRecord::Base
   
   searchable do
     text :methodology_name  
+    string :methodology_name_sortable do 
+      methodology_name
+    end
   end
 
   default_scope -> { order('methodology_name ASC') }

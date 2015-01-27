@@ -7,28 +7,22 @@ class StandardsController < ApplicationController
   # GET /standards
   # GET /standards.json
   def index
-    
-    # @standards = Standard.search(params[:search])
+
     @search = Standard.search do
       fulltext params[:search]
-    end
-    
-    if params[:search]
-      @standards = @search.results
-    else
-      if not signed_in?
-        @standards = Standard.where("approval_status NOT IN (?) OR approval_status IS NULL", 'pending')
-        
+      order_by :standard_class_sortable, :asc
+
+      if params[:all]
+        paginate page: params[:page], per_page: 9999
       else
-        @standards = Standard.all
+        paginate page: params[:page]
       end
-      
-      
     end
-    
+    @standards = @search.results
+
     respond_to do |format|
       format.html
-      format.csv { send_data Standard.all.to_csv }
+      format.csv { send_data Standard.all.to_csv }      
     end    
 
   end
@@ -36,7 +30,24 @@ class StandardsController < ApplicationController
   # GET /standards/1
   # GET /standards/1.json
   def show
+    @observations = Observation.joins(:measurements).where('measurements.standard_id = ?', @standard.id)
+    @observations = observation_filter(@observations)
+
+    respond_to do |format|
+      format.html { @observations = @observations.paginate(page: params[:page]) }
+      format.csv { download_observations(@observations, params[:taxonomy], params[:contextual] || "on", params[:global]) }
+      format.zip{ send_zip(@observations, params[:taxonomy], params[:contextual] || "on", params[:global]) }
+    end
+
   end
+
+  def export
+    @observations = Observation.joins(:measurements).where(:measurements => {:standard_id => params[:checked]})
+    @observations = observation_filter(@observations)
+
+    send_zip(@observations, 'data.csv', params[:taxonomy], params[:contextual], params[:global])          
+  end
+
 
   # GET /standards/new
   def new

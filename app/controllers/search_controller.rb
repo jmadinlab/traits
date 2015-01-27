@@ -3,7 +3,7 @@ class SearchController < ApplicationController
 		
 		if params[:search] && params[:search] != ""
 			if not params[:model_name]
-				params[:model_name] = ['Location', 'Specie', 'Trait', 'Resource', 'Standard', 'Observation']
+				params[:model_name] = ['Specie', 'Trait', 'Location', 'Resource', 'Standard', 'Observation']
 			end
 			@result_present = false
 			params[:model_name].each do |m|
@@ -29,8 +29,7 @@ class SearchController < ApplicationController
 	end
 
 	def json_completion
-		model_names = ['Location', 'Specie', 'Trait', 'Standard']
-		
+		model_names = ['Specie', 'Trait', 'Location', 'Resource', 'Standard']
 		
 		bucket = []
 		model_names.each do |m|
@@ -44,7 +43,7 @@ class SearchController < ApplicationController
 				end
 
 				if search.results.count > 0
-					bucket << '<<<<< ' + m + ' >>>>>'
+					bucket << '------ ' + m.pluralize + ' ------'
 					column_name = @model.column_names[1]
 					bucket << search.results.map{ |x| x.attributes[column_name]}
 				end

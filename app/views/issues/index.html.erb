@@ -60,6 +60,9 @@
               <div class="btn-group">
                 <%= link_to 'Show', observation_path(issue.observation), class: "btn btn-sm btn-default" %>
                 <%= link_to 'Edit', edit_observation_issue_path(issue.observation, issue), class: "btn btn-default btn-sm" %>
+                <% if signed_in? && current_user.editor? %>
+                  <%= link_to 'Delete', issue, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
+                <% end %>
               </div>
             </div>
           </div>

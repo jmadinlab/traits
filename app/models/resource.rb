@@ -7,23 +7,15 @@ class Resource < ActiveRecord::Base
   
   validates :author, :presence => true
   validates :title, :presence => true
-  # validates :user_id, :presence => true
 
   searchable do
     text :author
+    string :author_sortable do 
+      author
+    end
     text :title
     text :year
     text :journal
   end
 
-  '''
-  def self.search(search)
-      if search
-        where("id LIKE ? OR author LIKE ? OR title LIKE ? OR year LIKE ? OR journal LIKE ?", "%#{search}%", "%#{search}%", "%#{search}%", "%#{search}%", "%#{search}%")
-      else
-        all
-      end
-  end  
-'''
-  
 end

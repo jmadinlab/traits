@@ -3,27 +3,27 @@ class ImportsController < ApplicationController
 	before_action :signed_in_user
 
 	def new
-		@item_import ||= Import.new
+		@import_item ||= Import.new
 		# Get the model name from URL : /imports/observations => Observation
-		@model_name = request.original_url.split("/").last.singularize.capitalize
-		@model = get_model_name(@model_name)
+		@import_model = request.original_url.split("/").last.singularize.capitalize
+		@model = get_model_name(@import_model)
 	end
 
 
 	def create
-		@model_name = get_model_name(params[:import]['model_name'])
-		@item_import = Import.new(params[:import])
-		@item_import.set_model_name(@model_name)
-		@item_import.current_user = current_user
-		import_type = params[:import_type]
-		
+		@import_model = get_model_name(params[:import]['import_model'])
+		@import_item = Import.new(params[:import])
+		@import_item.set_model_name(@import_model)
+		@import_item.current_user = current_user
 
-		if @item_import.save(import_type)
+		import_type = params[:import][:import_type]
+		
+		if @import_item.import_save(import_type)
 			# Todo : Change the user to the one responsible for that particular coral/trait/observation
-			#UploadApprovalMailer.approve_all(@item_import.get_email_list).deliver
+			#UploadApprovalMailer.approve_all(@import_item.get_email_list).deliver
 
 			# Save the actual file in the server
-			uploaded_io = params[:import][:file]
+			uploaded_io = params[:import][:import_file]
 			save_imported_file(uploaded_io)
 			
 			# render :new, notice: 'Your request has been sent to the administrator'
@@ -31,53 +31,52 @@ class ImportsController < ApplicationController
 			redirect_to request.referer, flash: {success: "Imported successfully" } 
 		else
 			render :new
-			#redirect_to request.referer , :@item_import => @item_import
+			#redirect_to request.referer , :@import_item => @import_item
 		end
 	end
 	
 	def approve
 		if not current_user.admin?
-			@corals = Specie.where(:approval_status => "pending", :user_id => current_user.id )
+			@species = Specie.where(:approval_status => "pending", :user_id => current_user.id )
 			@locations = Location.where(:approval_status => "pending", :user_id => current_user.id)
 			@traits = Trait.where(:approval_status => "pending", :user_id => current_user.id)
 			@standards = Standard.where(:approval_status => "pending", :user_id => current_user.id)
 			@resources = Resource.where(:approval_status => "pending", :user_id => current_user.id)
-			@observations = Observation.includes(:measurements).where("measurements.approval_status" => "pending")
+			@observations = Observation.where(:approval_status => "pending", :user_id => current_user.id)
 		else
-			@corals = Specie.where(:approval_status => "pending")
+			@species = Specie.where(:approval_status => "pending")
 			@locations = Location.where(:approval_status => "pending")
 			@traits = Trait.where(:approval_status => "pending")
 			@standards = Standard.where(:approval_status => "pending")
 			@resources = Resource.where(:approval_status => "pending")
-			""" To do  : Show only the observation with measurements which contain traits that a user is editor of """
-			@observations = Observation.includes(:measurements).where("measurements.approval_status" => "pending")
+			@observations = Observation.where(:approval_status => "pending")
 		end
 
-		
-		#@measurements = Measurement.where(:approval_status => "pending")
 		reject = params[:reject]
-		reject ? message = "Item/s Rejected!!!" : message = "Item/s approved!!!"
+		reject ? message = "Observation/s rejected" : message = "Observation/s approved"
 		
-		if params[:checked]
-			item_ids = params[:checked]
-			i = 0
-			item_ids.each do |item_id|
-				@model_name = get_model_name(params[:item_type][i])
+		# if params[:checked]
+		# 	item_ids = params[:checked]
+		# 	i = 0
+		# 	item_ids.each do |item_id|
+		# 		@import_model = get_model_name(params[:item_type][i])
 				
-				find_and_approve_item(@model_name, item_id,reject)
+		# 		find_and_approve_item(@model_name, item_id,reject)
 
-				i = i + 1
-			end
-			redirect_to approve_path, flash: {success: message } 
-		elsif params[:item_id]
-			@model_name = get_model_name(params[:model])
-			find_and_approve_item(@model_name, params[:item_id], reject)
-			redirect_to approve_path, flash: {success: message } 
+		# 		i = i + 1
+		# 	end
+		# 	redirect_to approve_path, flash: {success: message } 
+		# elsif params[:item_id]
+		# 	@model_name = get_model_name(params[:model])
+		# 	find_and_approve_item(@model_name, params[:item_id], reject)
+		# 	redirect_to approve_path, flash: {success: message } 
 
-		else
-			@item_import = Import.new
-			render 'approve.html.erb'
-		end
+		# else
+		# 	@item_import = Import.new
+		# 	render 'approve.html.erb'
+		# end
+		
+	 	render 'approve.html.erb'
 	end
 
 	def show
@@ -89,7 +88,7 @@ class ImportsController < ApplicationController
 	private
 
     def import_params
-      params.require(:import).permit(:file)
+      params.require(:import).permit(:import_file)
     end
 
     def get_model_name(name)

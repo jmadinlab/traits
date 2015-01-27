@@ -10,6 +10,10 @@
   # autocomplete :specie, :name, :full => true
   # autocomplete :resource, :author, :full => true, :extra_data => [:year], :display_value => :resource_fill
 
+  def import
+    Observation.import(params[:file])
+    redirect_to root_url, notice: "Observation imported."
+  end
 
   def update_values
     @values = Trait.find(params[:trait_id]).traitvalues.map(&:id)
@@ -39,32 +43,40 @@
   # GET /observations.json
   def index
 
-    params[:n] = 100 if params[:n].blank?
-    n = params[:n]
-    n = 9999999 if params[:n] == "all"
+    @search = Observation.search do
+      fulltext params[:search]
+      (with :private, false or with :user_id, current_user.id) unless signed_in? && current_user.admin?
 
-    if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
-      @observations = Observation.where(['observations.private IS false']).includes(:specie).joins(:measurements).where('measurements.value LIKE ?', "%#{params[:search]}%").limit(n)
-    end
-    
-    if signed_in? && current_user.contributor?
-      @observations = Observation.where(['observations.private IS false OR (observations.user_id = ? AND observations.private true ?)', current_user.id]).includes(:specie).joins(:measurements).where('measurements.value LIKE ?', "%#{params[:search]}%").limit(n)
-    end
-
-    if signed_in? && current_user.admin?
-      @observations = Observation.includes(:specie).joins(:measurements).where('measurements.value LIKE ?', "%#{params[:search]}%").limit(n)
+      if params[:all]
+        paginate page: params[:page], per_page: 2000
+      else
+        paginate page: params[:page]
+      end
     end
 
+    @observations = @search.results
     
     respond_to do |format|
       format.html
-      format.csv { 
-        csv_string = get_main_csv(@observations)
-        send_data csv_string, 
-          :type => 'text/csv; charset=WINDOWS-1252; header=present', :stream => true,
-          :disposition => "attachment; filename=observations_#{Date.today.strftime('%Y%m%d')}.csv"
 
-        }
+      format.csv {
+        if request.url.include? 'resources.csv'
+          csv_string = get_resources_csv(@observations)
+          filename = 'resources'
+        else
+          csv_string = get_main_csv(@observations, "", "", "")
+          filename = 'data'
+        end
+
+        send_data csv_string, 
+          :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
+          :disposition => "attachment; filename=#{filename}_#{Date.today.strftime('%Y%m%d')}.csv"
+      }
+
+      format.zip{
+        send_zip(@observations, 'data.csv', "", "")
+      }
+
     end
   end
 
@@ -156,14 +168,21 @@
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+    # Use callbacks to share common setup or constraints between actions.90157
     def set_observation
+
       @observation = Observation.find(params[:id])
+      if @observation.private == true 
+        if !signed_in? | (signed_in? && @observation.user_id != current_user.id && !current_user.admin?)
+            redirect_to( root_url, flash: {danger: "You need to be a contributor to access this area of the database." } )
+        end
+      end
+
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def observation_params
-      params.require(:observation).permit(:user_id, :location_id, :specie_id, :resource_id, :private, :approval_status, :secondary_id, measurements_attributes: [:id, :user_id, :orig_user_id, :trait_id, :standard_id, :value, :value_type, :orig_value, :precision_type, :precision, :precision_upper, :replicates, :notes, :methodology_id, :approval_status, :_destroy])
+      params.require(:observation).permit(:user_id, :location_id, :specie_id, :resource_id, :private, :approval_status, :resource_secondary_id, measurements_attributes: [:id, :user_id, :orig_user_id, :trait_id, :standard_id, :value, :value_type, :orig_value, :precision_type, :precision, :precision_upper, :replicates, :notes, :methodology_id, :approval_status, :_destroy])
     end
 
 

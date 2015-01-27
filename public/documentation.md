@@ -1,5 +1,5 @@
-###Rails Deployment at Informatics Virtual Machine (VM)
-***
+# Rails Deployment at Informatics Virtual Machine (VM)
+---
  
 **A) Production Server Details and Access**  
 Hostname : `ctdwsprd1001a`  

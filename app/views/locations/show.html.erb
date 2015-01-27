@@ -2,10 +2,17 @@
 
 
 <div class="page-header">
-  <h1><%= @location.location_name %>
-			<% if @location.approval_status == "pending" %>
-				<small><span class="label label-danger pull-right">pending approval</span></small>
-			<% end %>
+  <h1>
+    <% if @location.location_name != "Global" %>
+      <span class="glyphicon glyphicon-map-marker" data-toggle="tooltip" data-placement="bottom" title="Location"></span>
+    <% else %>
+      <span class="glyphicon glyphicon-globe" data-toggle="tooltip" data-placement="bottom" title="Global"></span>
+    <% end %>
+
+    <%= @location.location_name %>
+		<% if @location.approval_status == "pending" %>
+			<small><span class="label label-danger pull-right">pending approval</span></small>
+		<% end %>
   </h1>
 </div>
 
@@ -48,12 +55,10 @@
 
 	</div>
 
-  <% if @location.id != 1 %>
+  <% if @location.location_name != "Global" %>
     <div class="col-md-9" data-no-turbolink>
   		<div id="map-canvas" class="map-container" data-no-turbolink></div> 
   	</div>
-  <% else %>
-    <span class="glyphicon glyphicon-globe glyphicon-lg" style="font-size: 5em;"></span>
   <% end %>
 
 </div>
@@ -61,12 +66,12 @@
 <h3>Observations from <%= @location.location_name %></h3>
 
 <% if @observations.empty? %>
-	<p class="alert alert-danger">No observations available.</p>
+  <p class="alert alert-danger"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> No observations available</p>
 <% else %>
-
 	<%= will_paginate @observations %>
 	<%= render "shared/observations" %>
-
+  <br>
+  <%= will_paginate @observations %>
 <% end %>
 
 

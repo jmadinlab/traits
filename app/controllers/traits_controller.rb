@@ -8,131 +8,85 @@ class TraitsController < ApplicationController
   # GET /traits
   # GET /traits.json
   def index
-    # @traits = Trait.search(params[:search])
-
-    pp = 15
-    pp = 999 if params[:pp]
 
     @search = Trait.search do
       fulltext params[:search]
-      paginate page: params[:page], per_page: pp
+      order_by :trait_class_sortable, :asc
+      
+      if params[:all]
+        paginate page: params[:page], per_page: 9999
+      else
+        paginate page: params[:page]
+      end
     end
-    
-    if params[:search]
-      @traits = @search.results
-    else
-      @traits = Trait.all.paginate(:page=> params[:page], :per_page => pp)
-    end
+    @traits = @search.results
 
     respond_to do |format|
       format.html
-      format.csv { send_data @traits.to_csv }
+      format.csv { send_data Trait.all.to_csv }
     end    
   end
 
   def export
+    @observations = Observation.joins(:measurements).where(:measurements => {:trait_id => params[:checked]})
+    @observations = observation_filter(@observations)
 
-    if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
-      @observations = Observation.where(:private => false).joins(:measurements).where(:measurements => {:trait_id => params[:checked]})        
-    end
-    
-    if signed_in? && current_user.contributor? & !current_user.admin?
-      @observations = Observation.where(['observations.private IS false OR (observations.user_id = ? AND observations.private IS true)', current_user.id]).joins(:measurements).where(:measurements => {:trait_id => params[:checked]})
-    end
-
-    if signed_in? && current_user.admin?
-      @observations = Observation.joins(:measurements).where(:measurements => {:trait_id => params[:checked]})        
-    end
-    
-    # csv_string = get_main_csv(@observations, params[:contextual], params[:global])
-
-    send_zip(@observations, 'traits.csv', params[:taxonomy], params[:contextual], params[:global])
-      
-
-    # send_data csv_string, 
-    #  :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
-    #  :disposition => "attachment; filename=ctdb_#{Date.today.strftime('%Y%m%d')}.csv"
-       
+    send_zip(@observations, 'data.csv', params[:taxonomy], params[:contextual], params[:global])          
   end
 
-  # GET /traits/1
-  # GET /traits/1.json
   def show
 
-    if params[:coral_id]
-      @coral = Specie.find(params[:coral_id])
-      @observations = Observation.includes(:coral).joins(:measurements).where('observations.coral_id = ? AND measurements.trait_id = ?', @coral.id, @trait.id)
+    if params[:specie_id]
+      @specie = Specie.find(params[:specie_id])
+      @observations = Observation.includes(:specie).joins(:measurements).where('observations.specie_id = ? AND measurements.trait_id = ?', @specie.id, @trait.id)
     else
       @observations = Observation.joins(:measurements).where('measurements.trait_id = ?', @trait.id)
     end
-
-    if signed_in? && current_user.admin?
-    elsif signed_in? && current_user.editor?
-    elsif signed_in? && current_user.contributor?
-      @observations = @observations.where(['observations.private IS false OR (observations.user_id = ? AND observations.private IS true)',  current_user.id])
-    else
-      @observations = @observations.where(['observations.private IS false'])
-    end
+    @observations = observation_filter(@observations)
     
     data_table = GoogleVisualr::DataTable.new
 
-    if @trait.standard.standard_unit != "id" && @trait.standard.standard_unit != "text"
-      if @trait.standard.standard_name == "Category" || @trait.standard.standard_name == "Binomial"
-        data_table.new_column('string')
-        data_table.new_column('number')
+    if @trait.standard
+      if @trait.standard.standard_unit != "id" && @trait.standard.standard_unit != "text"
+        if @trait.standard.standard_name == "Category" || @trait.standard.standard_name == "Binomial"
+          data_table.new_column('string')
+          data_table.new_column('number')
 
-        @trait.measurements.collect(&:value).uniq.each do |i|
-          data_table.add_row([i, @trait.measurements.where("value LIKE ?", i).size])
+          @trait.measurements.collect(&:value).uniq.each do |i|
+            data_table.add_row([i, @trait.measurements.where("value LIKE ?", i).size])
+          end
+
+  #        data_table.sort(1)
+
+          option = { width: 250, height: 250, legend: 'none' }
+          @chart = GoogleVisualr::Interactive::PieChart.new(data_table, option)
+        else
+          data_table.new_column('number')
+          data_table.new_column('number')
+
+          p = 0
+          # @trait.measurements.map(&:value).map{|v| v.to_d}.sort.reverse.each do |i|
+          @trait.measurements.sort_by{ |a| a.value.to_d }.each do |i|
+            if @trait.standard.standard_unit == "deg"
+              data_table.add_row([p, i.value.to_d])
+            else
+              data_table.add_row([p, i.value.to_d])
+            end            
+            p = p + 1
+          end
+
+          option = { width: 250, height: 250, legend: 'none', :vAxis => { :title => "#{@trait.trait_name}" }, :hAxis => { textPosition: 'none' } }
+          @chart = GoogleVisualr::Interactive::ScatterChart.new(data_table, option)
+          # @chart.add_listener("select", "function(e) { EventHandler(e, chart, data_table) }")
         end
-
-#        data_table.sort(1)
-
-        option = { width: 250, height: 250, legend: 'none' }
-        @chart = GoogleVisualr::Interactive::PieChart.new(data_table, option)
-      else
-        data_table.new_column('number')
-        data_table.new_column('number')
-
-        p = 0
-        # @trait.measurements.map(&:value).map{|v| v.to_d}.sort.reverse.each do |i|
-        @trait.measurements.sort_by{ |a| a.value.to_d }.each do |i|
-          if @trait.standard.standard_unit == "deg"
-            data_table.add_row([p, i.value.to_d])
-          else
-            data_table.add_row([p, i.value.to_d])
-          end            
-          p = p + 1
-        end
-
-        option = { width: 250, height: 250, legend: 'none', :vAxis => { :title => "#{@trait.trait_name}" }, :hAxis => { textPosition: 'none' } }
-        @chart = GoogleVisualr::Interactive::ScatterChart.new(data_table, option)
-        # @chart.add_listener("select", "function(e) { EventHandler(e, chart, data_table) }")
-      end
+     end
    end
-
     # @data_table = data_table
 
     respond_to do |format|
-      format.html {
-        @observations = @observations.paginate(:page=> params[:page], :per_page => 20)
-      }
-      format.csv {
-        if request.url.include? 'resources.csv'
-          csv_string = get_resources_csv(@observations)
-          filename = 'resources'
-        else
-          csv_string = get_main_csv(@observations, "", "", "")
-          filename = 'observations'
-        end
-        send_data csv_string, 
-          :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
-          :disposition => "attachment; filename=#{filename}_#{Date.today.strftime('%Y%m%d')}.csv"
-      }
-
-      format.zip{
-        send_zip(@observations, 'data.csv', "", "")
-      }
-
+      format.html { @observations = @observations.paginate(page: params[:page]) }
+      format.csv { download_observations(@observations, params[:taxonomy], params[:contextual] || "on", params[:global]) }
+      format.zip{ send_zip(@observations, params[:taxonomy], params[:contextual] || "on", params[:global]) }
     end
 
   end

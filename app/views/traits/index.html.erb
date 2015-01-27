@@ -18,7 +18,7 @@
 		      <%= text_field_tag :search, params[:search], :placeholder => "Search traits...", class: "form-control" %>
 		      <span class="input-group-btn">
 				    <%= submit_tag "Search", :name => nil, class: "btn btn-default" %>
-						<%= link_to "See All", traits_path(search: params[:search], pp: "all"), class: "btn btn-warning" %>
+						<%= link_to "See All", traits_path(search: params[:search], all: true), class: "btn btn-warning" %>
 						<%= link_to 'Reset', traits_path, class: "btn btn-default" %>
 		      </span>
 		    </div>
@@ -76,7 +76,7 @@
 							</div>
 						
 							<div class="col-sm-2">
-								<% if not params[:pp] %>
+								<% if not params[:all] %>
 									<%= render "shared/access_counts", :acc => Observation.where(:id => Measurement.where(:trait_id => trait).map(&:observation_id)) %>
 								<% end %>
 							</div>
@@ -99,6 +99,8 @@
 	  </div>
 	</div>
 <% end %>
+
+<%= will_paginate @traits %>
 
 <% if @traits.blank? %>
   <div class="alert alert-danger" role="alert">No traits entered.</div>

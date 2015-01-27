@@ -10,6 +10,11 @@ class Standard < ActiveRecord::Base
   
   searchable do
     text :standard_name  
+    text :standard_unit 
+    text :standard_class 
+    string :standard_class_sortable do 
+      standard_class
+    end
   end
   
   '''

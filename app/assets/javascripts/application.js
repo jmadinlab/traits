@@ -62,9 +62,7 @@ $(document).ready(function(){
     $(this).next('.panel-body').fadeToggle("slow");
   });
 
-  
-  process_precision()
-  
+  process_precision()  
 });
 
 /*
@@ -127,7 +125,6 @@ function process_precision()
 }
 
 $(document).bind('cocoon:after-insert', function(e,inserted_item) {
-  
     process_precision()
 });
 

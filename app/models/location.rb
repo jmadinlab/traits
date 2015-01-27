@@ -12,6 +12,9 @@ class Location < ActiveRecord::Base
 
   searchable do
     text :location_name  
+    string :location_name_sortable do 
+      location_name
+    end
   end
   
   #def self.search(search)

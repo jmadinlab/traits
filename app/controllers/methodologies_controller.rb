@@ -40,23 +40,17 @@ class MethodologiesController < ApplicationController
 
   def index
 
-    pp = 15
-    pp = 9999 if params[:pp]
-
     @search = Methodology.search do
       fulltext params[:search]
-      paginate page: params[:page], per_page: pp
+      order_by :methodology_name_sortable, :asc
+      
+      if params[:all]
+        paginate page: params[:page], per_page: 9999
+      else
+        paginate page: params[:page]
+      end
     end
-    
-    if params[:search]
-      @methodologies = @search.results
-    else
-      @methodologies = Methodology.all.paginate(:page=> params[:page], :per_page => pp)
-    end
-
-    # @methodologies = @methodologies.sort_by{|l| l[:id]} if params[:sort] == "id"
-    # @methodologies = @methodologies.sort_by{|l| l[:methodology_name]} if params[:sort] == "name"
-
+    @methodologies = @search.results
 
   	respond_to do |format|
       format.html
@@ -68,36 +62,12 @@ class MethodologiesController < ApplicationController
   def show
 
     @observations = Observation.where(:id => @methodology.measurements.map(&:observation_id))
-
-    if signed_in? && current_user.admin?
-    elsif signed_in? && current_user.editor?
-    elsif signed_in? && current_user.contributor?
-      @observations = @observations.where(['observations.private IS false OR (observations.user_id = ? AND observations.private IS true)',  current_user.id])
-    else
-      @observations = @observations.where(['observations.private IS false'])
-    end
+    @observations = observation_filter(@observations)
 
     respond_to do |format|
-      format.html {
-        @observations = @observations.paginate(:page=> params[:page], :per_page => 20)
-      }
-      format.csv {
-        if request.url.include? 'resources.csv'
-          csv_string = get_resources_csv(@observations)
-          filename = 'resources'
-        else
-          csv_string = get_main_csv(@observations, "", "", "")
-          filename = 'data'
-        end
-
-        send_data csv_string, 
-          :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
-          :disposition => "attachment; filename=#{filename}_#{Date.today.strftime('%Y%m%d')}.csv"
-      }
-
-      format.zip{
-        send_zip(@observations, 'data.csv', "", "")
-      }
+      format.html { @observations = @observations.paginate(page: params[:page]) }
+      format.csv { download_observations(@observations, params[:taxonomy], params[:contextual] || "on", params[:global]) }
+      format.zip{ send_zip(@observations, params[:taxonomy], params[:contextual] || "on", params[:global]) }
     end
   end
 
@@ -143,21 +113,10 @@ class MethodologiesController < ApplicationController
   end
 
   def export
-    checked = params[:checked]
-      
-    if signed_in? && current_user.contributor?
-      if current_user.admin?
-        @observations = Observation.where(:id => Measurement.where(:methodology_id => params[:checked]).map(&:observation_id))
-      else
+    @observations = Observation.where(:id => Measurement.where(:methodology_id => params[:checked]).map(&:observation_id))
+    @observations = observation_filter(@observations)
 
-        @observations = Observation.where("(private = 'f' or (private = 't' and user_id = ?))", current_user.id).where(:id => Measurement.where(:methodology_id => params[:checked]).map(&:observation_id))
-      end
-    else
-      @observations = Observation.where(:private => false).where(:id => Measurement.where(:methodology_id => params[:checked]).map(&:observation_id))        
-    end        
-    
-    send_zip(@observations, 'traits.csv', params[:taxonomy], params[:contextual], params[:global])
-          
+    send_zip(@observations, params[:taxonomy], params[:contextual], params[:global])                   
   end
 
 

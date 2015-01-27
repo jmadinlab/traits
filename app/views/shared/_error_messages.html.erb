@@ -4,7 +4,7 @@
       The form contains <%= pluralize(object.errors.count, "error") %>.
     </div>
     <ul>
-    <% object.errors.full_messages.each do |msg| %>
+    <% object.errors.full_messages.uniq.each do |msg| %>
       <li>* <%= msg %></li>
     <% end %>
     </ul>

@@ -1,137 +1,40 @@
-<% provide(:title, 'Observations') %>
+<% provide(:title, 'Methodologies') %>
 
 
-<h3>Observations</h3>
-
-
-<div class="well">
-	
-	<%= form_tag observations_path, :method => 'get' do %>
-		<div class="row">
-		  <div class="col-lg-6">
-		    <div class="input-group">
-		      <%= text_field_tag :search, params[:search], :placeholder => "Search by value...", class: "form-control" %>
-		      <span class="input-group-btn">
-				    <%= submit_tag "Update", :name => nil, class: "btn btn-default" %>
-						<%= link_to 'Reset', observations_path, class: "btn btn-default" %>
-		      </span>
-		    </div>
-		  </div>
-			Return: <%= select_tag :n, options_for_select([10, 100, 1000, "all"], params[:n]) %> measurements.  Keep in mind that very large data sets may take a while to load.
-		</div>
-	<% end %>
-
-	<% if @observations.size > 0 %>
-
-		<br/>
-
-		<%= link_to "Download", observations_path(format: "csv", search: params[:search], n: params[:n]), class: "btn btn-success btn-md" %> currently displayed data as CSV file
-  <% end %>
-
+<div class="page-header">
+  <h1>Observations</h1>
 </div>
 
+<div class="well">
+	<div class="row">
+	  <div class="col-md-6">
+			<%= form_tag observations_path, :method => 'get' do %>
+		    <div class="input-group">
+		      <%= text_field_tag :search, params[:search], :placeholder => "Search measurement values...", class: "form-control" %>
+		      <span class="input-group-btn">
+				    <%= submit_tag "Search", :name => nil, class: "btn btn-default" %>
+						<%= link_to "See All", observations_path(search: params[:search], all: true), class: "btn btn-warning" %>
+						<%= link_to 'Reset', observations_path, class: "btn btn-default" %>
+		      </span>
+		    </div><br>
+			<% end %>
+			<p>Download observation list as a <%= link_to "csv", observations_path(format: "csv", page: (params[:page] || 1), search: params[:search], all: params[:all]) %>.</p>
+	  </div>
+	  <div class="col-md-6">
+	  	<% if signed_in? && current_user.contributor? %>	
+				<%= link_to 'New Observation', new_observation_path, class: "btn btn-primary btn-md pull-right" %>
+			<% end %>
+	  </div>
+	</div>
+</div>
 
-<br/>
 <% if @observations.empty? %>
-	<p class="alert alert-danger">No public records.</p>
+	<p class="alert alert-default">No observations available</p>
 <% else %>
 
-	<% temp = "" %>
-	<table class="table table-condensed">
-		<thead>
-			<tr>
-				<th style="text-align: right;">Coral</th>
-				<th>Location</th>
-				<th>Resource</th>
-				<th>Trait</th>
-				<th>Value</th>
-				<th>Access</th>
-				<th></th>
-			</tr>
-		</thead>
+	<%= will_paginate @observations %>
+	<%= render "shared/observations" %>
+	<br>
+	<%= will_paginate @observations %>
 
-		<% mark = "" %>
-		<% mark1 = "" %>
-		<% mark2 = "" %>
-
-		<tbody>
-			<% @observations.each do |grp| %>    
-			  <% grp.measurements.each do |mea| %>    
-					<tr>
-						<% if grp.specie_id != mark %>
-							<td style="text-align: right;">
-								<em><%= link_to grp.specie.specie_name, "/species/" + grp.specie_id.to_s %></em>
-							</td>				
-						<% else %>
-							<td style="border:none;">
-							</td>				
-						<% end %>
-
-						<% if grp.id != mark1 %>
-
-							<td style="text-align:center;">
-								<% if !grp.location_id.blank? && grp.location_id != 0 %>
-					      <%= link_to "", "/locations/" + grp.location_id.to_s, class: "glyphicon glyphicon-globe" %>
-								<% end %>
-							</td>
-
-							<td style="text-align:center;">
-								<% if !grp.resource_id.blank? && grp.resource_id != 0 %>
-								<%= link_to "", "/resources/" + grp.resource_id.to_s, class: "glyphicon glyphicon-book" %>
-								<% end %>
-							</td>
-
-						<% else %>
-							<td colspan=2 style="border:none;">
-							</td>				
-						<% end %>						
-
-						<% if mea.trait_id != mark2 || grp.specie_id != mark %>
-							<td style="text-align: right;">
-								<em><%= link_to mea.trait.trait_name, "/traits/" + mea.trait_id.to_s %></em>
-							</td>				
-						<% else %>
-							<td style="border:none;">
-							</td>				
-						<% end %>
-
-						<td>
-							<%= mea.value %> 
-							<% if !mea.standard_id.blank? && mea.standard_id != 0 %>
-								<% sta = mea.standard.standard_unit %>
-									(<%= sta %>)
-							<% end %> 
-						</td>	
-
-						<% if grp.id != mark1 %>	
-							<td style="text-align:center;" >
-								<% if grp.private == true %>
-									<span class="glyphicon glyphicon-remove-circle" style="color:red;"></span>
-								<% else %>
-									<span class="glyphicon glyphicon-ok-circle" style="color:green;"></span>
-								<% end %>
-								<% if mea.approval_status == 'pending' %>
-										<span class="glyphicon glyphicon-floppy-remove"  style="color:red;text-align:center;" title="Pending Approval"></span>
-								<% end %>
-							</td>
-
-							<td style="min-width: 130px;">
-								
-								<%= link_to 'Show', observation_path(grp, :user => @user) %> |
-					    	<%= link_to 'Edit', edit_observation_path(grp, :user => @user) %> |
-					    	<%= link_to 'Delete', observation_path(grp, :user => @user), method: :delete, data: { confirm: 'Are you sure?' } %>
-							</td>
-						<% else %>
-							<td style="border:none;">
-							</td>				
-						<% end %>
-					</tr>
-
-					<% mark = grp.specie_id %>
-					<% mark1 = grp.id %>
-					<% mark2 = mea.trait_id %>
-				<% end %>
-			<% end %>
-		<tbody>
-	</table>
 <% end %>

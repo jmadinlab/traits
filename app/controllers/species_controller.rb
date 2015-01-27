@@ -7,58 +7,30 @@ class SpeciesController < ApplicationController
   # GET /species
   # GET /species.json
   def index
-    # @species = Specie.search(params[:search])
 
-    pp = 15
-    pp = 9999 if params[:pp]
-    
     @search = Specie.search do
       fulltext params[:search]
-      paginate page: params[:page], per_page: pp
+      order_by :specie_name_sortable, :asc
+      
+      if params[:all]
+        paginate page: params[:page], per_page: 9999
+      else
+        paginate page: params[:page]
+      end
     end
-    
-    if params[:search]
-      @species = @search.results
-    else
-      @species = Specie.all.paginate(:page=> params[:page], :per_page => pp)
-    end
-    
-    @species = PaperTrail::Version.find(params[:version]).reify if params[:version]
-
-    # @species = @species.paginate(:page=> params[:page], :per_page => 20)
+    @species = @search.results
 
     respond_to do |format|
       format.html
-      format.csv { send_data get_specie_csv(@species) }
-      
+      format.csv { send_data get_specie_csv }
     end    
   end
 
   def export
-    checked = params[:checked]
+    @observations = Observation.where(:specie_id => params[:checked])
+    @observations = observation_filter(@observations)
 
-
-    if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
-      @observations = Observation.where(:private => false).where(:specie_id => params[:checked])        
-    end
-    
-    if signed_in? && current_user.contributor?
-      @observations = Observation.where(['observations.private IS false OR (observations.user_id = ? AND observations.private true)', current_user.id]).where(:specie_id => params[:checked])
-    end
-
-    if signed_in? && current_user.admin?
-      @observations = Observation.where(:specie_id => params[:checked])        
-    end
-    
-    # csv_string = get_main_csv(@observations, params[:contextual], params[:global])
-
-    send_zip(@observations, 'traits.csv', params[:taxonomy], params[:contextual], params[:global])
-      
-
-    # send_data csv_string, 
-    #  :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
-    #  :disposition => "attachment; filename=ctdb_#{Date.today.strftime('%Y%m%d')}.csv"
-          
+    send_zip(@observations, params[:taxonomy], params[:contextual], params[:global])          
   end
 
   # GET /species/1
@@ -67,46 +39,14 @@ class SpeciesController < ApplicationController
     @vfiles = Dir.glob("app/assets/images/veron/*")
     @hfiles = Dir.glob("app/assets/images/hughes/*")
     
-    @specie = @item if @item
-    @specie = Specie.find(params[:id]) if params[:id]
-    
-
-    if !signed_in? | (signed_in? && (!current_user.admin? | !current_user.contributor?))
-      #@observations = Observation.where(['observations.specie_id IS ? AND observations.private IS ?', @specie.id, false])
-      # just a better approach to find active `
-      @observations = @specie.observations.where(private: false)
-    end
-    
-    if signed_in? && current_user.contributor?
-      #@observations = Observation.where(['observations.specie_id IS ? AND (observations.private IS ? OR (observations.user_id IS ? AND observations.private IS ?))', @specie.id, false, current_user.id, true])
-      @observations = Observation.where(['observations.specie_id = ? AND (observations.private IS false OR (observations.user_id = ? AND observations.private IS true))', @specie.id,  current_user.id])
-    end
-
-    if signed_in? && current_user.admin?
-      @observations = Observation.where(:specie_id => @specie.id)
-    end
+    @observations = Observation.where(:specie_id => @specie.id)
+    @observations = observation_filter(@observations)
 
     respond_to do |format|
       format.html
-      format.csv {
-        if request.url.include? 'resources.csv'
-          csv_string = get_resources_csv(@observations)
-          filename = 'resources'
-        else
-          csv_string = get_main_csv(@observations, "", "", "")
-          filename = 'observations'
-        end
-        send_data csv_string, 
-          :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
-          :disposition => "attachment; filename=#{filename}_#{Date.today.strftime('%Y%m%d')}.csv"
-      }
-
-      format.zip{
-        send_zip(@observations, 'data.csv', "", "")
-      }
-
+      format.csv { download_observations(@observations, params[:taxonomy], params[:contextual] || "on", params[:global]) }
+      format.zip{ send_zip(@observations, params[:taxonomy], params[:contextual] || "on", params[:global]) }
     end
-
   end
 
   # GET /species/new
@@ -151,10 +91,22 @@ class SpeciesController < ApplicationController
   end
 
 
-
-
-
   private
+
+    def get_specie_csv
+      csv_string = CSV.generate do |csv|
+          csv << ["species_id", "master_species", "major_clade", "family_molecules", "family_morphology", "synonym_species", "specie_notes"]
+          Specie.all.each do |specie|
+            syn_vec = []
+            specie.synonyms.each do |syn|
+              syn_vec << syn.synonym_name
+            end
+            csv << [specie.id, specie.specie_name, specie.major_clade, specie.family_molecules, specie.family_morphology, syn_vec.join(", "), specie.specie_description]
+          end
+        end
+     return csv_string
+    end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_specie
       @specie = Specie.find(params[:id])

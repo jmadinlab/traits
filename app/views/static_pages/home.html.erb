@@ -5,19 +5,18 @@
 
 	<br>
 
-	<p>The Coral Trait Database is a growing compilation of scleractinian coral life history trait, phylogenetic and biogeographic data. The database was initially a series of spreadsheet tables, but starting in 2013 this data is being transitioned into an online collaborative database with a growing number of contributors.</p>
-	
-  <p>
-		<div id="map-canvas" class="map-container"></div>
-	</p>
-
-	<p>As of today, there are <%= @obs %> coral observations with <%= @mea %> trait entries for 1555 coral species in the database. Most of these entries are for shallow-water, reef-building species. Data contributors have access control over the data they enter.  Nonetheless, an increasing proportion of these data is becoming publicly accessible.</p>
+	<p>The Coral Trait Database is a growing compilation of scleractinian coral life history trait, phylogenetic and biogeographic data.  As of today, there are <%= Observation.all.size %> coral observations with <%= Measurement.all.size %> trait entries for <%= Specie.all.size %> coral species in the database. Most of these entries are for shallow-water, reef-building species.</p>
 
 	<% if !signed_in? %>
 		<p><%= link_to "Sign up?", signup_path, class: "btn btn-lg btn-primary" %></p>
 
-		<p>Sign up to become a member and recieve periodic news about the database. Sign up is not required to access public data.  Please email <a href="mailto:coraltraits@gmail.com?subject=Coral Trait Database enquiry">coraltraits@gmail.com</a> with any comments, to become a contributor, or for more information.</p>
-	<% end %>		
+		<p>Sign up to become a member and recieve periodic news about the database. Sign up is not required to access public data.  Please email <a href="mailto:<%= ENV["GMAIL_USERNAME"] %>?subject=<%= ENV["SITE_NAME"] %> enquiry">coraltraits@gmail.com</a> with any comments, to become a contributor, or for more information.</p>
+	<% end %>
+
+  <p>
+    <div id="map-canvas" class="map-container"></div>
+  </p>
+
 
 </div>
 
