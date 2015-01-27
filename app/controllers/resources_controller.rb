@@ -85,22 +85,10 @@ class ResourcesController < ApplicationController
   end
 
   def export
-    checked = params[:checked]
-      
-    if signed_in? && current_user.contributor?
-      if current_user.admin?
-        @observations = Observation.where(:resource_id => params[:checked])
-      else
-        #@observations = Observation.where{ (private == 'f') | ((user_id == my{current_user.id}) & (private == 't')) }.        
-        #where{location_id.in my{params[:checked]}}
-        @observations = Observation.where("private IS ? or (private IS ? and user_id IS ?)", false, true, current_user.id).where(:resource_id => params[:checked])
-      end
-    else
-      @observations = Observation.where(:private => false).where(:resource_id => params[:checked])        
-    end        
-    
-    send_zip(@observations, params[:taxonomy], params[:contextual], params[:global])
-          
+    @observations = Observation.where(:resource_id => params[:checked])
+    @observations = observation_filter(@observations)
+
+    send_zip(@observations, params[:taxonomy], params[:contextual], params[:global])                   
   end
 
   private
