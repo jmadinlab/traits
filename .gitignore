@@ -27,7 +27,7 @@ revisions.log
 /log/*.log
 /tmp
 /public/assets/
-#/public/uploads/*
+/public/uploads/*
 /app/assets/images/hughes/
 /app/assets/images/veron/
 /app/assets/images/traits/
