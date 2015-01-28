@@ -1,7 +1,7 @@
 # Trait Database quick start guide
 ---
 
-The following quick start guide creates a development database (using sqlite3).  The assumption is that you are trying out the database, and so don't need to get fancy at this stage. The first step is to set up rails on you computer or server (if you haven't already).  A rails installation guide can be found here: [http://installrails.com]()
+The following quick start guide creates a development database (using sqlite3).  The assumption is that you are trying out the database, and so don't need to get fancy at this stage. The first step is to set up rails on you computer or server (if you haven't already).  A rails installation guide can be found here: [http://installrails.com](http://installrails.com)
 
 The below quick start guide was last updated for ruby-2.2.0.
 
