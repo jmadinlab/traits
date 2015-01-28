@@ -22,8 +22,6 @@ revisions.log
 /solr/development
 /solr/test
 /solr/pids
-
-
 /log
 
 # Ignore all logfiles and tempfiles.
@@ -49,6 +47,7 @@ doc/
 .ruby-*
 .secret
 notes_josh.md
+documentation.md
 *.sql
 *.dump
 postgres/
