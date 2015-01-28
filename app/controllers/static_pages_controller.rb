@@ -1,6 +1,6 @@
 class StaticPagesController < ApplicationController
 
-  before_action :editor, only: [:meta, :show, :duplicate]
+  before_action :editor, only: [:meta, :show, :duplicate, :uploads]
 
   def home
     @mea = Measurement.all.size
@@ -21,6 +21,9 @@ class StaticPagesController < ApplicationController
 
   def show
     @trait = Trait.find(params[:id])
+  end
+
+  def uploads
   end
 
   def duplicate

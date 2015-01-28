@@ -21,6 +21,8 @@ class ApplicationController < ActionController::Base
         observations = observations
       elsif current_user.editor? | current_user.contributor?
         observations = observations.where("observations.private = ? OR (observations.user_id = ? AND observations.private = ?)", false, current_user.id, true)
+      else
+        observations = observations.where("observations.private = ?", false)
       end
     else
       observations = observations.where("observations.private = ?", false)
