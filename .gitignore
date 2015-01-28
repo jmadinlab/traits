@@ -8,7 +8,7 @@ current
 /repo/
 revisions.log
 /shared/
-/public/uploads/
+/public/uploads/*
 *.db
 /config/deploy/
 *.dat

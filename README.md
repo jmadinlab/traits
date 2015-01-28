@@ -9,7 +9,7 @@ The below quick start guide was last updated for ruby-2.2.0.
     git clone https://github.com/jmadin/traits.git
 
     # Move into the traits directory
-    cd coraltraits
+    cd traits
 
     # Make sqlite3 database configuration file and local environment file
     cd config
@@ -25,7 +25,8 @@ The below quick start guide was last updated for ruby-2.2.0.
 
     # Start solr search
     rake sunspot:solr:start
-
+    rake sunspot:solr:reindex
+    
     # Start rails server
     rails s
 
