@@ -31,7 +31,7 @@ class TraitsController < ApplicationController
     @observations = Observation.joins(:measurements).where(:measurements => {:trait_id => params[:checked]})
     @observations = observation_filter(@observations)
 
-    send_zip(@observations, 'data.csv', params[:taxonomy], params[:contextual], params[:global])          
+    send_zip(@observations, params[:taxonomy], params[:contextual], params[:global])          
   end
 
   def show
