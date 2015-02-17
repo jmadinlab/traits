@@ -63,21 +63,16 @@ class TraitsController < ApplicationController
           @chart = GoogleVisualr::Interactive::PieChart.new(data_table, option)
         else
           data_table.new_column('number')
-          data_table.new_column('number')
 
           p = 0
           # @trait.measurements.map(&:value).map{|v| v.to_d}.sort.reverse.each do |i|
-          @trait.measurements.sort_by{ |a| a.value.to_d }.each do |i|
-            if @trait.standard.standard_unit == "deg"
-              data_table.add_row([p, i.value.to_d])
-            else
-              data_table.add_row([p, i.value.to_d])
-            end            
-            p = p + 1
+          @trait.measurements.each do |i|
+            data_table.add_row([i.value.to_d])
           end
 
-          option = { width: 250, height: 250, legend: 'none', :vAxis => { :title => "#{@trait.trait_name}" }, :hAxis => { textPosition: 'none' } }
-          @chart = GoogleVisualr::Interactive::ScatterChart.new(data_table, option)
+          option = { width: 250, height: 250, legend: 'none', :vAxis => { :title => "Frequency" }, :hAxis => { :title => "#{@trait.trait_name}" } }
+          # @chart = GoogleVisualr::Interactive::ScatterChart.new(data_table, option)
+          @chart = GoogleVisualr::Interactive::Histogram.new(data_table, option)
           # @chart.add_listener("select", "function(e) { EventHandler(e, chart, data_table) }")
         end
      end

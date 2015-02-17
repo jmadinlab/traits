@@ -13,7 +13,7 @@ gem 'sunspot_solr'
 gem 'progress_bar'
 gem 'sqlite3', group: :development
 gem 'redcarpet'
-gem 'google_visualr', '~> 2.1.0'
+gem 'google_visualr'#, '~> 2.1.0'
 
 gem 'sass-rails'
 gem 'uglifier'
