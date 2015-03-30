@@ -9,6 +9,7 @@ current
 revisions.log
 /shared/
 *.db
+*.docx
 /config/deploy/
 *.dat
 # Ignore the default SQLite database.

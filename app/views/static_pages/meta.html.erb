@@ -7,6 +7,7 @@
 <p>Download trait measurements matrix <%= link_to 'CSV', '/export_trait', :action => 'export_trait' %></p>
 <p>Download species/trait measurements matrix <%= link_to 'CSV', '/export_specie_trait', :action => 'export_specie_trait' %></p>
 <p>Download location/trait measurements matrix <%= link_to 'CSV', '/export_location_trait', :action => 'export_location_trait' %></p>
+<p>Download ready trait summaries <%= link_to 'CSV', '/export_ready_trait', :action => 'export_ready_trait' %></p>
 
 <p>approvals_count: <%= Observation.where("approval_status = ? and id IN (?)", "pending", Measurement.joins(:trait).where("traits.user_id = ?", current_user.id).map(&:observation_id)).size %></p>
 

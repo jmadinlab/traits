@@ -95,7 +95,7 @@ class ObservationImport
         row = process_private(row)
 
         if row["specie_name"]
-          specie = Specie.where("specie_name IS ?", row["specie_name"])
+          specie = Specie.where("specie_name = ?", row["specie_name"])
           puts "=== Specie: #{specie.inspect}".red
           if specie.empty?
             errors[:base] << "Row #{i}: Species name '#{row["specie_name"]}' does not exist"
@@ -108,7 +108,7 @@ class ObservationImport
           end
         end
         if row["trait_name"]
-          trait = Trait.where("trait_name IS ?", row["trait_name"])
+          trait = Trait.where("trait_name = ?", row["trait_name"])
           puts "=== Trait: #{trait.inspect}".red
           if trait.empty?
             errors[:base] << "Row #{i}: Measurement trait name does not exist"
@@ -185,16 +185,16 @@ class ObservationImport
     def validate_measurement_exist(i, row)
       if row["trait_id"].blank?
         $observation.errors[:base] << "Row #{i}: Trait_id is blank"
-      elsif Trait.where("id IS ?", row["trait_id"]).blank?
+      elsif Trait.where("id = ?", row["trait_id"]).blank?
         $observation.errors[:base] << "Row #{i}: Trait with id=#{row["trait_id"]} doesn't exist"
       end
       if row["standard_id"].blank?
         $observation.errors[:base] << "Row #{i}: standard_id is blank"
-      elsif Standard.where("id IS ?", row["standard_id"]).blank?
+      elsif Standard.where("id = ?", row["standard_id"]).blank?
         $observation.errors[:base] << "Row #{i}: Standard with id=#{row["standard_id"]} doesn't exist"
       end
       if row["methodology_id"].blank?
-      elsif Methodology.where("id IS ?", row["methodology_id"]).blank?
+      elsif Methodology.where("id = ?", row["methodology_id"]).blank?
         $observation.errors[:base] << "Row #{i}: Methodology with id=#{row["methodology_id"]} doesn't exist"
       end
       if row["value"].blank?
@@ -222,10 +222,10 @@ class ObservationImport
     end
 
     def validate_observation_exist(i, row)
-      $observation.errors[:base] << "Row #{i}: User_id=#{row["user_id"]} doesn't exist" if User.where("id IS ?", row["user_id"]).blank?
-      $observation.errors[:base] << "Row #{i}: Specie_id=#{row["specie_id"]} doesn't exist" if Specie.where("id IS ?", row["specie_id"]).blank?
-      $observation.errors[:base] << "Row #{i}: Location_id=#{row["location_id"]} doesn't exist" if Location.where("id IS ?", row["location_id"]).blank?
-      $observation.errors[:base] << "Row #{i}: Resource_id=#{row["resource_id"]} doesn't exist" if Resource.where("id IS ?", row["resource_id"]).blank?
+      $observation.errors[:base] << "Row #{i}: User_id=#{row["user_id"]} doesn't exist" if User.where("id = ?", row["user_id"]).blank?
+      $observation.errors[:base] << "Row #{i}: Specie_id=#{row["specie_id"]} doesn't exist" if Specie.where("id = ?", row["specie_id"]).blank?
+      $observation.errors[:base] << "Row #{i}: Location_id=#{row["location_id"]} doesn't exist" if Location.where("id = ?", row["location_id"]).blank?
+      $observation.errors[:base] << "Row #{i}: Resource_id=#{row["resource_id"]} doesn't exist" if Resource.where("id = ?", row["resource_id"]).blank?
       return $observation
     end
 

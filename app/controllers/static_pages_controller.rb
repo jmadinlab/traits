@@ -132,4 +132,24 @@ class StaticPagesController < ApplicationController
           
   end
 
+  def export_ready_trait
+    
+    traits = Trait.where("release_status = ?", "ready_for_release")
+
+    csv_string = CSV.generate do |csv|
+
+      csv << ["trait_name", "description", "link"]
+      traits.sort_by{|t| t[:trait_name]}.each do |tra|
+
+        csv << [tra.trait_name, tra.trait_description, "https://coraltraits.org/traits/#{tra.id}.zip"]
+
+      end
+    end
+
+    send_data csv_string, 
+     :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
+     :disposition => "attachment; filename=ready_trait_#{Date.today.strftime('%Y%m%d')}.csv"
+          
+  end
+
 end
