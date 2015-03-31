@@ -31,7 +31,7 @@ gem 'colorize'
 
 # database setup (postgres), and for Heroku
 gem 'pg'
-gem 'rails_12factor', group: :production
+# gem 'rails_12factor', group: :production
 
 gem 'roo'
 
