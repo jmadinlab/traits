@@ -63,14 +63,14 @@
 <% if @observation.updated_at.present? %>
 	<p>
 	  <strong>Last modified:</strong>
-	  <%= @observation.updated_at %>
+	  <%= @observation.updated_at.to_s(:ctdb_date) %>
 	</p>
 <% end %>
 
 <% if @observation.created_at.present? %>
 	<p>
 	  <strong>Created:</strong>
-	  <%= @observation.created_at %>
+	  <%= @observation.created_at.to_s(:ctdb_date) %>
 	</p>
 <% end %>
 
