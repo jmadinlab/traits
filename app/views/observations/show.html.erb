@@ -103,7 +103,12 @@
 						  	<%= link_to mea.trait.trait_name, trait_path(mea.trait_id), 'data-no-turbolink' => true %>
 							</div>
 						  <div class="col-sm-4">
-								<%= mea.value %>
+
+								<% if mea.trait.traitvalues.present? %>
+									<span class="label label-primary" data-toggle="tooltip" data-placement="bottom" title="<%= mea.trait.traitvalues.where(:value_name => mea.value).first.value_description %>"><%= mea.value %></span>
+								<% else %>
+									<%= mea.value %>
+								<% end %>
 								<% if mea.standard.present? %>
 						  		(<%= link_to mea.standard.standard_unit, standard_path(mea.standard_id) %>)
 									<% end %>
