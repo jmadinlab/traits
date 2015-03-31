@@ -50,7 +50,7 @@
 			<p>
 				<strong>Possible trait values:</strong>
 				<% @trait.traitvalues.each do |tv| %>
-					<span class="label label-primary"><%= tv.value_name %></span>
+					<span class="label label-primary" data-toggle="tooltip" data-placement="bottom" title="<%= tv.value_description%>"><%= tv.value_name %></span>
 					<%# if tv.value_description.present? %>
 						<!-- (<%#= tv.value_description %>) -->
 					<%# end %>
