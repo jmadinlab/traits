@@ -3,7 +3,7 @@
 	<span class="label label-success"><span class="glyphicon glyphicon-ok-circle" style="color:white;"></span> <%= a %></span>
 <% end %>
 <% p = acc.where(:private => true).size %>
-<% if signed_in? && current_user.contributor? %>
+<% if signed_in? && current_user.contributor? && p > 0 %>
 	<span class="label label-danger"><span class="glyphicon glyphicon-remove-circle" style="color:white;"></span> <%= p %></span>
 <% elsif a == 0 %>
 	<span class="glyphicon glyphicon-remove-circle" style="color:red;"></span>
