@@ -31,6 +31,7 @@ revisions.log
 /public/uploads/*
 /app/assets/images/hughes/
 /app/assets/images/veron/
+/app/assets/images/veron_cg/
 /app/assets/images/traits/
 local_env.yml
 
