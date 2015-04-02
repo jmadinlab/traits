@@ -1,11 +1,15 @@
 # Importing data
 ***
 
-A bulk import of observations and measurements is the fastest way to get your data into the database. The import function accepts either CSV (preferred) or Excel spreadsheets and runs numerous tests to make sure your data fit correctly into the database correctly (note that you can export CSV formatted files from Excel using "Save as..."). Any errors will reject the import and the system will attempt to tell you where the errors occur, so you can fix these and try again.</p>
+A bulk import of observations and measurements is the fastest way to get data into the database. The import function accepts csv-formatted spreadsheets and runs a number of tests to make sure your data fit correctly into the database (note that you can export csv-formatted files from Excel using "Save as..."). Any errors will reject the entire import and the system will attempt to tell you where the errors occur, so you can fix these and try the import again.</p>
 
-The spreadsheet you import must have a header with exactly (and only) the following column names.
+The spreadsheet you import must have a header with following column names.
 
-    observation_id, access, user_id, coral_id, location_id, resource_id, trait_id, standard_id, methodology_id, value, value_type, precision, precision_type, precision_upper, replicates, notes
+    observation_id, access, user_id, specie_id, location_id, resource_id, trait_id, standard_id, methodology_id, value, value_type, precision, precision_type, precision_upper, replicates, notes
+
+`specie_id` and `trait_id` may be substituted for `specie_name` and `trait_name`, respectively, which can be useful for navigating large data entry spreadsheets. These names must reflect the database names exactly, and so best to copy and paste names directly from the database.
+
+`resource_id` is reserved for the original data resource.  You can credit papers that compiled large datasets from the literature by adding a column named `resource_secondary_id`.
 
 Copy and paste the above into a text file and save as `import_trait_author_year.csv`, where author and year correspond with the resource (paper). Alternatively, download a [CSV](/import_template_author_year.csv) or [Excel](/import_template_author_year.xlsx) template.
 
@@ -17,7 +21,7 @@ Copy and paste the above into a text file and save as `import_trait_author_year.
 
 `user_id` is the unique ID (integer) of the person uploading the data. This person will have control over the data and may be contacted about the data if need be. Your user ID can be found at the top of the "My observations" page that can be accessed from the top right menu.
 
-`coral_id` is the unique ID (integer) of the coral species of which the observation was taken. IDs occur in grey to the left of [corals](/corals) or at the top of a given coral's observations page. In [example 1](#example1), coral_id 37 is *[Acropora cervicornis](/corals/37)*.
+`specie_id` is the unique ID (integer) of the coral species of which the observation was taken. IDs occur in grey to the left of [species](/species) or at the top of a given coral's observations page. In [example 1](#example1), specie_id 37 is *[Acropora cervicornis](/species/37)*.
 
 `location_id` is the unique ID (integer) of the location where the observation took place. IDs occur in grey to the left of [locations](/locations) or at the top of a given location's observations page. The location ID 248 in [example 1](#example1) is [Buck Island, St. Croix](/locations/248).
 
@@ -69,7 +73,7 @@ Copy and paste the above into a text file and save as `import_trait_author_year.
 
 [Screenshot import 1](/images/import_example1.png)
 
-The screenshot linked to above is part of an import spreadsheet for coral [skeletal densities](/traits/61) of *[Acropora cervicornis](/corals/37)* in a study on [Buck Island, St. Croix](/locations/248) ([Gladfelter 1982](/resources/590)). Density measurements were taken using a [Kobe porosimeter](/methodologies/5). Context for skeletal density measurements include the [part of the corallite](/traits/159) (e.g., calyx), [distance from tip](/traits/157) of branch, and the [water depth](/traits/143) where corals were collected.
+The screenshot linked to above is part of an import spreadsheet for coral [skeletal densities](/traits/61) of *[Acropora cervicornis](/species/37)* in a study on [Buck Island, St. Croix](/locations/248) ([Gladfelter 1982](/resources/590)). Density measurements were taken using a [Kobe porosimeter](/methodologies/5). Context for skeletal density measurements include the [part of the corallite](/traits/159) (e.g., calyx), [distance from tip](/traits/157) of branch, and the [water depth](/traits/143) where corals were collected.
 
 *[Top](#)*
 

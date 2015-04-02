@@ -5,38 +5,46 @@ The following quick start guide creates a development database (using sqlite3). 
 
 The below quick start guide was last updated for ruby-2.2.0.
 
-    # Clone the github repository
-    git clone https://github.com/jmadin/traits.git
+1. Clone the github repository
 
-    # Move into the traits directory
-    cd traits
+        git clone https://github.com/jmadin/traits.git
 
-    # Make sqlite3 database configuration file and local environment file
-    cd config
-    cp database.yml.sqlite database.yml
-    cp local_env.yml.example local_env.yml
+2. Move into the traits directory
 
-    # Return to base directory and install gems
-    cd ..
-    bundle install
+        cd traits
 
-    # Migrate database structure to sqlite3 development database
-    rake db:migrate
+3. Make sqlite3 database configuration file and local environment file  
 
-    # Start solr search
-    rake sunspot:solr:start
-    rake sunspot:solr:reindex
-    
-    # Start rails server
-    rails s
+        cd config  
+        cp database.yml.sqlite database.yml  
+        cp local_env.yml.example local_env.yml  
 
-Sign-up user ([http://localhost:3000/signup](http://localhost:3000/signup))
+4. Return to base directory and install gems
 
-    # Open development database
-    sqlite3 db/development.sqlite3 
+        cd ..
+        bundle install
 
-    # In sqlite3, make user admin, editor and contributor
-    update users set admin='t' where id=1;
-    update users set contributor='t' where id=1;
-    update users set editor='t' where id=1;
+5. Migrate database structure to sqlite3 development database
 
+        rake db:migrate
+
+6. Start solr search
+
+        rake sunspot:solr:start
+        rake sunspot:solr:reindex
+        
+7. Start rails server
+
+        rails s
+
+8. Sign-up user ([http://localhost:3000/signup](http://localhost:3000/signup))
+
+9. Open development database
+
+        sqlite3 db/development.sqlite3 
+
+10. In sqlite3, make the new user admin, editor and contributor
+
+        update users set admin='t' where id=1;  
+        update users set contributor='t' where id=1;  
+        update users set editor='t' where id=1;  

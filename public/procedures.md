@@ -1,8 +1,6 @@
 # Database procedures
 ***
 
-*[Download PDF version](http://coraltraits.org/coraltraits_README.pdf)*
-
 The Coral Trait Database is an open source research initiative that aims to make all observations and measurements of corals accessible in order to more rapidly advance coral reef science. Anyone collecting coral trait data (e.g., collected in field and laboratory studies, extracted from the literature, or by other means) can join and contribute to the growing data compilation. Contributors have control over the privacy of their data and greatly benefit from being able to download complementary public data from the database in a standard format for use in their analyses. We hope that private data will become public once the contributor has published them, which will subsequently be cited when their data are used in analyses by other people. We have carefully designed a citation system that ensures full transparency about the origin of each individual data point as well as larger data compilations and compilations of other peoples' data (such as data extracted from literature for meta-analyses). By becoming a data contributor, you become a member of the Coral Trait Database Consortium.
 
 > The Coral Trait Database Consortium (2014) The Coral Trait Database. [http://coraltraits.org](http://coraltraits.org)
@@ -87,7 +85,6 @@ The Coral Trait Database is an open source research initiative that aims to make
 ### Database programmers
 
 - Joshua Madin
-- Surendra Shrestha (part-time)
 
 *[Top](#database-procedures)*
 
@@ -188,11 +185,11 @@ If your data is well-managed, you can ask one of the [database programmers](#dat
 
 Entering published data not already in the database in strongly encouraged to improve the data's longevity and augment data analysis. A case in which this might occur is a meta-analysis. The data enterer can keep the data they submit private until their study is published.
 
-> The key ojective is to extract the data in such a way as to avoid people ever needing to go back to the primary resource again.
+> The key objective is to extract data from resources in such a way as to avoid people ever needing to go back to the that resource again.
 
 For example, extracting only the mean value of a trait from a paper, without extracting any measure of variation or the context in which the trait was measured, will mean that the data may not be useful for other purposes. Someone else might need to go back and extract the information again, and there is a chance your initial efforts won't be cited.
 
-- **Primary resources only.** Often people enter data from summary tables in papers that come from other (primary) resources. It is important to enter the data from the primary resource for two reasons: (1) so that the primary resource's author is credited for their work, and (2) to avoid data duplication, where the same data are entered from both the primary and secondary resource. Secondary resources, such as meta-analyses, can be credited for accummulating data by using database [citation manager](http://coraltraits.org/citations).
+- **Primary resources only.** Often people enter data from summary tables in papers that come from other (primary) resources. It is important to enter the data from the primary resource for two reasons: (1) so that the primary resource's author is credited for their work, and (2) to avoid data duplication, where the same data are entered from both the primary and secondary resource. Secondary resources, such as meta-analyses, can be credited for for large data compilations (see *[bulk imports](http://coraltraits.org/bulk_import)*).
 
 - **Careful extraction.** Copy values from tables carefully and double check. Extracting data from figures can be done with software like ImageJ, where a scale can be set based on axis values and measurements of plotted data made, including error bars.
 
@@ -200,11 +197,12 @@ For example, extracting only the mean value of a trait from a paper, without ext
 
 ### Quality control
 
-There are three levels of data review.
+There are four levels of data review.
 
 1. `Contributor-level` review at time of submission,  Once submitted, data are tagged as *pending*.
 2. `Editor-level` review. The relevant Editor/s for traits in your submission are automatically notified by email. The contributor may be contacted by the Editor if there are any issues with the submission. The Editor will *approve* the submission once satisfied.
 3. `User-level` review. Anyone signed-in as a database user can report an issue with an observation record, and the submitter and the Editor will be notified by email.
+4. `Consortium-level` review. Each trait will be reviewed approximately yearly in order to flag any broader issues.
 
 ### Error checking
 
@@ -222,7 +220,7 @@ Basic error checking will ensure data submissions fit into the database. Error c
 
 ### Primary and secondary resources
 
-If you publish a study using data from the Coral Traits Database, it is your responibility to cite the data correctly (see [License](#license)). There are two levels of resources.
+If you publish a study using data from the Coral Traits Database, it is your responibility to cite the data correctly (see [License](#8.-license)). There are two levels of resources.
 
 `Primary resources` (should) exist for every observation in the database. When data are downloaded, you are also sent a list of these resources for citing in your work (see [Downloads](http://coraltraits.org/download)).
 
@@ -265,10 +263,10 @@ Website and data download activity are tracked using Google Analytics.
 
 # 7. Database code
    
-![rails](public/images/rails.png)
-![github](public/images/github.png)
+![rails](images/rails.png)
+![github](images/github.png)
 
-The database was developed using Ruby on Rails, is open source, and can be found at [Github](https://github.com/jmadin/coraltraits).
+The database was developed using Ruby on Rails, is open source, and can be found at [Github](https://github.com/jmadin/traits).
  
 *[Top](#database-procedures)*
 
@@ -276,11 +274,9 @@ The database was developed using Ruby on Rails, is open source, and can be found
 
 # 8. License
 
-[![Screenshot import 1](public/images/CC0.png)](https://creativecommons.org/publicdomain/zero/1.0/)
+[![Screenshot import 1](images/CC0.png)](https://creativecommons.org/publicdomain/zero/1.0/)
 
-> Basically, if you enter data into the database and make it public, the data can be reused by others if they cite it correctly.
-
-> Similarly, if you download and use data in an analysis to be published, you must cite primary (and, if applicable, secondary) resources correctly.
+> Basically, if you enter data into the database and make it public, the data can be reused by others if they cite it correctly. Similarly, if you download and use data in an analysis to be published, you must cite primary (and, if applicable, secondary) resources correctly.
 
 A couple of key points:
 

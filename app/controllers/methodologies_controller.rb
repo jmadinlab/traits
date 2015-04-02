@@ -144,6 +144,6 @@ class MethodologiesController < ApplicationController
     end
   	
   	def methodology_params
-  		params.require(:methodology).permit(:methodology_name, :method_description, :traits_attributes)
+  		params.require(:methodology).permit(:methodology_name, :user_id, :method_description, :traits_attributes)
   	end
 end

@@ -117,6 +117,7 @@ Traits::Application.routes.draw do
 
   match '/procedures',  to: 'static_pages#procedures',   via: 'get'
   match '/editors',     to: 'static_pages#editors',   via: 'get'
+  match '/contributors', to: 'static_pages#contributors',   via: 'get'
   match '/download',    to: 'static_pages#download',   via: 'get'
   match '/bulk_import', to: 'static_pages#bulk_import',   via: 'get'
   match '/documentation',    to: 'static_pages#documentation',   via: 'get'

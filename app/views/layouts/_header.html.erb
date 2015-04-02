@@ -47,7 +47,7 @@
 					<% if signed_in? %>
 					  <li id="fat-menu" class="dropdown" style="text-align: left;">
 					    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-								<%= current_user.name %><b class="caret"></b>
+								<%= current_user.name %> <%= current_user.last_name %><b class="caret"></b>
 					    </a>
 					    <ul class="dropdown-menu">
 					      <li><%= link_to "My Observations", current_user, data: { no_turbolink: true } %></li>
@@ -86,6 +86,7 @@
 						 	<li><%= link_to "Procedures", procedures_path %></li>
 						 	<li><%= link_to "Downloading", download_path %></li>
 						 	<li><%= link_to "Importing", bulk_import_path %></li>
+						 	<li><%= link_to "Contributors", contributors_path %></li>
 						 	<li><%= link_to "Editors", editors_path %></li>
 						 
 		         	<% if signed_in? && current_user.editor? %>

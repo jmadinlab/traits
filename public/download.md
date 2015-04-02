@@ -5,12 +5,12 @@
 
 ### Website downloads
 
-Data can be directly downloaded for one or more [coral species](/corals), [traits](/traits), [locations](/locations), [resources](/resources) or [methodologies](/methodologies) by using the checkboxes on the corresponding pages and clicking <label class="label label-success">Download</label>. A zipped folder is downloaded containing two files: 
+Data can be directly downloaded for one or more [coral species](/species), [traits](/traits), [locations](/locations), [resources](/resources) or [methodologies](/methodologies) by using the checkboxes on the corresponding pages and clicking <label class="label label-success">Download</label>. A zipped folder is downloaded containing two files: 
 
 1. A csv-formatted data file containing all publicly avaiable data for your selection/s, which includes contextual data by default. You can choose to exclude contextual data, include taxonomic detail and/or retrieve global estimates only.
 2. A csv-formatted resource file containing all the resources (papers) that correspond with the data. You are expected to cite the data using these resources correctly. 
 
-> Files in csv-format can be opened in spreadsheet applications (e.g., OpenOffice, Excel, Numbers) or loaded into R using `read.csv()`.
+Files in csv-format can be opened in spreadsheet applications (e.g., OpenOffice, Excel, Numbers) or loaded into R using `read.csv()`.
 
 ### Controlled downloads
 
@@ -23,10 +23,10 @@ Every data page in the database can be loaded in four formats: html, csv, resour
 
 Similarly for corals:
 
-- <http://coraltraits.org/corals/80> returns the html page for coral_id 80 (*Acropora hyacinthus*).
-- <http://coraltraits.org/corals/80.csv> returns *Acropora hyacinthus* data in CSV format.
-- <http://coraltraits.org/corals/80/resources.csv> returns the resource list corresponding with the data.
-- <http://coraltraits.org/corals/80.zip> returns the zipped folder with both data and resource files.
+- <http://coraltraits.org/species/80> returns the html page for coral_id 80 (*Acropora hyacinthus*).
+- <http://coraltraits.org/species/80.csv> returns *Acropora hyacinthus* data in CSV format.
+- <http://coraltraits.org/species/80/resources.csv> returns the resource list corresponding with the data.
+- <http://coraltraits.org/species/80.zip> returns the zipped folder with both data and resource files.
 
 And so on for locations, resources and methodologies.
 
@@ -39,15 +39,14 @@ To control the download of contextual data, taxonomic detail and/or global estim
 
 ### Direct R imports
 
-Using web address syntax described above, you can pipe up-to-date data directly into R from the database using the `read.csv()` function. The following R code will directly import all publicly available growth form data directly into R.
+Using web address syntax described above, you can import data directly into the R statistical programming language. The benefits of directly importing data into R are that you always have the most up-to-date version of data, and you can avoid keeping local copies. The database uses a secure connection protocol (https) and so the `RCurl` package needs to be installed and loaded. The following R code will directly import all publicly available growth form data directly into R.
 
-    dat <- read.csv("http://coraltraits.org/traits/105.csv", as.is=TRUE)
+    download <- textConnection(getURL("https://coraltraits.org/traits/105.csv"))
+    data <- read.csv(download, as.is=TRUE)
 
 (`as.is=TRUE` prevents R from converting columns into unwanted data types, like factors)
 
-The benefits of directly importing data into R are that you always have the most up-to-date version, and you don't have to keep local copies. If you were actively adding data to the database, and wanted your analysis to reflect the current state of your work, you might use the R import functionality.
-
-Currently there is no bulk import for R. That is, you can only import one trait, coral, etc. based on an id at a time. One workaround is to create a list of trait or coral ids (which never change) and either use a loop or an `apply` function to iteratively download and combine the data you require for your analysis.
+Currently there is no bulk import for R. That is, you can only import one trait, coral species, etc., based on an id at a time. One workaround is to create a list of trait or coral ids (which never change) and either use a loop or an `apply` function to iteratively download and combine the data you require for your analysis.
 
 *[Top](#)*
 
@@ -57,11 +56,11 @@ Data is downloaded as a table in which the leading columns contain observation-l
 
 To convert a downloaded table into a species by trait matrix, you can use R packages like `reshape2`. Once this package is loaded, you can use the `acast` function to create your desired data structure. Initially, you might use:
 
-    acast(dat, coral_name~trait_name, value.var="value", fun.aggregate=function(x) {x[1]})
+    acast(dat, specie_name~trait_name, value.var="value", fun.aggregate=function(x) {x[1]})
 
 Which grabs the first measurement value for a species and is suitable for traits with one value (e.g., global estimates). How you aggregate traits with many values will depend on the trait. 
 
-    acast(dat, coral~trait_name, value.var="value", fun.aggregate=function(x) {mean(x)})
+    acast(dat, specie_name~trait_name, value.var="value", fun.aggregate=function(x) {mean(x)})
 
 Will create a species by trait matrix with mean values for each species, but this will not work if you have non-numeric traits in your dataset (e.g., growth form or reproductive mode). Therefore, the `fun.aggregate` method needs to be manipulated using logical conditions to get the data structure you want (e.g., what to do if a species trait has more than one value, or what to do if a species trait has more than one value and thosee values are characters).  
 
@@ -88,7 +87,7 @@ Below is a generic example that returns mean values for numeric trait values and
     }
 
     # Reshape your data using "acast".  Fill gaps with NAs
-    data_reshaped <- acast(data_raw, coral_name~trait_name, value.var="value", fun.aggregate=my_aggregate_rules, fill="")
+    data_reshaped <- acast(data_raw, specie_name~trait_name, value.var="value", fun.aggregate=my_aggregate_rules, fill="")
 
     data_reshaped[data_reshaped == ""] <- NA
 

@@ -19,7 +19,7 @@
 <div class="row">
   <div class="col-md-3">
     <p>
-      <strong>Location ID:</strong>
+      <strong>ID:</strong>
         <%= @location.id %>
     </p>
 		<p>
@@ -34,15 +34,15 @@
 		
 		<% if !@location.location_description.blank? %>
 			<p>
-			  <strong>Location description:</strong>
+			  <strong>Description:</strong>
 			  <%= @location.location_description %>
 			</p>
 		<% end %>
 
 		<p>
-		  <strong>User:</strong>
-			<% if !@location.user.blank? %>
-		  	<%= @location.user.name %>
+		  <strong>Added by:</strong>
+			<% if @location.user %>
+		  	<%= @location.user.name %> <%= @location.user.last_name %>
 			<% end %>
 		</p>
 

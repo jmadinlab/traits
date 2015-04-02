@@ -3,9 +3,19 @@
 
 <div class="page-header">
 	<h1>
-	  <%= @user.name %>
+	  <%= @user.name %> <%= @user.last_name %>
 	</h1>
 </div>
+
+<p>
+  <strong>Institution:</strong>
+	<% if @user.institution %>
+  	<%= @user.institution %>
+	<% else %>
+		<font style="color:lightgrey;">Not entered</font>
+	<% end %>
+</p>
+
 
 <p>
   <strong>User ID:</strong>

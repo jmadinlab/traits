@@ -55,7 +55,9 @@ class ObservationImport
     required_headers = ["observation_id", "access", "user_id", "location_id", "resource_id", "standard_id", "methodology_id", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates", "notes"]
 
     required_flag = true
-        puts "FLAG: #{required_flag}".red
+    
+    puts "FLAG: #{required_flag}".red
+    
     required_headers.each do |r|
       if not header.include? r
         errors.add :base, "Missing header for #{r}"

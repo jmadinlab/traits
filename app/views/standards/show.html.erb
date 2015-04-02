@@ -5,24 +5,35 @@
 </div>
 
 <p>
-  <strong>Standard ID:</strong>
+  <strong>ID:</strong>
     <%= @standard.id %>
 </p>
 
 <p>
-  <strong>Standard unit:</strong>
+  <strong>Measurement unit:</strong>
   <%= @standard.standard_unit %>
 </p>
 
 <p>
-  <strong>Standard class:</strong>
+  <strong>Class:</strong>
   <%= @standard.standard_class %>
 </p>
 
 <p>
-  <strong>Standard description:</strong>
-  <%= @standard.standard_description %>
+  <strong>Description:</strong>
+  <% if @standard.standard_description.present? %>
+    <%= @standard.standard_description %>
+  <% else %>
+    <font style="color:lightgrey;">Not entered</font>
+  <% end %>
 </p>
+
+<% if @standard.user %>
+  <p>
+    <strong>Added by:</strong>
+    <%= @standard.user.name %> <%= @standard.user.last_name %>
+  </p>
+<% end %>
 
 <div class="btn-group">
   <% if signed_in? && current_user.editor? %>

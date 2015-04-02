@@ -1,0 +1,9 @@
+<% provide(:title, 'Contributors') %>
+
+<%= markdown File.open(Rails.root + "public/contributors.md", 'r').read %>
+
+<div class="list-group">
+  <div class="list-group-item">
+    <%= User.where(:contributor => true).map{|p| "#{p.name} #{p.last_name}"}.join(", ") %>
+  </div>
+</div>

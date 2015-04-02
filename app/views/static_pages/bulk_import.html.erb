@@ -1,11 +1,6 @@
 <% provide(:title, 'Import') %>
 
-<div class="row">
-  <div class="col-md-8 col-md-offset-2">
+<label class="label label-danger">Under Review</label>
 
-    <label class="label label-danger">Under Review</label>
+<%= markdown File.open(Rails.root + "public/bulk_import.md", 'r').read %>
 
-    <%= markdown File.open(Rails.root + "public/bulk_import.md", 'r').read %>
-
-  </div>
-</div>

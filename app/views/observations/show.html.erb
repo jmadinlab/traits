@@ -3,7 +3,7 @@
   	<% if @observation.issues.where("resolved != ?", true).present? %>
 	  	<span class="glyphicon glyphicon-warning-sign" style="color:red;" data-toggle="tooltip" data-placement="top" title="Unresolved issue"></span>
 		<% end %>
-		Observation record (<%= @observation.id %>)
+		Observation record
 	<% if @observation.approval_status == "pending" %>
 		<small><span class="label label-danger pull-right">pending approval</span></small>
 	<% end %>
@@ -11,7 +11,12 @@
 </div>		
 
 <p>
-	<strong>Coral:</strong>
+  <strong>ID:</strong>
+	<%= @observation.id %>
+</p>
+
+<p>
+	<strong>Species:</strong>
   <em><%= link_to @observation.specie.specie_name, specie_path(@observation.specie) %></em>
 </p>
 
@@ -27,7 +32,12 @@
 <p>
   <strong>Primary resource:</strong>
 		<% if @observation.resource.present? %>
-  		<%= link_to "#{@observation.resource.author} (#{@observation.resource.year}) #{@observation.resource.title}. #{@observation.resource.journal}, #{@observation.resource.volume_pages}.", resource_path(@observation.resource) %>
+			<% ref = "#{@observation.resource.author} " + 
+				("(#{@observation.resource.year}) " if @observation.resource.year.present?) + 
+				("#{@observation.resource.title}. " if @observation.resource.title.present?) + 
+				("#{@observation.resource.journal} " if @observation.resource.journal.present?) + 
+				("#{@observation.resource.volume_pages}") %>
+  		<%= link_to ref, resource_path(@observation.resource) %>
 		<% else %>
 			No record
 		<% end %>
@@ -37,14 +47,19 @@
 	<% @secondary = Resource.where(:id => @observation.resource_secondary_id).first %>
 	<p>
 	  <strong>Secondary resource:</strong>
-  		<%= link_to "#{@secondary.author} (#{@secondary.year}) #{@secondary.title}. #{@secondary.journal}, #{@secondary.volume_pages}.", resource_path(@secondary.id) %>
+			<% sref = "#{@secondary.author} " + 
+				("(#{@secondary.year}) " if @observation.resource.year.present?) + 
+				("#{@secondary.title}. " if @observation.resource.title.present?) + 
+				("#{@secondary.journal} " if @observation.resource.journal.present?) + 
+				("#{@secondary.volume_pages}") %>
+  		<%= link_to sref, resource_path(@secondary.id) %>
 	</p>
 <% end %>
 
 <p>
   <strong>Contributor:</strong>
 	<% if @observation.user.present? %>
-  	<%= link_to @observation.user.name, user_path(@observation.user) %>
+  	<%= link_to "#{@observation.user.name} #{@observation.user.last_name}", user_path(@observation.user) %>
 	<% else %>
 		No record
 	<% end %>

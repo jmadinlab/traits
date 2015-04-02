@@ -9,7 +9,7 @@
   <div class="col-md-8">
 
 	  <p>
-	    <strong>Species ID:</strong>
+	    <strong>ID:</strong>
 	    	<%= @specie.id %>
 	  </p>
 		
@@ -19,13 +19,6 @@
 				<% @specie.synonyms.each do |s| %>
 		    	<br><%= s.synonym_name %>
 				<% end %>
-		  </p>
-		<% end %>
-
-		<% if !@specie.specie_description.blank? %>
-		  <p>
-		    <strong>Description:</strong>
-		    	<%= @specie.specie_description %>
 		  </p>
 		<% end %>
 
@@ -43,6 +36,20 @@
 	    <strong>Family morphology:</strong>
 	    	<%= @specie.family_morphology %>
 	  </p>
+
+		<% if !@specie.specie_description.blank? %>
+		  <p>
+		    <strong>Description:</strong>
+		    	<%= @specie.specie_description %>
+		  </p>
+		<% end %>
+
+		<p>
+		  <strong>Added by:</strong>
+			<% if @specie.user %>
+		  	<%= @specie.user.name %> <%= @specie.user.last_name %>
+			<% end %>
+		</p>
 
 		<p>
 	    <div class="btn-group">

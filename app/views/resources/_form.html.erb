@@ -47,19 +47,19 @@
 		<%= f.text_area :resource_notes, class: "form-control" %>
 	</div>
 
-	<div class="form-group">
-		<% if current_user.admin? %>
-			<%= f.label :enterer %>
-			<% if f.object.id.present? %>
-				<%= f.select :user_id, User.all.collect {|a| [a.name, a.id]}, {}, class: "form-control" %>
-			<% else %>
-				<%= f.select :user_id, User.all.collect {|a| [a.name, a.id]}, {:selected => current_user.id}, class: "form-control" %>
-			<% end %>
-		<% else %>
-			<%#= current_user.name %>
-		  <%= f.hidden_field :user_id, :value => current_user.id %>
-		<% end %>
-	</div>
+  <div class="form-group">
+    <% if current_user.admin? %>
+      <%= f.label :enterer %>
+      <% if f.object.id.present? %>
+        <%= f.select :user_id, User.where(:contributor => true).collect {|a| ["#{a.name} #{a.last_name}", a.id]}, {}, class: "form-control" %>
+      <% else %>
+        <%= f.select :user_id, User.where(:contributor => true).collect {|a| [a.name, a.id]}, {:selected => current_user.id}, class: "form-control" %>
+      <% end %>
+    <% else %>
+      <%#= current_user.name %>
+      <%= f.hidden_field :user_id, :value => current_user.id %>
+    <% end %>
+  </div>
 
 	<%= f.submit "Submit", class: "btn btn-primary btn-lg" %>
 

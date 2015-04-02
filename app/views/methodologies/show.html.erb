@@ -6,7 +6,7 @@
 </div>
 
 <p>
-  <strong>Methodology ID:</strong>
+  <strong>ID:</strong>
   	<%= @methodology.id %>
 </p>
 
@@ -24,7 +24,14 @@
 				<%= link_to trait.trait_name, trait, class: "label label-primary", 'data-no-turbolink' => true %>
   		<% end %>
 	</p>
+<% end %>
+
+<p>
+  <strong>Added by:</strong>
+  <% if @methodology.user %>
+    <%= @methodology.user.name %> <%= @methodology.user.last_name %>
   <% end %>
+</p>
 
 <p>
 	<div class="btn-group">
