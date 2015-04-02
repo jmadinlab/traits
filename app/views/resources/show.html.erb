@@ -4,8 +4,10 @@
   <h1>
 		<span class="glyphicon glyphicon-tag" data-toggle="tooltip" data-placement="bottom" title="Resource"></span>
   	Resource
-  </h1>
-  
+		<% if @resource.approval_status == "pending" %>
+			<small><span class="label label-danger pull-right">pending approval</span></small>
+		<% end %>
+  </h1>  
 </div>
 
 <div class="row">

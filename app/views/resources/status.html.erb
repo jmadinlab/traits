@@ -22,6 +22,9 @@
 					<div class="row">
 		        <div class="col-sm-1" style="color: lightgrey;">
 		        	<%= resource.id %>
+							<% if resource.approval_status == 'pending' %>
+								<span class="glyphicon glyphicon-warning-sign"  style="color:red;" title="Pending Approval"></span>
+							<% end %>
 		        </div>
 
 		        <div class="col-sm-5">
@@ -39,9 +42,6 @@
 						<div class="col-sm-2">
 							<% if not params[:all] %>
 			        	<%= render "shared/access_counts", :acc => Observation.where(:resource_id => resource) %>
-							<% end %>
-							<% if resource.approval_status == 'pending' %>
-								&nbsp;	<span class="glyphicon glyphicon-floppy-remove"  style="color:red;text-align:center;" title="Pending Approval"></span>
 							<% end %>
 						</div>
 

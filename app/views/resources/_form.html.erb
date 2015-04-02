@@ -61,6 +61,13 @@
     <% end %>
   </div>
 
+  <% if current_user.editor? %>
+    <div class="form-group">
+      <%= f.label :status %>
+      <%= f.select :approval_status, ["", "pending", "approved"], {}, class: "form-control" %>
+    </div>
+  <% end %>
+
 	<%= f.submit "Submit", class: "btn btn-primary btn-lg" %>
 
 <% end %>
