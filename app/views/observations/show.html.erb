@@ -33,9 +33,9 @@
   <strong>Primary resource:</strong>
 		<% if @observation.resource.present? %>
 			<% ref = "#{@observation.resource.author} " + 
-				("(#{@observation.resource.year}) " if @observation.resource.year.present?) + 
-				("#{@observation.resource.title}. " if @observation.resource.title.present?) + 
-				("#{@observation.resource.journal} " if @observation.resource.journal.present?) + 
+				("(#{@observation.resource.year}) ") + 
+				("#{@observation.resource.title}. ") + 
+				("#{@observation.resource.journal} ") + 
 				("#{@observation.resource.volume_pages}") %>
   		<%= link_to ref, resource_path(@observation.resource) %>
 		<% else %>
@@ -48,9 +48,9 @@
 	<p>
 	  <strong>Secondary resource:</strong>
 			<% sref = "#{@secondary.author} " + 
-				("(#{@secondary.year}) " if @observation.resource.year.present?) + 
-				("#{@secondary.title}. " if @observation.resource.title.present?) + 
-				("#{@secondary.journal} " if @observation.resource.journal.present?) + 
+				("(#{@secondary.year}) ") + 
+				("#{@secondary.title}. ") + 
+				("#{@secondary.journal} ") + 
 				("#{@secondary.volume_pages}") %>
   		<%= link_to sref, resource_path(@secondary.id) %>
 	</p>
