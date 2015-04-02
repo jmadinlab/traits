@@ -3,6 +3,7 @@
 *.bak
 *.sqlite3
 *.dump
+*.backup
 current
 /releases/
 /repo/

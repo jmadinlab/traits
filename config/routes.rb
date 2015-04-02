@@ -29,6 +29,8 @@ Traits::Application.routes.draw do
   get '/locations/:id/resources', to: 'locations#show'
   get '/resources/:id/resources', to: 'resources#show'
   
+    get '/resources/status', to: 'resources#status'
+
   match '/meta/:id',     to: 'static_pages#show',    via: 'get', :as => :show_meta
   match '/duplicate/:id',     to: 'static_pages#duplicate',    via: 'get', :as => :duplicate_meta
 # get '/meta/:ids', to: 'static_pages#show'

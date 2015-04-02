@@ -1,0 +1,67 @@
+<% provide(:title, 'Resources status') %>
+
+
+<div class="page-header">
+  <h1>Resources <font style="color:red;">Errors</font></h1>
+</div>
+
+<p>The following resources have problems that need fixing.</p>
+<br>
+
+<%= will_paginate @resources %>
+
+
+<div class="row">
+  <div class="col-sm-12">
+		<ul class="list-group">
+    	<% @resources.sort_by{|e| e[:author]}.each do |resource| %>
+			  <li class="list-group-item">							
+					<div class="row">
+		        <div class="col-sm-1" style="color: lightgrey;">
+		        	<%= resource.id %>
+		        </div>
+
+		        <div class="col-sm-5">
+		        	<%= link_to resource.author, resource %>
+		        	<% if resource.year %>
+			        	(<%= resource.year %>)
+	    				<% end %>		
+		        	<small><%= resource.title %></small>
+		        </div>
+
+					 	<div class="col-sm-1">
+							<%= check_box_tag "checked[]", resource.id %>
+						</div>
+
+						<div class="col-sm-2">
+							<% if not params[:all] %>
+			        	<%= render "shared/access_counts", :acc => Observation.where(:resource_id => resource) %>
+							<% end %>
+							<% if resource.approval_status == 'pending' %>
+								&nbsp;	<span class="glyphicon glyphicon-floppy-remove"  style="color:red;text-align:center;" title="Pending Approval"></span>
+							<% end %>
+						</div>
+
+		        <div class="col-sm-3">
+					    <div class="btn-group pull-right">
+					     	<%= link_to 'Show', resource_path(resource), class: "btn btn-xs btn-default" %>
+							  <% if signed_in? && current_user.editor? %>
+				        	<%= link_to 'Edit', edit_resource_path(resource), class: "btn btn-xs btn-default" %>
+								<% end %>
+							  <% if signed_in? && current_user.admin? %>
+				        	<%= link_to 'Delete', resource, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
+								<% end %>
+			        </div>
+						</div>
+					</div>
+				</li>
+	    <% end %>		
+    </ul>
+	</div>
+</div>
+
+<%= will_paginate @resources %>
+
+<% if @resources.blank? %>
+  <div class="alert alert-danger" role="alert">No resource issue to report.</div>
+<% end %>

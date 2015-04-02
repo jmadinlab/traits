@@ -1,7 +1,7 @@
 class ResourcesController < ApplicationController
 
   before_action :contributor, except: [:index, :show, :export]
-  before_action :admin_user, only: :destroy
+  before_action :admin_user, only: [:destroy, :status]
   before_action :set_resource, only: [:show, :edit, :update, :destroy]
 
   def index
@@ -17,6 +17,16 @@ class ResourcesController < ApplicationController
       end
     end
     @resources = @search.results
+
+    respond_to do |format|
+      format.html
+      format.csv { send_data Resource.all.to_csv }
+    end    
+  end
+
+  def status
+
+    @resources = Resource.where("author like ?", "%.%").paginate(:page=> params[:page], :per_page => 20)
 
     respond_to do |format|
       format.html
