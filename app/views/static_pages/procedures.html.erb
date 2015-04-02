@@ -1,10 +1,10 @@
 <% provide(:title, 'Procedures') %>
 
 
-<% if signed_in? && current_user.contributor? %>
+<%# if signed_in? && current_user.contributor? %>
   <label class="label label-danger">Under Review</label>
   <%= markdown File.open(Rails.root + "public/procedures.md", 'r').read %>
-<% else %>
-  <label class="label label-danger">Under Review</label>
-<% end %>
+<%# else %>
+  <!-- <label class="label label-danger">Under Review</label> -->
+<%# end %>
 
