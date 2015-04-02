@@ -26,11 +26,15 @@ class ResourcesController < ApplicationController
 
   def status
 
-    @resources = Resource.where("author like ?", "%.%").paginate(:page=> params[:page], :per_page => 20)
+    @resources_iss = Resource.where("author like ?", "%.%")
+    @resources_dup = Resource.find_by_sql("SELECT * 
+      FROM resources AS res, 
+      (SELECT author, year FROM resources GROUP BY author, year HAVING COUNT(*) > 1) AS sub 
+      WHERE res.author = sub.author AND res.year = sub.year;")
 
     respond_to do |format|
       format.html
-      format.csv { send_data Resource.all.to_csv }
+      # format.csv { send_data Resource.all.to_csv }
     end    
   end
 
