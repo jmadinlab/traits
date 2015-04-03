@@ -81,10 +81,10 @@ class ApplicationController < ActionController::Base
   def download_observations(observations, taxonomy=nil, contextual=nil, global=nil)
 
     if request.url.include? 'resources.csv'
-      csv_string = get_resources_csv(@observations)
+      csv_string = get_resources_csv(observations)
       filename = 'resources'
     else
-      csv_string = get_main_csv(@observations, taxonomy, contextual, global)
+      csv_string = get_main_csv(observations, taxonomy, contextual, global)
       filename = 'data'
     end
     send_data csv_string, 
