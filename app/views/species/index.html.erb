@@ -41,7 +41,7 @@
 	<div class="row">
 	  <div class="col-md-12">
 			<ul class="list-group">
-		    <% @species.sort_by{|e| e[:specie_name]}.each do |specie| %>
+		    <% @species.sort_by{ |h| h[:specie_name] }.each do |specie| %>
 				  <li class="list-group-item">							
 						<div class="row">
 			        <div class="col-md-1" style="color: lightgrey;">

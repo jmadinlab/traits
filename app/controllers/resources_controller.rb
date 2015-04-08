@@ -48,12 +48,16 @@ class ResourcesController < ApplicationController
 
     respond_to do |format|
       format.html {
-        @primary = @primary.paginate(:page=> params[:page], :per_page => 20)
-        @secondary = @secondary.paginate(:page=> params[:page], :per_page => 20)
+        @primary = @primary.paginate(:page=> params[:page])
+        @secondary = @secondary.paginate(:page=> params[:page])
       }
       format.csv { download_observations(@primary, params[:taxonomy], params[:contextual] || "on", params[:global]) }
       format.zip{ send_zip(@primary, params[:taxonomy], params[:contextual] || "on", params[:global]) }
     end
+
+      # format.html { @observations = @observations.paginate(page: params[:page]) }
+      # format.csv { download_observations(@observations, params[:taxonomy], params[:contextual] || "on", params[:global]) }
+      # format.zip{ send_zip(@observations, params[:taxonomy], params[:contextual] || "on", params[:global]) }
 
   end
 

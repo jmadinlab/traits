@@ -1,0 +1,107 @@
+<% provide(:title, 'Traits') %>
+
+<div class="page-header">
+	<h1>Traits</h1>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+  	<%= render "shared/instructions" %>
+	</div>
+</div>
+
+<div class="well">
+	<div class="row">
+	  <div class="col-md-6">
+			<%= form_tag traits_path, :method => 'get' do %>
+		    <div class="input-group">
+		      <%= text_field_tag :search, params[:search], :placeholder => "Search traits...", class: "form-control" %>
+		      <span class="input-group-btn">
+				    <%= submit_tag "Search", :name => nil, class: "btn btn-default" %>
+						<%= link_to "See All", traits_path(search: params[:search], all: true), class: "btn btn-warning" %>
+						<%= link_to 'Reset', traits_path, class: "btn btn-default" %>
+		      </span>
+		    </div>
+			<% end %>
+			<br>Download trait list as a <%= link_to "csv", traits_path(format: "csv") %>.
+	  </div>
+	  <div class="col-md-6">
+	  	<% if signed_in? && current_user.editor? %>	
+				<%= link_to 'New Trait', new_trait_path, class: "btn btn-primary btn-md pull-right" %>
+			<% else %>
+			<%# if signed_in? && current_user.contributor? %>	
+	  		<strong>Note to Contributors:</strong> The list of traits is controlled to avoid a profilation of redundant traits (see <%= link_to "Procedures", procedures_path %>). If you would like to add a trait, please contact the most relevant <%= link_to "Editor", editors_path %>.
+			<% end %>
+	  </div>
+	</div>
+</div>
+
+<%= will_paginate @traits %>
+
+<%= form_tag export_traits_path do %>
+
+	<%= render "shared/download_options" %>			
+
+	<div class="row">
+	  <div class="col-md-12">
+			<% temp = [] %>
+			<% @traits.sort_by{ |h| [h[:trait_class] || "z", h[:trait_name]] }.each do |trait| %>
+				<%# if trait.trait_class != "Contextual" %>
+					<% if temp != trait.trait_class %>
+						<% temp = trait.trait_class %>
+						<% if trait.trait_class.blank? %>
+							<h4>Miscellaneous</h4>
+							<ul class="list-group">
+						<% else %>
+							</ul>
+							<h4>
+								<% if trait.trait_class == "Contextual" %>
+									<span class="glyphicon glyphicon-eye-open"></span>
+								<% end %>
+								<%= trait.trait_class %>
+							</h4>
+							<ul class="list-group">
+						<% end %>
+					<% end %>
+
+		  		<li class="list-group-item">							
+						<div class="row">
+							<div class="col-sm-1" style="color:lightgrey;"><%= trait.id %></div>
+							<div class="col-sm-5">
+					    	<%= link_to trait.trait_name, trait, 'data-no-turbolink' => true %>
+							</div>
+						
+							<div class="col-sm-1">
+								<%= check_box_tag "checked[]", trait.id %>
+							</div>
+						
+							<div class="col-sm-2">
+								<% if not params[:all] %>
+									<%= render "shared/access_counts", :acc => Observation.where(:id => Measurement.where(:trait_id => trait).map(&:observation_id)) %>
+								<% end %>
+							</div>
+
+	  					<div class="col-sm-3">
+					     	<div class="btn-group pull-right">
+					     		<%= link_to 'Show', trait_path(trait), 'data-no-turbolink' => true, class: "btn btn-xs btn-default" %>					
+									<% if signed_in? && current_user.editor? %>
+						        <%= link_to 'Edit', edit_trait_path(trait), class: "btn btn-xs btn-default" %>
+									<% end %>
+									<% if signed_in? && current_user.admin? %>
+						        <%= link_to 'Delete', trait, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
+									<% end %>
+			        	</div>
+							</div>
+				  	</div>
+					</li>
+		    <%# end %>
+		  <% end %>
+	  </div>
+	</div>
+<% end %>
+
+<%= will_paginate @traits %>
+
+<% if @traits.blank? %>
+  <div class="alert alert-danger" role="alert">No traits entered.</div>
+<% end %>

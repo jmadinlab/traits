@@ -5,7 +5,7 @@ class Observation < ActiveRecord::Base
   belongs_to :resource
   has_paper_trail
   
-  default_scope -> { order('specie_id ASC') }
+  default_scope -> { joins(:specie).order('species.specie_name ASC') }
   # default_scope :include => :species, :order => "species.specie_name ASC"
   # default_scope joins(:specie).order('species.specie_name ASC, created_at ASC').readonly(false)
 

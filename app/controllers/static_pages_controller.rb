@@ -138,17 +138,38 @@ class StaticPagesController < ApplicationController
 
     csv_string = CSV.generate do |csv|
 
-      csv << ["trait_name", "description", "link"]
+      csv << ["trait_name", "class", "description", "standard", "unit", "values", "value description", "measurements", "link"]
       traits.sort_by{|t| t[:trait_name]}.each do |tra|
 
-        csv << [tra.trait_name, tra.trait_description, "https://coraltraits.org/traits/#{tra.id}.zip"]
-
+        csv << [
+          tra.trait_name, 
+          tra.trait_class, 
+          tra.trait_description, 
+          tra.standard.standard_name, 
+          tra.standard.standard_unit, 
+          tra.traitvalues.collect(&:value_name).join(", "), 
+          tra.traitvalues.map(&:value_description).join(", "), 
+          tra.measurements.size, 
+          # Observation.where(:id => tra.measurements.map(&:observation_id)).map(&:resource_id).uniq.join(", "), 
+          "https://coraltraits.org/traits/#{tra.id}.zip"
+        ]
       end
     end
 
     send_data csv_string, 
      :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
      :disposition => "attachment; filename=ready_trait_#{Date.today.strftime('%Y%m%d')}.csv"
+          
+  end
+
+  def export_ready_resources
+    
+    @observations = Observation.where(:id => Trait.where("release_status = ?", "ready_for_release").collect { |t| t.measurements.map(&:observation_id)})
+    resources_string = get_resources_csv(@observations)
+
+    send_data resources_string, 
+     :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
+     :disposition => "attachment; filename=ready_resources_#{Date.today.strftime('%Y%m%d')}.csv"
           
   end
 

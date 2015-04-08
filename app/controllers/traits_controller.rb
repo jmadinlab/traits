@@ -27,6 +27,15 @@ class TraitsController < ApplicationController
     end    
   end
 
+  def status
+
+    @traits_iss = Trait.where("trait_name like ?", "%.%")
+
+    respond_to do |format|
+      format.html
+    end    
+  end
+
   def export
     @observations = Observation.joins(:measurements).where(:measurements => {:trait_id => params[:checked]})
     @observations = observation_filter(@observations)
@@ -43,6 +52,12 @@ class TraitsController < ApplicationController
     else
       @observations = Observation.joins(:measurements).where('measurements.trait_id = ?', @trait.id)
     end
+
+    if @trait.traitvalues.present?
+      @mea_traitvalues = Measurement.where('trait_id = ?', @trait.id).map(&:value).uniq
+      @rec_traitvalues = @trait.traitvalues.map(&:value_name).uniq
+    end
+
     @observations = observation_filter(@observations)
     
     data_table = GoogleVisualr::DataTable.new

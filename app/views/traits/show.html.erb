@@ -36,18 +36,40 @@
 			<% end %>
 		</p>
 
+
 		<% if @trait.traitvalues.present? %>
+
+			<%#= @mea_traitvalues %>
+			<% @all_traitvalues = (@mea_traitvalues + @rec_traitvalues).uniq %>
 			<p>
 				<strong>Possible trait values:</strong>
-				<% @trait.traitvalues.each do |tv| %>
-					<span class="label label-primary" data-toggle="tooltip" data-placement="bottom" title="<%= tv.value_description%>"><%= tv.value_name %></span>
-					<%# if tv.value_description.present? %>
-						<!-- (<%#= tv.value_description %>) -->
-					<%# end %>
-				<% end %>
+				<ul>
+					<li>
+						<% mark = false %>
+						<% @all_traitvalues.each do |tv| %>
+		          <% if @rec_traitvalues.include?(tv) && @mea_traitvalues.include?(tv)  %>
+		            <span class="label label-primary" data-toggle="tooltip" data-placement="bottom" title="<%= @trait.traitvalues.where(:value_name => tv).first.value_description %>"><%= tv %></span>
+							<% elsif @rec_traitvalues.include?(tv) && !@mea_traitvalues.include?(tv) %>
+								<% mark = true %>
+							<% elsif !@rec_traitvalues.include?(tv) && !@mea_traitvalues.include?(tv) %>
+								<% mark = true %>
+							<% end %>
+						<% end %>
+					</li>
+					<% if mark %>
+						<li>Unused categories: 
+							<% @all_traitvalues.each do |tv| %>
+								<% if @rec_traitvalues.include?(tv) && !@mea_traitvalues.include?(tv) %>
+			            <span class="label label-success" data-toggle="tooltip" data-placement="bottom" title="<%= @trait.traitvalues.where(:value_name => tv).first.value_description %>"><%= tv %></span>
+								<% elsif !@rec_traitvalues.include?(tv) && !@mea_traitvalues.include?(tv) %>
+			            <span class="label label-danger" data-toggle="tooltip" data-placement="bottom" title=""><%= tv %></span>
+								<% end %>
+							<% end %>
+						</li>
+					<% end %>
+				</ul>
 			</p>
 		<% end %>
-		
 
 		<p>
 			<strong>Description:</strong>
