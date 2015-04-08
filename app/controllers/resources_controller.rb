@@ -26,7 +26,7 @@ class ResourcesController < ApplicationController
 
   def status
 
-    @resources_iss = Resource.where("author like ?", "%.%")
+    @resources_iss = Resource.where("author like ? OR volume_pages like ? OR journal like ?", "%.%", "%:%", "%.%")
     @resources_dup = Resource.find_by_sql("SELECT * 
       FROM resources AS res, 
       (SELECT author, year FROM resources GROUP BY author, year HAVING COUNT(*) > 1) AS sub 

@@ -12,60 +12,6 @@
 
 <p>The following resources have problems that need fixing.</p>
 
-<h3>Duplicates</h3>
-
-<div class="row">
-  <div class="col-sm-12">
-		<ul class="list-group">
-    	<% @resources_dup.each do |resource| %>
-			  <li class="list-group-item">							
-					<div class="row">
-		        <div class="col-sm-1" style="color: lightgrey;">
-		        	<%= resource.id %>
-							<% if resource.approval_status == 'pending' %>
-								<span class="glyphicon glyphicon-warning-sign"  style="color:red;" title="Pending Approval"></span>
-							<% end %>
-		        </div>
-
-		        <div class="col-sm-5">
-		        	<%= link_to resource.author, resource %>
-		        	<% if resource.year %>
-			        	(<%= resource.year %>)
-	    				<% end %>		
-		        	<small><%= resource.title %></small>
-		        </div>
-
-					 	<div class="col-sm-1">
-							<%= check_box_tag "checked[]", resource.id %>
-						</div>
-
-						<div class="col-sm-2">
-							<% if not params[:all] %>
-			        	<%= render "shared/access_counts", :acc => Observation.where(:resource_id => resource) %>
-							<% end %>
-						</div>
-
-		        <div class="col-sm-3">
-					    <div class="btn-group pull-right">
-					     	<%= link_to 'Show', resource_path(resource), class: "btn btn-xs btn-default" %>
-							  <% if signed_in? && current_user.editor? %>
-				        	<%= link_to 'Edit', edit_resource_path(resource), class: "btn btn-xs btn-default" %>
-								<% end %>
-							  <% if signed_in? && current_user.admin? %>
-				        	<%= link_to 'Delete', resource, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
-								<% end %>
-			        </div>
-						</div>
-					</div>
-				</li>
-	    <% end %>		
-    </ul>
-	</div>
-</div>
-
-<% if @resources_dup.blank? %>
-  <div class="alert alert-danger" role="alert">No resource duplicated to report.</div>
-<% end %>
 
 <h3>Naming Issues</h3>
 
@@ -121,4 +67,59 @@
 
 <% if @resources_iss.blank? %>
   <div class="alert alert-danger" role="alert">No resource issues to report.</div>
+<% end %>
+
+<h3>Duplicates</h3>
+
+<div class="row">
+  <div class="col-sm-12">
+		<ul class="list-group">
+    	<% @resources_dup.each do |resource| %>
+			  <li class="list-group-item">							
+					<div class="row">
+		        <div class="col-sm-1" style="color: lightgrey;">
+		        	<%= resource.id %>
+							<% if resource.approval_status == 'pending' %>
+								<span class="glyphicon glyphicon-warning-sign"  style="color:red;" title="Pending Approval"></span>
+							<% end %>
+		        </div>
+
+		        <div class="col-sm-5">
+		        	<%= link_to resource.author, resource %>
+		        	<% if resource.year %>
+			        	(<%= resource.year %>)
+	    				<% end %>		
+		        	<small><%= resource.title %></small>
+		        </div>
+
+					 	<div class="col-sm-1">
+							<%= check_box_tag "checked[]", resource.id %>
+						</div>
+
+						<div class="col-sm-2">
+							<% if not params[:all] %>
+			        	<%= render "shared/access_counts", :acc => Observation.where(:resource_id => resource) %>
+							<% end %>
+						</div>
+
+		        <div class="col-sm-3">
+					    <div class="btn-group pull-right">
+					     	<%= link_to 'Show', resource_path(resource), class: "btn btn-xs btn-default" %>
+							  <% if signed_in? && current_user.editor? %>
+				        	<%= link_to 'Edit', edit_resource_path(resource), class: "btn btn-xs btn-default" %>
+								<% end %>
+							  <% if signed_in? && current_user.admin? %>
+				        	<%= link_to 'Delete', resource, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
+								<% end %>
+			        </div>
+						</div>
+					</div>
+				</li>
+	    <% end %>		
+    </ul>
+	</div>
+</div>
+
+<% if @resources_dup.blank? %>
+  <div class="alert alert-danger" role="alert">No resource duplicated to report.</div>
 <% end %>
