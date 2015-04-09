@@ -165,7 +165,12 @@ class StaticPagesController < ApplicationController
   def export_ready_resources
     
     @observations = Observation.where(:id => Trait.where("release_status = ?", "ready_for_release").collect { |t| t.measurements.map(&:observation_id)})
-    resources_string = get_resources_csv(@observations)
+
+    resources_string = CSV.generate do |csv|
+      Resource.where(:id => @observations.map(&:resource).uniq).each do |res|
+        csv << ["#{res.author}, #{res.title}. #{res.journal} #{res.volume_pages} (#{res.year}) DOI:#{res.doi_isbn}"]
+      end
+    end
 
     send_data resources_string, 
      :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
