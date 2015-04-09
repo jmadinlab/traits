@@ -129,6 +129,7 @@ Traits::Application.routes.draw do
   match '/export_location_trait', to: 'static_pages#export_location_trait',   via: 'get'
   match '/export_ready_trait', to: 'static_pages#export_ready_trait',   via: 'get'
   match '/export_ready_resources', to: 'static_pages#export_ready_resources',   via: 'get'
+  match '/export_ready', to: 'static_pages#export_ready',   via: 'get'
 
 
 

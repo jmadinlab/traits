@@ -178,4 +178,12 @@ class StaticPagesController < ApplicationController
           
   end
 
+  def export_ready
+    
+    @observations = Observation.where(:id => Trait.where("release_status = ?", "ready_for_release").collect { |t| t.measurements.map(&:observation_id)})
+
+    send_zip(@observations)
+              
+  end
+
 end
