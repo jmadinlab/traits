@@ -1,5 +1,7 @@
 <% provide(:title, 'Download') %>
 
-<label class="label label-danger">Under Review</label>
+<div class="col-md-12">
+  <label class="label label-danger">Under Review</label>
 
-<%= markdown File.open(Rails.root + "public/download.md", 'r').read %>
+  <%= markdown File.open(Rails.root + "public/download.md", 'r').read %>
+</div>

@@ -1,13 +1,18 @@
-<div class="row">
-  <div class="col-sm-12 col-sm-offset-6">
-		<%= submit_tag "Download", {class: "btn btn-success btn-md"} %><br>
-		<small>
-			<input type="checkbox", name="taxonomy" /> Include taxonomic detail?<br>
-			<input type="checkbox", name="contextual", checked /> Include contexual data?<br>
-			<% if not @locations %>
-				<input type="checkbox", name="global" /> Global estimates only?<br>
-			<% end %>
-		</small>
-	</div>
-</div>
-
+<ul class="list-group">
+	<li class="list-group-item">							
+		<div class="row">
+      <div class="col-md-12">
+				<%= submit_tag "Download", {class: "btn btn-success pull-right"} %>
+				<br><br>
+				<small>
+					<span class="pull-right">Include taxonomic detail? <input type="checkbox", name="taxonomy" /></span>
+					<br><span class="pull-right">Include contexual data? <input type="checkbox", name="contextual", checked /></span>
+					<% if not @locations %>
+						<br><span class="pull-right">Global estimates only? <input type="checkbox", name="global" /></span>
+					<% end %>
+					<br><span class="pull-right">Check items below <span class="glyphicon glyphicon-arrow-down" style="color:grey;"></span></span>
+				</small>
+			</div>
+		</div>
+	</li>
+</ul>

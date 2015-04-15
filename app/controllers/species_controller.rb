@@ -27,8 +27,12 @@ class SpeciesController < ApplicationController
   end
 
   def export
-    @observations = Observation.where(:specie_id => params[:checked])
-    @observations = observation_filter(@observations)
+    if params[:checked]
+      @observations = Observation.where(:specie_id => params[:checked])
+      @observations = observation_filter(@observations)
+    else
+      @observations = []
+    end
 
     send_zip(@observations, params[:taxonomy], params[:contextual], params[:global])          
   end

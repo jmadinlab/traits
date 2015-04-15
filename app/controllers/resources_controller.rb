@@ -103,11 +103,15 @@ class ResourcesController < ApplicationController
   end
 
   def export
-    @observations = Observation.where(:resource_id => params[:checked])
-    @observations = observation_filter(@observations)
-
+    if params[:checked]
+      @observations = Observation.where(:resource_id => params[:checked])
+      @observations = observation_filter(@observations)
+    else
+      @observations = []
+    end
+    
     send_zip(@observations, params[:taxonomy], params[:contextual], params[:global])                   
-  end
+ end
 
   private
     # Use callbacks to share common setup or constraints between actions.

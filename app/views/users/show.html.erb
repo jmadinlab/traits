@@ -77,10 +77,10 @@
 		</div>
 	</div>
 
-	<%= will_paginate @observations %>
+	<%= will_paginate @observations, :inner_window => 1, :outer_window => 0 %>
 	<%= render "shared/observations" %>
 	<br>
-	<%= will_paginate @observations %>
+	<%= will_paginate @observations, :inner_window => 1, :outer_window => 0 %>
 	
 	<% end %>	
 <% end %>

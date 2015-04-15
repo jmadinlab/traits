@@ -1,106 +1,76 @@
 <% provide(:title, 'Locations') %>
 
-<div class="page-header">
-  <h1>Locations</h1>
+<div class="col-md-9">
+  <%= render "shared/index_header" %>
+  <div id="map-canvas" class="map-container"></div><br>
 </div>
 
-<div class="row">
-  <div class="col-md-4">
-		<%= render "shared/instructions" %>
-	</div>
-  <div class="col-md-8">
-		<div id="map-canvas" class="map-container"></div> 
-	</div>
-</div>
-
-<br/>
-
-<div class="well">
-	<div class="row">
-	  <div class="col-md-6">
-			<%= form_tag locations_path, :method => 'get' do %>
-		    <div class="input-group">
-		      <%= text_field_tag :search, params[:search], :placeholder => "Search locations...", class: "form-control" %>
-		      <span class="input-group-btn">
-				    <%= submit_tag "Search", :name => nil, class: "btn btn-default" %>
-						<%= link_to "See All", locations_path(search: params[:search], all: true), class: "btn btn-warning" %>
-						<%= link_to 'Reset', locations_path, class: "btn btn-default" %>
-		      </span>
-		    </div>
-				<!-- <p>Sort by: <%#= select_tag :sort, options_for_select(["id", "name", "latitude", "longitude"], params[:sort]), onchange: "$(this).parent('form').submit();" %></p> -->
-			<% end %>
-			<p>Download location list as a <%= link_to "csv", locations_path(format: "csv") %>.</p>
-	  </div>
-	  <div class="col-md-6">
-			<% if signed_in? && current_user.contributor? %>	
-				<%= link_to 'New Location', new_location_path, class: "btn btn-primary btn-md pull-right" %>
-			<% end %>
-	  </div>
-	</div>
-</div>
-
-<%= will_paginate @locations %>
 
 <%= form_tag export_locations_path do %>
 
-	<%= render "shared/download_options" %>			
+  <div class="col-md-3">
+    <%= render "shared/download_options" %>
+  </div>
 
-	<div class="row">
-	  <div class="col-md-12">
-			<ul class="list-group">
-	    	<% @locations.sort_by{|e| e[:location_name]}.each do |location| %>
-				  <li class="list-group-item">							
-						<div class="row">
-			        <div class="col-sm-1" style="color: lightgrey;">
-			        	<%= location.id %>
-			        </div>
+  <div class="col-sm-12">
 
-			        <div class="col-sm-5">
-			        	<%= link_to location.location_name, location, 'data-no-turbolink' => true %>
-                <% if location.latitude %>
-                  <small>(<%= location.latitude.round(3) %>,
-                  <%= location.longitude.round(3) %>)</small>
+    <%= will_paginate @locations, :inner_window => 1, :outer_window => 0 %><br><br>
+
+  	<ul class="list-group">
+    	<% @locations.sort_by{|e| e[:location_name]}.each do |location| %>
+  		  <li class="list-group-item">							
+  				<div class="row">
+  	        <div class="col-sm-1" style="color: lightgrey;">
+  	        	<%= location.id %>
+  	        </div>
+
+  	        <div class="col-sm-5">
+  	        	<%= link_to location.location_name, location, 'data-no-turbolink' => true %>
+              <% if location.latitude %>
+                <small>(<%= location.latitude.round(3) %>,
+                <%= location.longitude.round(3) %>)</small>
+              <% end %>
+  	        </div>
+
+            <div class="col-sm-3">
+              <div class="btn-group">
+                <%= link_to 'Show', location_path(location), 'data-no-turbolink' => true, class: "btn btn-xs btn-default" %>
+                <% if signed_in? && current_user.editor? %>
+                  <%= link_to 'Edit', edit_location_path(location), class: "btn btn-xs btn-default" %>
                 <% end %>
-			        </div>
+                <% if signed_in? && current_user.admin? %>
+                  <%= link_to 'Delete', location, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
+                <% end %>
+              </div>
+            </div>
 
-						 	<div class="col-sm-1">
-								<%= check_box_tag "checked[]", location.id %>
-							</div>
+            <div class="col-sm-3">
+              <p class="pull-right">
+                <% if not params[:all] %>
+                  <%= render "shared/access_counts", :acc => Observation.where(:location_id => location) %>
+                <% end %>
+                <%= check_box_tag "checked[]", location.id %>
+                </p>
+            </div>
 
-							<div class="col-sm-2">
-								<% if not params[:all] %>
-				        	<%= render "shared/access_counts", :acc => Observation.where(:location_id => location) %>
-								<% end %>
+  				</div>
+  			</li>
+      <% end %>		
+    </ul>
 
-								<% if location.approval_status == 'pending' %>
-									&nbsp;	<span class="glyphicon glyphicon-floppy-remove"  style="color:red;text-align:center;" title="Pending Approval"></span>
-								<% end %>
-							</div>
+    <%= will_paginate @locations, :inner_window => 1, :outer_window => 0 %>
 
-			        <div class="col-sm-3">
-						    <div class="btn-group pull-right">
-						     	<%= link_to 'Show', location_path(location), 'data-no-turbolink' => true, class: "btn btn-xs btn-default" %>
-								  <% if signed_in? && current_user.editor? %>
-					        	<%= link_to 'Edit', edit_location_path(location), class: "btn btn-xs btn-default" %>
-                  <% end %>
-                  <% if signed_in? && current_user.admin? %>
-					        	<%= link_to 'Delete', location, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
-									<% end %>
-				        </div>
-							</div>
-						</div>
-					</li>
-		    <% end %>		
-	    </ul>
-		</div>
 	</div>
 <% end %>
 
-<%= will_paginate @locations %>
 
 <% if @locations.blank? %>
   <div class="alert alert-danger" role="alert">No locations entered.</div>
 <% end %>
+
+<div class="col-sm-12">
+  <p>Download locations list as a <%= link_to "csv", locations_path(format: "csv", search: params[:search], page: params[:page], all: params[:all]) %>.</p>
+</div>
 
 <script type="text/javascript">
   var locations = <%= raw @locations.map {|i| [i.location_name.to_s, i.latitude.to_s, i.longitude.to_s, i.id.to_s] } %>;

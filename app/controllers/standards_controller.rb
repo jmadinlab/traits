@@ -42,10 +42,14 @@ class StandardsController < ApplicationController
   end
 
   def export
-    @observations = Observation.joins(:measurements).where(:measurements => {:standard_id => params[:checked]})
-    @observations = observation_filter(@observations)
+    if params[:checked]
+      @observations = Observation.joins(:measurements).where(:measurements => {:standard_id => params[:checked]})
+      @observations = observation_filter(@observations)
+    else
+      @observations = []
+    end
 
-    send_zip(@observations, 'data.csv', params[:taxonomy], params[:contextual], params[:global])          
+    send_zip(@observations, params[:taxonomy], params[:contextual], params[:global])          
   end
 
 

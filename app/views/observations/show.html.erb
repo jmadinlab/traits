@@ -1,4 +1,5 @@
-<div class="page-header">
+<div class="col-md-12">
+
   <h1>
   	<% if @observation.issues.where("resolved != ?", true).present? %>
 	  	<span class="glyphicon glyphicon-warning-sign" style="color:red;" data-toggle="tooltip" data-placement="top" title="Unresolved issue"></span>
@@ -8,219 +9,215 @@
 		<small><span class="label label-danger pull-right">pending approval</span></small>
 	<% end %>
 	</h1>
-</div>		
+	<hr>		
 
-<p>
-  <strong>ID:</strong>
-	<%= @observation.id %>
-</p>
+	<p>
+	  <strong>ID:</strong>
+		<%= @observation.id %>
+	</p>
 
-<p>
-	<strong>Species:</strong>
-  <em><%= link_to @observation.specie.specie_name, specie_path(@observation.specie) %></em>
-</p>
+	<p>
+		<strong>Species:</strong>
+	  <em><%= link_to @observation.specie.specie_name, specie_path(@observation.specie) %></em>
+	</p>
 
-<p>
-  <strong>Location:</strong>
-	<% if @observation.location.present? %>
-	  <%= link_to @observation.location.location_name, location_path(@observation.location), 'data-no-turbolink' => true %>
-	<% else %>
-			No record
+	<p>
+	  <strong>Location:</strong>
+		<% if @observation.location.present? %>
+		  <%= link_to @observation.location.location_name, location_path(@observation.location), 'data-no-turbolink' => true %>
+		<% else %>
+				No record
+		<% end %>
+	</p>
+
+	<p>
+	  <strong>Primary resource:</strong>
+			<% if @observation.resource.present? %>
+				<% ref = "#{@observation.resource.author} " + 
+					("(#{@observation.resource.year}) ") + 
+					("#{@observation.resource.title}. ") + 
+					("#{@observation.resource.journal} ") + 
+					("#{@observation.resource.volume_pages}") %>
+	  		<%= link_to ref, resource_path(@observation.resource) %>
+			<% else %>
+				No record
+			<% end %>
+	</p>
+
+	<% if @observation.resource_secondary_id %>
+		<% @secondary = Resource.where(:id => @observation.resource_secondary_id).first %>
+		<p>
+		  <strong>Secondary resource:</strong>
+				<% sref = "#{@secondary.author} " + 
+					("(#{@secondary.year}) ") + 
+					("#{@secondary.title}. ") + 
+					("#{@secondary.journal} ") + 
+					("#{@secondary.volume_pages}") %>
+	  		<%= link_to sref, resource_path(@secondary.id) %>
+		</p>
 	<% end %>
-</p>
 
-<p>
-  <strong>Primary resource:</strong>
-		<% if @observation.resource.present? %>
-			<% ref = "#{@observation.resource.author} " + 
-				("(#{@observation.resource.year}) ") + 
-				("#{@observation.resource.title}. ") + 
-				("#{@observation.resource.journal} ") + 
-				("#{@observation.resource.volume_pages}") %>
-  		<%= link_to ref, resource_path(@observation.resource) %>
+	<p>
+	  <strong>Contributor:</strong>
+		<% if @observation.user.present? %>
+	  	<%= link_to "#{@observation.user.name} #{@observation.user.last_name}", user_path(@observation.user) %>
 		<% else %>
 			No record
 		<% end %>
-</p>
-
-<% if @observation.resource_secondary_id %>
-	<% @secondary = Resource.where(:id => @observation.resource_secondary_id).first %>
-	<p>
-	  <strong>Secondary resource:</strong>
-			<% sref = "#{@secondary.author} " + 
-				("(#{@secondary.year}) ") + 
-				("#{@secondary.title}. ") + 
-				("#{@secondary.journal} ") + 
-				("#{@secondary.volume_pages}") %>
-  		<%= link_to sref, resource_path(@secondary.id) %>
 	</p>
-<% end %>
 
-<p>
-  <strong>Contributor:</strong>
-	<% if @observation.user.present? %>
-  	<%= link_to "#{@observation.user.name} #{@observation.user.last_name}", user_path(@observation.user) %>
-	<% else %>
-		No record
-	<% end %>
-</p>
-
-<p>
-  <strong>Access:</strong>
-	<% if @observation.private == true %>
-		<span class="glyphicon glyphicon-remove-circle" style="color:red;"></span>
-	<% else %>
-		<span class="glyphicon glyphicon-ok-circle" style="color:green;"></span>
-	<% end %>
-</p>
-
-
-<% if @observation.updated_at.present? %>
 	<p>
-	  <strong>Last modified:</strong>
-	  <%= @observation.updated_at.to_s(:ctdb_date) %>
+	  <strong>Access:</strong>
+		<% if @observation.private == true %>
+			<span class="glyphicon glyphicon-remove-circle" style="color:red;"></span>
+		<% else %>
+			<span class="glyphicon glyphicon-ok-circle" style="color:green;"></span>
+		<% end %>
 	</p>
-<% end %>
-
-<% if @observation.created_at.present? %>
-	<p>
-	  <strong>Created:</strong>
-	  <%= @observation.created_at.to_s(:ctdb_date) %>
-	</p>
-<% end %>
 
 
-<div class="btn-group">
-	<% if signed_in? && ((current_user.contributor? && @observation.user_id == current_user.id) || current_user.admin?) %>
-		<%= link_to 'Edit', edit_observation_path(@observation), class: "btn btn-sm btn-default" %>
+	<% if @observation.updated_at.present? %>
+		<p>
+		  <strong>Last modified:</strong>
+		  <%= @observation.updated_at.to_s(:ctdb_date) %>
+		</p>
 	<% end %>
-</div>
 
-<h3>Measurements</h3>
-
-<div class="row">
-  <div class="col-md-12">
-		<ul class="list-group">
-
-			<% if @observation.measurements.count > 0 %>
-			  <% @observation.measurements.joins(:trait).order("trait_class != 'Contextual' DESC").each do |mea| %>
-
-				  <li class="list-group-item">							
-						<div class="row">
-						  <div class="col-sm-1" style="color: lightgrey;">
-						  	<%= mea.id %>
-							</div>
-						  <div class="col-sm-3">
-
-								<% if mea.trait.trait_class == "Contextual" %>
-						  		<span class="glyphicon glyphicon-eye-open" data-toggle="tooltip" data-placement="top" title="Measurement is contextual"></span>
-								<% end %>
-						  	<%= link_to mea.trait.trait_name, trait_path(mea.trait_id), 'data-no-turbolink' => true %>
-							</div>
-						  <div class="col-sm-4">
-
-								<% if mea.trait.traitvalues.present? %>
-									<span class="label label-primary" data-toggle="tooltip" data-placement="bottom" title="<%= mea.trait.traitvalues.where(:value_name => mea.value).first.value_description %>"><%= mea.value %></span>
-								<% else %>
-									<%= mea.value %>
-								<% end %>
-								<% if mea.standard.present? %>
-						  		(<%= link_to mea.standard.standard_unit, standard_path(mea.standard_id) %>)
-									<% end %>
-							</div>
-		  
-
-						  <div class="col-sm-2">
-								<% if mea.value_type %>
-									<span class="label label-default"><%= mea.value_type %></span>
-								<% else %>
-									<span class="label label-danger">no value type</span>
-								<% end %>
-							</div>
-
-						  <div class="col-sm-2">
-								<% if mea.methodology %>
-								<%= link_to mea.methodology.methodology_name, methodology_path(mea.methodology_id) %>
-								<% else %>
-									<span class="label label-danger">no method</span>
-								<% end %>
-							</div>
-
-						</div>
-
-						
-						<% if mea.value_type != "raw_value" && mea.precision.present? %>
-							<div class="row">
-							  <div class="col-sm-1">
-								</div>
-							  <div class="col-sm-3">
-						      
-								</div>
-								<div class="col-sm-4">
-						      <%= mea.precision %> (<%= mea.precision_type %>)
-									<% if mea.precision_upper && mea.precision_upper != "" %>
-						      	-<%= mea.precision_upper %>
-						      <% end %>
-								</div>
-
-								<% if mea.replicates && mea.replicates != "" %>
-							  	<div class="col-sm-3">
-						      	replicates: <%= mea.replicates %>
-									</div>
-								<% end %>
-							</div>
-			 			<% end %>
-
-						<% if mea.notes && mea.notes != "" %>
-							<div class="row">
-							  <div class="col-sm-4">
-								</div>
-							  <div class="col-md-8">
-						      <strong>Notes:</strong> <%= mea.notes %>
-								</div>
-							</div>
-			 			<% end %>
-					</li>
-			
-			 	<% end %>
-			<% end %>
-		</ul>
-  </div>
-</div>
-
-<% if signed_in? %>
-	<% if @observation.issues.size > 0 %>
-		<h3>Issues</h3>
+	<% if @observation.created_at.present? %>
+		<p>
+		  <strong>Created:</strong>
+		  <%= @observation.created_at.to_s(:ctdb_date) %>
+		</p>
 	<% end %>
+
+
+	<div class="btn-group">
+		<% if signed_in? && ((current_user.contributor? && @observation.user_id == current_user.id) || current_user.admin?) %>
+			<%= link_to 'Edit', edit_observation_path(@observation), class: "btn btn-default" %>
+		<% end %>
+	</div>
+
+	<h3>Measurements</h3>
 
 	<ul class="list-group">
-		<%= render @observation.issues %>
+
+		<% if @observation.measurements.count > 0 %>
+		  <% @observation.measurements.joins(:trait).order("trait_class != 'Contextual' DESC").each do |mea| %>
+
+			  <li class="list-group-item">							
+					<div class="row">
+					  <div class="col-sm-1" style="color: lightgrey;">
+					  	<%= mea.id %>
+						</div>
+					  <div class="col-sm-3">
+
+							<% if mea.trait.trait_class == "Contextual" %>
+					  		<span class="glyphicon glyphicon-eye-open" data-toggle="tooltip" data-placement="top" title="Measurement is contextual"></span>
+							<% end %>
+					  	<%= link_to mea.trait.trait_name, trait_path(mea.trait_id), 'data-no-turbolink' => true %>
+						</div>
+					  <div class="col-sm-4">
+
+							<% if mea.trait.traitvalues.present? %>
+								<span class="label label-primary" data-toggle="tooltip" data-placement="bottom" title="<%= mea.trait.traitvalues.where(:value_name => mea.value).first.value_description %>"><%= mea.value %></span>
+							<% else %>
+								<%= mea.value %>
+							<% end %>
+							<% if mea.standard.present? %>
+					  		(<%= link_to mea.standard.standard_unit, standard_path(mea.standard_id) %>)
+								<% end %>
+						</div>
+	  
+
+					  <div class="col-sm-2">
+							<% if mea.value_type %>
+								<span class="label label-default"><%= mea.value_type %></span>
+							<% else %>
+								<span class="label label-danger">no value type</span>
+							<% end %>
+						</div>
+
+					  <div class="col-sm-2">
+							<% if mea.methodology %>
+							<%= link_to mea.methodology.methodology_name, methodology_path(mea.methodology_id) %>
+							<% else %>
+								<span class="label label-danger">no method</span>
+							<% end %>
+						</div>
+
+					</div>
+
+					
+					<% if mea.value_type != "raw_value" && mea.precision.present? %>
+						<div class="row">
+						  <div class="col-sm-1">
+							</div>
+						  <div class="col-sm-3">
+					      
+							</div>
+							<div class="col-sm-4">
+					      <%= mea.precision %> (<%= mea.precision_type %>)
+								<% if mea.precision_upper && mea.precision_upper != "" %>
+					      	-<%= mea.precision_upper %>
+					      <% end %>
+							</div>
+
+							<% if mea.replicates && mea.replicates != "" %>
+						  	<div class="col-sm-3">
+					      	replicates: <%= mea.replicates %>
+								</div>
+							<% end %>
+						</div>
+		 			<% end %>
+
+					<% if mea.notes && mea.notes != "" %>
+						<div class="row">
+						  <div class="col-sm-4">
+							</div>
+						  <div class="col-md-8">
+					      <strong>Notes:</strong> <%= mea.notes %>
+							</div>
+						</div>
+		 			<% end %>
+				</li>
+		
+		 	<% end %>
+		<% end %>
 	</ul>
 
-	<%= form_for([@observation, @observation.issues.build]) do |f| %>
-    <%= f.hidden_field :user_id, :value => current_user.id %>
-    <%= f.hidden_field :observation_id, :value => @observation.id %>
+	<% if signed_in? %>
+		<% if @observation.issues.size > 0 %>
+			<h3>Issues</h3>
+		<% end %>
 
-		<div class="row">
-			<div class="col-md-1" style="color:lightgrey;">
-			</div>
+		<ul class="list-group">
+			<%= render @observation.issues %>
+		</ul>
 
-		  <div class="col-md-4">
-		  </div>
+		<%= form_for([@observation, @observation.issues.build]) do |f| %>
+	    <%= f.hidden_field :user_id, :value => current_user.id %>
+	    <%= f.hidden_field :observation_id, :value => @observation.id %>
 
-			<div class="col-md-5">
-			  <div class="form-group">
-			    <%= f.text_field :issue_description, class: "form-control", :placeholder => "Report an issue..." %>
+			<div class="row">
+				<div class="col-md-1" style="color:lightgrey;">
+				</div>
+
+			  <div class="col-md-4">
+			  </div>
+
+				<div class="col-md-5">
+				  <div class="form-group">
+				    <%= f.text_field :issue_description, class: "form-control", :placeholder => "Report an issue..." %>
+				  </div>
+				</div>
+
+				<div class="col-md-2">
+			    <%= f.submit "Submit", class: "btn btn-primary" %>
 			  </div>
 			</div>
-
-			<div class="col-md-2">
-		    <%= f.submit "Submit", class: "btn btn-primary btn-sm" %>
-		  </div>
-		</div>
+		<% end %>
 	<% end %>
-<% end %>
 
-
+</div>
 
 

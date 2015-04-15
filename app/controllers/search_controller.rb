@@ -1,10 +1,11 @@
 class SearchController < ApplicationController
+
 	def index
-		
 		if params[:search] && params[:search] != ""
 			if not params[:model_name]
-				params[:model_name] = ['Specie', 'Trait', 'Location', 'Resource', 'Standard', 'Observation']
+				params[:model_name] = ['Specie', 'Trait', 'Location', 'Resource', 'Standard', 'Observation', 'Methodology']
 			end
+
 			@result_present = false
 			params[:model_name].each do |m|
 				@model = m.classify.constantize
@@ -24,12 +25,12 @@ class SearchController < ApplicationController
 				instance_variable_set("@#{name}", search_result)
 			end
 		else
-			@location_search = nil
+			# @location_search = nil
 		end
 	end
 
 	def json_completion
-		model_names = ['Specie', 'Trait', 'Location', 'Resource', 'Standard']
+		model_names = ['Specie', 'Trait', 'Location', 'Resource', 'Standard', 'Methodology']
 		
 		bucket = []
 		model_names.each do |m|

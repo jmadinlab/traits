@@ -1,0 +1,35 @@
+<% model = request.original_url.split("/").last.split("?").first %>
+<h1><%= model.capitalize %></h1>
+<hr>
+<div class="btn-group">
+
+
+	<%#= form_tag "#{model}", :method => 'get' do %>
+    <!-- <div class="input-group"> -->
+      <!-- <%#= text_field_tag :search, params[:search], :placeholder => "Search...", class: "form-control" %> -->
+      <!-- <span class="input-group-btn"> -->
+		    <%#= submit_tag "Search", :name => nil, class: "btn btn-default" %>
+				<% if params[:all] %>
+					<%= link_to "Paginate", "#{model}", class: "btn btn-default" %>
+				<% else %>
+					<%= link_to "Show All", "#{model}?all=true", class: "btn btn-default" %>
+				<% end %>
+      <!-- </span> -->
+    <!-- </div> -->
+	<%# end %>
+
+</div>
+<div class="btn-group pull-right">
+
+<% if signed_in? && current_user.admin? %>  
+  <% if model == "species" %>  
+    <%= link_to "New #{model.capitalize}", "#{model}/new", class: "btn btn-primary" %>
+  <% else %>
+    <%= link_to "New #{model.singularize.capitalize}", "#{model}/new", class: "btn btn-primary" %>
+  <% end %>
+<% end %>
+<% if model == "resources" %>  
+	<%= link_to 'Errors', resources_status_path, class: "btn btn-danger" %>
+<% end %>
+</div>
+<br><br>

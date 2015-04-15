@@ -2,6 +2,7 @@
 
 <% @observations.each do |obs| %>    
 
+
 	<% if @user %>
 		<%= hidden_field_tag "all_ids[]", obs.id %>
 	<% end %>

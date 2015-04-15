@@ -1,7 +1,6 @@
 <% provide(:title, @location.location_name) %>
 
-
-<div class="page-header">
+<div class="col-md-12">
   <h1>
     <% if @location.location_name != "Global" %>
       <span class="glyphicon glyphicon-map-marker" data-toggle="tooltip" data-placement="bottom" title="Location"></span>
@@ -10,70 +9,74 @@
     <% end %>
 
     <%= @location.location_name %>
+
 		<% if @location.approval_status == "pending" %>
 			<small><span class="label label-danger pull-right">pending approval</span></small>
 		<% end %>
   </h1>
+  <hr>
 </div>
 
-<div class="row">
-  <div class="col-md-3">
+
+<div class="col-md-4">
+  <p>
+    <strong>ID:</strong>
+      <%= @location.id %>
+  </p>
+  <p>
+    <strong>Latitude:</strong>
+    <%= @location.latitude.round(4) %>
+  </p>
+
+  <p>
+    <strong>Longitude:</strong>
+    <%= @location.longitude.round(4) %>
+  </p>
+  
+  <% if !@location.location_description.blank? %>
     <p>
-      <strong>ID:</strong>
-        <%= @location.id %>
+      <strong>Description:</strong>
+      <%= @location.location_description %>
     </p>
-		<p>
-		  <strong>Latitude:</strong>
-		  <%= @location.latitude.round(4) %>
-		</p>
-
-		<p>
-		  <strong>Longitude:</strong>
-		  <%= @location.longitude.round(4) %>
-		</p>
-		
-		<% if !@location.location_description.blank? %>
-			<p>
-			  <strong>Description:</strong>
-			  <%= @location.location_description %>
-			</p>
-		<% end %>
-
-		<p>
-		  <strong>Added by:</strong>
-			<% if @location.user %>
-		  	<%= @location.user.name %> <%= @location.user.last_name %>
-			<% end %>
-		</p>
-
-    <div class="btn-group">
-	  	<% if signed_in? && current_user.editor? %>
-				<%= link_to 'Edit', edit_location_path(@location), class: "btn btn-sm btn-default" %>
-			<% end %>
-			<%= link_to 'Back', locations_path, class: "btn btn-sm btn-default" %>
-		</div><br><br>
-
-	</div>
-
-  <% if @location.location_name != "Global" %>
-    <div class="col-md-9" data-no-turbolink>
-  		<div id="map-canvas" class="map-container" data-no-turbolink></div> 
-  	</div>
   <% end %>
 
+  <p>
+    <strong>Added by:</strong>
+    <% if @location.user %>
+      <%= @location.user.name %> <%= @location.user.last_name %>
+    <% end %>
+  </p>
+
+  <p>
+    <div class="btn-group">
+      <%= link_to 'Back', locations_path, class: "btn btn-default" %>
+      <% if signed_in? && current_user.contributor? %>
+        <%= link_to 'Edit', edit_location_path(@location), class: "btn btn-default" %>
+      <% end %>
+    </div>
+  </p>
+
 </div>
 
-<h3>Observations from <%= @location.location_name %></h3>
+<div class="col-md-8" data-no-turbolink>
+  <% if @location.location_name != "Global" %>
+    <div id="map-canvas" class="map-container" data-no-turbolink></div> 
+  <% end %>
+</div>
 
-<% if @observations.empty? %>
-  <p class="alert alert-danger"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> No observations available</p>
-<% else %>
-	<%= will_paginate @observations %>
-	<%= render "shared/observations" %>
-  <br>
-  <%= will_paginate @observations %>
-<% end %>
+<div class="col-md-12">
 
+  <h3>Observations from <%= @location.location_name %></h3>
+
+  <% if @observations.empty? %>
+    <p class="alert alert-danger"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> No observations available</p>
+  <% else %>
+  	<%= will_paginate @observations, :inner_window => 1, :outer_window => 0 %>
+  	<%= render "shared/observations" %>
+    <br>
+    <%= will_paginate @observations, :inner_window => 1, :outer_window => 0 %>
+  <% end %>
+</div>
 
 <script type="text/javascript">
   var loc = <%= raw [@location.location_name.to_s, @location.latitude.to_s, @location.longitude.to_s, @location.id.to_s] %>;

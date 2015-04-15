@@ -1,54 +1,55 @@
 <% provide(:title, 'Standards') %>
 
-<div class="page-header">
+<div class="col-md-12">
   <h1>Standard: <%= @standard.standard_name %></h1>
-</div>
+  <hr>
 
-<p>
-  <strong>ID:</strong>
-    <%= @standard.id %>
-</p>
-
-<p>
-  <strong>Measurement unit:</strong>
-  <%= @standard.standard_unit %>
-</p>
-
-<p>
-  <strong>Class:</strong>
-  <%= @standard.standard_class %>
-</p>
-
-<p>
-  <strong>Description:</strong>
-  <% if @standard.standard_description.present? %>
-    <%= @standard.standard_description %>
-  <% else %>
-    <font style="color:lightgrey;">Not entered</font>
-  <% end %>
-</p>
-
-<% if @standard.user %>
   <p>
-    <strong>Added by:</strong>
-    <%= @standard.user.name %> <%= @standard.user.last_name %>
+    <strong>ID:</strong>
+      <%= @standard.id %>
   </p>
-<% end %>
 
-<div class="btn-group">
-  <% if signed_in? && current_user.editor? %>
-    <%= link_to 'Edit', edit_standard_path(@standard), class: "btn btn-sm btn-default" %>
+  <p>
+    <strong>Measurement unit:</strong>
+    <%= @standard.standard_unit %>
+  </p>
+
+  <p>
+    <strong>Class:</strong>
+    <%= @standard.standard_class %>
+  </p>
+
+  <p>
+    <strong>Description:</strong>
+    <% if @standard.standard_description.present? %>
+      <%= @standard.standard_description %>
+    <% else %>
+      <font style="color:lightgrey;">Not entered</font>
+    <% end %>
+  </p>
+
+  <% if @standard.user %>
+    <p>
+      <strong>Added by:</strong>
+      <%= @standard.user.name %> <%= @standard.user.last_name %>
+    </p>
   <% end %>
-  <%= link_to 'Back', standards_path, class: "btn btn-sm btn-default" %>
+
+  <div class="btn-group">
+    <% if signed_in? && current_user.editor? %>
+      <%= link_to 'Edit', edit_standard_path(@standard), class: "btn btn-sm btn-default" %>
+    <% end %>
+    <%= link_to 'Back', standards_path, class: "btn btn-sm btn-default" %>
+  </div>
+
+  <h3>Observations</h3>
+
+  <% if @observations.empty? %>
+    <p class="alert alert-danger"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> No observations available</p>
+  <% else %>
+      <%= will_paginate @observations, :inner_window => 1, :outer_window => 0 %>
+      <%= render "shared/observations" %>
+      <br>
+      <%= will_paginate @observations, :inner_window => 1, :outer_window => 0 %>
+  <% end %>
 </div>
-
-<h3>Observations</h3>
-
-<% if @observations.empty? %>
-  <p class="alert alert-danger"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> No observations available</p>
-<% else %>
-  <%= will_paginate @observations %>
-  <%= render "shared/observations" %>
-  <br>
-  <%= will_paginate @observations %>
-<% end %>

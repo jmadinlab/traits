@@ -5,6 +5,8 @@ class Methodology < ActiveRecord::Base
 	has_many :measurements
 	accepts_nested_attributes_for :traits, :reject_if => :all_blank, :allow_destroy => true
   
+  default_scope -> { order('methodology_name ASC') }
+
   searchable do
     text :methodology_name  
     string :methodology_name_sortable do 
@@ -12,16 +14,4 @@ class Methodology < ActiveRecord::Base
     end
   end
 
-  default_scope -> { order('methodology_name ASC') }
-
-  '''
-	def self.search(search)
-      if search
-        where("methodology_name LIKE ?", "%#{search}%")
-      else
-        all
-      end
-  end  
-
-  '''
 end

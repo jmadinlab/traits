@@ -10,7 +10,7 @@
 	<% if !signed_in? %>
 		<p><%= link_to "Sign up?", signup_path, class: "btn btn-lg btn-primary" %></p>
 
-		<p>Sign up to become a member and recieve periodic news about the database. Sign up is not required to access public data.  Please email <a href="mailto:<%= ENV["GMAIL_USERNAME"] %>?subject=<%= ENV["SITE_NAME"] %> enquiry">coraltraits@gmail.com</a> with any comments, to become a contributor, or for more information.</p>
+		<p>Sign up to become a member and recieve periodic news about the database. Sign up is not required to access public data.  Please email <a href="mailto:<%= ENV["GMAIL_USERNAME"] %>?subject=<%= ENV["SITE_NAME"] %> enquiry"><%= ENV["GMAIL_USERNAME"] %></a> with any comments, to become a contributor, or for more information.</p>
 	<% end %>
 
   <p>

@@ -113,10 +113,15 @@ class MethodologiesController < ApplicationController
   end
 
   def export
-    @observations = Observation.where(:id => Measurement.where(:methodology_id => params[:checked]).map(&:observation_id))
-    @observations = observation_filter(@observations)
 
-    send_zip(@observations, params[:taxonomy], params[:contextual], params[:global])                   
+    if params[:checked]
+      @observations = Observation.where(:id => Measurement.where(:methodology_id => params[:checked]).map(&:observation_id))
+      @observations = observation_filter(@observations)
+    else
+      @observations = []
+    end
+
+    send_zip(@observations, params[:taxonomy], params[:contextual], params[:global])        
   end
 
 

@@ -1,57 +1,60 @@
 <% provide(:title, @methodology.methodology_name) %>
 
+<div class="col-md-12">
+  <h1>Methodology: <%= @methodology.methodology_name %>
+    <%# if @methodology.approval_status == "pending" %>
+      <!-- <small><span class="label label-danger pull-right">pending approval</span></small> -->
+    <%# end %>
+  </h1>
+  <hr>
 
-<div class="page-header">
-  <h1>Methodology: <%= @methodology.methodology_name %></h1>
-</div>
-
-<p>
-  <strong>ID:</strong>
-  	<%= @methodology.id %>
-</p>
-
-<% if !@methodology.method_description.blank? %>
   <p>
-    <strong>Description:</strong>
-  	<%= @methodology.method_description %>
+    <strong>ID:</strong>
+    	<%= @methodology.id %>
   </p>
-<% end %>
 
-<% if not @methodology.traits.empty? %>
-	<p>
-			<strong>Used for traits:</strong>
-			<% @methodology.traits.each do |trait| %>
-				<%= link_to trait.trait_name, trait, class: "label label-primary", 'data-no-turbolink' => true %>
-  		<% end %>
-	</p>
-<% end %>
-
-<p>
-  <strong>Added by:</strong>
-  <% if @methodology.user %>
-    <%= @methodology.user.name %> <%= @methodology.user.last_name %>
+  <% if !@methodology.method_description.blank? %>
+    <p>
+      <strong>Description:</strong>
+    	<%= @methodology.method_description %>
+    </p>
   <% end %>
-</p>
 
-<p>
-	<div class="btn-group">
-		<% if signed_in? && current_user.contributor? %>
-			<%= link_to 'Edit', edit_methodology_path(@methodology), class: "btn btn-sm btn-default" %>
-		<% end %>
-		<%= link_to 'Back', methodologies_path, class: "btn btn-sm btn-default" %>
-	</div>
-</p>
-		
+  <% if not @methodology.traits.empty? %>
+  	<p>
+  			<strong>Used for traits:</strong>
+  			<% @methodology.traits.each do |trait| %>
+  				<%= link_to trait.trait_name, trait, class: "label label-primary", 'data-no-turbolink' => true %>
+    		<% end %>
+  	</p>
+  <% end %>
 
-<h3>Observations using this methodology</h3>
+  <p>
+    <strong>Added by:</strong>
+    <% if @methodology.user %>
+      <%= @methodology.user.name %> <%= @methodology.user.last_name %>
+    <% end %>
+  </p>
 
-<% if @observations.empty? %>
-	<p class="alert alert-danger"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> No observations available</p>
-<% else %>
+  <p>
+    <div class="btn-group">
+      <%= link_to 'Back', methodologies_path, class: "btn btn-default" %>
+      <% if signed_in? && current_user.contributor? %>
+        <%= link_to 'Edit', edit_methodology_path(@methodology), class: "btn btn-default" %>
+      <% end %>
+    </div>
+  </p>
 
-	<%= will_paginate @observations %>
-	<%= render "shared/observations" %>
-	<br>
-	<%= will_paginate @observations %>
+  <h3>Observations using this methodology</h3>
 
-<% end %>
+  <% if @observations.empty? %>
+  	<p class="alert alert-danger"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> No observations available</p>
+  <% else %>
+
+  	<%= will_paginate @observations, :inner_window => 1, :outer_window => 0 %>
+  	<%= render "shared/observations" %>
+  	<br>
+  	<%= will_paginate @observations, :inner_window => 1, :outer_window => 0 %>
+
+  <% end %>
+</div>

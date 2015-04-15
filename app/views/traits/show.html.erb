@@ -1,7 +1,6 @@
 <% provide(:title, @trait.trait_name) %>
 
-
-<div class="page-header">
+<div class="col-md-12">
 	<h1>
 		<% if @trait.trait_class == "Contextual" %>
   		<span class="glyphicon glyphicon-eye-open" data-toggle="tooltip" data-placement="bottom" title="Contextual trait"></span>
@@ -11,130 +10,132 @@
 			(<em><%= link_to @specie.specie_name, specie_path(@specie) %></em>)
 		<% end %>
 	</h1>
+	<hr>
 </div>
 
-<div class="row">
-  <div class="col-md-8">
-	  <p>
-	    <strong>ID:</strong>
-	    	<%= @trait.id %>
-	  </p>
+<div class="col-md-8">
+  <p>
+    <strong>ID:</strong>
+    	<%= @trait.id %>
+  </p>
 
+	<p>
+	  <strong>Class:</strong>
+		<% if @trait.trait_class.present? %>
+	  	<%= @trait.trait_class %>
+		<% else %>
+			<font style="color:lightgrey;">Unclassified</font>
+		<% end %>
+	</p>
+
+	<p>
+		<strong>Default standard:</strong>
+		<% if !@trait.standard.blank? %>
+			<%= @trait.standard.standard_name %> (<%= @trait.standard.standard_unit %>)
+		<% end %>
+	</p>
+
+
+	<% if @trait.traitvalues.present? %>
+
+		<%#= @mea_traitvalues %>
+		<% @all_traitvalues = (@mea_traitvalues + @rec_traitvalues).uniq %>
 		<p>
-		  <strong>Class:</strong>
-			<% if @trait.trait_class.present? %>
-		  	<%= @trait.trait_class %>
-			<% else %>
-				<font style="color:lightgrey;">Unclassified</font>
-			<% end %>
-		</p>
-
-		<p>
-			<strong>Default standard:</strong>
-			<% if !@trait.standard.blank? %>
-				<%= @trait.standard.standard_name %> (<%= @trait.standard.standard_unit %>)
-			<% end %>
-		</p>
-
-
-		<% if @trait.traitvalues.present? %>
-
-			<%#= @mea_traitvalues %>
-			<% @all_traitvalues = (@mea_traitvalues + @rec_traitvalues).uniq %>
-			<p>
-				<strong>Possible trait values:</strong>
-				<ul>
-					<li>
-						<% mark = false %>
+			<strong>Possible trait values:</strong>
+			<ul>
+				<li>
+					<% mark = false %>
+					<% @all_traitvalues.each do |tv| %>
+	          <% if @rec_traitvalues.include?(tv) && @mea_traitvalues.include?(tv)  %>
+	            <span class="label label-primary" data-toggle="tooltip" data-placement="bottom" title="<%= @trait.traitvalues.where(:value_name => tv).first.value_description %>"><%= tv %></span>
+						<% elsif @rec_traitvalues.include?(tv) && !@mea_traitvalues.include?(tv) %>
+							<% mark = true %>
+						<% elsif !@rec_traitvalues.include?(tv) && !@mea_traitvalues.include?(tv) %>
+							<% mark = true %>
+						<% end %>
+					<% end %>
+				</li>
+				<% if mark %>
+					<li>Unused categories: 
 						<% @all_traitvalues.each do |tv| %>
-		          <% if @rec_traitvalues.include?(tv) && @mea_traitvalues.include?(tv)  %>
-		            <span class="label label-primary" data-toggle="tooltip" data-placement="bottom" title="<%= @trait.traitvalues.where(:value_name => tv).first.value_description %>"><%= tv %></span>
-							<% elsif @rec_traitvalues.include?(tv) && !@mea_traitvalues.include?(tv) %>
-								<% mark = true %>
+							<% if @rec_traitvalues.include?(tv) && !@mea_traitvalues.include?(tv) %>
+		            <span class="label label-success" data-toggle="tooltip" data-placement="bottom" title="<%= @trait.traitvalues.where(:value_name => tv).first.value_description %>"><%= tv %></span>
 							<% elsif !@rec_traitvalues.include?(tv) && !@mea_traitvalues.include?(tv) %>
-								<% mark = true %>
+		            <span class="label label-danger" data-toggle="tooltip" data-placement="bottom" title=""><%= tv %></span>
 							<% end %>
 						<% end %>
 					</li>
-					<% if mark %>
-						<li>Unused categories: 
-							<% @all_traitvalues.each do |tv| %>
-								<% if @rec_traitvalues.include?(tv) && !@mea_traitvalues.include?(tv) %>
-			            <span class="label label-success" data-toggle="tooltip" data-placement="bottom" title="<%= @trait.traitvalues.where(:value_name => tv).first.value_description %>"><%= tv %></span>
-								<% elsif !@rec_traitvalues.include?(tv) && !@mea_traitvalues.include?(tv) %>
-			            <span class="label label-danger" data-toggle="tooltip" data-placement="bottom" title=""><%= tv %></span>
-								<% end %>
-							<% end %>
-						</li>
-					<% end %>
-				</ul>
-			</p>
+				<% end %>
+			</ul>
+		</p>
+	<% end %>
+
+	<p>
+		<strong>Description:</strong>
+		<% if @trait.trait_description.present? %>
+			<%= @trait.trait_description %>
+		<% else %>
+			<font style="color:lightgrey;">Not entered</font>
+		<% end %>
+	</p>
+
+	<p>
+		<strong>Methodologies:</strong>
+		<% if not @trait.methodologies.empty? %>
+			<ul>
+				<% @trait.methodologies.each do |methodology| %>
+					<li>
+						<%= link_to methodology.methodology_name, methodology %>
+				</li>
+				<% end %>
+			</ul>
+		<% else %>
+			<font style="color:lightgrey;">None entered</font>
 		<% end %>
 
-		<p>
-			<strong>Description:</strong>
-			<% if @trait.trait_description.present? %>
-				<%= @trait.trait_description %>
-			<% else %>
-				<font style="color:lightgrey;">Not entered</font>
-			<% end %>
-		</p>
+	</p>
 
-		<p>
-			<strong>Methodologies:</strong>
-			<% if not @trait.methodologies.empty? %>
-				<ul>
-					<% @trait.methodologies.each do |methodology| %>
-						<li>
-							<%= link_to methodology.methodology_name, methodology %>
-					</li>
-					<% end %>
-				</ul>
-			<% else %>
-				<font style="color:lightgrey;">None entered</font>
-			<% end %>
+	<p>
+		<strong>Editor:</strong>
+		<% if !@trait.user.blank? %>
+			<%= @trait.user.name %> <%= @trait.user.last_name %> (<%= mail_to @trait.user.email, "contact", {:subject => "#{ENV["SITE_NAME"]} enquiry"} %>)
+		<% end %>
+		<% if signed_in? && current_user.editor? %>
+			<%= link_to "meta", show_meta_path(@trait), class: "label label-danger" %>
+		<% end %>
+	</p>
 
-		</p>
+	<p>
+	  <div class="btn-group">
+	    <%= link_to 'Back', traits_path, class: "btn btn-default" %>
+	    <% if signed_in? && current_user.contributor? %>
+	      <%= link_to 'Edit', edit_trait_path(@trait), class: "btn btn-default" %>
+	    <% end %>
+	  </div>
+  </p>
+  
+</div>
 
-		<p>
-			<strong>Editor:</strong>
-			<% if !@trait.user.blank? %>
-				<%= @trait.user.name %> <%= @trait.user.last_name %> (<%= mail_to @trait.user.email, "contact", {:subject => "#{ENV["SITE_NAME"]} enquiry"} %>)
-			<% end %>
-			<% if signed_in? && current_user.editor? %>
-				<%= link_to "meta", show_meta_path(@trait), class: "label label-danger" %>
-			<% end %>
-		</p>
-
-		<p>
-      <div class="btn-group">
-				<% if signed_in? && current_user.editor? %>
-					<%= link_to 'Edit', edit_trait_path(@trait), class: "btn btn-sm btn-default" %>
-				<% end %>
-				<%= link_to 'Back', traits_path, class: "btn btn-sm btn-default" %>
-      </div>
-		</p>
-	</div>
-
-  <div class="col-md-4">
-	  <div class="col-md-3">
-			<% if @chart %>
-				<div id='chart'></div>
-				<%= render_chart @chart, 'chart' %>
-				<%#= @data_table %>
-			<% end %>
-		</div>
+<div class="col-md-4">
+  <div class="col-md-3">
+		<% if @chart %>
+			<div id='chart'></div>
+			<%= render_chart @chart, 'chart' %>
+			<%#= @data_table %>
+		<% end %>
 	</div>
 </div>
 
+<div class="col-md-12">
 
-<h3>Observations</h3>
+	<h3>Observations</h3>
 
-<% if @observations.empty? %>
-	<p class="alert alert-danger"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> No observations available</p>
-<% else %>
-	<%= will_paginate @observations %>
-	<%= render "shared/observations" %>
-	<br>
-	<%= will_paginate @observations %>
-<% end %>
+	<% if @observations.empty? %>
+		<p class="alert alert-danger"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> No observations available</p>
+	<% else %>
+		<%= will_paginate @observations, :inner_window => 1, :outer_window => 0 %>
+		<%= render "shared/observations" %>
+		<br>
+		<%= will_paginate @observations, :inner_window => 1, :outer_window => 0 %>
+	<% end %>
+</div>

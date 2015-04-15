@@ -1,127 +1,118 @@
 <% provide(:title, "Resource") %>
 
-<div class="page-header">
-  <h1>
-		<span class="glyphicon glyphicon-tag" data-toggle="tooltip" data-placement="bottom" title="Resource"></span>
-  	Resource
+<div class="col-md-12">
+  <h1>Resource
+    <div class="btn-group">
+      <%= link_to 'Back', resources_path, class: "btn btn-default" %>
+      <% if signed_in? && current_user.contributor? %>
+        <%= link_to 'Edit', edit_resource_path(@resource), class: "btn btn-default" %>
+      <% end %>
+    </div>
 		<% if @resource.approval_status == "pending" %>
 			<small><span class="label label-danger pull-right">pending approval</span></small>
 		<% end %>
-  </h1>  
-</div>
+  </h1>
+  <hr>
 
-<div class="row">
-  <div class="col-md-12">
-	  <p>
-	    <strong>ID:</strong>
-	    	<%= @resource.id %>
-	  </p>
+  <p>
+    <strong>ID:</strong>
+    	<%= @resource.id %>
+  </p>
 
-		<p>
-		  <strong>Author:</strong>
-		  <%= @resource.author %>
-		</p>
+	<p>
+	  <strong>Author:</strong>
+	  <%= @resource.author %>
+	</p>
 
-		<p>
-		  <strong>Year:</strong>
-			<% if @resource.year.present? %>
-		  	<%= @resource.year %>
-			<% else %>
-				<font style="color:lightgrey;">Not entered</font>
-			<% end %>
-		</p>
-
-		<p>
-		  <strong>Title:</strong>
-		  <%= @resource.title %>
-		</p>
-
-		<p>
-		  <strong>Type:</strong>
-			<% if @resource.resource_type.present? %>
-		  	<%= @resource.resource_type %>
-			<% else %>
-				<font style="color:lightgrey;">Not entered</font>
-			<% end %>
-		</p>
-
-		<p>
-		  <strong>DOI:</strong>
-			<% if @resource.doi_isbn.present? %>
-		  	<%= link_to @resource.doi_isbn, "http://dx.doi.org/" + @resource.doi_isbn, :target => "_blank" %>
-			<% else %>
-				<font style="color:lightgrey;">Not entered</font>
-			<% end %>
-		</p>
-
-		<p>
-		  <strong>Journal:</strong>
-			<% if @resource.journal.present? %>
-		  	<%= @resource.journal %>
-			<% else %>
-				<font style="color:lightgrey;">Not entered</font>
-			<% end %>
-		</p>
-
-		<p>
-		  <strong>Volume and pages:</strong>
-			<% if @resource.volume_pages.present? %>
-		  	<%= @resource.volume_pages %>
-			<% else %>
-				<font style="color:lightgrey;">Not entered</font>
-			<% end %>
-		</p>
-
-		<p>
-		  <strong>Notes:</strong>
-			<% if @resource.resource_notes.present? %>
-		  	<%= @resource.resource_notes %>
-			<% else %>
-				<font style="color:lightgrey;">Not entered</font>
-			<% end %>
-		</p>
-
-		<% if @resource.user %>
-			<p>
-			  <strong>Added by:</strong>
-			  <%= @resource.user.name %> <%= @resource.user.last_name %>
-			</p>
+	<p>
+	  <strong>Year:</strong>
+		<% if @resource.year.present? %>
+	  	<%= @resource.year %>
+		<% else %>
+			<font style="color:lightgrey;">Not entered</font>
 		<% end %>
+	</p>
 
+	<p>
+	  <strong>Title:</strong>
+	  <%= @resource.title %>
+	</p>
+
+	<p>
+	  <strong>Type:</strong>
+		<% if @resource.resource_type.present? %>
+	  	<%= @resource.resource_type %>
+		<% else %>
+			<font style="color:lightgrey;">Not entered</font>
+		<% end %>
+	</p>
+
+	<p>
+	  <strong>DOI:</strong>
+		<% if @resource.doi_isbn.present? %>
+	  	<%= link_to @resource.doi_isbn, "http://dx.doi.org/" + @resource.doi_isbn, :target => "_blank" %>
+		<% else %>
+			<font style="color:lightgrey;">Not entered</font>
+		<% end %>
+	</p>
+
+	<p>
+	  <strong>Journal:</strong>
+		<% if @resource.journal.present? %>
+	  	<%= @resource.journal %>
+		<% else %>
+			<font style="color:lightgrey;">Not entered</font>
+		<% end %>
+	</p>
+
+	<p>
+	  <strong>Volume and pages:</strong>
+		<% if @resource.volume_pages.present? %>
+	  	<%= @resource.volume_pages %>
+		<% else %>
+			<font style="color:lightgrey;">Not entered</font>
+		<% end %>
+	</p>
+
+	<p>
+	  <strong>Notes:</strong>
+		<% if @resource.resource_notes.present? %>
+	  	<%= @resource.resource_notes %>
+		<% else %>
+			<font style="color:lightgrey;">Not entered</font>
+		<% end %>
+	</p>
+
+	<% if @resource.user %>
 		<p>
-			<div class="btn-group">
-				<% if signed_in? && current_user.contributor? %>
-					<%= link_to 'Edit', edit_resource_path(@resource), class: "btn btn-sm btn-default" %>
-				<% end %>
-				<%= link_to 'Back', resources_path, class: "btn btn-sm btn-default" %>
-			</div>
+		  <strong>Added by:</strong>
+		  <%= @resource.user.name %> <%= @resource.user.last_name %>
 		</p>
-
-	</div>
-</div>
-
-<h3>Observations from this resource</h3>
-
-<ul class="nav nav-tabs">
-	<% if params[:secondary] %>
-		<% @observations = @secondary %>
-	  <li role="presentation"><%= link_to 'Primary', resource_path(@resource) %></li>		
-	  <li role="presentation" class="active"><%= link_to 'Secondary', resource_path(@resource, secondary: true) %></li>
-  <% else %>
-		<% @observations = @primary %>
-	  <li role="presentation" class="active"><%= link_to 'Primary', resource_path(@resource) %></li>		
-	  <li role="presentation"><%= link_to 'Secondary', resource_path(@resource, secondary: true) %></li>
 	<% end %>
-</ul>
 
-<br>
+	<h3>Observations from this resource</h3>
 
-<% if @observations.empty? %>
-	<p class="alert alert-danger"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> No observations available</p>
-<% else %>
-	<%= will_paginate @observations %>
-	<%= render "shared/observations" %>
+	<ul class="nav nav-tabs">
+		<% if params[:secondary] %>
+			<% @observations = @secondary %>
+		  <li role="presentation"><%= link_to 'Primary', resource_path(@resource) %></li>		
+		  <li role="presentation" class="active"><%= link_to 'Secondary', resource_path(@resource, secondary: true) %></li>
+	  <% else %>
+			<% @observations = @primary %>
+		  <li role="presentation" class="active"><%= link_to 'Primary', resource_path(@resource) %></li>		
+		  <li role="presentation"><%= link_to 'Secondary', resource_path(@resource, secondary: true) %></li>
+		<% end %>
+	</ul>
+
 	<br>
-	<%= will_paginate @observations %>
-<% end %>  
 
+	<% if @observations.empty? %>
+		<p class="alert alert-danger"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> No observations available</p>
+	<% else %>
+		<%= will_paginate @observations, :inner_window => 1, :outer_window => 0 %>
+		<%= render "shared/observations" %>
+		<br>
+		<%= will_paginate @observations, :inner_window => 1, :outer_window => 0 %>
+	<% end %>  
+
+</div>

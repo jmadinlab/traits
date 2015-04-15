@@ -15,7 +15,7 @@ class UsersController < ApplicationController
     n = 9999999 if params[:n] == "all"
 
     @user = User.find(params[:id])
-    @observations = Observation.where('user_id = ?', @user.id)
+    @observations = Observation.where(:user_id => @user.id)
     @observations = observation_filter(@observations)
     @observations = @observations.order('created_at DESC')
 

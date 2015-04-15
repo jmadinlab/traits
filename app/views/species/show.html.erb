@@ -1,158 +1,118 @@
 <% provide(:title, @specie.specie_name) %>
 
-
-<div class="page-header">
+<div class="col-md-12">
   <h1><em><%= @specie.specie_name %></em></h1>
+	<hr>
 </div>
 
-<div class="row">
-  <div class="col-md-8">
-
+<div class="col-md-8">
+  <p>
+    <strong>ID:</strong>
+    	<%= @specie.id %>
+  </p>
+	
+	<% if !@specie.synonyms.blank? %>
 	  <p>
-	    <strong>ID:</strong>
-	    	<%= @specie.id %>
-	  </p>
-		
-		<% if !@specie.synonyms.blank? %>
-		  <p>
-		    <strong>Other names:</strong>
-				<% @specie.synonyms.each do |s| %>
-		    	<br><%= s.synonym_name %>
-				<% end %>
-		  </p>
-		<% end %>
-
-	  <p>
-	    <strong>Major clade:</strong>
-	    	<%= @specie.major_clade %>
-	  </p>
-
-	  <p>
-	    <strong>Family molecules:</strong>
-	    	<%= @specie.family_molecules %>
-	  </p>
-
-	  <p>
-	    <strong>Family morphology:</strong>
-	    	<%= @specie.family_morphology %>
-	  </p>
-
-		<% if !@specie.specie_description.blank? %>
-		  <p>
-		    <strong>Description:</strong>
-		    	<%= @specie.specie_description %>
-		  </p>
-		<% end %>
-
-		<p>
-		  <strong>Added by:</strong>
-			<% if @specie.user %>
-		  	<%= @specie.user.name %> <%= @specie.user.last_name %>
+	    <strong>Other names:</strong>
+			<% @specie.synonyms.each do |s| %>
+	    	<br><%= s.synonym_name %>
 			<% end %>
-		</p>
+	  </p>
+	<% end %>
 
-		<p>
-	    <div class="btn-group">
-		  	<% if signed_in? && current_user.admin? %>
-					<%= link_to 'Edit', edit_specie_path(@specie), class: "btn btn-sm btn-default" %>
-				<% end %>
-				<%= link_to 'Back', species_path, class: "btn btn-sm btn-default" %>
-			</div>
-		</p>
+  <p>
+    <strong>Major clade:</strong>
+    	<%= @specie.major_clade %>
+  </p>
 
-  </div>
-  <div class="col-md-4">
- 		<div class="well">
-			<p><strong>External resources for this species:</strong></p>
-			<ul>
-				<li>
-					<%= link_to "World Register of Marine Species", "http://www.marinespecies.org/aphia.php?p=taxlist&tName=" + @specie.specie_name.to_s, target: "_blank" %>
-				</li>
+  <p>
+    <strong>Family molecules:</strong>
+    	<%= @specie.family_molecules %>
+  </p>
 
-				<li>
-					<% fac = Measurement.where("observation_id IN (?) AND trait_id=?", @observations.map(&:id), 139)  %>
-					<% if !fac.blank? %>
-						AIMS factsheet and images:
-						<% fac.each do |f| %>
-							<%= link_to f.value, "http://coral.aims.gov.au/factsheet.jsp?speciesCode=" + f.value.to_s.rjust(4, '0'), target: "_blank" %>
-						<% end %>
-					<% else %>
-						AIMS factsheet and images (not available)
-					<% end %>
-				</li>
+  <p>
+    <strong>Family morphology:</strong>
+    	<%= @specie.family_morphology %>
+  </p>
 
-				<li>
-					<% pal = Measurement.where("observation_id IN (?) AND trait_id=?", @observations.map(&:id), 140) %>
-					<% if !pal.blank? %>
-						PaleoDB fossil records:
-						<% pal.each do |p| %>
-							<%= link_to p.value, "http://paleodb.org/bridge.pl?a=checkTaxonInfo&taxon_no=" + p.value.to_s, target: "_blank" %>
-						<% end %>
-					<% else %>
-						PaleoDB records (not available)
-						<% end %>
-				</li>
-				<li><%= link_to "OBIS observation records", "http://iobis.org/mapper/?taxon=" + @specie.specie_name.to_s, target: "_blank" %></li>
-			</ul>
-		
+	<% if !@specie.specie_description.blank? %>
+	  <p>
+	    <strong>Description:</strong>
+	    	<%= @specie.specie_description %>
+	  </p>
+	<% end %>
+
+	<p>
+	  <strong>Added by:</strong>
+		<% if @specie.user %>
+	  	<%= @specie.user.name %> <%= @specie.user.last_name %>
+		<% end %>
+	</p>
+
+	<p>
+    <div class="btn-group">
+	  	<% if signed_in? && current_user.admin? %>
+				<%= link_to 'Edit', edit_specie_path(@specie), class: "btn btn-default" %>
+			<% end %>
+			<%= link_to 'Back', species_path, class: "btn btn-default" %>
 		</div>
+	</p>
+</div>
+
+<div class="col-md-4">
+		<div class="well">
+		<p><strong>External resources for this species:</strong></p>
+		<ul>
+			<li>
+				<%= link_to "World Register of Marine Species", "http://www.marinespecies.org/aphia.php?p=taxlist&tName=" + @specie.specie_name.to_s, target: "_blank" %>
+			</li>
+
+			<li>
+				<% fac = Measurement.where("observation_id IN (?) AND trait_id=?", @observations.map(&:id), 139)  %>
+				<% if !fac.blank? %>
+					AIMS factsheet and images:
+					<% fac.each do |f| %>
+						<%= link_to f.value, "http://coral.aims.gov.au/factsheet.jsp?speciesCode=" + f.value.to_s.rjust(4, '0'), target: "_blank" %>
+					<% end %>
+				<% else %>
+					AIMS factsheet and images (not available)
+				<% end %>
+			</li>
+
+			<li>
+				<% pal = Measurement.where("observation_id IN (?) AND trait_id=?", @observations.map(&:id), 140) %>
+				<% if !pal.blank? %>
+					PaleoDB fossil records:
+					<% pal.each do |p| %>
+						<%= link_to p.value, "http://paleodb.org/bridge.pl?a=checkTaxonInfo&taxon_no=" + p.value.to_s, target: "_blank" %>
+					<% end %>
+				<% else %>
+					PaleoDB records (not available)
+					<% end %>
+			</li>
+			<li><%= link_to "OBIS observation records", "http://iobis.org/mapper/?taxon=" + @specie.specie_name.to_s, target: "_blank" %></li>
+		</ul>
+	
 	</div>
 </div>
-	<% if false %>
-		<% if signed_in? && current_user.contributor? %>
-			<% @vtemp = @vfiles.find_all{|item| item.include? img }.last %>
 
-			<% if !@vtemp.nil? %>
-				<p style="text-align:center;"><%= image_tag "veron/#{@specie.specie_name.sub(" ", "_")}.png", :style => "border:0px;", class:  "img-responsive" %></p>
-				<p style="text-align:center;">Veron map (viewable for contributors, but not published yet, so please don't distribute)</p>
-			<% else %>
-					<p>No Veron map</p>
-			<% end %>
-		<% end %>
-	
-		<% img = "#{@specie.specie_name.sub(" ", "_")}.png" %>
+<div class="col-md-12">
 
-		<% @htemp = @hfiles.find_all{|item| item.include? img }.last %>
-		<% if !@htemp.nil? %>
-			<p style="text-align:center;"><%= image_tag "hughes/#{@specie.specie_name.sub(" ", "_")}.png", :style => "border:0px;", class:  "img-responsive" %></p>
-			<p style="text-align:center;"><%= link_to "Hughes map", resource_path(605) %></p>
-		<% else %>
-				<p>No Hughes map</p>
-		<% end %>
+	<% if Measurement.joins(:observation).where("trait_id = ? AND specie_id = ?", 62, @specie.id).exists? %>
 
-		<% img = "#{Measurement.joins(:observation).where("trait_id = ? AND specie_id = ?", 62, @specie.id).last.value}M.png" %>
+		<% img = "#{Measurement.joins(:observation).where("trait_id = ? AND specie_id = ?", 62, @specie.id).last.value}M.jpg" %>
 
 		<% @vtemp = @vfiles.find_all{|item| item.include? img }.last %>
 		<% if !@vtemp.nil? %>
-			<p style="text-align:center;"><%= image_tag "veron/#{img}", :style => "border:0px;", class:  "img-responsive" %></p>
-			<p style="text-align:center;"><%= link_to "Corals of the World map (c)", resource_path(10) %></p>
+			<p><%= image_tag "veron/#{img}", :style => "border:0px;", class:  "img-responsive" %></p>
+			<p><%= link_to "Ⓒ Corals of the World", resource_path(10) %> (viewable to logged-in users, but copyrighted material, so please do not distribute)</p>
 		<% else %>
 				<p>No Corals of the World map</p>
 		<% end %>
-
-	<% end %>
-
-	<% if signed_in? %>
-
-		<% if Measurement.joins(:observation).where("trait_id = ? AND specie_id = ?", 62, @specie.id).exists? %>
-
-
-			<% img = "#{Measurement.joins(:observation).where("trait_id = ? AND specie_id = ?", 62, @specie.id).last.value}M.jpg" %>
-
-			<% @vtemp = @vfiles.find_all{|item| item.include? img }.last %>
-			<% if !@vtemp.nil? %>
-				<p><%= image_tag "veron/#{img}", :style => "border:0px;", class:  "img-responsive" %></p>
-				<p><%= link_to "Ⓒ Corals of the World", resource_path(10) %> (viewable to logged-in users, but copyrighted material, so please do not distribute)</p>
-			<% else %>
-					<p>No Corals of the World map</p>
-			<% end %>
-		<% else %>
-			No map
-		<% end %>
 	<% else %>
-		Log in to see map
+		No map
 	<% end %>
 
-
-<%= render "specie_observations" %>
+	<%= render "specie_observations" %>
+</div>
 

@@ -4,7 +4,8 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   include SessionsHelper
   
-  WillPaginate.per_page = 30
+  # WillPaginate.per_page = 15
+  Sunspot.config.pagination.default_per_page = 12
 
   before_filter :set_last_seen_at, if: proc { |p| signed_in? && (session[:last_seen_at] == nil || session[:last_seen_at] < 15.minutes.ago) }
 
@@ -95,9 +96,9 @@ class ApplicationController < ActionController::Base
   def get_main_csv(observations, taxonomy=nil, contextual=nil, global=nil)
     csv_string = CSV.generate do |csv|
       if taxonomy == "on"
-        csv << ["observation_id", "access", "user_id", "specie_id", "specie_name", "major_clade", "family_molecules", "family_morphology", "location_id", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_id", "trait_name", "standard_id", "standard_unit", "methodology_id", "methodology_name", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates", "notes"]
+        csv << ["observation_id", "access", "user_id", "specie_id", "specie_name", "major_clade", "family_molecules", "family_morphology", "location_id", "location_name", "latitude", "longitude", "resource_id", "resource_secondary_id", "measurement_id", "trait_id", "trait_name", "standard_id", "standard_unit", "methodology_id", "methodology_name", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates", "notes"]
       else
-        csv << ["observation_id", "access", "user_id", "specie_id", "specie_name", "location_id", "location_name", "latitude", "longitude", "resource_id", "measurement_id", "trait_id", "trait_name", "standard_id", "standard_unit", "methodology_id", "methodology_name", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates", "notes"]
+        csv << ["observation_id", "access", "user_id", "specie_id", "specie_name", "location_id", "location_name", "latitude", "longitude", "resource_id", "resource_secondary_id", "measurement_id", "trait_id", "trait_name", "standard_id", "standard_unit", "methodology_id", "methodology_name", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates", "notes"]
       end
       observations.each do |obs|
         if global != "on" || obs.location_id == 1
@@ -127,9 +128,9 @@ class ApplicationController < ActionController::Base
                 method = mea.methodology.methodology_name
               end
               if taxonomy == "on"
-                csv << [obs.id, acc, obs.user_id, obs.specie.id, obs.specie.specie_name, obs.specie.major_clade, obs.specie.family_molecules, obs.specie.family_morphology, obs.location_id, loc, lat, lon, obs.resource_id, mea.id, mea.trait.id, mea.trait.trait_name, mea.standard.id, mea.standard.standard_unit, mea.methodology_id, method, mea.value, mea.value_type, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates, mea.notes]
+                csv << [obs.id, acc, obs.user_id, obs.specie.id, obs.specie.specie_name, obs.specie.major_clade, obs.specie.family_molecules, obs.specie.family_morphology, obs.location_id, loc, lat, lon, obs.resource_id, obs.resource_secondary_id, mea.id, mea.trait.id, mea.trait.trait_name, mea.standard.id, mea.standard.standard_unit, mea.methodology_id, method, mea.value, mea.value_type, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates, mea.notes]
               else
-                csv << [obs.id, acc, obs.user_id, obs.specie.id, obs.specie.specie_name, obs.location_id, loc, lat, lon, obs.resource_id, mea.id, mea.trait.id, mea.trait.trait_name, mea.standard.id, mea.standard.standard_unit, mea.methodology_id, method, mea.value, mea.value_type, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates, mea.notes]
+                csv << [obs.id, acc, obs.user_id, obs.specie.id, obs.specie.specie_name, obs.location_id, loc, lat, lon, obs.resource_id, obs.resource_secondary_id, mea.id, mea.trait.id, mea.trait.trait_name, mea.standard.id, mea.standard.standard_unit, mea.methodology_id, method, mea.value, mea.value_type, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates, mea.notes]
               end
             end
           end
@@ -145,9 +146,9 @@ class ApplicationController < ActionController::Base
   # Return the resources csv
   def get_resources_csv(observations)
     resources_string = CSV.generate do |csv|
-        csv << ["resource_id", "author", "year", "title", "resource_type", "resource_ISBN", "resource_journal", "resource_volume_pages", "resource_notes"]
+        csv << ["resource_id", "primary_secondary", "author", "year", "title", "resource_type", "resource_ISBN", "resource_journal", "resource_volume_pages", "resource_notes"]
 
-        Resource.where(:id => observations.map(&:resource).uniq).each do |res|
+        Resource.where(:id => observations.map(&:resource_id).uniq).each do |res|
           # if obs.resource
             # res = obs.resource
             res_id = res.id
@@ -160,9 +161,28 @@ class ApplicationController < ActionController::Base
             res_volume = res.volume_pages
             res_notes = res.resource_notes
 
-            csv << [res_id, res_author, res_year, res_title, res_type, res_isbn, res_journal, res_volume, res_notes]
+            csv << [res_id, "primary", res_author, res_year, res_title, res_type, res_isbn, res_journal, res_volume, res_notes]
           # end
         end
+
+        Resource.where(:id => observations.map(&:resource_secondary_id).uniq).each do |res|
+          # if obs.resource
+            # res = obs.resource
+            res_id = res.id
+            res_author = res.author
+            res_year = res.year
+            res_title = res.title
+            res_type = res.resource_type
+            res_isbn = res.doi_isbn
+            res_journal = res.journal
+            res_volume = res.volume_pages
+            res_notes = res.resource_notes
+
+            csv << [res_id, "secondary", res_author, res_year, res_title, res_type, res_isbn, res_journal, res_volume, res_notes]
+          # end
+        end
+
+
       end
 
     return resources_string

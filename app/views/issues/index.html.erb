@@ -1,73 +1,71 @@
-<div class="row">
-  <div class="col-md-8 col-md-offset-2">
-    <h1>Outstanding issues</h1>
-    
-    <p>A list of issues that have not been dealt with yet.</p>
+<div class="page-header">
+  <h1>Outstanding issues</h1>
+</div>    
 
-    <ul class="list-group">
+<p>A list of issues that have not been dealt with yet.</p>
 
-      <li class="list-group-item">              
-        <div class="row">
-          <div class="col-md-1" style="color: lightgrey;">
-          </div>
+<ul class="list-group">
 
-          <div class="col-md-2">
-            <strong>Reported by</strong>
-          </div>
+  <li class="list-group-item">              
+    <div class="row">
+      <div class="col-md-1" style="color: lightgrey;">
+      </div>
 
-          <div class="col-md-4">
-            <strong>Description</strong>
-          </div>
+      <div class="col-md-2">
+        <strong>Reported by</strong>
+      </div>
 
-          <div class="col-md-3">
-            <strong>Editor/s</strong>
-          </div>
+      <div class="col-md-4">
+        <strong>Description</strong>
+      </div>
 
-          <div class="col-md-2">
+      <div class="col-md-3">
+        <strong>Editor/s</strong>
+      </div>
+
+      <div class="col-md-2">
+      </div>
+    </div>
+  </li>
+
+  <% @issues.each do |issue| %>
+    <li class="list-group-item">              
+      <div class="row">
+        <div class="col-md-1" style="color: lightgrey;">
+          <%= issue.id %>
+        </div>
+
+        <div class="col-md-2">
+          <%= issue.user.name %> <%= issue.user.last_name %>
+        </div>
+
+        <div class="col-md-3">
+          <%= issue.issue_description %>
+        </div>
+
+        <div class="col-md-1">
+          <% if issue.resolved %>
+            <span class="label label-success">resolved</span>
+          <% end %>
+        </div>
+
+        <div class="col-md-3">
+          <% tra = issue.observation.measurements.where(:trait_id => Trait.where("id IN (?) AND trait_class != ?", issue.observation.measurements.map(&:trait_id), "Contextual")).map(&:trait_id) %>
+          <% tra.each do |t| %>
+            <%= mail_to Trait.find(t).user.email %><br>
+          <% end %>
+        </div>
+
+        <div class="col-md-2">
+          <div class="btn-group">
+            <%= link_to 'Show', observation_path(issue.observation), class: "btn btn-xs btn-default" %>
+            <%= link_to 'Edit', edit_observation_issue_path(issue.observation, issue), class: "btn btn-default btn-xs" %>
+            <% if signed_in? && current_user.editor? %>
+              <%= link_to 'Delete', issue, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
+            <% end %>
           </div>
         </div>
-      </li>
-
-      <% @issues.each do |issue| %>
-        <li class="list-group-item">              
-          <div class="row">
-            <div class="col-md-1" style="color: lightgrey;">
-              <%= issue.id %>
-            </div>
-
-            <div class="col-md-2">
-              <%= issue.user.name %>
-            </div>
-
-            <div class="col-md-3">
-              <%= issue.issue_description %>
-            </div>
-
-            <div class="col-md-1">
-              <% if issue.resolved %>
-                <span class="label label-success">resolved</span>
-              <% end %>
-            </div>
-
-            <div class="col-md-3">
-              <% tra = issue.observation.measurements.where(:trait_id => Trait.where("id IN (?) AND trait_class IS NOT ?", issue.observation.measurements.map(&:trait_id), "Contextual")).map(&:trait_id) %>
-              <% tra.each do |t| %>
-                <%= mail_to Trait.find(t).user.email %><br>
-              <% end %>
-            </div>
-
-            <div class="col-md-2">
-              <div class="btn-group">
-                <%= link_to 'Show', observation_path(issue.observation), class: "btn btn-sm btn-default" %>
-                <%= link_to 'Edit', edit_observation_issue_path(issue.observation, issue), class: "btn btn-default btn-sm" %>
-                <% if signed_in? && current_user.editor? %>
-                  <%= link_to 'Delete', issue, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
-                <% end %>
-              </div>
-            </div>
-          </div>
-        </li>
-      <% end %>   
-    </ul>
-  </div>
-</div>
+      </div>
+    </li>
+  <% end %>   
+</ul>
