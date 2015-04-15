@@ -29,6 +29,15 @@
 	</p>
 
 	<p>
+		<strong>Description:</strong>
+		<% if @trait.trait_description.present? %>
+			<%= @trait.trait_description %>
+		<% else %>
+			<font style="color:lightgrey;">Not entered</font>
+		<% end %>
+	</p>
+
+	<p>
 		<strong>Default standard:</strong>
 		<% if !@trait.standard.blank? %>
 			<%= @trait.standard.standard_name %> (<%= @trait.standard.standard_unit %>)
@@ -37,31 +46,21 @@
 
 
 	<% if @trait.traitvalues.present? %>
-
-		<%#= @mea_traitvalues %>
 		<% @all_traitvalues = (@mea_traitvalues + @rec_traitvalues).uniq %>
 		<p>
-			<strong>Possible trait values:</strong>
 			<ul>
-				<li>
-					<% mark = false %>
-					<% @all_traitvalues.each do |tv| %>
-	          <% if @rec_traitvalues.include?(tv) && @mea_traitvalues.include?(tv)  %>
-	            <span class="label label-primary" data-toggle="tooltip" data-placement="bottom" title="<%= @trait.traitvalues.where(:value_name => tv).first.value_description %>"><%= tv %></span>
-						<% elsif @rec_traitvalues.include?(tv) && !@mea_traitvalues.include?(tv) %>
-							<% mark = true %>
-						<% elsif !@rec_traitvalues.include?(tv) && !@mea_traitvalues.include?(tv) %>
-							<% mark = true %>
-						<% end %>
-					<% end %>
-				</li>
-				<% if mark %>
-					<li>Unused categories: 
-						<% @all_traitvalues.each do |tv| %>
-							<% if @rec_traitvalues.include?(tv) && !@mea_traitvalues.include?(tv) %>
-		            <span class="label label-success" data-toggle="tooltip" data-placement="bottom" title="<%= @trait.traitvalues.where(:value_name => tv).first.value_description %>"><%= tv %></span>
-							<% elsif !@rec_traitvalues.include?(tv) && !@mea_traitvalues.include?(tv) %>
-		            <span class="label label-danger" data-toggle="tooltip" data-placement="bottom" title=""><%= tv %></span>
+				<% @all_traitvalues.each do |tv| %>
+					<li style="list-style-type: none;">
+	          <% if @rec_traitvalues.include?(tv) and @mea_traitvalues.include?(tv)  %>
+	            <span class="label label-primary"><%= tv %></span>
+							<%= @trait.traitvalues.where(:value_name => tv).first.value_description %>
+						<% else %>
+							<% if !@mea_traitvalues.include?(tv) %>
+		            <span class="label label-success"><%= tv %></span>
+								<%= @trait.traitvalues.where(:value_name => tv).first.value_description %>
+							<% end %>
+							<% if !@rec_traitvalues.include?(tv) %>
+		            <span class="label label-danger"><%= tv %></span>
 							<% end %>
 						<% end %>
 					</li>
@@ -69,15 +68,6 @@
 			</ul>
 		</p>
 	<% end %>
-
-	<p>
-		<strong>Description:</strong>
-		<% if @trait.trait_description.present? %>
-			<%= @trait.trait_description %>
-		<% else %>
-			<font style="color:lightgrey;">Not entered</font>
-		<% end %>
-	</p>
 
 	<p>
 		<strong>Methodologies:</strong>
