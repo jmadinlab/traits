@@ -227,7 +227,7 @@ class ObservationImport
       $observation.errors[:base] << "Row #{i}: User_id=#{row["user_id"]} doesn't exist" if User.where("id = ?", row["user_id"]).blank?
       $observation.errors[:base] << "Row #{i}: Specie_id=#{row["specie_id"]} doesn't exist" if Specie.where("id = ?", row["specie_id"]).blank?
       $observation.errors[:base] << "Row #{i}: Location_id=#{row["location_id"]} doesn't exist" if Location.where("id = ?", row["location_id"]).blank?
-      $observation.errors[:base] << "Row #{i}: Resource_id=#{row["resource_id"]} doesn't exist" if Resource.where("id = ?", row["resource_id"]).blank?
+      $observation.errors[:base] << "Row #{i}: Resource_id=#{row["resource_id"]} doesn't exist and access is public" if (Resource.where("id = ?", row["resource_id"]).blank? and not row["private"])
       return $observation
     end
 
