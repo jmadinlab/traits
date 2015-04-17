@@ -69,7 +69,7 @@
   <h3>Observations from <%= @location.location_name %></h3>
 
   <% if @observations.empty? %>
-    <p class="alert alert-danger"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> No observations available</p>
+    <%= render "shared/no_observations" %>
   <% else %>
   	<%= will_paginate @observations, :inner_window => 1, :outer_window => 0 %>
   	<%= render "shared/observations" %>

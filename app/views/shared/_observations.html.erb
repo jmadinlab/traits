@@ -2,7 +2,8 @@
 
 <% @observations.each do |obs| %>    
 
-
+  <%#= obs.measurements.inspect %>
+  
 	<% if @user %>
 		<%= hidden_field_tag "all_ids[]", obs.id %>
 	<% end %>
@@ -13,7 +14,12 @@
 		<ul class="list-group">
 	<% end %>
 
-	<li class="list-group-item">							
+  <% if @trait && @trait.hide %>
+    <li class="list-group-item disabled">             
+  <% else %>
+    <li class="list-group-item">             
+  <% end %>
+
 		<div class="row">
 			<div class="col-sm-1">
 				<label class="checkbox-inline">
@@ -105,7 +111,7 @@
 			<% end %> 
 
     	<% if measurements.size == 1 %>
-					<div class="col-sm-3">
+				<div class="col-sm-3">
 					<%= link_to measurements.first.trait.trait_name, trait_path(measurements.first.trait_id), 'data-no-turbolink' => true %>
 	      </div>
 

@@ -28,6 +28,11 @@ class ApplicationController < ActionController::Base
     else
       observations = observations.where("observations.private = ?", false)
     end
+    
+    if not @trait or not (signed_in? && current_user.editor?)
+      observations = observations.remove_hidden
+    end
+    
     observations
   end
 

@@ -20,7 +20,7 @@
 </div>
 
 <% if @observations.empty? %>
-	<p class="alert alert-default">No observations available</p>
+	<%= render "shared/no_observations" %>
 <% else %>
 
 	<%= will_paginate @observations, :inner_window => 1, :outer_window => 0 %>

@@ -22,7 +22,7 @@
 <div class="col-md-9">
 
 	<% if defined?(@result_present) %>
-		<!-- <h3>Results...</h3> -->
+		<!-- <h4>Results...</h4> -->
 	<% end %>
 	
 	<% if (defined?(@result_present) ) && (not @result_present )%>
@@ -31,7 +31,7 @@
 
 	<% if @specie_search  %>
 		<% if not @specie_search.results.blank? %>
-			<h3><%= link_to "Species", species_path(search: params[:search]) %></h3>
+			<h4><%= link_to "Species", species_path(search: params[:search]) %></h4>
 		<% end %>
 		<ul class="list-group">
 			<% @specie_search.results.sort_by{|e| e[:specie_name]}.each do |s| %>
@@ -47,7 +47,7 @@
 
 	<% if @trait_search %>
 		<% if not @trait_search.results.blank? %>
-			<h3><%= link_to "Traits", traits_path(search: params[:search]) %></h3>
+			<h4><%= link_to "Traits", traits_path(search: params[:search]) %></h4>
 		<% end %>
 		<ul class="list-group">
 			<% @trait_search.results.sort_by{|e| e[:trait_name]}.each do |s| %>
@@ -63,7 +63,7 @@
 
 	<% if @standard_search %>
 		<% if not @standard_search.results.blank? %>
-			<h3><%= link_to "Standards", standards_path(search: params[:search]) %></h3>
+			<h4><%= link_to "Standards", standards_path(search: params[:search]) %></h4>
 		<% end %>
 		<ul class="list-group">
 			<% @standard_search.results.sort_by{|e| e[:standard_name]}.each do |s| %>
@@ -83,7 +83,7 @@
 
 	<% if @location_search %>
 		<% if not @location_search.results.blank? %>
-			<h3><%= link_to "Locations", locations_path(search: params[:search]) %></h3>
+			<h4><%= link_to "Locations", locations_path(search: params[:search]) %></h4>
 		<% end %>
 		<ul class="list-group">
 			<% @location_search.results.sort_by{|e| e[:location_name]}.each do |s| %>
@@ -100,7 +100,7 @@
 
 	<% if @resource_search %>
 		<% if not @resource_search.results.blank? %>
-			<h3><%= link_to "Resources", resources_path(search: params[:search]) %></h3>
+			<h4><%= link_to "Resources", resources_path(search: params[:search]) %></h4>
 		<% end %>
 		<ul class="list-group">
 			<% @resource_search.results.sort_by{|e| e[:title]}.each do |s| %>
@@ -120,7 +120,7 @@
 
 	<% if @methodology_search %>
 		<% if not @methodology_search.results.blank? %>
-			<h3><%= link_to "Methodologies", methodologies_path(search: params[:search]) %></h3>
+			<h4><%= link_to "Methodologies", methodologies_path(search: params[:search]) %></h4>
 		<% end %>
 		<ul class="list-group">
 			<% @methodology_search.results.sort_by{|e| e[:methodology_name]}.each do |s| %>
@@ -136,7 +136,7 @@
 
 	<% if @observation_search %>
 		<% if not @observation_search.results.blank? %>
-			<h3><%= link_to "Observations", observations_path(search: params[:search]) %></h3>
+			<h4><%= link_to "Observations", observations_path(search: params[:search]) %></h4>
 		<% end %>
 		<ul class="list-group">
 			<% @observation_search.results.each do |s| %>

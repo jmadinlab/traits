@@ -178,7 +178,7 @@ class TraitsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def trait_params
-      params.require(:trait).permit(:trait_name, :trait_description, :trait_class, :value_range, :standard_id, :user_id, :approval_status, :release_status, :methodologies, traitvalues_attributes: [:id, :value_name, :value_description, :_destroy])
+      params.require(:trait).permit(:trait_name, :trait_description, :trait_class, :value_range, :standard_id, :user_id, :approval_status, :release_status, :methodologies, :hide, traitvalues_attributes: [:id, :value_name, :value_description, :_destroy])
     end
 end
 

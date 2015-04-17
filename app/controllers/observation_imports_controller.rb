@@ -24,10 +24,12 @@ class ObservationImportsController < ApplicationController
     # if not current_user.admin?
     #   @observations = Observation.where(:approval_status => "pending", :user_id => current_user.id)
     # else
-    #   @observations = Observation.where(:approval_status => "pending")
+      # @observations = Observation.where(:approval_status => "pending")
     # end
 
-    @observations = Observation.where("approval_status = ? and id IN (?)", "pending", Measurement.joins(:trait).where("traits.user_id = ?", current_user.id).map(&:observation_id))
+    @observations = Observation.where(:approval_status => "pending", :id => Measurement.joins(:trait).where("traits.user_id = ?", current_user.id).map(&:observation_id))
+
+    # @observations = Observation.where(:approval_status => 'pending').joins(measurements: :trait).where("trait.user_id = ?", current_user.id)
 
     @pending = true
 

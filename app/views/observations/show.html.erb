@@ -5,9 +5,9 @@
 	  	<span class="glyphicon glyphicon-warning-sign" style="color:red;" data-toggle="tooltip" data-placement="top" title="Unresolved issue"></span>
 		<% end %>
 		Observation record
-	<% if @observation.approval_status == "pending" %>
-		<small><span class="label label-danger pull-right">pending approval</span></small>
-	<% end %>
+		<% if @observation.approval_status == "pending" %>
+			<small><span class="label label-danger pull-right">pending approval</span></small>
+		<% end %>
 	</h1>
 	<hr>		
 
@@ -104,7 +104,12 @@
 		<% if @observation.measurements.count > 0 %>
 		  <% @observation.measurements.joins(:trait).order("trait_class != 'Contextual' DESC").each do |mea| %>
 
-			  <li class="list-group-item">							
+
+			  <% if mea.trait.hide %>
+			    <li class="list-group-item disabled">             
+			  <% else %>
+			    <li class="list-group-item">             
+			  <% end %>
 					<div class="row">
 					  <div class="col-sm-1" style="color: lightgrey;">
 					  	<%= mea.id %>
@@ -115,35 +120,45 @@
 					  		<span class="glyphicon glyphicon-eye-open" data-toggle="tooltip" data-placement="top" title="Measurement is contextual"></span>
 							<% end %>
 					  	<%= link_to mea.trait.trait_name, trait_path(mea.trait_id), 'data-no-turbolink' => true %>
+              <% if mea.trait.hide %>
+                <span class="label label-danger" data-toggle="tooltip" data-placement="right" title="Trait only visible to Editors">hidden</span>
+              <% end %>
 						</div>
-					  <div class="col-sm-4">
 
-							<% if mea.trait.traitvalues.present? %>
-								<span class="label label-primary" data-toggle="tooltip" data-placement="bottom" title="<%= mea.trait.traitvalues.where(:value_name => mea.value).first.value_description %>"><%= mea.value %></span>
-							<% else %>
-								<%= mea.value %>
-							<% end %>
-							<% if mea.standard.present? %>
-					  		(<%= link_to mea.standard.standard_unit, standard_path(mea.standard_id) %>)
+					  <% if not mea.trait.hide or (signed_in? && current_user.editor?) %>
+
+						  <div class="col-sm-4">
+
+
+								<% if mea.trait.traitvalues.present? %>
+									<span class="label label-primary" data-toggle="tooltip" data-placement="bottom" title="<%= mea.trait.traitvalues.where(:value_name => mea.value).first.value_description %>"><%= mea.value %></span>
+								<% else %>
+									<%= mea.value %>
 								<% end %>
-						</div>
-	  
+								<% if mea.standard.present? %>
+						  		(<%= link_to mea.standard.standard_unit, standard_path(mea.standard_id) %>)
+									<% end %>
+							</div>
+		  
 
-					  <div class="col-sm-2">
-							<% if mea.value_type %>
-								<span class="label label-default"><%= mea.value_type %></span>
-							<% else %>
-								<span class="label label-danger">no value type</span>
-							<% end %>
-						</div>
+						  <div class="col-sm-2">
+								<% if mea.value_type %>
+									<span class="label label-default"><%= mea.value_type %></span>
+								<% else %>
+									<span class="label label-danger">no value type</span>
+								<% end %>
+							</div>
 
-					  <div class="col-sm-2">
-							<% if mea.methodology %>
-							<%= link_to mea.methodology.methodology_name, methodology_path(mea.methodology_id) %>
-							<% else %>
-								<span class="label label-danger">no method</span>
-							<% end %>
-						</div>
+						  <div class="col-sm-2">
+								<% if mea.methodology %>
+								<%= link_to mea.methodology.methodology_name, methodology_path(mea.methodology_id) %>
+								<% else %>
+									<span class="label label-danger">no method</span>
+								<% end %>
+							</div>
+			 			<% else %>
+						  <div class="col-sm-8">Measurements for this trait have been hidden by an Editor</div>
+			 			<% end %>
 
 					</div>
 

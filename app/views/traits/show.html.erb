@@ -9,6 +9,10 @@
 		<% if @specie %>
 			(<em><%= link_to @specie.specie_name, specie_path(@specie) %></em>)
 		<% end %>
+	  <% if @trait.hide %>
+      <span class="label label-danger pull-right" data-toggle="tooltip" data-placement="left" title="Trait only visible to Editors">hidden</span>
+	  <% end %>
+
 	</h1>
 	<hr>
 </div>
@@ -91,7 +95,7 @@
 			<%= @trait.user.name %> <%= @trait.user.last_name %> (<%= mail_to @trait.user.email, "contact", {:subject => "#{ENV["SITE_NAME"]} enquiry"} %>)
 		<% end %>
 		<% if signed_in? && current_user.editor? %>
-			<%= link_to "meta", show_meta_path(@trait), class: "label label-danger" %>
+			<%= link_to "meta", show_meta_path(@trait), class: "label label-default" %>
 		<% end %>
 	</p>
 
@@ -121,7 +125,7 @@
 	<h3>Observations</h3>
 
 	<% if @observations.empty? %>
-		<p class="alert alert-danger"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> No observations available</p>
+		<%= render "shared/no_observations" %>
 	<% else %>
 		<%= will_paginate @observations, :inner_window => 1, :outer_window => 0 %>
 		<%= render "shared/observations" %>

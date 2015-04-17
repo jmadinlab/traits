@@ -4,7 +4,7 @@
 
   <div class="form-group">
     <%= f.label :trait_name %><br>
-    <%= f.text_field :trait_name, class: "form-control" %>
+    <%= f.text_field :trait_name, :placeholder => "Required...", class: "form-control" %>
   </div>
   <div class="form-group">
     <%= f.label :trait_description %><br>
@@ -15,6 +15,11 @@
 	  <%= f.select :trait_class, ['', 'Taxonomic', 'Phylogenetic', 'Reproductive', 'Morphological', 'Physiological', 'Biomechanical', 'Ecological', 'Geographical', 'Conservation', 'Demographic', 'Contextual'], {include_blank: false}, class: "form-control" %>
   </div>
 
+  <div class="form-group">
+    <%= f.label :default_standard %><br>
+    <%= f.select :standard_id, Standard.all.collect {|a| ["#{a.standard_name} (#{a.standard_unit})", a.id]}, {:include_blank => ""}, class: "form-control" %>
+  </div>
+
   <%= f.label :trait_values %><br>
   <div id = "traitvalues">
     <%= f.fields_for :traitvalues do |t| %>
@@ -22,14 +27,18 @@
     <% end %>
   </div>
   <div class="links">
-    <p><%= link_to_add_association "add a value option", f, :traitvalues %></p>
+    <p><%= link_to_add_association "Add a value option", f, :traitvalues, class: "btn btn-default btn-sm" %></p>
   </div>
 
-  <div class="form-group">
-    <%= f.label :default_standard %><br>
-		<%= f.select :standard_id, Standard.all.collect {|a| ["#{a.standard_name} (#{a.standard_unit})", a.id]}, {:include_blank => ""}, class: "form-control" %>
+  <%= f.label :methodologies %><br>
+  <div id="methodologies">
+    <%= f.fields_for :methodologies do |t| %>
+      <%= render "methodology_fields", :f => t %>
+    <% end %>
   </div>
-
+  <div class="links">
+    <p><%= link_to_add_association "Add a methodology", f, :methodologies, class: "btn btn-default btn-sm" %></p>
+  </div>
 
   <% if current_user.editor? %>
   	<div class="form-group">
@@ -41,18 +50,15 @@
       <%= f.label :release_status %><br>
       <%= f.select :release_status, ['ready_for_release', 'needs_work_before_release', 'ready_online_only', 'data_deficient'], {include_blank: true}, class: "form-control" %>
     </div>
+
+    <div class="form-group">
+      <%= f.label "Hide?" %>
+      <%= f.check_box :hide %>
+    </div>
+
   <% end %>
 
   
-  <h4>Methodologies</h4>
-    <div id="methodologies">
-      <%= f.fields_for :methodologies do |t| %>
-        <%= render "methodology_fields", :f => t %>
-      <% end %>
-    </div>
-    <div class="links">
-      <p><%= link_to_add_association "add a methodology", f, :methodologies %></p>
-    </div>
 
 
 

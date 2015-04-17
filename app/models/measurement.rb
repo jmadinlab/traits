@@ -9,6 +9,7 @@ class Measurement < ActiveRecord::Base
   has_paper_trail
   
   # default_scope joins(:trait).order('traits.trait_class ASC, traits.trait_name ASC, created_at ASC').readonly(false)
+
   
   validates :trait, :presence => true
   validates :standard, :presence => true

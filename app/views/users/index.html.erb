@@ -1,100 +1,101 @@
 <% provide(:title, 'Users') %>
 
-<div class="page-header">
+<div class="col-md-12">
 	<h1>
 	  Users
 	</h1>
-</div>
+	<hr>
 
-<%= form_tag update_multiple_users_path do %>
+	<%= form_tag update_multiple_users_path do %>
 
-  <% if current_user.admin? %>
+	  <% if current_user.admin? %>
+			<div class="row">
+				<div class="col-sm-3 col-sm-offset-5" style="text-align:center;">
+					<%= submit_tag "Update Privileges", class: "btn btn-danger btn-md", style: "margin-right: 5px;" %>
+				</div>
+			</div>
+		<% end %><br>
 		<div class="row">
-			<div class="col-sm-3 col-sm-offset-5" style="text-align:center;">
-				<%= submit_tag "Update Privileges", class: "btn btn-danger btn-md", style: "margin-right: 5px;" %>
+			<div class="col-sm-5">
+			</div>
+			<div class="col-sm-1" style="text-align:center;">
+				<% if current_user.admin? %><strong>Contributor</strong><% end %>
+			</div>
+			<div class="col-sm-1" style="text-align:center;">
+				<% if current_user.admin? %><strong>Editor</strong><% end %>
+			</div>
+			<div class="col-sm-1" style="text-align:center;">
+				<% if current_user.admin? %><strong>Admin</strong><% end %>
+			</div>
+			<div class="col-sm-1" style="text-align:center;">
+				<strong>Observations</strong>
 			</div>
 		</div>
-	<% end %><br>
-	<div class="row">
-		<div class="col-sm-5">
-		</div>
-		<div class="col-sm-1" style="text-align:center;">
-			<% if current_user.admin? %><strong>Contributor</strong><% end %>
-		</div>
-		<div class="col-sm-1" style="text-align:center;">
-			<% if current_user.admin? %><strong>Editor</strong><% end %>
-		</div>
-		<div class="col-sm-1" style="text-align:center;">
-			<% if current_user.admin? %><strong>Admin</strong><% end %>
-		</div>
-		<div class="col-sm-1" style="text-align:center;">
-			<strong>Observations</strong>
-		</div>
-	</div>
 
-	<ul class="list-group">
+		<ul class="list-group">
 
-		<% @users.sort_by{ |a| [a.admin ? 0 : 1, a.editor ? 0 : 1, a.contributor ? 0 : 1, a.name] }.each do |user| %>
+			<% @users.sort_by{ |a| [a.admin ? 0 : 1, a.editor ? 0 : 1, a.contributor ? 0 : 1, a.name] }.each do |user| %>
 
-			<%= hidden_field_tag "ids[]", user.id %>
-		  
-		  <li class="list-group-item">							
-				<div class="row">
-					<div class="col-sm-1" style="color: lightgrey;">
-						<%= user.id %>
-					</div>
+				<%= hidden_field_tag "ids[]", user.id %>
+			  
+			  <li class="list-group-item">							
+					<div class="row">
+						<div class="col-sm-1" style="color: lightgrey;">
+							<%= user.id %>
+						</div>
 
-					<div class="col-sm-4">
-						<%= link_to "#{user.name} #{user.last_name}", user %>
-					  <small>(<%= mail_to user.email, user.email, {:subject => "Coral Trait enquiry"} %>)</small>
-					  <% if current_user.admin? && user.last_seen_at %>
-							<br>Last seen: <%= distance_of_time_in_words(user.last_seen_at, Time.now) %> ago
-						<% end %>
-					</div>
-					
-					<div class="col-sm-1" style="text-align:center;">
-					  <% if current_user.admin? %>
-							<%= check_box_tag "contrib_true_ids[]", user.id, user.contributor %>
-						<% else %>
-							<%= check_box_tag "contrib_true_ids[]", user.id, user.contributor, style: "visibility:hidden;" %>
-						<% end %>
-					</div>
-
-					<div class="col-sm-1" style="text-align:center;">
-					  <% if current_user.admin? %>
-							<%= check_box_tag "editor_true_ids[]", user.id, user.editor %>
-							<% if user.editor? %>
-								<span class="badge"><%= user.traits.size %></span>
+						<div class="col-sm-4">
+							<%= link_to "#{user.name} #{user.last_name}", user %>
+						  <small>(<%= mail_to user.email, user.email, {:subject => "Coral Trait enquiry"} %>)</small>
+						  <% if current_user.admin? && user.last_seen_at %>
+								<br>Last seen: <%= distance_of_time_in_words(user.last_seen_at, Time.now) %> ago
 							<% end %>
-						<% else %>
-							<%= check_box_tag "editor_true_ids[]", user.id, user.editor, style: "visibility:hidden;" %>
-						<% end %>
-					</div>
-
-					<div class="col-sm-1" style="text-align:center;">
-					  <% if current_user.admin? %>
-							<%= check_box_tag "admin_true_ids[]", user.id, user.admin %>
-						<% else %>
-							<%= check_box_tag "admin_true_ids[]", user.id, user.admin, style: "visibility:hidden;" %>
-						<% end %>
-					</div>
-
-					<div class="col-sm-2">
-						<%= render "shared/access_counts", :acc => Observation.where(:user_id => user.id) %>
-					</div>
-
-	        <div class="col-sm-2">
-				    <div class="btn-group pull-right">
-				     	<%= link_to 'Show', user_path(user), class: "btn btn-xs btn-default" %>
-					  	<% if current_user.admin? && !current_user?(user) %>
-					    	<%= link_to "Edit", edit_user_path(user), class: "btn btn-xs btn-default" %>
-					    	<%= link_to "X", user, method: :delete, data: { confirm: "You sure?" }, class: "btn btn-xs btn-danger" %>
+						</div>
+						
+						<div class="col-sm-1" style="text-align:center;">
+						  <% if current_user.admin? %>
+								<%= check_box_tag "contrib_true_ids[]", user.id, user.contributor %>
+							<% else %>
+								<%= check_box_tag "contrib_true_ids[]", user.id, user.contributor, style: "visibility:hidden;" %>
 							<% end %>
-		        </div>
-					</div>
-				</div>
-			</li>
-		<% end %>
-	</ul>
+						</div>
 
-<% end %>
+						<div class="col-sm-1" style="text-align:center;">
+						  <% if current_user.admin? %>
+								<%= check_box_tag "editor_true_ids[]", user.id, user.editor %>
+								<% if user.editor? %>
+									<span class="badge"><%= user.traits.size %></span>
+								<% end %>
+							<% else %>
+								<%= check_box_tag "editor_true_ids[]", user.id, user.editor, style: "visibility:hidden;" %>
+							<% end %>
+						</div>
+
+						<div class="col-sm-1" style="text-align:center;">
+						  <% if current_user.admin? %>
+								<%= check_box_tag "admin_true_ids[]", user.id, user.admin %>
+							<% else %>
+								<%= check_box_tag "admin_true_ids[]", user.id, user.admin, style: "visibility:hidden;" %>
+							<% end %>
+						</div>
+
+						<div class="col-sm-2">
+							<%= render "shared/access_counts", :acc => Observation.where(:user_id => user.id) %>
+						</div>
+
+		        <div class="col-sm-2">
+					    <div class="btn-group pull-right">
+					     	<%= link_to 'Show', user_path(user), class: "btn btn-xs btn-default" %>
+						  	<% if current_user.admin? && !current_user?(user) %>
+						    	<%= link_to "Edit", edit_user_path(user), class: "btn btn-xs btn-default" %>
+						    	<%= link_to "X", user, method: :delete, data: { confirm: "You sure?" }, class: "btn btn-xs btn-danger" %>
+								<% end %>
+			        </div>
+						</div>
+					</div>
+				</li>
+			<% end %>
+		</ul>
+
+	<% end %>
+</div>

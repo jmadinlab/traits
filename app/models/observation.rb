@@ -5,9 +5,22 @@ class Observation < ActiveRecord::Base
   belongs_to :resource
   has_paper_trail
   
-  default_scope -> { joins(:specie).order('species.specie_name ASC') }
-  # default_scope :include => :species, :order => "species.specie_name ASC"
-  # default_scope joins(:specie).order('species.specie_name ASC, created_at ASC').readonly(false)
+  default_scope -> { 
+    joins(:specie).order('species.specie_name ASC') 
+  }
+
+  # default_scope -> { 
+  #   joins(:specie).order('species.specie_name ASC') 
+  # }
+  
+  # default_scope -> {
+  #   :joins => :specie, :order => 'species.specie_name DESC', :group => 'id'
+  # }
+
+  scope :remove_hidden, -> { 
+    where.not(id: joins(measurements: :trait).where('traits.hide is true')) 
+  }
+
 
   validates :user, presence: true
   validates :location, :presence => true

@@ -11,14 +11,14 @@
 	</script>
 
 	<div class="row">
-		<div class="col-md-9">
+		<div class="col-sm-9">
 	
 			<div class="form-group">
 				<%= f.select :id, Methodology.all.map { |u| [u.methodology_name, u.id] }, { include_blank: 'Choose methodology...', class: "form-control" } , { class: "my_trait" } %>
 			</div>
 		</div>
-		<div class="col-md-3">
-			<%= link_to_remove_association "remove", f %>
+		<div class="col-sm-3">
+			<%= link_to_remove_association "Remove", f, class: "btn btn-danger btn-sm pull-right" %>
 		</div>
 		
 	</div>

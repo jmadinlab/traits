@@ -33,36 +33,46 @@
 				<% end %>
 			<% end %>
 
-  		<li class="list-group-item">							
-				<div class="row">
-					<div class="col-sm-1" style="color:lightgrey;"><%= trait.id %></div>
-					<div class="col-sm-5">
-			    	<%= link_to trait.trait_name, trait, 'data-no-turbolink' => true %>
-					</div>
-				
-					<div class="col-sm-3">
-			     	<div class="btn-group">
-			     		<%= link_to 'Show', trait_path(trait), 'data-no-turbolink' => true, class: "btn btn-xs btn-default" %>					
-							<% if signed_in? && current_user.editor? %>
-				        <%= link_to 'Edit', edit_trait_path(trait), class: "btn btn-xs btn-default" %>
-							<% end %>
-							<% if signed_in? && current_user.admin? %>
-				        <%= link_to 'Delete', trait, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
-							<% end %>
-	        	</div>
-					</div>
-
-          <div class="col-sm-3">
-            <p class="pull-right">
-              <% if not params[:all] %>
-                <%= render "shared/access_counts", :acc => Observation.where(:id => Measurement.where(:trait_id => trait).map(&:observation_id)) %>
+      <% if not trait.hide or (signed_in? && current_user.editor?) %>
+        <% if trait.hide %>
+          <li class="list-group-item disabled">             
+        <% else %>
+          <li class="list-group-item">             
+        <% end %>
+		
+  				<div class="row">
+  					<div class="col-sm-1" style="color:lightgrey;"><%= trait.id %></div>
+  					<div class="col-sm-5">  			    	
+              <%= link_to trait.trait_name, trait, 'data-no-turbolink' => true %>
+              <% if trait.hide %>
+                <span class="label label-danger" data-toggle="tooltip" data-placement="right" title="Trait only visible to Editors">hidden</span>
               <% end %>
-              <%= check_box_tag "checked[]", trait.id %>
-              </p>
-          </div>
+  					</div>
+  				
+  					<div class="col-sm-3">
+  			     	<div class="btn-group">
+  			     		<%= link_to 'Show', trait_path(trait), 'data-no-turbolink' => true, class: "btn btn-xs btn-default" %>					
+  							<% if signed_in? && current_user.editor? %>
+  				        <%= link_to 'Edit', edit_trait_path(trait), class: "btn btn-xs btn-default" %>
+  							<% end %>
+  							<% if signed_in? && current_user.admin? %>
+  				        <%= link_to 'Delete', trait, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
+  							<% end %>
+  	        	</div>
+  					</div>
 
-		  	</div>
-			</li>
+            <div class="col-sm-3">
+              <p class="pull-right">
+                <% if not params[:all] %>
+                  <%= render "shared/access_counts", :acc => Observation.where(:id => Measurement.where(:trait_id => trait).map(&:observation_id)) %>
+                <% end %>
+                <%= check_box_tag "checked[]", trait.id %>
+                </p>
+            </div>
+
+  		  	</div>
+  			</li>
+      <% end %>
 	  <% end %>
 
     <br>

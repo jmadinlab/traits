@@ -1,86 +1,87 @@
 <% provide(:title, @user.name) %>
 
 
-<div class="page-header">
+<div class="col-md-12">
 	<h1>
 	  <%= @user.name %> <%= @user.last_name %>
 	</h1>
-</div>
+	<hr>
 
-<p>
-  <strong>Institution:</strong>
-	<% if @user.institution %>
-  	<%= @user.institution %>
-	<% else %>
-		<font style="color:lightgrey;">Not entered</font>
-	<% end %>
-</p>
-
-
-<p>
-  <strong>User ID:</strong>
-  	<%= @user.id %>
-</p>
-<p>
-  <strong>Email:</strong>
-  <%= @user.email %>
-</p>
-
-<p>
-  <strong>Observations:</strong>
-  <%= render "shared/access_counts", :acc => Observation.where(:user_id => @user.id) %>
-</p>
-
-<% if @user.editor? %>
 	<p>
-	  <strong>Editor for:</strong>
-	  <% @user.traits.each do |t| %>
-	  	<%= link_to t.trait_name, trait_path(t), class: "label label-primary" %>
-	  <% end %>
+	  <strong>Institution:</strong>
+		<% if @user.institution %>
+	  	<%= @user.institution %>
+		<% else %>
+			<font style="color:lightgrey;">Not entered</font>
+		<% end %>
 	</p>
-<% end %>
 
-<p>Observations that entered by <%= @user.name %> are listed below. These are original/new observations only (i.e., not  observations that have been modified/edited). Displayed data can be downloaded by clicking <label class="label label-success">Download</label>. Use the number of observations pull-down to expand what is visible and downloaded. You can also control their access of your observations.</p>
 
-<h3>Observations</h3>
+	<p>
+	  <strong>User ID:</strong>
+	  	<%= @user.id %>
+	</p>
+	<p>
+	  <strong>Email:</strong>
+	  <%= @user.email %>
+	</p>
 
-<% if @observations.blank? %>
-	<p class="alert alert-danger"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> No observations available</p>
-<% else %>
+	<p>
+	  <strong>Observations:</strong>
+	  <%= render "shared/access_counts", :acc => Observation.where(:user_id => @user.id) %>
+	</p>
 
-	<div class="well">
-		<div class="row">
-		  <div class="col-md-2">
-				<%= form_tag user_path, :method => 'get' do %>
-					<%= select_tag :n, options_for_select([20, 200, 2000, "all"], params[:n]), onchange: "$(this).parent('form').submit();", class: "form-control" %><br>
-				<% end %>
+	<% if @user.editor? %>
+		<p>
+		  <strong>Editor for:</strong>
+		  <% @user.traits.each do |t| %>
+		  	<%= link_to t.trait_name, trait_path(t), class: "label label-primary" %>
+		  <% end %>
+		</p>
+	<% end %>
+
+	<p>Observations that entered by <%= @user.name %> are listed below. These are original/new observations only (i.e., not  observations that have been modified/edited). Displayed data can be downloaded by clicking <label class="label label-success">Download</label>. Use the number of observations pull-down to expand what is visible and downloaded. You can also control their access of your observations.</p>
+
+	<h3>Observations</h3>
+
+	<% if @observations.blank? %>
+		<%= render "shared/no_observations" %>
+	<% else %>
+
+		<div class="well">
+			<div class="row">
+			  <div class="col-md-2">
+					<%= form_tag user_path, :method => 'get' do %>
+						<%= select_tag :n, options_for_select([20, 200, 2000, "all"], params[:n]), onchange: "$(this).parent('form').submit();", class: "form-control" %><br>
+					<% end %>
+				</div>
+				<div class="col-md-8">
+					<p>observations per page</p>
+				</div>
+				<div class="col-md-2">
+					<%= link_to "Download", user_path(format: "zip", taxonomy: "on"), class: "btn btn-success pull-right" %>
+				</div>
 			</div>
-			<div class="col-md-8">
-				<p>observations per page</p>
-			</div>
-			<div class="col-md-2">
-				<%= link_to "Download", user_path(format: "zip", taxonomy: "on"), class: "btn btn-success pull-right" %>
+
+			<div class="row">
+			  <div class="col-md-12">
+
+				<%= form_tag update_multiple_observations_path do %>
+					<%= hidden_field_tag "con_id", @user.id %>
+
+					<% if (@user.id == current_user.id || current_user.admin?) && !@observations.blank? %>
+						<%= submit_tag "Update Access", class: "btn btn-danger btn-md", style: "margin-right: 5px;" %>
+						<input type="checkbox", name="checkall", onclick="checkUncheckAll(this);" /> Check/uncheck access for all
+					<% end %>
+				</div>
 			</div>
 		</div>
 
-		<div class="row">
-		  <div class="col-md-12">
-
-			<%= form_tag update_multiple_observations_path do %>
-				<%= hidden_field_tag "con_id", @user.id %>
-
-				<% if (@user.id == current_user.id || current_user.admin?) && !@observations.blank? %>
-					<%= submit_tag "Update Access", class: "btn btn-danger btn-md", style: "margin-right: 5px;" %>
-					<input type="checkbox", name="checkall", onclick="checkUncheckAll(this);" /> Check/uncheck access for all
-				<% end %>
-			</div>
-		</div>
-	</div>
-
-	<%= will_paginate @observations, :inner_window => 1, :outer_window => 0 %>
-	<%= render "shared/observations" %>
-	<br>
-	<%= will_paginate @observations, :inner_window => 1, :outer_window => 0 %>
-	
-	<% end %>	
-<% end %>
+		<%= will_paginate @observations, :inner_window => 1, :outer_window => 0 %>
+		<%= render "shared/observations" %>
+		<br>
+		<%= will_paginate @observations, :inner_window => 1, :outer_window => 0 %>
+		
+		<% end %>	
+	<% end %>
+</div>

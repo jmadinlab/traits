@@ -1,19 +1,19 @@
 <div class="nested-fields">
 	<div class="row">
-		<div class="col-md-3">
+		<div class="col-sm-3">
 	
 			<div class="form-group">
-				<%= f.text_field :value_name, class: "form-control" %>	
+				<%= f.text_field :value_name, :placeholder => "Category...", class: "form-control" %>	
 			</div>
 		</div>
-		<div class="col-md-6">
+		<div class="col-sm-6">
 	
 			<div class="form-group">
-				<%= f.text_field :value_description, class: "form-control" %>	
+				<%= f.text_field :value_description, :placeholder => "Description...", class: "form-control" %>	
 			</div>
 		</div>
-		<div class="col-md-3">
-			<%= link_to_remove_association "remove", f %>
+		<div class="col-sm-3">
+			<%= link_to_remove_association "Remove", f, class: "btn btn-danger btn-sm pull-right" %>
 		</div>
 		
 	</div>
