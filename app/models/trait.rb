@@ -23,6 +23,7 @@ class Trait < ActiveRecord::Base
   searchable do
     text :trait_name
     text :trait_class
+    boolean :hide
     string :trait_class_sortable do 
       trait_class
     end

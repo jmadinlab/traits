@@ -12,9 +12,12 @@ class SearchController < ApplicationController
 				name = m.downcase + '_search'
 				puts "name: "
 				puts name
-				
+								puts m
+
 				search_result = @model.search do
+					without(:hide, true) if m == "Trait"
 					fulltext params[:search]
+
 					paginate :page => 1, :per_page => 100
 				end
 
@@ -40,6 +43,7 @@ class SearchController < ApplicationController
 				puts name
 				
 				search = @model.search do
+					without(:hide, true) if m == "Trait"
 					keywords(params["search"])
 				end
 
