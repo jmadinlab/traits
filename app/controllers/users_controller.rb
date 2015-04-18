@@ -10,17 +10,42 @@ class UsersController < ApplicationController
 
   def show
 
-    params[:n] = 20 if params[:n].blank?
-    n = params[:n]
-    n = 9999999 if params[:n] == "all"
+    # params[:n] = 20 if params[:n].blank?
+    # n = params[:n]
+    # n = 9999999 if params[:n] == "all"
 
     @user = User.find(params[:id])
     @observations = Observation.where(:user_id => @user.id)
     @observations = observation_filter(@observations)
     @observations = @observations.order('created_at DESC')
 
+    if params[:resource].present?
+      @observations = @observations.where(:resource_id => params[:resource])
+    end
+
+    if params[:location].present?
+      @observations = @observations.where(:location_id => params[:location])
+    end
+
+    if params[:specie].present?
+      @observations = @observations.where(:specie_id => params[:specie])
+    end
+
+    if params[:trait].present?
+      @observations = @observations.where(:id => Measurement.where(:trait_id => params[:trait]).map(&:observation_id))
+    end
+
+    @resources = Resource.where(:id => @observations.map(&:resource_id))
+    @locations = Location.where(:id => @observations.map(&:location_id))
+    @species = Specie.where(:id => @observations.map(&:specie_id))
+    @traits = Trait.where("id IN (?) AND trait_class != 'Contextual'", Measurement.where(:observation_id => @observations.map(&:id)).map(&:trait_id))
+
     respond_to do |format|
-      format.html { @observations = @observations.paginate(page: params[:page]) }
+      if params[:resource].present? or params[:location].present? or params[:specie].present? or params[:trait].present?
+        format.html { @observations = @observations.paginate(page: params[:page], per_page: 9999) }
+      else
+        format.html { @observations = @observations.paginate(page: params[:page]) }
+      end
       format.csv { download_observations(@observations, params[:taxonomy], params[:contextual] || "on", params[:global]) }
       format.zip{ send_zip(@observations, params[:taxonomy], params[:contextual] || "on", params[:global]) }
     end

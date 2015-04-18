@@ -2,12 +2,6 @@
 
 <div class="col-md-12">
   <h1>Resource
-    <div class="btn-group">
-      <%= link_to 'Back', resources_path, class: "btn btn-default" %>
-      <% if signed_in? && current_user.contributor? %>
-        <%= link_to 'Edit', edit_resource_path(@resource), class: "btn btn-default" %>
-      <% end %>
-    </div>
 		<% if @resource.approval_status == "pending" %>
 			<small><span class="label label-danger pull-right">pending approval</span></small>
 		<% end %>
@@ -89,6 +83,15 @@
 		  <%= @resource.user.name %> <%= @resource.user.last_name %>
 		</p>
 	<% end %>
+
+	<p>
+    <div class="btn-group">
+      <%= link_to 'Back', resources_path, class: "btn btn-default" %>
+      <% if signed_in? && current_user.contributor? %>
+        <%= link_to 'Edit', edit_resource_path(@resource), class: "btn btn-default" %>
+      <% end %>
+    </div>
+	</p>
 
 	<h3>Observations from this resource</h3>
 

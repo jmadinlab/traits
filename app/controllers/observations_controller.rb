@@ -36,7 +36,9 @@
     Observation.where(:user_id => params[:con_id], :id => params[:all_ids]).update_all(:private => false)
     Observation.where(:user_id => params[:con_id], :id => params[:pri_ids]).update_all(:private => true)
     # flash[:notice] = "Updated observations!"
-    redirect_to user_path(params[:con_id], :page => @page, :search => @search), flash: {success: "Privacy updated." }
+    puts "============ HERE ================"
+    puts params[:location]
+    redirect_to user_path(params[:con_id], :page => @page, :search => @search, :resource => params[:resource], :location => params[:location], :specie => params[:specie], :trait => params[:trait]), flash: {success: "Privacy updated." }
   end
 
   # GET /observations

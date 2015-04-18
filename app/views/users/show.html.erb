@@ -1,11 +1,12 @@
 <% provide(:title, @user.name) %>
 
 
-<div class="col-md-12">
+<div class="col-md-8">
 	<h1>
 	  <%= @user.name %> <%= @user.last_name %>
 	</h1>
 	<hr>
+
 
 	<p>
 	  <strong>Institution:</strong>
@@ -31,57 +32,111 @@
 	  <%= render "shared/access_counts", :acc => Observation.where(:user_id => @user.id) %>
 	</p>
 
-	<% if @user.editor? %>
+	<% if current_user.admin? %>
 		<p>
-		  <strong>Editor for:</strong>
-		  <% @user.traits.each do |t| %>
-		  	<%= link_to t.trait_name, trait_path(t), class: "label label-primary" %>
-		  <% end %>
+	    <div class="btn-group">
+	      <%= link_to 'Back', users_path, class: "btn btn-default" %>
+	      <% if signed_in? && current_user.contributor? %>
+	        <%= link_to 'Edit', edit_user_path(@user), class: "btn btn-default" %>
+	      <% end %>
+	    </div>
 		</p>
 	<% end %>
 
-	<p>Observations that entered by <%= @user.name %> are listed below. These are original/new observations only (i.e., not  observations that have been modified/edited). Displayed data can be downloaded by clicking <label class="label label-success">Download</label>. Use the number of observations pull-down to expand what is visible and downloaded. You can also control their access of your observations.</p>
+</div>
 
+
+<% if @user.editor? %>
+	<div class="col-md-4">
+		<ul class="list-group">
+			<li class="list-group-item">							
+				<div class="row">
+		      <div class="col-md-12">
+					  <strong>Editor for:</strong>
+					  <% @user.traits.each do |t| %>
+					  	<%= link_to t.trait_name, trait_path(t), class: "label label-primary" %>
+					  <% end %>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+<% end %>
+
+	<!-- <p>Observations that entered by <%= @user.name %> are listed below. These are original/new observations only (i.e., not  observations that have been modified/edited). Displayed data can be downloaded by clicking <label class="label label-success">Download</label>. Use the number of observations pull-down to expand what is visible and downloaded. You can also control their access of your observations.</p> -->
+
+<div class="col-md-12">
 	<h3>Observations</h3>
 
+
+	<%= form_tag user_path, :method => 'get', :html => {:class => "form-horizontal"} do %>
+    <fieldset>
+	  	<div class="form-group">
+	    	<div class="col-sm-2">
+	    		<p style="text-align:right;">Subset by:</p>
+		    </div>
+		  </div>
+	  	<div class="form-group">
+	    	<div class="col-sm-2">
+					<%= select_tag :specie, options_for_select(@species.collect {|p| [p.specie_name, p.id] }, params[:specie]), :onchange => "this.form.submit();", :prompt => "Species...", class: "form-control input-sm" %>
+		    </div>
+		  </div>
+	  	<div class="form-group">
+	    	<div class="col-sm-2">
+					<%= select_tag :trait, options_for_select(@traits.collect {|p| [p.trait_name, p.id] }, params[:trait]), :onchange => "this.form.submit();", :prompt => "Trait...", class: "form-control input-sm" %>
+		    </div>
+		  </div>
+	  	<div class="form-group">
+	    	<div class="col-sm-2">
+					<%= select_tag :resource, options_for_select(@resources.collect {|p| ["#{p.author} #{p.year}", p.id] }, params[:resource]), :onchange => "this.form.submit();", prompt: "Resource...", class: "form-control input-sm" %>
+		    </div>
+		  </div>
+	  	<div class="form-group">
+	    	<div class="col-sm-2">
+					<%= select_tag :location, options_for_select(@locations.collect {|p| [p.location_name, p.id] }, params[:location]), :onchange => "this.form.submit();", :prompt => "Location...", class: "form-control input-sm" %>
+		    </div>
+		  </div>
+	  	<div class="form-group">
+	    	<div class="col-sm-2">
+					<%= link_to "Clear", user_path(@user), class: "btn btn-primary btn-sm" %>
+		    </div>
+		  </div>
+    </fieldset>
+	<% end %>
+	<br>
 	<% if @observations.blank? %>
 		<%= render "shared/no_observations" %>
 	<% else %>
 
-		<div class="well">
-			<div class="row">
-			  <div class="col-md-2">
-					<%= form_tag user_path, :method => 'get' do %>
-						<%= select_tag :n, options_for_select([20, 200, 2000, "all"], params[:n]), onchange: "$(this).parent('form').submit();", class: "form-control" %><br>
-					<% end %>
-				</div>
-				<div class="col-md-8">
-					<p>observations per page</p>
-				</div>
-				<div class="col-md-2">
-					<%= link_to "Download", user_path(format: "zip", taxonomy: "on"), class: "btn btn-success pull-right" %>
-				</div>
-			</div>
+</div>
 
-			<div class="row">
-			  <div class="col-md-12">
+<%= form_tag update_multiple_observations_path do %>
+	<%= hidden_field_tag "con_id", @user.id %>
+	<%= hidden_field_tag "resource", params[:resource] %>
+	<%= hidden_field_tag "location", params[:location] %>
+	<%= hidden_field_tag "specie", params[:specie] %>
+	<%= hidden_field_tag "trait", params[:trait] %>
 
-				<%= form_tag update_multiple_observations_path do %>
-					<%= hidden_field_tag "con_id", @user.id %>
-
-					<% if (@user.id == current_user.id || current_user.admin?) && !@observations.blank? %>
-						<%= submit_tag "Update Access", class: "btn btn-danger btn-md", style: "margin-right: 5px;" %>
-						<input type="checkbox", name="checkall", onclick="checkUncheckAll(this);" /> Check/uncheck access for all
-					<% end %>
-				</div>
-			</div>
+	<% if (@user.id == current_user.id || current_user.admin?) && !@observations.blank? %>
+		<div class="col-md-3">
+			<ul class="list-group">
+				<li class="list-group-item">							
+					<div class="row">
+			      <div class="col-md-12">
+							<%= submit_tag "Update Access", class: "btn btn-danger" %><br>
+							<small><input type="checkbox", name="checkall", onclick="checkUncheckAll(this);" /> Check/uncheck all</small>
+						</div>
+					</div>
+				</li>
+			</ul>
 		</div>
+	<% end %>
 
+	<div class="col-md-12">
 		<%= will_paginate @observations, :inner_window => 1, :outer_window => 0 %>
 		<%= render "shared/observations" %>
 		<br>
 		<%= will_paginate @observations, :inner_window => 1, :outer_window => 0 %>
-		
-		<% end %>	
-	<% end %>
-</div>
+	</div>	
+	<% end %>	
+<% end %>
