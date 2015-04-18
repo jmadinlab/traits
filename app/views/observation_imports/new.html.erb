@@ -1,26 +1,33 @@
-<div class="page-header">
-  <h1>Import observations</h1>
-</div>
-
 <%= render 'shared/error_messages', object: @observation_import %>
 
-<%= form_for @observation_import do |f| %>
+<div class="col-md-8">
+  <h1>
+    Importing data
+  </h1>
+  <hr>
+</div>
 
-  <div class="row">
-    <div class="col-md-12">
-        <%= f.radio_button :import_type, "new", :checked => true %>
-        <%= f.label :import_type, "Import new observations"  %><br>
-        <%= f.radio_button :import_type, "overwrite" %>
-        <%= f.label :import_type, "Overwrite existing observations" %>
-    </div>
-  </div>
+<div class="col-md-4">
+  <ul class="list-group">
+    <li class="list-group-item">              
+      <div class="row">
+        <div class="col-md-12">
 
-  <div class="form-group">
-    <%= f.file_field :file, class: "form-control" %>
-  </div>
+          <%= form_for @observation_import do |f| %>
+            <%= f.radio_button :import_type, "new", :checked => true %>
+            <%= f.label :import_type, "Import new observations"  %><br>
+            <%= f.radio_button :import_type, "overwrite" %>
+            <%= f.label :import_type, "Overwrite existing observations" %>
+            <%= f.file_field :file, class: "form-control" %><br>
+            <%= f.submit "Import", class: "btn btn-primary" %>
+          <% end %>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
 
-  <%= f.submit "Import", class: "btn btn-primary" %>
 
+<div class="col-md-12">
   <%= markdown File.open(Rails.root + "public/bulk_import.md", 'r').read %>
-
-<% end %>
+</div>
