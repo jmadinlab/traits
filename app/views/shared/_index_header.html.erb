@@ -27,9 +27,9 @@
   <% else %>
     <%= link_to "New #{model.singularize.capitalize}", "#{model}/new", class: "btn btn-primary" %>
   <% end %>
-<% end %>
-<% if model == "resources" %>  
-	<%= link_to 'Errors', resources_status_path, class: "btn btn-danger" %>
+  <% if model == "resources" %>  
+    <%= link_to 'Errors', resources_status_path, class: "btn btn-danger" %>
+  <% end %>
 <% end %>
 </div>
 <br><br>
