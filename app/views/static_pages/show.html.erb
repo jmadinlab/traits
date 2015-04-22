@@ -48,7 +48,7 @@
 				<strong>Observations with no resource:</strong>
 			</div>
 			<div class="col-md-9">
-				<% obs = Observation.where(:id => Measurement.where(:trait_id => @trait.id).map(&:observation_id)).where("resource_id IS ?", nil) %>
+				<% obs = Observation.where(:id => Measurement.where(:trait_id => @trait.id).map(&:observation_id)).where("resource_id IS ? OR resource_id=?", nil, 0) %>
 				<% if !obs.empty? %>
 					<% obs.each do |o| %>
 						<%= link_to o.id, observation_path(o.id), class: "label label-danger" %>
