@@ -16,6 +16,7 @@ class StaticPagesController < ApplicationController
     # params[:editor] = "ready_for_release" if params[:status].blank?
     query = Trait.all
     query = query.editor(params[:editor]) if not params[:editor].blank?
+    query = query.where(:release_status => params[:release_status]) if not params[:release_status].blank?
     @traits = query.all
   end
 

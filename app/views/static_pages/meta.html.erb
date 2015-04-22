@@ -15,7 +15,8 @@
 
 <p>
 	<%= form_tag meta_path, :method => 'get' do %>
-	  <strong>Subset traits by editor: </strong><%= select_tag :editor, options_for_select(User.all.where(:id => Trait.all.map(&:user_id).uniq).map { |e| [e.name, e.id] }, params[:editor]), include_blank: true, onchange: "$(this).parent('form').submit();" %>
+	  <strong>Subset traits by editor: </strong><%= select_tag :editor, options_for_select(User.all.where(:id => Trait.all.map(&:user_id).uniq).map { |e| [e.name, e.id] }, params[:editor]), include_blank: true, onchange: "$(this).parent('form').submit();" %><br>
+	  <strong>Subset traits by release status: </strong><%= select_tag :release_status, options_for_select(Trait.all.map(&:release_status).uniq, params[:release_status]), include_blank: true, onchange: "$(this).parent('form').submit();" %>
 	<% end %>
 </p>
 
@@ -37,7 +38,7 @@
 		<div class="row">
 			<div class="col-md-2">
 		  </div>
-			<div class="col-md-2">
+			<div class="col-md-1">
 			  <strong>Class</strong>
 		  </div>
 			<div class="col-md-2">
@@ -49,11 +50,14 @@
 			<div class="col-md-1">
 			  <strong>Standard</strong>
 		  </div>
-			<div class="col-md-2">
+			<div class="col-md-1">
 			  <strong>Value range</strong>
 		  </div>
 			<div class="col-md-1">
 			  <strong>Measurements</strong>
+		  </div>
+			<div class="col-md-1">
+			  <strong>Resources</strong>
 		  </div>
 			<div class="col-md-1">
 		  </div>
@@ -63,12 +67,15 @@
 	<%# if trait.user == current_user || current_user.admin? %>
 	  <li class="list-group-item">							
 			<div class="row">
-				<div class="col-md-4">
+				<div class="col-md-3">
 					<div class="col-sm-1" style="color:lightgrey;">
 				  	<%= trait.id %>
 			  	</div>
 					<div class="col-sm-6">
 				  	<%= link_to trait.trait_name, trait_path(trait), 'data-no-turbolink' => true %>
+            <% if trait.hide %>
+              <span class="label label-danger" data-toggle="tooltip" data-placement="right" title="Trait only visible to Editors">hidden</span>
+            <% end %>
 			  	</div>
 					<div class="col-sm-4">
 					  <%= trait.trait_class %>
@@ -83,7 +90,7 @@
 				<div class="col-md-1">
 				  <%= trait.standard.standard_name %> (<%= trait.standard.standard_unit %>)
 			  </div>
-				<div class="col-md-2">
+				<div class="col-md-1">
 				  <% trait.value_range.to_s.split(',').each do |v| %>
 				  	<span class="label label-primary"><%= v %></span>
 					<% end %>
@@ -94,6 +101,9 @@
 			  </div>
 				<div class="col-md-1">
 				  <%= Measurement.where(:trait_id => trait.id).size %>
+			  </div>
+				<div class="col-md-2">
+				  <%= Observation.where(:id => Measurement.where(:trait_id => trait.id).map(&:observation_id)).map(&:resource_id).uniq.join(", ") %>
 			  </div>
 				<div class="col-md-1">
 				  <%= link_to 'Status', show_meta_path(trait.id), class: "btn btn-default btn-xs" %>

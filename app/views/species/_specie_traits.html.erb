@@ -1,6 +1,6 @@
 
 <% if @observations.empty? %>
-	<p class="alert alert-danger">No public records.</p>
+  <%= render "shared/no_observations" %>
 <% else %>
 
 	<table class="table table-condensed">
