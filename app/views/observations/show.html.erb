@@ -131,7 +131,7 @@
 
 
 								<% if mea.trait.traitvalues.present? %>
-									<span class="label label-primary" data-toggle="tooltip" data-placement="bottom" title="<%= mea.trait.traitvalues.where(:value_name => mea.value).first.value_description %>"><%= mea.value %></span>
+									<span class="label label-primary" data-toggle="tooltip" data-placement="top" title="<%= mea.trait.traitvalues.where(:value_name => mea.value).first.value_description %>"><%= mea.value %></span>
 								<% else %>
 									<%= mea.value %>
 								<% end %>
