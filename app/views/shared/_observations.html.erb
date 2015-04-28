@@ -117,7 +117,11 @@
 
 				<div class="col-sm-2">
 					<% if measurements.first.standard.standard_class == "Nominal class" %>
-						<span class="label label-primary" data-toggle="tooltip" data-placement="top" title="<%= measurements.first.trait.traitvalues.where(:value_name => measurements.first.value).first.value_description %>"><%= measurements.first.value %></span>
+            <% if measurements.first.trait.traitvalues.present? %>
+  						<span class="label label-primary" data-toggle="tooltip" data-placement="top" title="<%= measurements.first.trait.traitvalues.where(:value_name => measurements.first.value).first.value_description %>"><%= measurements.first.value %></span>
+            <% else %> 
+              <span class="label label-primary"><%= measurements.first.value %></span>
+            <% end %> 
 					<% else %> 
 	        	<%= measurements.first.value %>
 						<% if !measurements.first.standard.blank? %>

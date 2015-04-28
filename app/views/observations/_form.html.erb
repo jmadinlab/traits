@@ -16,14 +16,14 @@
 
       <div class="form-group">
     	  <%= f.label "species (required)" %><br>
-    		<%= f.select :specie_id, Specie.all.map { |u| ["#{u.specie_name} (#{u.synonyms.collect(&:synonym_name).join(",")})", u.id] }, { include_blank: "Choose species..." }, { id: 'simple-example', :style => "width: 300px;" } %>
+    		<%= f.select :specie_id, Specie.all.map { |u| ["#{u.specie_name} (#{u.synonyms.collect(&:synonym_name).join(",")})", u.id] }, { include_blank: "Choose species..." }, { id: 'simple-example', :style => "width: 250px;" } %>
     	</div>
     </div>
 
     <div class="col-md-6">
       <div class="form-group">
         <%= f.label "location (required)" %><br>
-    		<%= f.select :location_id, Location.all.map { |u| [u.location_name, u.id] }, { include_blank: "Choose location..." }, { id: 'simple-example', :style => "width: 300px;" } %>
+    		<%= f.select :location_id, Location.all.map { |u| [u.location_name, u.id] }, { include_blank: "Choose location..." }, { id: 'simple-example', :style => "width: 250px;" } %>
     	</div>
     </div>
   </div>
@@ -33,7 +33,7 @@
       <div class="form-group">
         <%= f.label "resource (recommended)" %><br>
         <p><small>All published data needs a resource.</small></p>
-        <%= f.select :resource_id, Resource.all.map { |u| ["#{u.author} (#{u.year}) #{u.title}", u.id] }, { include_blank: "Choose resource..." }, { id: 'simple-example', :style => "width: 300px;" } %>
+        <%= f.select :resource_id, Resource.all.map { |u| ["#{u.author} (#{u.year}) #{u.title}", u.id] }, { include_blank: "Choose resource..." }, { id: 'simple-example', :style => "width: 250px;" } %>
       </div>
     </div>
 
@@ -41,7 +41,7 @@
       <div class="form-group">
         <%= f.label "secondary resource (if applicable)" %><br>
         <p><small>For observations that are part of secondary compilations.</small></p>
-        <%= f.select :resource_secondary_id, Resource.all.map { |u| ["#{u.author} (#{u.year}) #{u.title}", u.id] }, { include_blank: "Choose resource..." }, { id: 'simple-example', :style => "width: 300px;" } %>
+        <%= f.select :resource_secondary_id, Resource.all.map { |u| ["#{u.author} (#{u.year}) #{u.title}", u.id] }, { include_blank: "Choose resource..." }, { id: 'simple-example', :style => "width: 250px;" } %>
       </div>
     </div>
   </div>

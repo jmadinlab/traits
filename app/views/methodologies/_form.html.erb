@@ -17,21 +17,21 @@
     	<% f.object.traits.build %>
   	<% end %>
 
-	<h3>Traits</h3>
+<!-- 	<h3>Traits</h3>
 
 	<p><small>Add traits that use this methodology.</small></p>
 
   <div id = "traits">
-	  <%= f.fields_for :traits do |t| %>
-	  	<%= render "trait_fields", :f => t %>
-	  <% end %>
+	  <%#= f.fields_for :traits do |t| %>
+	  	<%#= render "trait_fields", :f => t %>
+	  <%# end %>
 	</div>
 
   <div class="links">
-    <p><%= link_to_add_association "add another trait", f, :traits,
+    <p><%#= link_to_add_association "add another trait", f, :traits,
     		'data-association-insertion-method' => "append" %></p>
   </div>
-
+ -->
   <div class="form-group">
     <% if current_user.admin? %>
       <%= f.label :enterer %>

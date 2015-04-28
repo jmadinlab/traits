@@ -13,21 +13,32 @@
     	<%= @methodology.id %>
   </p>
 
-  <% if !@methodology.method_description.blank? %>
-    <p>
-      <strong>Description:</strong>
-    	<%= @methodology.method_description %>
-    </p>
-  <% end %>
+  <p>
+    <strong>Description:</strong>
+    <% if !@methodology.method_description.blank? %>
+        <strong>Description:</strong>
+      	<%= @methodology.method_description %>
+    <% else %>
+      <font style="color:lightgrey;">Not entered</font>
+    <% end %>
+  </p>
 
-  <% if not @methodology.traits.empty? %>
-  	<p>
-  			<strong>Used for traits:</strong>
-  			<% @methodology.traits.each do |trait| %>
-  				<%= link_to trait.trait_name, trait, class: "label label-primary", 'data-no-turbolink' => true %>
-    		<% end %>
-  	</p>
-  <% end %>
+  <p>
+    <strong>Used for traits:</strong>
+    <% if not @traits.empty? %>
+      <ul>
+        <% @traits.each do |trait| %>
+          <li>
+            <%= link_to trait.trait_name, trait, 'data-no-turbolink' => true %>
+        </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <font style="color:lightgrey;">None entered</font>
+    <% end %>
+
+  </p>
+
 
   <p>
     <strong>Added by:</strong>

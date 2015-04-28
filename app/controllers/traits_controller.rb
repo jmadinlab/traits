@@ -62,6 +62,8 @@ class TraitsController < ApplicationController
     end
 
     @observations = observation_filter(@observations)
+
+    @methodologies = Methodology.where(:id => Measurement.where("observation_id IN (?) AND trait_id = ?", @observations.map(&:id), @trait.id).map(&:methodology_id))
     
     data_table = GoogleVisualr::DataTable.new
 
@@ -118,15 +120,15 @@ class TraitsController < ApplicationController
   # POST /traits.json
   def create
     @trait = Trait.new(trait_params)
-    methodology_ids =  params[:trait][:methodologies_attributes]
+    # methodology_ids =  params[:trait][:methodologies_attributes]
     traitvalue_ids =  params[:trait][:traitvalues_attributes]
 
-    if not methodology_ids.nil?
-      methodology_ids.keys().each do |k|
-        methodology = Methodology.find(methodology_ids[k]["id"])
-        @trait.methodologies << methodology if methodology_ids[k]["_destroy"] != "1" and not @trait.methodologies.include? methodology
-      end
-    end
+    # if not methodology_ids.nil?
+    #   methodology_ids.keys().each do |k|
+    #     methodology = Methodology.find(methodology_ids[k]["id"])
+    #     @trait.methodologies << methodology if methodology_ids[k]["_destroy"] != "1" and not @trait.methodologies.include? methodology
+    #   end
+    # end
 
     if @trait.save
       redirect_to @trait, flash: {success: "Trait was successfully created." }
@@ -138,19 +140,19 @@ class TraitsController < ApplicationController
   # PATCH/PUT /traits/1
   # PATCH/PUT /traits/1.json
   def update
-    methodology_ids =  params[:trait][:methodologies_attributes]
+    # methodology_ids =  params[:trait][:methodologies_attributes]
     traitvalue_ids =  params[:trait][:traitvalues_attributes]
 
-    @trait.methodologies.delete_all()
+    # @trait.methodologies.delete_all()
     #@trait.traitvalues.delete_all()
 
-    if not methodology_ids.nil?
-      methodology_ids.keys().each do |k|
-        method = Methodology.find(methodology_ids[k]["id"])
-        @trait.methodologies << method if ((methodology_ids[k]["_destroy"] != "1") and (not @trait.methodologies.include? method))
+    # if not methodology_ids.nil?
+    #   methodology_ids.keys().each do |k|
+    #     method = Methodology.find(methodology_ids[k]["id"])
+    #     @trait.methodologies << method if ((methodology_ids[k]["_destroy"] != "1") and (not @trait.methodologies.include? method))
         
-      end
-    end
+    #   end
+    # end
     
     
     if @trait.update(trait_params)

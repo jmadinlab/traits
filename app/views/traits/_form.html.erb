@@ -30,16 +30,16 @@
     <p><%= link_to_add_association "Add a value option", f, :traitvalues, class: "btn btn-default btn-sm" %></p>
   </div>
 
-  <%= f.label :methodologies %><br>
+<!--   <%#= f.label :methodologies %><br>
   <div id="methodologies">
-    <%= f.fields_for :methodologies do |t| %>
-      <%= render "methodology_fields", :f => t %>
-    <% end %>
+    <%#= f.fields_for :methodologies do |t| %>
+      <%#= render "methodology_fields", :f => t %>
+    <%# end %>
   </div>
   <div class="links">
-    <p><%= link_to_add_association "Add a methodology", f, :methodologies, class: "btn btn-default btn-sm" %></p>
+    <p><%#= link_to_add_association "Add a methodology", f, :methodologies, class: "btn btn-default btn-sm" %></p>
   </div>
-
+ -->
   <% if current_user.editor? %>
   	<div class="form-group">
   		<%= f.label :editor %>

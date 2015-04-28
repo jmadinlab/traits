@@ -5,6 +5,7 @@
 	  var a = 0;
 	  $(document).ready(function() {
 	  	$('select.my_standard').select2();
+	  	$('select.my_methodology').select2();
 			$('select.my_trait').select2();
 			//$('select.my_methodology').select2();
 
@@ -89,21 +90,25 @@
 			</div>
 			<div class="col-md-6">
 			  <div class="form-group">
-				  <%= f.label :methodolgy_id %> <br/>
+				  <%= f.label :methodology_id %> <br/>
 				  <% if !f.object.id %>
-				  	<% if f.object.trait.nil? %>
-				  		<%= f.select :methodology_id, [], { include_blank: 'Choose Methodology'}, {class: "form-control" }%>
-				  	<% else %>
-				  		<%= f.select :methodology_id, f.object.trait.methodologies.map { |m| [ m.methodology_name, m.id ]} , { include_blank: 'Choose Methodology'}, {class: "form-control" } %>
-				  		<% end %>
+				  	<%# if f.object.trait.nil? %>
+				  		<%#= f.select :methodology_id, [], { include_blank: 'Choose Methodology'}, {class: "form-control" }%>
+				  	<%# else %>
+				  		<%#= f.select :methodology_id, f.object.trait.methodologies.map { |m| [ m.methodology_name, m.id ]} , { include_blank: 'Choose Methodology'}, {class: "form-control" } %>
+				  		<%#= f.select :methodology_id, Methodology.all.map { |m| [ m.methodology_name, m.id ]} , { include_blank: 'Choose Methodology'}, {id: 'simple-example', class: "form-control" } %>
+    				<%= f.select :methodology_id, Methodology.all.map { |u| [u.methodology_name, u.id] }, { include_blank: "Choose Methodology..." }, { id: 'simple-example', :style => "width: 250px;", class: "my_methodology" } %>
+				  	<%# end %>
 				  <% else %>
-						<%= f.select :methodology_id, f.object.trait.methodologies.map { |m| [ m.methodology_name, m.id ]} , { include_blank: 'Choose Methodology'}, {class: "form-control" } %>
+						<%#= f.select :methodology_id, f.object.trait.methodologies.map { |m| [ m.methodology_name, m.id ]} , { include_blank: 'Choose Methodology'}, {class: "form-control" } %>
+    				<%= f.select :methodology_id, Methodology.all.map { |u| [u.methodology_name, u.id] }, { include_blank: "Choose Methodology..." }, { id: 'simple-example', :style => "width: 250px;" } %>
 				  <% end %>
 				</div>
 			</div>
 		</div><!-- End ROW -->
-	  
-      
+	        
+
+
 		<div class="form-group precision">
 			<div class="row">
 	  		

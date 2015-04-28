@@ -75,9 +75,9 @@
 
 	<p>
 		<strong>Methodologies:</strong>
-		<% if not @trait.methodologies.empty? %>
+		<% if not @methodologies.empty? %>
 			<ul>
-				<% @trait.methodologies.each do |methodology| %>
+				<% @methodologies.each do |methodology| %>
 					<li>
 						<%= link_to methodology.methodology_name, methodology %>
 				</li>

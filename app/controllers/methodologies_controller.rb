@@ -16,17 +16,17 @@ class MethodologiesController < ApplicationController
   def create
   	@methodology = Methodology.new(methodology_params)
   	
-    trait_ids =  params[:methodology][:traits_attributes]
-    puts "testing methodologies"
-    puts trait_ids["0"]["id"]
-    if trait_ids["0"]["id"] != ""
-    	trait_ids.keys().each do |k|
-    		#puts id
-    		#puts val
-        trait = Trait.find(trait_ids[k]["id"]) 
-    		@methodology.traits << trait if trait_ids[k]["_destroy"] != "1" and not @methodology.traits.include? trait
-    	end
-    end
+    # trait_ids =  params[:methodology][:traits_attributes]
+    # puts "testing methodologies"
+    # puts trait_ids["0"]["id"]
+    # if trait_ids["0"]["id"] != ""
+    # 	trait_ids.keys().each do |k|
+    # 		#puts id
+    # 		#puts val
+    #     trait = Trait.find(trait_ids[k]["id"]) 
+    # 		@methodology.traits << trait if trait_ids[k]["_destroy"] != "1" and not @methodology.traits.include? trait
+    # 	end
+    # end
 
   	#@traits = Trait.find(methodology_params[:traits_attributes])
 
@@ -64,6 +64,8 @@ class MethodologiesController < ApplicationController
     @observations = Observation.where(:id => @methodology.measurements.map(&:observation_id))
     @observations = observation_filter(@observations)
 
+    @traits = Trait.where(:id => Measurement.where("observation_id IN (?) AND methodology_id = ?", @observations.map(&:id), @methodology.id).map(&:trait_id))
+
     respond_to do |format|
       format.html { @observations = @observations.paginate(page: params[:page]) }
       format.csv { download_observations(@observations, params[:taxonomy], params[:contextual] || "on", params[:global]) }
@@ -76,17 +78,17 @@ class MethodologiesController < ApplicationController
   end
 
   def update
-    trait_ids =  params[:methodology][:traits_attributes]
-    @methodology.traits.delete_all()
+    # trait_ids =  params[:methodology][:traits_attributes]
+    # @methodology.traits.delete_all()
 
-    trait_ids.keys().each do |k|
-      #puts id
-      #puts val
+    # trait_ids.keys().each do |k|
+    #   #puts id
+    #   #puts val
       
-        trait = Trait.find(trait_ids[k]["id"]) 
-        @methodology.traits << trait if trait_ids[k]["_destroy"] != "1" and not @methodology.traits.include? trait
+    #     trait = Trait.find(trait_ids[k]["id"]) 
+    #     @methodology.traits << trait if trait_ids[k]["_destroy"] != "1" and not @methodology.traits.include? trait
       
-    end
+    # end
 
     if @methodology.update(methodology_params)
       redirect_to @methodology, flash: {success: "Methodology was successfully updated." }
