@@ -12,8 +12,8 @@ class Trait < ActiveRecord::Base
   
   has_many :traitvalues, :dependent => :destroy
 
-  has_and_belongs_to_many :methodologies, :dependent => :destroy
-  accepts_nested_attributes_for :methodologies, :reject_if => :all_blank, :allow_destroy => true
+  # has_and_belongs_to_many :methodologies, :dependent => :destroy
+  # accepts_nested_attributes_for :methodologies, :reject_if => :all_blank, :allow_destroy => true
   accepts_nested_attributes_for :traitvalues, :reject_if => :all_blank, :allow_destroy => true
   
   default_scope -> { order('trait_class ASC') }
