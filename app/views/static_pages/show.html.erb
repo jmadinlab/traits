@@ -48,8 +48,8 @@
 				<strong>Observations with no resource:</strong>
 			</div>
 			<div class="col-md-9">
-				<% obs = Observation.where(:id => Measurement.where(:trait_id => @trait.id).map(&:observation_id)).where("resource_id IS ? OR resource_id=?", nil, 0) %>
-				<% if !obs.empty? %>
+				<% obs = Observation.where(:id => Measurement.where(:trait_id => @trait.id).map(&:observation_id)).where("resource_id IS NULL OR resource_id = ?", 0) %>
+				<% if !obs.blank? %>
 					<% obs.each do |o| %>
 						<%= link_to o.id, observation_path(o.id), class: "label label-danger" %>
 					<% end %>
@@ -66,7 +66,7 @@
 				<strong>Observations with no location:</strong>
 			</div>
 			<div class="col-md-9">
-				<% obs = Observation.where(:id => Measurement.where(:trait_id => @trait.id).map(&:observation_id)).where("location_id IS ?", nil) %>
+				<% obs = Observation.where(:id => Measurement.where(:trait_id => @trait.id).map(&:observation_id)).where("location_id IS NULL") %>
 				<% if !obs.empty? %>
 					<% obs.each do |o| %>
 						<%= link_to o.id, observation_path(o.id), class: "label label-danger" %>
@@ -126,7 +126,7 @@
 				<strong>Measurements with no standard:</strong>
 			</div>
 			<div class="col-md-9">
-				<% obs = Observation.where(:id => Measurement.where("trait_id = ? AND (standard_id = ?)", @trait.id, nil).map(&:observation_id)) %>
+				<% obs = Observation.where(:id => Measurement.where("trait_id = ? AND (standard_id IS NULL)", @trait.id).map(&:observation_id)) %>
 				<% if !obs.empty? %>
 					<% obs.each do |o| %>
 						<%= link_to o.id, observation_path(o.id), class: "label label-danger" %>
@@ -145,7 +145,7 @@
 				Not a big deal, but always good to have!
 			</div>
 			<div class="col-md-9">
-				<% obs = Observation.where(:id => Measurement.where("trait_id = ? AND (methodology_id = ?)", @trait.id, nil).map(&:observation_id)) %>
+				<% obs = Observation.where(:id => Measurement.where("trait_id = ? AND (methodology_id IS NULL)", @trait.id).map(&:observation_id)) %>
 				<% if !obs.empty? %>
 					<% obs.each do |o| %>
 						<%= link_to o.id, observation_path(o.id), class: "label label-warning" %>
@@ -163,7 +163,7 @@
 				<strong>Measurements with no value:</strong>
 			</div>
 			<div class="col-md-9">
-				<% obs = Observation.where(:id => Measurement.where("trait_id = ? AND (value = ?)", @trait.id, nil).map(&:observation_id)) %>
+				<% obs = Observation.where(:id => Measurement.where("trait_id = ? AND (value IS NULL)", @trait.id).map(&:observation_id)) %>
 				<% if !obs.empty? %>
 					<% obs.each do |o| %>
 						<%= link_to o.id, observation_path(o.id), class: "label label-danger" %>
