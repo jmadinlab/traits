@@ -108,7 +108,7 @@
 				<strong>Measurements with no value type:</strong>
 			</div>
 			<div class="col-md-9">
-				<% obs = Observation.where(:id => Measurement.where("trait_id = ? AND (value_type = ?)", @trait.id, "").map(&:observation_id)) %>
+				<% obs = Observation.where(:id => Measurement.where("trait_id = ? AND (value_type = ? OR value_type IS NULL)", @trait.id, "").map(&:observation_id)) %>
 				<% if !obs.empty? %>
 					<% obs.each do |o| %>
 						<%= link_to o.id, observation_path(o.id), class: "label label-danger" %>
