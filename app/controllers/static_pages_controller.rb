@@ -1,6 +1,6 @@
 class StaticPagesController < ApplicationController
 
-  before_action :editor, only: [:meta, :show, :duplicate, :uploads]
+  before_action :editor, only: [:release, :meta, :show, :duplicate, :uploads]
 
   def home
     @mea = Measurement.all.size
@@ -18,6 +18,13 @@ class StaticPagesController < ApplicationController
     query = query.editor(params[:editor]) if not params[:editor].blank?
     query = query.where(:release_status => params[:release_status]) if not params[:release_status].blank?
     @traits = query.all
+  end
+
+  def release
+
+    @traits = Trait.where(:release_status => "ready_for_release")
+    @observations = Observation.where("private IS false AND id IN (?)", Measurement.where("trait_id IN (?)", @traits.map(&:id)).map(&:observation_id))
+
   end
 
   def show
@@ -71,65 +78,46 @@ class StaticPagesController < ApplicationController
           
   end
 
-  def export_coral_trait
+  def export_specie_trait
     
     if signed_in? && current_user.editor?
       measurements = Measurement.joins(:trait).where("release_status IS ?", "ready_for_release")
     end
     
-    traits = Trait.where("release_status IS ? OR release_status IS ?", "ready_for_release", "needs_work_before_release")
-    # traits = Trait.where("trait_class IS NOT ?", "Contextual")
-    corals = Specie.all
+    # traits = Trait.where("release_status = ?", "ready_for_release")
+    traits = Trait.where("trait_class != ?", "Contextual")
+    species = Specie.all
 
     csv_string = CSV.generate do |csv|
 
-      # csv << ["measurement_id", "trait_id", "measurements"]
-
-      # observations.each do |obs|
-      head = ["coral_name"]
+      head = ["specie_name"]
+      real = ["release"]
       temp = 0
-      corals.sort_by{|c| c[:coral_name]}.each do |cor|
-        keep = [cor.coral_name]
+      species.sort_by{|c| c[:specie_name]}.each do |cor|
+        keep = [cor.specie_name]
         traits.sort_by{|t| t[:trait_name]}.each do |tra|
           if temp == 0
             head << tra.trait_name
+            if tra.release_status == "ready_for_release"
+              real << 1
+            else
+              real << 0
+            end
           end
-
-          keep << Measurement.where("trait_id IS ?", tra.id).joins(:observation).where("coral_id IS ?", cor.id).size
+          keep << Measurement.where("trait_id = ?", tra.id).joins(:observation).where("specie_id = ?", cor.id).size
         end
         if temp == 0
           csv << head
+          csv << real
         end
         temp = 1
-
         csv << keep
-        # temp << [tra.trait_name, cor.coral_name, measurements.size]
       end
     end
 
     send_data csv_string, 
      :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
      :disposition => "attachment; filename=trait_coral_#{Date.today.strftime('%Y%m%d')}.csv"
-          
-  end
-
-  def export_trait
-        
-    traits = Trait.where("release_status IS ? OR release_status IS ?", "ready_for_release", "needs_work_before_release")
-
-    csv_string = CSV.generate do |csv|
-
-      csv << ["trait_name", "measurements"]
-
-      traits.sort_by{|t| t[:trait_name]}.each do |tra|
-        csv << [tra.trait_name, Measurement.where("trait_id IS ?", tra.id).size]
-      end
-
-    end
-
-    send_data csv_string, 
-     :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
-     :disposition => "attachment; filename=trait_#{Date.today.strftime('%Y%m%d')}.csv"
           
   end
 

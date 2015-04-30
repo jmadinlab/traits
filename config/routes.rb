@@ -115,6 +115,7 @@ Traits::Application.routes.draw do
   match '/signout',     to: 'sessions#destroy',     via: 'delete'
 
   match '/meta',        to: 'static_pages#meta',    via: 'get'
+  match '/release',        to: 'static_pages#release',    via: 'get'
   match '/uploads',        to: 'static_pages#uploads',    via: 'get'
 
   match '/procedures',  to: 'static_pages#procedures',   via: 'get'
@@ -124,7 +125,6 @@ Traits::Application.routes.draw do
   match '/bulk_import', to: 'static_pages#bulk_import',   via: 'get'
   match '/documentation',    to: 'static_pages#documentation',   via: 'get'
 
-  match '/export_trait', to: 'static_pages#export_trait',   via: 'get'
   match '/export_specie_trait', to: 'static_pages#export_specie_trait',   via: 'get'
   match '/export_location_trait', to: 'static_pages#export_location_trait',   via: 'get'
   match '/export_ready_trait', to: 'static_pages#export_ready_trait',   via: 'get'
