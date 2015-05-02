@@ -85,16 +85,23 @@ class StaticPagesController < ApplicationController
     end
     
     # traits = Trait.where("release_status = ?", "ready_for_release")
-    traits = Trait.where("trait_class != ?", "Contextual")
+    traits = Trait.where("release_status = ?", "ready_for_release")
     species = Specie.all
 
     csv_string = CSV.generate do |csv|
 
-      head = ["specie_name"]
-      real = ["release"]
+      head = ["specie_name", "zooxanthellate"]
+      real = ["release", ""]
+      clas = ["class", ""]
       temp = 0
       species.sort_by{|c| c[:specie_name]}.each do |cor|
         keep = [cor.specie_name]
+        zoox = Measurement.where("trait_id = ?", 41).joins(:observation).where("specie_id = ?", cor.id)
+        if zoox.present?
+          keep << zoox.first.value
+        else
+          keep << ""
+        end
         traits.sort_by{|t| t[:trait_name]}.each do |tra|
           if temp == 0
             head << tra.trait_name
@@ -103,11 +110,17 @@ class StaticPagesController < ApplicationController
             else
               real << 0
             end
+            if tra.trait_class.present?
+              clas << tra.trait_class
+            else
+              clas << ""
+            end
           end
           keep << Measurement.where("trait_id = ?", tra.id).joins(:observation).where("specie_id = ?", cor.id).size
         end
         if temp == 0
           csv << head
+          csv << clas
           csv << real
         end
         temp = 1
