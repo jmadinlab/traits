@@ -79,13 +79,9 @@ class StaticPagesController < ApplicationController
   end
 
   def export_specie_trait
-    
-    if signed_in? && current_user.editor?
-      measurements = Measurement.joins(:trait).where("release_status IS ?", "ready_for_release")
-    end
-    
+        
     # traits = Trait.where("release_status = ?", "ready_for_release")
-    traits = Trait.where("release_status = ?", "ready_for_release")
+    traits = Trait.where("hide IS NOT true AND trait_class != ? AND trait_class != ?", "Contextual", "")
     species = Specie.all
 
     csv_string = CSV.generate do |csv|
