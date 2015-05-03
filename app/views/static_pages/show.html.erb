@@ -185,7 +185,7 @@
 		<div class="row">
 			<div class="col-md-12">
 				<% Specie.where(:id => species).each do |specie| %>
-					<%= link_to specie.specie_name, specie_path(specie), class: "label label-warning" %>
+					<%= link_to specie.specie_name, specie_path(specie), class: "label label-warning" %>,
 				<% end %>
 			</div>
 		</div>
