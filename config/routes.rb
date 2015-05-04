@@ -16,7 +16,6 @@ Traits::Application.routes.draw do
   match '/search/json_completion', to: 'search#json_completion', via: 'get', as: 'json_completion'
   
   resources :imports
-  resources :citations
   resources :search 
   resources :synonyms
 

@@ -7,7 +7,6 @@ class User < ActiveRecord::Base
   has_many :methodologies
   has_many :locations
   has_many :standards
-  has_many :citations
   has_many :issues
   has_paper_trail
   
