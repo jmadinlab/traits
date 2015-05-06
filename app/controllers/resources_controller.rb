@@ -42,7 +42,7 @@ class ResourcesController < ApplicationController
 
     if @resource.doi_isbn.present?
       begin
-        @doi = JSON.load(open("http://api.crossref.org/works/#{@resource.doi_isbn}"))
+        @doi = JSON.load(open("https://api.crossref.org/works/#{@resource.doi_isbn}"))
         if @doi["message"]["author"][0]["family"] == "Peresson"
           @doi = "Invalid"
         end
@@ -51,7 +51,7 @@ class ResourcesController < ApplicationController
       end
     else
       begin
-        @sug = JSON.load(open("http://api.crossref.org/works?query=#{@resource.title}"))
+        @sug = JSON.load(open("https://api.crossref.org/works?query=#{@resource.title}&rows=3"))
       rescue
         @sug = "Invalid"
       end        
@@ -92,7 +92,7 @@ class ResourcesController < ApplicationController
 
     if not @resource.doi_isbn.present?
       begin
-        @sug = JSON.load(open("http://api.crossref.org/works?query=#{@resource.title}&rows=3"))
+        @sug = JSON.load(open("https://api.crossref.org/works?query=#{@resource.title}&rows=3"))
       rescue
         @sug = "Invalid"
       end        
@@ -107,7 +107,7 @@ class ResourcesController < ApplicationController
 
     if @resource.doi_isbn.present?
       begin
-        @doi = JSON.load(open("http://api.crossref.org/works/#{@resource.doi_isbn}"))
+        @doi = JSON.load(open("https://api.crossref.org/works/#{@resource.doi_isbn}"))
         if @doi["message"]["author"][0]["family"] == "Peresson"
           @doi = "Invalid"
           @resource.errors.add(:base, 'The oid is invalid')
@@ -145,7 +145,7 @@ class ResourcesController < ApplicationController
 
     if @resource.doi_isbn.present?
       begin
-        @doi = JSON.load(open("http://api.crossref.org/works/#{@resource.doi_isbn}"))
+        @doi = JSON.load(open("https://api.crossref.org/works/#{@resource.doi_isbn}"))
         if @doi["message"]["author"][0]["family"] == "Peresson"
           @doi = "Invalid"
           @resource.errors.add(:base, 'The oid is invalid')
