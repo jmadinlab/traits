@@ -85,22 +85,6 @@ $(standard).select2("val", "<%= @standard.id %>");
 	<% end %>
 <% end %>
 
-var methodogy_field_name = $(form_methodology).attr('name');
-var methodology_select_box = '<select class="form-control" id="' + methodology_id + '" name="' + methodogy_field_name + '" class="my_methodology"><option value="">Choose Methodology.. </option></select>'
-// Update Methodoloy field
-<% if @methodologies.size > 0 %>
-	$(methodology_option).remove();
-	$(form_methodology).replaceWith(methodology_select_box);
-
-	<% @methodologies.each do |methodology| %>
-		var option = "<option value= <%= methodology.id %> > <%= methodology.methodology_name %> </option> ";
-		$(form_methodology).append(option);
-	<% end %>
-<% else %>
-	//$(methodology_option).remove();
-	$(form_methodology).replaceWith(methodology_select_box);
-	
-<% end %>
 //
 
 //var option = "<option value= <%= @standard.id %> ><%= @standard.standard_name %> ( <%= @standard.standard_unit %>)</option> ";

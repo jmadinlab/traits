@@ -5,6 +5,7 @@ class Trait < ActiveRecord::Base
   
   has_many :measurements, :dependent => :destroy
   validates :trait_name, :presence => true
+  validates :trait_name, :uniqueness => true
   validates :standard_id, :presence => true
   
   has_many :traitvalues, :dependent => :destroy

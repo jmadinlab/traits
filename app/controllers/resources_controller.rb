@@ -40,6 +40,23 @@ class ResourcesController < ApplicationController
 
   def show
 
+    if @resource.doi_isbn.present?
+      begin
+        @doi = JSON.load(open("http://api.crossref.org/works/#{@resource.doi_isbn}"))
+        if @doi["message"]["author"][0]["family"] == "Peresson"
+          @doi = "Invalid"
+        end
+      rescue
+        @doi = "Invalid"
+      end
+    else
+      begin
+        @sug = JSON.load(open("http://api.crossref.org/works?query=#{@resource.title}&rows=3"))
+      rescue
+        @sug = "Invalid"
+      end        
+    end
+
     @primary = Observation.where('resource_id = ?', @resource.id)
     @secondary = Observation.where('resource_secondary_id = ?', @resource.id)
 
@@ -66,14 +83,54 @@ class ResourcesController < ApplicationController
     @resource = Resource.new
   end
 
+  def doi_new
+    # @resource = Resource.new
+  end
+
   # GET /resources/1/edit
   def edit
+
+    if not @resource.doi_isbn.present?
+      begin
+        @sug = JSON.load(open("http://api.crossref.org/works?query=#{@resource.title}&rows=3"))
+      rescue
+        @sug = "Invalid"
+      end        
+    end
+    
   end
 
   # POST /resources
   # POST /resources.json
   def create
     @resource = Resource.new(resource_params)
+
+    if @resource.doi_isbn.present?
+      begin
+        @doi = JSON.load(open("http://api.crossref.org/works/#{@resource.doi_isbn}"))
+        if @doi["message"]["author"][0]["family"] == "Peresson"
+          @doi = "Invalid"
+          @resource.errors.add(:base, 'The oid is invalid')
+        end
+      rescue
+        @doi = "Invalid"
+        @resource.errors.add(:base, 'The oid is invalid')
+      end
+    end
+
+    if @doi and not @doi == "Invalid"
+      authors = ""
+      @doi["message"]["author"].each do |a|
+        authors = authors + "#{a["family"].titleize}, #{a["given"].titleize},"
+      end
+
+      @resource.author = authors
+      @resource.year = @doi["message"]["issued"]["date-parts"][0][0]
+      @resource.title = @doi["message"]["title"][0]
+      @resource.journal = @doi["message"]["container-title"][0]
+      @resource.volume_pages = @doi["message"]["volume"], @doi["message"]["page"]
+
+    end
 
     if @resource.save
       redirect_to @resource, flash: {success: "Resource was successfully created." }
@@ -85,6 +142,35 @@ class ResourcesController < ApplicationController
   # PATCH/PUT /resources/1
   # PATCH/PUT /resources/1.json
   def update
+
+    if @resource.doi_isbn.present?
+      begin
+        @doi = JSON.load(open("http://api.crossref.org/works/#{@resource.doi_isbn}"))
+        if @doi["message"]["author"][0]["family"] == "Peresson"
+          @doi = "Invalid"
+          @resource.errors.add(:base, 'The oid is invalid')
+        end
+      rescue
+        @doi = "Invalid"
+        @resource.errors.add(:base, 'The oid is invalid')
+      end
+    end
+
+    if @doi and not @doi == "Invalid"
+      authors = ""
+      @doi["message"]["author"].each do |a|
+        authors = authors + "#{a["family"].titleize}, #{a["given"].titleize},"
+      end
+
+      params[:resource][:author] = authors
+      params[:resource][:year] = @doi["message"]["issued"]["date-parts"][0][0]
+      params[:resource][:title] = @doi["message"]["title"][0]
+      params[:resource][:journal] = @doi["message"]["container-title"][0]
+      params[:resource][:volume_pages] = "#{@doi["message"]["volume"]}, #{@doi["message"]["page"]}"
+
+    end
+
+
     if @resource.update(resource_params)
       redirect_to @resource, flash: {success: "Resource was successfully updated." }
     else

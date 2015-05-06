@@ -108,6 +108,7 @@ Traits::Application.routes.draw do
   
   resources :sessions,      only: [:new, :create, :destroy]
 
+
   root to: 'static_pages#home'
   match '/signup',      to: 'users#new',            via: 'get'
   match '/signin',      to: 'sessions#new',         via: 'get'
@@ -130,6 +131,7 @@ Traits::Application.routes.draw do
   match '/export_ready_resources', to: 'static_pages#export_ready_resources',   via: 'get'
   match '/export_ready', to: 'static_pages#export_ready',   via: 'get'
 
+  match '/doi_new',    to: 'resources#doi_new',   via: 'get'
 
 
   # dynamic pull-down for trait select

@@ -2,6 +2,8 @@
 
     require 'rails/all'
     require 'csv'
+    require 'open-uri'
+    
     # Pick the frameworks you want:
     # require "active_record/railtie"
     # require "action_controller/railtie"

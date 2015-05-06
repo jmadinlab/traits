@@ -52,7 +52,7 @@ class ObservationImport
     header = spreadsheet.row(1)
     puts "header: #{header}".red
 
-    required_headers = ["observation_id", "access", "user_id", "location_id", "resource_id", "standard_id", "methodology_id", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates", "notes"]
+    required_headers = ["observation_id", "access", "user_id", "location_id", "standard_id", "methodology_id", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates", "notes"]
 
     required_flag = true
     
@@ -72,6 +72,11 @@ class ObservationImport
 
     if not header.include? "trait_name" and not header.include? "trait_id"
       errors.add :base, "Missing header for either trait_id or trait_name"
+      required_flag = false
+    end
+
+    if not header.include? "resource_doi" and not header.include? "resource_id"
+      errors.add :base, "Missing header for either resource_doi or resource_id"
       required_flag = false
     end
     
@@ -122,7 +127,52 @@ class ObservationImport
             end
           end
         end
+        if row["resource_doi"]
+          resource = Resource.where("doi_isbn = ?", row["resource_doi"])
+          puts "=== DOI: #{resource.inspect}".red
+          if resource.empty?
+            begin
+              @doi = JSON.load(open("http://api.crossref.org/works/#{row["resource_doi"]}"))
+              if @doi["message"]["author"][0]["family"] == "Peresson"
+                @doi = "Invalid"
+              end
+            rescue
+              @doi = "Invalid"
+            end
 
+            if @doi and not @doi == "Invalid"
+              @resource = Resource.new
+              @resource.doi_isbn = row["resource_doi"]
+
+              authors = ""
+              @doi["message"]["author"].each do |a|
+                authors = authors + "#{a["family"].titleize}, #{a["given"].titleize},"
+              end
+
+              @resource.author = authors
+              @resource.year = @doi["message"]["issued"]["date-parts"][0][0]
+              @resource.title = @doi["message"]["title"][0]
+              @resource.journal = @doi["message"]["container-title"][0]
+              @resource.volume_pages = @doi["message"]["volume"], @doi["message"]["page"]
+
+              @resource.save!
+
+              row["resource_id"] = @resource.id
+
+              puts "------------------------------- HERE ============================="
+              puts @resource.id
+            else
+              errors[:base] << "Row #{i}: DOI does not resolve"
+            end
+
+          else
+            if not row["resource_id"] or row["resource_id"].blank?
+              row["resource_id"] = resource.first.id
+            elsif resource.first.id != row["resource_id"].to_i
+              errors[:base] << "Row #{i}: Resource doi '#{row["resource_doi"]}' does not match resource_id=#{resource.first.id}"
+            end
+          end
+        end
 
         # puts "#{row["specie_id"].inspect}".blue
         # puts "#{Observation.where("specie_id IS ?", row["specie_id"]).inspect}".blue

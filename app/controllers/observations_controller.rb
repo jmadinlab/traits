@@ -21,7 +21,7 @@
     @element_id = params[:element_id]
     @element_id.slice! "_trait_id"
     @element_id.to_s
-    @methodologies = Trait.find(params[:trait_id]).methodologies
+    # @methodologies = Trait.find(params[:trait_id]).methodologies
     #meas = Measurement.find(params[:measurement_id]) if params[:measurement_id] != ""
     #puts 'printing form obs controller'
     #puts meas.value

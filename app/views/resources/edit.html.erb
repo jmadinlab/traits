@@ -2,6 +2,17 @@
 	<div class="col-md-6 col-md-offset-3">
 		<h1>Editing resource</h1>
 
+    <% if @sug and not @sug == "Invalid" %>
+      <p>
+        <strong>Suggested DOI based on title:</strong>
+        <ul>
+        <% @sug["message"]["items"].each do |a| %>
+          <li><%= a["DOI"] %> <small>(<%= link_to a["title"][0], "http://dx.doi.org/" + a["DOI"], :target => "_blank" %>)</small></li>
+        <% end %>
+        </ul>
+      </p>
+    <% end %>
+
 		<%= render 'form' %>
 
 		<%= link_to 'Show', @resource %> |

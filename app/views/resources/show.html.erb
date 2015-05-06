@@ -1,11 +1,26 @@
 <% provide(:title, "Resource") %>
 
 <div class="col-md-12">
-  <h1>Resource
+  <h2>
+
+			<p>
+			  <%= @resource.author %>
+				<% if @resource.year %>
+			  	(<%= @resource.year %>)
+				<% end %>
+			  <%= @resource.title %>.
+				<% if @resource.journal %>
+			  	<em><%= @resource.journal %></em>
+				<% end %>
+				<% if @resource.volume_pages %>
+			  	<%= @resource.volume_pages %>
+				<% end %>
+			</p>
+
 		<% if @resource.approval_status == "pending" %>
 			<small><span class="label label-danger pull-right">pending approval</span></small>
 		<% end %>
-  </h1>
+  </h2>
   <hr>
 
   <p>
@@ -14,76 +29,49 @@
   </p>
 
 	<p>
-	  <strong>Author:</strong>
-	  <%= @resource.author %>
-	</p>
-
-	<p>
-	  <strong>Year:</strong>
-		<% if @resource.year.present? %>
-	  	<%= @resource.year %>
-		<% else %>
-			<font style="color:lightgrey;">Not entered</font>
-		<% end %>
-	</p>
-
-	<p>
-	  <strong>Title:</strong>
-	  <%= @resource.title %>
-	</p>
-
-	<p>
-	  <strong>Type:</strong>
-		<% if @resource.resource_type.present? %>
-	  	<%= @resource.resource_type %>
-		<% else %>
-			<font style="color:lightgrey;">Not entered</font>
-		<% end %>
-	</p>
-
-	<p>
 	  <strong>DOI:</strong>
 		<% if @resource.doi_isbn.present? %>
 	  	<%= link_to @resource.doi_isbn, "http://dx.doi.org/" + @resource.doi_isbn, :target => "_blank" %>
+			<% if @doi == "Invalid" %>
+				<span class="label label-danger">invalid (or the crossref server is down)</span>
+			<% end %>
 		<% else %>
-			<font style="color:lightgrey;">Not entered</font>
+			<span class="label label-danger">not added</span>
 		<% end %>
 	</p>
 
-	<p>
-	  <strong>Journal:</strong>
-		<% if @resource.journal.present? %>
-	  	<%= @resource.journal %>
-		<% else %>
-			<font style="color:lightgrey;">Not entered</font>
-		<% end %>
-	</p>
+	<% if @sug and not @sug == "Invalid" %>
+	  <p>
+		  <strong>Suggested DOI based on title:</strong>
+		  <ul>
+	    <% @sug["message"]["items"].each do |a| %>
+	      <li><%= a["DOI"] %> <small>(<%= link_to a["title"][0], "http://dx.doi.org/" + a["DOI"], :target => "_blank" %>)</small></li>
+	    <% end %>
+	    </ul>
+	  </p>
+	<% end %>
 
-	<p>
-	  <strong>Volume and pages:</strong>
-		<% if @resource.volume_pages.present? %>
-	  	<%= @resource.volume_pages %>
-		<% else %>
-			<font style="color:lightgrey;">Not entered</font>
-		<% end %>
-	</p>
-
-	<p>
-	  <strong>Notes:</strong>
-		<% if @resource.resource_notes.present? %>
-	  	<%= @resource.resource_notes %>
-		<% else %>
-			<font style="color:lightgrey;">Not entered</font>
-		<% end %>
-	</p>
-
-	<% if @resource.user %>
+	<% if @resource.resource_notes.present? %>
 		<p>
-		  <strong>Added by:</strong>
-		  <%= @resource.user.name %> <%= @resource.user.last_name %>
+	  	<strong>Notes:</strong>
+	  	<%= @resource.resource_notes %>
 		</p>
 	<% end %>
 
+<!-- 	<p>
+		<%# if @resource.resource_type.present? %>
+	  	<%#= @resource.resource_type %>
+		<%# end %>
+	</p>
+ -->
+
+<!-- 	<%# if @resource.user %>
+		<p>
+		  <strong>Added by:</strong>
+		  <%#= @resource.user.name %> <%#= @resource.user.last_name %>
+		</p>
+	<%# end %>
+ -->
 	<p>
     <div class="btn-group">
       <%= link_to 'Back', resources_path, class: "btn btn-default" %>
