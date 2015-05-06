@@ -51,7 +51,7 @@ class ResourcesController < ApplicationController
       end
     else
       begin
-        @sug = JSON.load(open("http://api.crossref.org/works?query=#{@resource.title}&rows=3"))
+        @sug = JSON.load(open("http://api.crossref.org/works?query=#{@resource.title}"))
       rescue
         @sug = "Invalid"
       end        

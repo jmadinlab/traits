@@ -1,7 +1,7 @@
 <% provide(:title, "Resource") %>
 
 <div class="col-md-12">
-  <h2>
+  <h3>
 
 			<p>
 			  <%= @resource.author %>
@@ -20,7 +20,7 @@
 		<% if @resource.approval_status == "pending" %>
 			<small><span class="label label-danger pull-right">pending approval</span></small>
 		<% end %>
-  </h2>
+  </h3>
   <hr>
 
   <p>
@@ -44,7 +44,7 @@
 	  <p>
 		  <strong>Suggested DOI based on title:</strong>
 		  <ul>
-	    <% @sug["message"]["items"].each do |a| %>
+	    <% @sug["message"]["items"][0..2].each do |a| %>
 	      <li><%= a["DOI"] %> <small>(<%= link_to a["title"][0], "http://dx.doi.org/" + a["DOI"], :target => "_blank" %>)</small></li>
 	    <% end %>
 	    </ul>
