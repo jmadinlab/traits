@@ -41,14 +41,18 @@
 	</p>
 
 	<% if @sug and not @sug == "Invalid" %>
-	  <p>
-		  <strong>Suggested DOI based on title:</strong>
-		  <ul>
-	    <% @sug["message"]["items"].each do |a| %>
-	      <li><%= a["DOI"] %> <small>(<%= link_to a["title"][0], "http://dx.doi.org/" + a["DOI"], :target => "_blank" %>)</small></li>
-	    <% end %>
-	    </ul>
-	  </p>
+	  <ul class="list-group">
+	    <li class="list-group-item">              
+			  <p>
+				  <strong>Suggested DOI based on title:</strong>
+				  <ul>
+			    <% @sug["message"]["items"].each do |a| %>
+			      <li><%= a["DOI"] %> <small>(<%= link_to a["title"][0], "http://dx.doi.org/" + a["DOI"], :target => "_blank" %>)</small></li>
+			    <% end %>
+			    </ul>
+			  </p>
+			</li>
+		</ul>
 	<% end %>
 
 	<% if @resource.resource_notes.present? %>

@@ -26,11 +26,14 @@ class ResourcesController < ApplicationController
 
   def status
 
-    @resources_iss = Resource.where("author like ? OR volume_pages like ? OR journal like ?", "%.%", "%:%", "%.%")
-    @resources_dup = Resource.find_by_sql("SELECT * 
-      FROM resources AS res, 
-      (SELECT author, year FROM resources GROUP BY author, year HAVING COUNT(*) > 1) AS sub 
-      WHERE res.author = sub.author AND res.year = sub.year;")
+    # @resources_iss = Resource.where("author like ? OR volume_pages like ? OR journal like ?", "%.%", "%:%", "%.%")
+    # @resources_dup = Resource.find_by_sql("SELECT * 
+    #   FROM resources AS res, 
+    #   (SELECT author, year FROM resources GROUP BY author, year HAVING COUNT(*) > 1) AS sub 
+    #   WHERE res.author = sub.author AND res.year = sub.year;")
+
+
+    @resources = Resource.where("doi_isbn IS NULL OR doi_isbn = ?", "").paginate(page: params[:page])
 
     respond_to do |format|
       format.html
@@ -83,10 +86,6 @@ class ResourcesController < ApplicationController
     @resource = Resource.new
   end
 
-  def doi_new
-    # @resource = Resource.new
-  end
-
   # GET /resources/1/edit
   def edit
 
@@ -121,7 +120,7 @@ class ResourcesController < ApplicationController
     if @doi and not @doi == "Invalid"
       authors = ""
       @doi["message"]["author"].each do |a|
-        authors = authors + "#{a["family"].titleize}, #{a["given"].titleize},"
+        authors = authors + "#{a["family"].titleize}, #{a["given"].titleize}, "
       end
 
       @resource.author = authors
@@ -133,7 +132,11 @@ class ResourcesController < ApplicationController
     end
 
     if @resource.save
-      redirect_to @resource, flash: {success: "Resource was successfully created." }
+      if @resource.doi_isbn.present?
+        redirect_to @resource, flash: {success: "Resource was successfully created." }
+      else
+        redirect_to edit_resource_path(@resource), flash: {success: "Resource was successfully created. However, please enter a doi if possible (some possibilities listed below)" }
+      end
     else
       render action: 'new' 
     end
@@ -143,9 +146,9 @@ class ResourcesController < ApplicationController
   # PATCH/PUT /resources/1.json
   def update
 
-    if @resource.doi_isbn.present?
+    if params[:resource][:doi_isbn].present?
       begin
-        @doi = JSON.load(open("https://api.crossref.org/works/#{@resource.doi_isbn}"))
+        @doi = JSON.load(open("https://api.crossref.org/works/#{params[:resource][:doi_isbn]}"))
         if @doi["message"]["author"][0]["family"] == "Peresson"
           @doi = "Invalid"
           @resource.errors.add(:base, 'The oid is invalid')
@@ -156,6 +159,9 @@ class ResourcesController < ApplicationController
       end
     end
 
+    puts "----------------------------------------------- HERE ---"
+    puts @doi
+    
     if @doi and not @doi == "Invalid"
       authors = ""
       @doi["message"]["author"].each do |a|
@@ -169,7 +175,6 @@ class ResourcesController < ApplicationController
       params[:resource][:volume_pages] = "#{@doi["message"]["volume"]}, #{@doi["message"]["page"]}"
 
     end
-
 
     if @resource.update(resource_params)
       redirect_to @resource, flash: {success: "Resource was successfully updated." }

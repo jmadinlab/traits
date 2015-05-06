@@ -13,12 +13,33 @@
 <p>The following resources have problems that need fixing.</p>
 
 
-<h3>Naming Issues</h3>
+<h3>DOI missing</h3>
+
+<%= will_paginate @resources, :inner_window => 1, :outer_window => 0 %><br><br>
 
 <div class="row">
   <div class="col-sm-12">
 		<ul class="list-group">
-    	<% @resources_iss.each do |resource| %>
+    	<% @resources.each do |resource| %>
+
+		    <% if resource.doi_isbn.present? %>
+		      <% begin %>
+		        <% @doi = JSON.load(open("https://api.crossref.org/works/#{resource.doi_isbn}")) %>
+		        <% if @doi["message"]["author"][0]["family"] == "Peresson" %>
+		          <% @doi = "Invalid" %>
+		        <% end %>
+		      <% rescue %>
+		        <% @doi = "Invalid" %>
+		      <% end %>
+		    <% else %>
+		      <% begin %>
+		        <% @sug = JSON.load(open("https://api.crossref.org/works?query=#{resource.title.tr(" ", "+")}&rows=3")) %>
+		      <% rescue %>
+		        <% @sug = "Invalid" %>
+		      <% end %>
+		    <% end %>
+
+
 			  <li class="list-group-item">							
 					<div class="row">
 		        <div class="col-sm-1" style="color: lightgrey;">
@@ -31,6 +52,27 @@
 			        	(<%= resource.year %>)
 	    				<% end %>		
 		        	<small><%= resource.title %></small>
+		        	<br>
+							<% if resource.doi_isbn.present? %>
+						  	<%= link_to resource.doi_isbn, "http://dx.doi.org/" + resource.doi_isbn, :target => "_blank" %>
+								<% if @doi == "Invalid" %>
+									<span class="label label-danger">invalid (or the crossref server is down)</span>
+								<% end %>
+							<% else %>
+								<span class="label label-danger">not added</span>
+							<% end %>
+							
+							<% if @sug and not @sug == "Invalid" %>
+							  <p>
+								  <strong>Suggested DOI based on title:</strong>
+								  <ul>
+							    <% @sug["message"]["items"].each do |a| %>
+							      <li><%= a["DOI"] %> <small>(<%= link_to a["title"][0], "http://dx.doi.org/" + a["DOI"], :target => "_blank" %>)</small></li>
+							    <% end %>
+							    </ul>
+							  </p>
+							<% end %>
+
 		        </div>
 
 					 	<div class="col-sm-1">
@@ -64,62 +106,9 @@
 	</div>
 </div>
 
+<%= will_paginate @resources, :inner_window => 1, :outer_window => 0 %><br><br>
 
-<% if @resources_iss.blank? %>
+
+<% if @resources.blank? %>
   <div class="alert alert-danger" role="alert">No resource issues to report.</div>
-<% end %>
-
-<h3>Duplicates</h3>
-
-<div class="row">
-  <div class="col-sm-12">
-		<ul class="list-group">
-    	<% @resources_dup.each do |resource| %>
-			  <li class="list-group-item">							
-					<div class="row">
-		        <div class="col-sm-1" style="color: lightgrey;">
-		        	<%= resource.id %>
-							<% if resource.approval_status == 'pending' %>
-								<span class="glyphicon glyphicon-warning-sign"  style="color:red;" title="Pending Approval"></span>
-							<% end %>
-		        </div>
-
-		        <div class="col-sm-5">
-		        	<%= link_to resource.author, resource %>
-		        	<% if resource.year %>
-			        	(<%= resource.year %>)
-	    				<% end %>		
-		        	<small><%= resource.title %></small>
-		        </div>
-
-					 	<div class="col-sm-1">
-							<%= check_box_tag "checked[]", resource.id %>
-						</div>
-
-						<div class="col-sm-2">
-							<% if not params[:all] %>
-			        	<%= render "shared/access_counts", :acc => Observation.where(:resource_id => resource) %>
-							<% end %>
-						</div>
-
-		        <div class="col-sm-3">
-					    <div class="btn-group pull-right">
-					     	<%= link_to 'Show', resource_path(resource), class: "btn btn-xs btn-default" %>
-							  <% if signed_in? && current_user.editor? %>
-				        	<%= link_to 'Edit', edit_resource_path(resource), class: "btn btn-xs btn-default" %>
-								<% end %>
-							  <% if signed_in? && current_user.admin? %>
-				        	<%= link_to 'Delete', resource, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
-								<% end %>
-			        </div>
-						</div>
-					</div>
-				</li>
-	    <% end %>		
-    </ul>
-	</div>
-</div>
-
-<% if @resources_dup.blank? %>
-  <div class="alert alert-danger" role="alert">No resource duplicated to report.</div>
 <% end %>
