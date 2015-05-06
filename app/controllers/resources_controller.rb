@@ -92,7 +92,7 @@ class ResourcesController < ApplicationController
 
     if not @resource.doi_isbn.present?
       begin
-        @sug = JSON.load(open("https://api.crossref.org/works?query=#{@resource.title}&rows=3"))
+        @sug = JSON.load(open("https://api.crossref.org/works?query=#{@resource.title.tr(" ", "+")}&rows=3"))
       rescue
         @sug = "Invalid"
       end        
