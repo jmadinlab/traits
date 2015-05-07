@@ -65,19 +65,17 @@
 	          	<% if params[:value]  %>
 		          	<% if params[:value] == tv  %>
 			            <%= link_to tv, trait_path(@trait), class: "label label-primary" %>
-									<%= @trait.traitvalues.where(:value_name => tv).first.value_description %>
 								<% else %>
 			            <%= link_to tv, trait_path(@trait, :value => tv), class: "label label-default" %>
-									<%= @trait.traitvalues.where(:value_name => tv).first.value_description %>
 								<% end %>
 							<% else %>
 		            <%= link_to tv, trait_path(@trait, :value => tv), class: "label label-primary" %>
-								<%= @trait.traitvalues.where(:value_name => tv).first.value_description %>
 							<% end %>
+							<small><%= @trait.traitvalues.where(:value_name => tv).first.value_description %></small>
 						<% else %>
 							<% if !@mea_traitvalues.include?(tv) %>
 		            <span class="label label-success"><%= tv %></span>
-								<%= @trait.traitvalues.where(:value_name => tv).first.value_description %>
+								<small><%= @trait.traitvalues.where(:value_name => tv).first.value_description %></small>
 							<% end %>
 							<% if !@rec_traitvalues.include?(tv) %>
 		            <span class="label label-danger"><%= tv %></span>
