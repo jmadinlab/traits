@@ -54,7 +54,7 @@ class ResourcesController < ApplicationController
       end
     end
 
-    if not @resource.doi_isbn.present? or @doi == "Invalid"
+    if (not @resource.doi_isbn.present? or @doi == "Invalid") and (@resource.resource_type == "paper" or @resource.resource_type.blank?)
       begin
         @sug = JSON.load(open("https://api.crossref.org/works?query=#{@resource.title.tr(" ", "+")}&rows=3"))
       rescue
@@ -145,10 +145,10 @@ class ResourcesController < ApplicationController
     end
 
     if @resource.save
-      if @resource.doi_isbn.present?
-        redirect_to @resource, flash: {success: "Resource was successfully created." }
-      else
+      if not @resource.doi_isbn.present? and (@resource.resource_type == "paper" or @resource.resource_type.blank?)
         redirect_to edit_resource_path(@resource), flash: {success: "Resource was successfully created. However, please enter a doi if possible (some possibilities listed below)" }
+      else
+        redirect_to @resource, flash: {success: "Resource was successfully created." }
       end
     else
       render action: 'new' 
