@@ -146,14 +146,14 @@ class ObservationImport
 
               authors = ""
               @doi["message"]["author"].each do |a|
-                authors = authors + "#{a["family"].titleize}, #{a["given"].titleize},"
+                authors = authors + "#{a["family"].titleize}, #{a["given"].titleize}, "
               end
 
               @resource.author = authors
               @resource.year = @doi["message"]["issued"]["date-parts"][0][0]
               @resource.title = @doi["message"]["title"][0]
               @resource.journal = @doi["message"]["container-title"][0]
-              @resource.volume_pages = @doi["message"]["volume"], @doi["message"]["page"]
+              @resource.volume_pages = "#{@doi["message"]["volume"]}, #{@doi["message"]["page"]}"
 
               @resource.save!
 

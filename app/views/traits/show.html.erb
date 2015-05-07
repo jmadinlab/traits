@@ -33,9 +33,16 @@
 	</p>
 
 	<p>
-		<strong>Description:</strong>
+	  <strong>Description:</strong>
 		<% if @trait.trait_description.present? %>
-			<%= @trait.trait_description %>
+			<a class="btn btn-default btn-xs" data-toggle="collapse" href="#collapseDescription" aria-expanded="false" aria-controls="collapseExample">
+			  show/hide
+			</a>
+			<div class="collapse" id="collapseDescription">
+			  <div class="well">
+	  			<%= markdown @trait.trait_description %>
+			  </div>
+			</div>
 		<% else %>
 			<font style="color:lightgrey;">Not entered</font>
 		<% end %>
@@ -48,7 +55,6 @@
 		<% end %>
 	</p>
 
-
 	<% if @trait.traitvalues.present? %>
 		<% @all_traitvalues = (@mea_traitvalues + @rec_traitvalues).uniq %>
 		<p>
@@ -56,8 +62,18 @@
 				<% @all_traitvalues.each do |tv| %>
 					<li style="list-style-type: none;">
 	          <% if @rec_traitvalues.include?(tv) and @mea_traitvalues.include?(tv)  %>
-	            <span class="label label-primary"><%= tv %></span>
-							<%= @trait.traitvalues.where(:value_name => tv).first.value_description %>
+	          	<% if params[:value]  %>
+		          	<% if params[:value] == tv  %>
+			            <%= link_to tv, trait_path(@trait), class: "label label-primary" %>
+									<%= @trait.traitvalues.where(:value_name => tv).first.value_description %>
+								<% else %>
+			            <%= link_to tv, trait_path(@trait, :value => tv), class: "label label-default" %>
+									<%= @trait.traitvalues.where(:value_name => tv).first.value_description %>
+								<% end %>
+							<% else %>
+		            <%= link_to tv, trait_path(@trait, :value => tv), class: "label label-primary" %>
+								<%= @trait.traitvalues.where(:value_name => tv).first.value_description %>
+							<% end %>
 						<% else %>
 							<% if !@mea_traitvalues.include?(tv) %>
 		            <span class="label label-success"><%= tv %></span>
@@ -95,7 +111,7 @@
 			<%= @trait.user.name %> <%= @trait.user.last_name %> (<%= mail_to @trait.user.email, "contact", {:subject => "#{ENV["SITE_NAME"]} enquiry"} %>)
 		<% end %>
 		<% if signed_in? && current_user.editor? %>
-			<%= link_to "meta", show_meta_path(@trait), class: "label label-default" %>
+			<%= link_to "meta", show_meta_path(@trait), class: "btn btn-default btn-xs" %>
 		<% end %>
 	</p>
 

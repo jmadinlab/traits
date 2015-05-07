@@ -56,6 +56,10 @@ class TraitsController < ApplicationController
       @observations = Observation.joins(:measurements).where('measurements.trait_id = ?', @trait.id)
     end
 
+    if params[:value]
+      @observations = @observations.joins(:measurements).where('measurements.value = ?', params[:value])
+    end
+
     if @trait.traitvalues.present?
       @mea_traitvalues = Measurement.where('trait_id = ?', @trait.id).map(&:value).uniq
       @rec_traitvalues = @trait.traitvalues.map(&:value_name).uniq
@@ -65,6 +69,8 @@ class TraitsController < ApplicationController
 
     @methodologies = Methodology.where(:id => Measurement.where("observation_id IN (?) AND trait_id = ?", @observations.map(&:id), @trait.id).map(&:methodology_id))
     
+
+
     data_table = GoogleVisualr::DataTable.new
 
     if @trait.standard
