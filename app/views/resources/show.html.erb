@@ -38,7 +38,7 @@
 		<% elsif @resource.resource_type == "paper" or @resource.resource_type.blank? %>
 			<span class="label label-danger">not added</span>
 		<% else %>
-			<span class="label label-success">not applicable</span>
+			<span class="label label-success"><%= @resource.resource_type %></span>
 		<% end %>
 	</p>
 
