@@ -39,7 +39,7 @@
 			  show/hide
 			</a>
 			<div class="collapse" id="collapseDescription">
-			  <div class="well">
+			  <div class="well well-light" style="height:250px; overflow-y:scroll;background-color:white;">
 	  			<%= markdown @trait.trait_description %>
 			  </div>
 			</div>
@@ -58,9 +58,10 @@
 	<% if @trait.traitvalues.present? %>
 		<% @all_traitvalues = (@mea_traitvalues + @rec_traitvalues).uniq %>
 		<p>
-			<ul>
+			<!-- <ul> -->
 				<% @all_traitvalues.each do |tv| %>
-					<li style="list-style-type: none;">
+					<!-- <li style="list-style-type: none;"> -->
+					<span data-toggle="tooltip" data-placement="top" title="<%= @trait.traitvalues.where(:value_name => tv).first.value_description %>">
 	          <% if @rec_traitvalues.include?(tv) and @mea_traitvalues.include?(tv)  %>
 	          	<% if params[:value]  %>
 		          	<% if params[:value] == tv  %>
@@ -71,19 +72,18 @@
 							<% else %>
 		            <%= link_to tv, trait_path(@trait, :value => tv), class: "label label-primary" %>
 							<% end %>
-							<small><%= @trait.traitvalues.where(:value_name => tv).first.value_description %></small>
 						<% else %>
 							<% if !@mea_traitvalues.include?(tv) %>
 		            <span class="label label-success"><%= tv %></span>
-								<small><%= @trait.traitvalues.where(:value_name => tv).first.value_description %></small>
 							<% end %>
 							<% if !@rec_traitvalues.include?(tv) %>
 		            <span class="label label-danger"><%= tv %></span>
 							<% end %>
 						<% end %>
-					</li>
+					</span>
+					<!-- </li> -->
 				<% end %>
-			</ul>
+			<!-- </ul> -->
 		</p>
 	<% end %>
 
