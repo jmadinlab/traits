@@ -34,6 +34,8 @@
 	  	<%= link_to @resource.doi_isbn, "http://dx.doi.org/" + @resource.doi_isbn, :target => "_blank" %>
 			<% if @doi == "Invalid" %>
 				<span class="label label-danger">invalid</span>
+			<% else %>
+				<span class="label label-success">valid</span>
 			<% end %>
 		<% elsif @resource.resource_type == "paper" or @resource.resource_type.blank? %>
 			<span class="label label-danger">not added</span>
