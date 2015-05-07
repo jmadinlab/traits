@@ -117,7 +117,54 @@
       mea.orig_value = mea.value
       mea.approval_status = "pending"
     end
+
+    # puts @observation.resource_doi
     
+    # if params[:resource_doi]
+    #   resource = Resource.where(:doi_isbn => params[:resource_doi])
+    #   if resource.present?
+    #     @observation.resource_id = resource.first.id
+    #     puts "----- WAS present =============================="
+    #   else
+    #     puts "----- WAS NOT present =============================="
+    #     begin
+    #       @doi = JSON.load(open("https://api.crossref.org/works/#{params[:resource_doi]}"))
+    #       if @doi["message"]["author"][0]["family"] == "Peresson"
+    #         @doi = "Invalid"
+    #       end
+    #     rescue
+    #       @doi = "Invalid"
+    #     end
+    #     puts @doi
+
+    #     if not @doi == "Invalid"
+
+
+    #       @resource = Resource.new(resource_params)
+
+    #       authors = ""
+    #       @doi["message"]["author"].each do |a|
+    #         authors = authors + "#{a["family"].titleize}, #{a["given"].titleize}, "
+    #       end
+
+    #       @resource.author = authors
+    #       @resource.year = @doi["message"]["issued"]["date-parts"][0][0]
+    #       @resource.title = @doi["message"]["title"][0]
+    #       @resource.journal = @doi["message"]["container-title"][0]
+    #       @resource.volume_pages = @doi["message"]["volume"], @doi["message"]["page"]
+    #       @resource.save!
+
+    #       if @resource.save
+    #         @observation.resource_id = @resource.id
+    #       else
+    #         @observation.errors.add(:base, 'The oid was invalid')
+    #       end
+    #     else
+    #       @observation.errors.add(:base, 'The oid was invalid')
+    #     end
+    #   end
+    # end
+
     if @observation.save
       # Todo: Uncomment following line in production
       #UploadApprovalMailer.approve(current_user).deliver

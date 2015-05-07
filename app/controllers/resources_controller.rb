@@ -33,7 +33,7 @@ class ResourcesController < ApplicationController
     #   WHERE res.author = sub.author AND res.year = sub.year;")
 
 
-    @resources = Resource.where("doi_isbn IS NULL OR doi_isbn = ?", "").paginate(page: params[:page])
+    @resources = Resource.where("doi_isbn IS NULL OR doi_isbn = ?", "").paginate(page: params[:page], per_page: 10)
 
     respond_to do |format|
       format.html
@@ -52,7 +52,9 @@ class ResourcesController < ApplicationController
       rescue
         @doi = "Invalid"
       end
-    else
+    end
+
+    if not @resource.doi_isbn.present? or @doi == "Invalid"
       begin
         @sug = JSON.load(open("https://api.crossref.org/works?query=#{@resource.title.tr(" ", "+")}&rows=3"))
       rescue
@@ -89,7 +91,18 @@ class ResourcesController < ApplicationController
   # GET /resources/1/edit
   def edit
 
-    if not @resource.doi_isbn.present?
+    if @resource.doi_isbn.present?
+      begin
+        @doi = JSON.load(open("https://api.crossref.org/works/#{@resource.doi_isbn}"))
+        if @doi["message"]["author"][0]["family"] == "Peresson"
+          @doi = "Invalid"
+        end
+      rescue
+        @doi = "Invalid"
+      end
+    end
+
+    if not @resource.doi_isbn.present? or @doi == "Invalid"
       begin
         @sug = JSON.load(open("https://api.crossref.org/works?query=#{@resource.title.tr(" ", "+")}&rows=3"))
       rescue
@@ -161,7 +174,7 @@ class ResourcesController < ApplicationController
 
     puts "----------------------------------------------- HERE ---"
     puts @doi
-    
+
     if @doi and not @doi == "Invalid"
       authors = ""
       @doi["message"]["author"].each do |a|

@@ -33,7 +33,7 @@
 		      <% end %>
 		    <% else %>
 		      <% begin %>
-		        <% @sug = JSON.load(open("https://api.crossref.org/works?query=#{resource.title.tr(" ", "+")}&rows=3")) %>
+		        <% @sug = JSON.load(open("https://api.crossref.org/works?query=#{resource.title.tr(" ", "+")}&rows=1")) %>
 		      <% rescue %>
 		        <% @sug = "Invalid" %>
 		      <% end %>
