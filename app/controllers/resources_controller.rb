@@ -102,7 +102,7 @@ class ResourcesController < ApplicationController
       end
     end
 
-    if not @resource.doi_isbn.present? or @doi == "Invalid"
+    if (not @resource.doi_isbn.present? or @doi == "Invalid") and (@resource.resource_type == "paper" or @resource.resource_type.blank?)
       begin
         @sug = JSON.load(open("https://api.crossref.org/works?query=#{@resource.title.tr(" ", "+")}&rows=3"))
       rescue

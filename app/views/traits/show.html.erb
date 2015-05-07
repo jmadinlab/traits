@@ -37,7 +37,7 @@
 	<p>
 		<strong>Default standard:</strong>
 		<% if !@trait.standard.blank? %>
-			<%= @trait.standard.standard_name %> (<%= @trait.standard.standard_unit %>)
+			<%= @trait.standard.standard_name %> (<%= link_to @trait.standard.standard_unit, standard_path(@trait.standard) %>)
 		<% end %>
 	</p>
 
