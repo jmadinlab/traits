@@ -32,26 +32,7 @@
 		<% end %>
 	</p>
 
-	<p>
-	  <strong>Description:</strong>
-		<% if @trait.trait_description.present? %>
-			<a class="btn btn-default btn-xs" data-toggle="modal" data-target="#modalDescription">
-			  show
-			</a>
-			<div class="modal" id="modalDescription" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-			  <div class="modal-dialog">
-			    <div class="modal-content">
-			      <div class="modal-body">
-			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	  					<%= markdown @trait.trait_description %>
-			      </div>
-			    </div>
-			  </div>
-			</div>
-		<% else %>
-			<font style="color:lightgrey;">Not entered</font>
-		<% end %>
-	</p>
+  <%= render "shared/description", :description => @trait.trait_description %>
 
 	<p>
 		<strong>Default standard:</strong>

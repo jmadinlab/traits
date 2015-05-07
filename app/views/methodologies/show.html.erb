@@ -13,15 +13,7 @@
     	<%= @methodology.id %>
   </p>
 
-  <p>
-    <strong>Description:</strong>
-    <% if !@methodology.method_description.blank? %>
-        <strong>Description:</strong>
-      	<%= @methodology.method_description %>
-    <% else %>
-      <font style="color:lightgrey;">Not entered</font>
-    <% end %>
-  </p>
+  <%= render "shared/description", :description => @methodology.method_description %>
 
   <p>
     <strong>Used for traits:</strong>
