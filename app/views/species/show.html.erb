@@ -68,7 +68,7 @@
 			</li>
 
 			<li>
-				<% fac = Measurement.where("observation_id IN (?) AND trait_id=?", @observations.map(&:id), 139)  %>
+				<% fac = Measurement.where("observation_id IN (?) AND trait_id=?", @observations.map(&:id), 62)  %>
 				<% if !fac.blank? %>
 					AIMS factsheet and images:
 					<% fac.each do |f| %>
