@@ -32,11 +32,11 @@
 	  <strong>DOI:</strong>
 		<% if @resource.doi_isbn.present? %>
 	  	<%= link_to @resource.doi_isbn, "http://dx.doi.org/" + @resource.doi_isbn, :target => "_blank" %>
-			<% if @doi == "Invalid" %>
+<!-- 			<%# if @doi == "Invalid" %>
 				<span class="label label-danger">invalid</span>
-			<% else %>
+			<%# else %>
 				<span class="label label-success">valid</span>
-			<% end %>
+			<%# end %> -->
 		<% elsif @resource.resource_type == "paper" or @resource.resource_type.blank? %>
 			<span class="label label-danger">not added</span>
 		<% else %>
@@ -44,21 +44,21 @@
 		<% end %>
 	</p>
 
-	<% if @sug and not @sug == "Invalid" or @doi == "Invalid" %>
+<!-- 	<%# if @sug and not @sug == "Invalid" or @doi == "Invalid" %>
 	  <ul class="list-group">
 	    <li class="list-group-item">              
 			  <p>
 				  <strong>Suggested DOI based on title:</strong>
 				  <ul>
-			    <% @sug["message"]["items"].each do |a| %>
-			      <li><%= a["DOI"] %> <small>(<%= link_to a["title"][0], "http://dx.doi.org/" + a["DOI"], :target => "_blank" %>)</small></li>
-			    <% end %>
+			    <%# @sug["message"]["items"].each do |a| %>
+			      <li><%#= a["DOI"] %> <small>(<%#= link_to a["title"][0], "http://dx.doi.org/" + a["DOI"], :target => "_blank" %>)</small></li>
+			    <%# end %>
 			    </ul>
 			  </p>
 			</li>
 		</ul>
-	<% end %>
-
+	<%# end %>
+ -->
 	<% if @resource.resource_notes.present? %>
 		<p>
 	  	<strong>Notes:</strong>
