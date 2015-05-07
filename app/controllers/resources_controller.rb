@@ -178,7 +178,7 @@ class ResourcesController < ApplicationController
     if @doi and not @doi == "Invalid"
       authors = ""
       @doi["message"]["author"].each do |a|
-        authors = authors + "#{a["family"].titleize}, #{a["given"].titleize},"
+        authors = authors + "#{a["family"].titleize}, #{a["given"].titleize}, "
       end
 
       params[:resource][:author] = authors
