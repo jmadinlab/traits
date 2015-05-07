@@ -35,12 +35,17 @@
 	<p>
 	  <strong>Description:</strong>
 		<% if @trait.trait_description.present? %>
-			<a class="btn btn-default btn-xs" data-toggle="collapse" href="#collapseDescription" aria-expanded="false" aria-controls="collapseExample">
-			  show/hide
+			<a class="btn btn-default btn-xs" data-toggle="modal" data-target="#modalDescription">
+			  show
 			</a>
-			<div class="collapse" id="collapseDescription">
-			  <div class="well well-light" style="height:250px; overflow-y:scroll;background-color:white;">
-	  			<%= markdown @trait.trait_description %>
+			<div class="modal" id="modalDescription" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-body">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	  					<%= markdown @trait.trait_description %>
+			      </div>
+			    </div>
 			  </div>
 			</div>
 		<% else %>
