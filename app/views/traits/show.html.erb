@@ -44,38 +44,52 @@
 	<% if @trait.traitvalues.present? %>
 		<% @all_traitvalues = (@mea_traitvalues + @rec_traitvalues).uniq %>
 		<p>
-			<!-- <ul> -->
-				<% @all_traitvalues.each do |tv| %>
-					<!-- <li style="list-style-type: none;"> -->
-					<% vd = @trait.traitvalues.where(:value_name => tv) %>
-        	<% if vd.present?  %>
-						<span data-toggle="tooltip" data-placement="top" title="<%= vd.first.value_description %>">
+			<% @all_traitvalues.each do |tv| %>
+				<% vd = @trait.traitvalues.where(:value_name => tv) %>
+      	<% if vd.present?  %>
+					<span data-toggle="tooltip" data-placement="top" title="<%= vd.first.value_description %>">
+				<% else %>
+					<span data-toggle="tooltip" data-placement="top" title="No description">
+				<% end %>
+
+          <% if @rec_traitvalues.include?(tv) and @mea_traitvalues.include?(tv)  %>
+          	<% if params[:value]  %>
+	          	<% if params[:value] == tv  %>
+		            <%= link_to tv, trait_path(@trait), class: "label label-primary" %>
+							<% else %>
+		            <%= link_to tv, trait_path(@trait, :value => tv), class: "label label-default" %>
+							<% end %>
+						<% else %>
+	            <%= link_to tv, trait_path(@trait, :value => tv), class: "label label-primary" %>
+						<% end %>
 					<% else %>
-						<span data-toggle="tooltip" data-placement="top" title="No description">
-					<% end %>
-					
-	          <% if @rec_traitvalues.include?(tv) and @mea_traitvalues.include?(tv)  %>
-	          	<% if params[:value]  %>
+						<% if !@mea_traitvalues.include?(tv) %>
+		          	<%#= link_to tv, trait_path(@trait, :value => tv), class: "label label-success" %>
+	          	<% if params[:value] %>
 		          	<% if params[:value] == tv  %>
-			            <%= link_to tv, trait_path(@trait), class: "label label-primary" %>
+			          	<%= link_to tv, trait_path(@trait), class: "label label-success" %>
 								<% else %>
 			            <%= link_to tv, trait_path(@trait, :value => tv), class: "label label-default" %>
 								<% end %>
 							<% else %>
-		            <%= link_to tv, trait_path(@trait, :value => tv), class: "label label-primary" %>
-							<% end %>
-						<% else %>
-							<% if !@mea_traitvalues.include?(tv) %>
-		            <span class="label label-success"><%= tv %></span>
-							<% end %>
-							<% if !@rec_traitvalues.include?(tv) %>
-		            <span class="label label-danger"><%= tv %></span>
+	            	<%= link_to tv, trait_path(@trait, :value => tv), class: "label label-success" %>
 							<% end %>
 						<% end %>
-					</span>
-					<!-- </li> -->
-				<% end %>
-			<!-- </ul> -->
+						<% if !@rec_traitvalues.include?(tv) %>
+		          <%#= link_to tv, trait_path(@trait, :value => tv), class: "label label-danger" %>
+	          	<% if params[:value] %>
+		          	<% if params[:value] == tv  %>
+			          	<%= link_to tv, trait_path(@trait), class: "label label-danger" %>
+								<% else %>
+			            <%= link_to tv, trait_path(@trait, :value => tv), class: "label label-default" %>
+								<% end %>
+							<% else %>
+	            	<%= link_to tv, trait_path(@trait, :value => tv), class: "label label-danger" %>
+							<% end %>
+						<% end %>
+					<% end %>
+				</span>
+			<% end %>
 		</p>
 	<% end %>
 
