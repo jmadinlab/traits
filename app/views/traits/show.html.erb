@@ -47,7 +47,12 @@
 			<!-- <ul> -->
 				<% @all_traitvalues.each do |tv| %>
 					<!-- <li style="list-style-type: none;"> -->
-					<span data-toggle="tooltip" data-placement="top" title="<%= @trait.traitvalues.where(:value_name => tv).first.value_description %>">
+					<% vd = @trait.traitvalues.where(:value_name => tv).first.value_description %>
+        	<% if vd.present?  %>
+						<span data-toggle="tooltip" data-placement="top" title="<%= vd %>">
+					<% else %>
+						<span data-toggle="tooltip" data-placement="top" title="No description">
+					<% end %>
 	          <% if @rec_traitvalues.include?(tv) and @mea_traitvalues.include?(tv)  %>
 	          	<% if params[:value]  %>
 		          	<% if params[:value] == tv  %>
