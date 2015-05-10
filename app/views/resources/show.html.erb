@@ -59,12 +59,8 @@
 		</ul>
 	<%# end %>
  -->
-	<% if @resource.resource_notes.present? %>
-		<p>
-	  	<strong>Notes:</strong>
-	  	<%= @resource.resource_notes %>
-		</p>
-	<% end %>
+
+  <%= render "shared/description", :description => @resource.resource_notes %>
 
 <!-- 	<p>
 		<%# if @resource.resource_type.present? %>

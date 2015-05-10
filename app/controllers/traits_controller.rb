@@ -68,9 +68,9 @@ class TraitsController < ApplicationController
     @observations = observation_filter(@observations)
 
     @methodologies = Methodology.where(:id => Measurement.where("observation_id IN (?) AND trait_id = ?", @observations.map(&:id), @trait.id).map(&:methodology_id))
+
+    @standards = Standard.where(:id => Measurement.where("observation_id IN (?) AND trait_id = ?", @observations.map(&:id), @trait.id).map(&:standard_id))
     
-
-
     data_table = GoogleVisualr::DataTable.new
 
     if @trait.standard

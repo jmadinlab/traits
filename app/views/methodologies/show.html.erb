@@ -18,17 +18,20 @@
   <p>
     <strong>Used for traits:</strong>
     <% if not @traits.empty? %>
-      <ul>
-        <% @traits.each do |trait| %>
-          <li>
-            <%= link_to trait.trait_name, trait, 'data-no-turbolink' => true %>
-        </li>
-        <% end %>
-      </ul>
+      <button class="btn btn-default btn-xs" type="button" data-toggle="collapse" data-target="#collapseTraits" aria-expanded="false" aria-controls="collapseTraits">show</button>
+
+      <div class="collapse" id="collapseTraits">
+        <ul>
+          <% @traits.each do |trait| %>
+            <li>
+              <%= link_to trait.trait_name, trait %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
     <% else %>
       <font style="color:lightgrey;">None entered</font>
     <% end %>
-
   </p>
 
 

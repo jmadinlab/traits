@@ -33,12 +33,8 @@
     <%= @location.longitude.round(4) %>
   </p>
   
-  <% if !@location.location_description.blank? %>
-    <p>
-      <strong>Description:</strong>
-      <%= @location.location_description %>
-    </p>
-  <% end %>
+
+  <%= render "shared/description", :description => @location.location_description %>
 
   <p>
     <strong>Added by:</strong>

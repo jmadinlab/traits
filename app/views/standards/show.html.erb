@@ -19,14 +19,7 @@
     <%= @standard.standard_class %>
   </p>
 
-  <p>
-    <strong>Description:</strong>
-    <% if @standard.standard_description.present? %>
-      <%= @standard.standard_description %>
-    <% else %>
-      <font style="color:lightgrey;">Not entered</font>
-    <% end %>
-  </p>
+  <%= render "shared/description", :description => @standard.standard_description %>
 
   <% if @standard.user %>
     <p>

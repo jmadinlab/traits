@@ -35,15 +35,32 @@
   <%= render "shared/description", :description => @trait.trait_description %>
 
 	<p>
-		<strong>Default standard:</strong>
-		<% if !@trait.standard.blank? %>
-			<%= @trait.standard.standard_name %> (<%= link_to @trait.standard.standard_unit, standard_path(@trait.standard) %>)
+		<strong>Standards:</strong>
+		<% if not @standards.empty? %>
+			<button class="btn btn-default btn-xs" type="button" data-toggle="collapse" data-target="#collapseStandards" aria-expanded="false" aria-controls="collapseStandards">show</button>
+
+			<div class="collapse" id="collapseStandards">
+				<ul>
+					<% @standards.each do |standard| %>
+						<li>
+							<%= link_to standard.standard_name, standard %> (<%= standard.standard_unit %>)
+							<% if standard == @trait.standard %>
+								<span class="label label-primary">default</span>
+							<% end %>
+					</li>
+					<% end %>
+				</ul>
+			</div>
+		<% else %>
+			<font style="color:lightgrey;">None entered</font>
 		<% end %>
 	</p>
+
 
 	<% if @trait.traitvalues.present? %>
 		<% @all_traitvalues = (@mea_traitvalues + @rec_traitvalues).uniq %>
 		<p>
+			<strong>Values:</strong>
 			<% @all_traitvalues.each do |tv| %>
 				<% vd = @trait.traitvalues.where(:value_name => tv) %>
       	<% if vd.present?  %>
@@ -96,17 +113,20 @@
 	<p>
 		<strong>Methodologies:</strong>
 		<% if not @methodologies.empty? %>
-			<ul>
-				<% @methodologies.each do |methodology| %>
-					<li>
-						<%= link_to methodology.methodology_name, methodology %>
-				</li>
-				<% end %>
-			</ul>
+			<button class="btn btn-default btn-xs" type="button" data-toggle="collapse" data-target="#collapseMethodologies" aria-expanded="false" aria-controls="collapseMethodologies">show</button>
+
+			<div class="collapse" id="collapseMethodologies">
+				<ul>
+					<% @methodologies.each do |methodology| %>
+						<li>
+							<%= link_to methodology.methodology_name, methodology %>
+					</li>
+					<% end %>
+				</ul>
+			</div>
 		<% else %>
 			<font style="color:lightgrey;">None entered</font>
 		<% end %>
-
 	</p>
 
 	<p>
