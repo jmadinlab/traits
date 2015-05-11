@@ -48,7 +48,7 @@
 
 						          <% if grp.first.measurements.first.trait.traitvalues.present? %>
 						            <% traitvalue = grp.first.measurements.first.trait.traitvalues.where(:value_name => grp.first.measurements.first.value) %>
-						            <% if traitvalue.first.value_description.present?  %>
+						            <% if not traitvalue.empty? and traitvalue.first.value_description.present?  %>
 						              <span class="label label-primary" data-toggle="tooltip" data-placement="top" title="<%= traitvalue.first.value_description %>"><%= grp.first.measurements.first.value %></span>
 						            <% else %>
 						              <span class="label label-primary" data-toggle="tooltip" data-placement="top" title="No description"><%= grp.first.measurements.first.value %></span>
@@ -56,6 +56,10 @@
 						          <% else %> 
 						            <%= grp.first.measurements.first.value %>
 						          <% end %> 
+
+						          <% if not grp.first.measurements.first.trait.traitvalues.present? and grp.first.measurements.first.standard.present? %>
+						            (<%= link_to grp.first.measurements.first.standard.standard_unit, standard_path(grp.first.measurements.first.standard_id) %>)
+						          <% end %>
 
 										<% end %>
 									</div>
