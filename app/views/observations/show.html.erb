@@ -30,10 +30,26 @@
 		<% end %>
 	</p>
 
+
 	<p>
 	  <strong>Primary resource:</strong>
 			<% if @observation.resource.present? %>
-				<% ref = "#{@observation.resource.author} " + 
+
+		  <% ref = @observation.resource.author %>
+			<% if @observation.resource.year %>
+		  	<% ref = ref + " (" + @observation.resource.year.to_s + ")" %>
+			<% end %>
+		  <% ref = ref + " " + @observation.resource.title + "." %>
+			<% if @observation.resource.journal %>
+		  	<% ref = ref + " " + @observation.resource.journal %>
+			<% end %>
+			<% if @observation.resource.volume_pages %>
+		  	<% ref = ref + " " + @observation.resource.volume_pages %>
+			<% end %>
+
+
+
+				<%# ref = "qq #{@observation.resource.author} " + 
 					("(#{@observation.resource.year}) ") + 
 					("#{@observation.resource.title}. ") + 
 					("#{@observation.resource.journal} ") + 
@@ -48,7 +64,19 @@
 		<% @secondary = Resource.where(:id => @observation.resource_secondary_id).first %>
 		<p>
 		  <strong>Secondary resource:</strong>
-				<% sref = "#{@secondary.author} " + 
+			  <% sref = @secondary.author %>
+				<% if @secondary.year %>
+			  	<% sref = sref + " (" + @secondary.year.to_s + ")" %>
+				<% end %>
+			  <% sref = sref + " " + @secondary.title + "." %>
+				<% if @secondary.journal %>
+			  	<% sref = sref + " " + @secondary.journal %>
+				<% end %>
+				<% if @secondary.volume_pages %>
+			  	<% sref = sref + " " + @secondary.volume_pages %>
+				<% end %>
+
+				<%# sref = "#{@secondary.author} " + 
 					("(#{@secondary.year}) ") + 
 					("#{@secondary.title}. ") + 
 					("#{@secondary.journal} ") + 
@@ -130,14 +158,20 @@
 						  <div class="col-sm-4">
 
 
-								<% if mea.trait.traitvalues.present? %>
-									<span class="label label-primary" data-toggle="tooltip" data-placement="top" title="<%= mea.trait.traitvalues.where(:value_name => mea.value).first.value_description %>"><%= mea.value %></span>
-								<% else %>
+		            <% if mea.trait.traitvalues.present? %>
+		              <% traitvalue = mea.trait.traitvalues.where(:value_name => mea.value) %>
+		              <% if not traitvalue.empty? and traitvalue.first.value_description.present?  %>
+		                <span class="label label-primary" data-toggle="tooltip" data-placement="top" title="<%= traitvalue.first.value_description %>"><%= mea.value %></span>
+		              <% else %>
+		                <span class="label label-primary" data-toggle="tooltip" data-placement="top" title="No description"><%= mea.value %></span>
+		              <% end %>
+		            <% else %> 
 									<%= mea.value %>
-								<% end %>
+		            <% end %> 
+
 								<% if mea.standard.present? %>
 						  		(<%= link_to mea.standard.standard_unit, standard_path(mea.standard_id) %>)
-									<% end %>
+								<% end %>
 							</div>
 		  
 

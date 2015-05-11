@@ -116,23 +116,22 @@
 	      </div>
 
 				<div class="col-sm-2">
-					<% if measurements.first.standard.standard_class == "Nominal class" %>
-            <% if measurements.first.trait.traitvalues.present? %>
-              <% traitvalue = measurements.first.trait.traitvalues.where(:value_name => measurements.first.value) %>
-              <% if traitvalue.present?  %>
-                <span class="label label-primary" data-toggle="tooltip" data-placement="top" title="<%= traitvalue.first.value_description %>"><%= measurements.first.value %></span>
-              <% else %>
-                <span class="label label-primary" data-toggle="tooltip" data-placement="top" title="No description"><%= measurements.first.value %></span>
-              <% end %>
-            <% else %> 
-              <span class="label label-primary"><%= measurements.first.value %></span>
-            <% end %> 
-					<% else %> 
-	        	<%= measurements.first.value %>
-						<% if !measurements.first.standard.blank? %>
-							(<%= measurements.first.standard.standard_unit %>)
-						<% end %> 
-					<% end %> 
+
+          <% if measurements.first.trait.traitvalues.present? %>
+            <% traitvalue = measurements.first.trait.traitvalues.where(:value_name => measurements.first.value) %>
+            <% if not traitvalue.empty? and traitvalue.first.value_description.present?  %>
+              <span class="label label-primary" data-toggle="tooltip" data-placement="top" title="<%= traitvalue.first.value_description %>"><%= measurements.first.value %></span>
+            <% else %>
+              <span class="label label-primary" data-toggle="tooltip" data-placement="top" title="No description"><%= measurements.first.value %></span>
+            <% end %>
+          <% else %> 
+            <%= measurements.first.value %>
+          <% end %> 
+
+          <% if not measurements.first.trait.traitvalues.present? and measurements.first.standard.present? %>
+            (<%= link_to measurements.first.standard.standard_unit, standard_path(measurements.first.standard_id) %>)
+          <% end %>
+
 	      </div>
     	<% else %>
       	<% if @trait %>
@@ -142,14 +141,22 @@
 		      </div>
 
 					<div class="col-sm-2">
-						<% if measurements.first.standard.standard_class == "Nominal class" %>
-							<span class="label label-primary"><%= measurements.first.value %></span>
-						<% else %> 
-		        	<%= measurements.first.value %>
-							<% if !measurements.first.standard.blank? %>
-								(<%= measurements.first.standard.standard_unit %>)
-							<% end %> 
-						<% end %> 
+
+            <% if measurements.first.trait.traitvalues.present? %>
+              <% traitvalue = measurements.first.trait.traitvalues.where(:value_name => measurements.first.value) %>
+              <% if not traitvalue.empty? and traitvalue.first.value_description.present?  %>
+                <span class="label label-primary" data-toggle="tooltip" data-placement="top" title="<%= traitvalue.first.value_description %>"><%= measurements.first.value %></span>
+              <% else %>
+                <span class="label label-primary" data-toggle="tooltip" data-placement="top" title="No description"><%= measurements.first.value %></span>
+              <% end %>
+            <% else %> 
+              <%= measurements.first.value %>
+            <% end %> 
+
+            <% if not measurements.first.trait.traitvalues.present? and measurements.first.standard.present? %>
+              (<%= link_to measurements.first.standard.standard_unit, standard_path(measurements.first.standard_id) %>)
+            <% end %>
+
 		      </div>
       	<% else %>
 					<div class="col-sm-5">

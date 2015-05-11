@@ -45,19 +45,18 @@
 										<% if grp.size > 1 %>
 											<%= render "shared/access_counts", :acc => grp %> observations
 										<% else %>
-											<% if grp.first.measurements.first.standard.standard_class == "Nominal class" || grp.first.measurements.first.standard.standard_class == "Ordered class" %>
-												
-												<% if grp.first.measurements.first.trait.traitvalues.present? %>
-													<span class="label label-primary" data-toggle="tooltip" data-placement="top" title="<%= grp.first.measurements.first.trait.traitvalues.where(:value_name => grp.first.measurements.first.value).first.value_description %>"><%= grp.first.measurements.first.value %></span>
-												<% else %> 
-													<span class="label label-primary"><%= grp.first.measurements.first.value %></span>
-												<% end %> 
-											<% else %> 
-							        	<%= grp.first.measurements.first.value %>
-												<% if !grp.first.measurements.first.standard.blank? %>
-													(<%= grp.first.measurements.first.standard.standard_unit %>)
-												<% end %> 
-											<% end %> 
+
+						          <% if grp.first.measurements.first.trait.traitvalues.present? %>
+						            <% traitvalue = grp.first.measurements.first.trait.traitvalues.where(:value_name => grp.first.measurements.first.value) %>
+						            <% if traitvalue.first.value_description.present?  %>
+						              <span class="label label-primary" data-toggle="tooltip" data-placement="top" title="<%= traitvalue.first.value_description %>"><%= grp.first.measurements.first.value %></span>
+						            <% else %>
+						              <span class="label label-primary" data-toggle="tooltip" data-placement="top" title="No description"><%= grp.first.measurements.first.value %></span>
+						            <% end %>
+						          <% else %> 
+						            <%= grp.first.measurements.first.value %>
+						          <% end %> 
+
 										<% end %>
 									</div>
 					  			<div class="col-sm-1">
