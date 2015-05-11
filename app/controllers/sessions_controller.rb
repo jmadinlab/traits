@@ -1,6 +1,7 @@
 class SessionsController < ApplicationController
 
   def new
+    session[:return_to] ||= request.referer
   end
 
   def create
@@ -15,7 +16,9 @@ class SessionsController < ApplicationController
   end
 
   def destroy
+    session[:return_to] ||= request.referer
     sign_out
-    redirect_to root_url
+    redirect_back_or root_url
   end
+  
 end

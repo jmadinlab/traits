@@ -98,19 +98,23 @@
 
 <div class="col-md-12">
 
-	<% if Measurement.joins(:observation).where("trait_id = ? AND specie_id = ?", 62, @specie.id).exists? %>
+	<% if signed_in? %>
+		<% if Measurement.joins(:observation).where("trait_id = ? AND specie_id = ?", 62, @specie.id).exists? %>
 
-		<% img = "#{Measurement.joins(:observation).where("trait_id = ? AND specie_id = ?", 62, @specie.id).last.value}M.jpg" %>
+			<% img = "#{Measurement.joins(:observation).where("trait_id = ? AND specie_id = ?", 62, @specie.id).last.value}M.jpg" %>
 
-		<% @vtemp = @vfiles.find_all{|item| item.include? img }.last %>
-		<% if !@vtemp.nil? %>
-			<p><%= image_tag "veron/#{img}", :style => "border:0px;", class:  "img-responsive" %></p>
-			<p><%= link_to "Ⓒ Corals of the World", resource_path(10) %> (viewable to logged-in users, but copyrighted material, so please do not distribute)</p>
+			<% @vtemp = @vfiles.find_all{|item| item.include? img }.last %>
+			<% if !@vtemp.nil? %>
+				<p><%= image_tag "veron/#{img}", :style => "border:0px;", class:  "img-responsive" %></p>
+				<p><%= link_to "Ⓒ Corals of the World", resource_path(10) %> (viewable to logged-in users, but copyrighted material, so please do not distribute)</p>
+			<% else %>
+					<p>No Corals of the World map</p>
+			<% end %>
 		<% else %>
-				<p>No Corals of the World map</p>
+			<p>No Corals of the World map</p>
 		<% end %>
 	<% else %>
-		No map
+		<p><%= link_to "Sign in", signin_path %> to see Corals of the World map</p>
 	<% end %>
 
 	<%= render "specie_observations" %>
