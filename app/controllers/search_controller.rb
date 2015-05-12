@@ -34,9 +34,13 @@ class SearchController < ApplicationController
 
 			# Redirect if only 1 result in 1 model
 			singletons = @store.select{|key, hash| hash == 1 }
-			if singletons.count == 1
+			others = @store.select{|key, hash| hash > 1 }
+			puts "==================================================================="
+			puts singletons
+			puts others
+			if singletons.count == 1 and others.count == 0
 				puts singletons.keys
-				redirect_to eval("#{singletons.keys[0]}_path(@#{singletons.keys[0]}_search.results.first)")
+				redirect_to eval("#{singletons.keys[0]}_path(@#{singletons.keys[0]}_search.results.first, :search => params[:search])")
 			end
 
 		else
