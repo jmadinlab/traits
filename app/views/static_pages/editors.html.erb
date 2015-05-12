@@ -13,7 +13,7 @@
           <div class="list-group-item">
             <div class="row">
               <div class="col col-md-2">
-                <%= ed.name %>
+                <%= ed.name %> <%= ed.last_name %>
               </div>      
               <div class="col col-md-10">
                 <% Trait.where("user_id = ? AND trait_class  NOT LIKE ?", ed.id, "Contextual").each do |tr| %>

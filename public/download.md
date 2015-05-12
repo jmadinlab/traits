@@ -3,7 +3,7 @@
 
 > There are a number of ways to extract data from the database
 
-### Website downloads
+#### Website downloads
 
 Data can be directly downloaded for one or more [coral species](/species), [traits](/traits), [locations](/locations), [resources](/resources) or [methodologies](/methodologies) by using the checkboxes on the corresponding pages and clicking <label class="label label-success">Download</label>. A zipped folder is downloaded containing two files: 
 
@@ -12,7 +12,7 @@ Data can be directly downloaded for one or more [coral species](/species), [trai
 
 Files in csv-format can be opened in spreadsheet applications (e.g., OpenOffice, Excel, Numbers) or loaded into R using `read.csv()`.
 
-### Controlled downloads
+#### Controlled downloads
 
 Every data page in the database can be loaded in four formats: html, csv, resources or zip. For example, for traits:
 
@@ -37,7 +37,7 @@ To control the download of contextual data, taxonomic detail and/or global estim
 - <http://coraltraits.org/locations/132.csv?contextual=off> returns no contextual data (with defaults for taxonomic detail and global estimates).
 - <http://coraltraits.org/locations/132.csv?taxonomy=on&contextual=off&global=on> returns taxonomic detail, no contextual data, and only global estimates of traits.
 
-### Direct R imports
+#### Direct R imports
 
 Using web address syntax described above, you can import data directly into the R statistical programming language. The benefits of directly importing data into R are that you always have the most up-to-date version of data, and you can avoid keeping local copies. The database uses a secure connection protocol (https) and so the `RCurl` package needs to be installed and loaded. The following R code will directly import all publicly available growth form data directly into R.
 
@@ -49,6 +49,8 @@ Using web address syntax described above, you can import data directly into the 
 Currently there is no bulk import for R. That is, you can only import one trait, coral species, etc., based on an id at a time. One workaround is to create a list of trait or coral ids (which never change) and either use a loop or an `apply` function to iteratively download and combine the data you require for your analysis.
 
 *[Top](#)*
+
+***
 
 # Reshaping data downloads
 

@@ -1,8 +1,10 @@
 <% provide(:title, 'Import') %>
 
 <div class="col-md-12">
-
-  <label class="label label-danger">Under Review</label>
+  <h1>
+    Importing data
+  </h1>
+  <hr>
 
   <%= markdown File.open(Rails.root + "public/bulk_import.md", 'r').read %>
 
