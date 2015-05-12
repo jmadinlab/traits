@@ -46,14 +46,6 @@
 			<% if @observation.resource.volume_pages %>
 		  	<% ref = ref + " " + @observation.resource.volume_pages %>
 			<% end %>
-
-
-
-				<%# ref = "qq #{@observation.resource.author} " + 
-					("(#{@observation.resource.year}) ") + 
-					("#{@observation.resource.title}. ") + 
-					("#{@observation.resource.journal} ") + 
-					("#{@observation.resource.volume_pages}") %>
 	  		<%= link_to ref, resource_path(@observation.resource) %>
 			<% else %>
 				No record
@@ -75,12 +67,6 @@
 				<% if @secondary.volume_pages %>
 			  	<% sref = sref + " " + @secondary.volume_pages %>
 				<% end %>
-
-				<%# sref = "#{@secondary.author} " + 
-					("(#{@secondary.year}) ") + 
-					("#{@secondary.title}. ") + 
-					("#{@secondary.journal} ") + 
-					("#{@secondary.volume_pages}") %>
 	  		<%= link_to sref, resource_path(@secondary.id) %>
 		</p>
 	<% end %>

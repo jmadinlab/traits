@@ -35,7 +35,7 @@ class ObservationImportsController < ApplicationController
 
     if params[:item_id]
       reject = params[:reject]
-      reject ? message = "Observation successfuly rejected" : message = "Observation successfuly approved"
+      reject ? message = "Observation successfully rejected" : message = "Observation successfully approved"
       
       observation = @observations.find_by_id(params[:item_id])
       if not reject
