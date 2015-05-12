@@ -104,12 +104,12 @@
 		</p>
 	<% end %>
 
-
-	<div class="btn-group">
-		<% if signed_in? && ((current_user.contributor? && @observation.user_id == current_user.id) || current_user.admin?) %>
-			<%= link_to 'Edit', edit_observation_path(@observation), class: "btn btn-default" %>
-		<% end %>
-	</div>
+	<% if signed_in? && (@observation.user_id == current_user.id || current_user.editor?) %>
+		<div class="btn-group">
+			<%= link_to 'Edit', edit_observation_path(@observation), class: "btn btn-xs btn-default" %>
+	  	<%= link_to 'Delete', observation_path(@observation), method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
+		</div>
+	<% end %>
 
 	<h3>Measurements</h3>
 

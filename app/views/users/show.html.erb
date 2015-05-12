@@ -35,9 +35,9 @@
 	<% if current_user.admin? %>
 		<p>
 	    <div class="btn-group">
-	      <%= link_to 'Back', users_path, class: "btn btn-default" %>
+	      <%= link_to 'Back', users_path, class: "btn btn-xs btn-default" %>
 	      <% if signed_in? && current_user.contributor? %>
-	        <%= link_to 'Edit', edit_user_path(@user), class: "btn btn-default" %>
+	        <%= link_to 'Edit', edit_user_path(@user), class: "btn btn-xs btn-default" %>
 	      <% end %>
 	    </div>
 		</p>

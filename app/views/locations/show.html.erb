@@ -45,9 +45,12 @@
 
   <p>
     <div class="btn-group">
-      <%= link_to 'Back', locations_path, class: "btn btn-default" %>
+      <%= link_to 'Back', locations_path, class: "btn btn-xs btn-default" %>
       <% if signed_in? && current_user.contributor? %>
-        <%= link_to 'Edit', edit_location_path(@location), class: "btn btn-default" %>
+        <%= link_to 'Edit', edit_location_path(@location), class: "btn btn-xs btn-default" %>
+      <% end %>
+      <% if signed_in? && current_user.admin? %>
+        <%= link_to 'Delete', @location, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
       <% end %>
     </div>
   </p>

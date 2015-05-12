@@ -14,7 +14,7 @@
 
   <div class="col-sm-12">
 
-    <%= will_paginate @locations, :inner_window => 1, :outer_window => 0 %><br><br>
+    <%= will_paginate @locations, :inner_window => 1, :outer_window => 0 %>
 
   	<ul class="list-group">
     	<% @locations.sort_by{|e| e[:location_name]}.each do |location| %>
@@ -33,15 +33,6 @@
   	        </div>
 
             <div class="col-sm-3">
-              <div class="btn-group">
-                <%= link_to 'Show', location_path(location), 'data-no-turbolink' => true, class: "btn btn-xs btn-default" %>
-                <% if signed_in? && current_user.editor? %>
-                  <%= link_to 'Edit', edit_location_path(location), class: "btn btn-xs btn-default" %>
-                <% end %>
-                <% if signed_in? && current_user.admin? %>
-                  <%= link_to 'Delete', location, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
-                <% end %>
-              </div>
             </div>
 
             <div class="col-sm-3">

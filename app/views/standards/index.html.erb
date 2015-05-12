@@ -39,15 +39,6 @@
 					</div>
 
 					<div class="col-sm-3">
-			     	<div class="btn-group">
-			     		<%= link_to 'Show', standard_path(standard), 'data-no-turbolink' => true, class: "btn btn-xs btn-default" %>					
-							<% if signed_in? && current_user.editor? %>
-				        <%= link_to 'Edit', edit_standard_path(standard), class: "btn btn-xs btn-default" %>
-							<% end %>
-							<% if signed_in? && current_user.admin? %>
-				        <%= link_to 'Delete', standard, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
-							<% end %>
-	        	</div>
 					</div>
 				
 				 	<div class="col-sm-3">

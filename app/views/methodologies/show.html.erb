@@ -44,9 +44,12 @@
 
   <p>
     <div class="btn-group">
-      <%= link_to 'Back', methodologies_path, class: "btn btn-default" %>
+      <%= link_to 'Back', methodologies_path, class: "btn btn-xs btn-default" %>
       <% if signed_in? && current_user.contributor? %>
-        <%= link_to 'Edit', edit_methodology_path(@methodology), class: "btn btn-default" %>
+        <%= link_to 'Edit', edit_methodology_path(@methodology), class: "btn btn-xs btn-default" %>
+      <% end %>
+      <% if signed_in? && current_user.admin? %>
+        <%= link_to 'Delete', @methodology, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
       <% end %>
     </div>
   </p>

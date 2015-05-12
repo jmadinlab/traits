@@ -172,9 +172,6 @@
   					<% if @pending %>
 		        	<%= link_to 'Approve', observation_imports_approve_path(:item_id => obs.id), method: :post, class: "btn btn-xs btn-success" %>
 		        	<%= link_to 'Reject', observation_imports_approve_path(:item_id => obs.id, :reject => true), method: :post, class: "btn btn-xs btn-danger" %> 
-	  				<% else %>
-	  	    		<%= link_to 'Edit', edit_observation_path(obs), class: "btn btn-xs btn-default" %>
-	  	    		<%= link_to 'X', observation_path(obs), method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
   					<% end %>
 
   				<% end %>

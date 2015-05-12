@@ -12,7 +12,7 @@
 
   <div class="col-sm-12">
     
-    <%= will_paginate @resources, :inner_window => 1, :outer_window => 0 %><br><br>
+    <%= will_paginate @resources, :inner_window => 1, :outer_window => 0 %>
 
 		<ul class="list-group">
     	<% @resources.each do |resource| %>
@@ -25,25 +25,19 @@
 							<% end %>
 		        </div>
 
-		        <div class="col-sm-5">
+		        <div class="col-sm-8">
 		        	<%= link_to resource.author, resource %>
 		        	<% if resource.year %>
 			        	(<%= resource.year %>)
 	    				<% end %>		
-		        	<small><%= resource.title %></small>
+		        	<%= resource.title %>.
+              <% if resource.journal %>
+                <em><%= resource.journal %></em>
+              <% end %>   
+              <% if resource.volume_pages %>
+                <%= resource.volume_pages %>
+              <% end %>   
 		        </div>
-
-		        <div class="col-sm-3">
-					    <div class="btn-group">
-					     	<%= link_to 'Show', resource_path(resource), class: "btn btn-xs btn-default" %>
-							  <% if signed_in? && current_user.editor? %>
-				        	<%= link_to 'Edit', edit_resource_path(resource), class: "btn btn-xs btn-default" %>
-								<% end %>
-							  <% if signed_in? && current_user.admin? %>
-				        	<%= link_to 'Delete', resource, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
-								<% end %>
-			        </div>
-						</div>
 
 					 	<div class="col-sm-3">
 					 		<p class="pull-right">

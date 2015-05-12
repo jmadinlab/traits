@@ -9,8 +9,18 @@ class TraitsController < ApplicationController
   # GET /traits.json
   def index
 
+    if params[:trait_class] and params[:trait_class].blank?
+      params[:trait_class].delete
+    end
+    
     @search = Trait.search do
       fulltext params[:search]
+
+      if params[:trait_class] and params[:trait_class].present?
+        with :trait_class_sortable, params[:trait_class]
+        paginate page: params[:page], per_page: 9999
+      end
+
       order_by :trait_class_sortable, :asc
       
       if params[:all]

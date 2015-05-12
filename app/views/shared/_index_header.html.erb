@@ -1,35 +1,30 @@
 <% model = request.original_url.split("/").last.split("?").first %>
 <h1><%= model.capitalize %></h1>
 <hr>
-<div class="btn-group">
-
-
-	<%#= form_tag "#{model}", :method => 'get' do %>
-    <!-- <div class="input-group"> -->
-      <!-- <%#= text_field_tag :search, params[:search], :placeholder => "Search...", class: "form-control" %> -->
-      <!-- <span class="input-group-btn"> -->
-		    <%#= submit_tag "Search", :name => nil, class: "btn btn-default" %>
-				<% if params[:all] %>
-					<%= link_to "Paginate", "#{model}", class: "btn btn-default" %>
-				<% else %>
-					<%= link_to "Show All", "#{model}?all=true", class: "btn btn-default" %>
-				<% end %>
-      <!-- </span> -->
-    <!-- </div> -->
-	<%# end %>
-
-</div>
-<div class="btn-group pull-right">
-
-<% if signed_in? && current_user.admin? %>  
-  <% if model == "species" %>  
-    <%= link_to "New #{model.capitalize}", "#{model}/new", class: "btn btn-primary" %>
+<div class="btn-group pull-left">
+  <% if params[:all] %>
+  	<%= link_to "Paginate", "#{model}", class: "btn btn-default" %>
   <% else %>
-    <%= link_to "New #{model.singularize.capitalize}", "#{model}/new", class: "btn btn-primary" %>
+  	<%= link_to "Show All", "#{model}?all=true", class: "btn btn-default" %>
   <% end %>
-  <% if model == "resources" %>  
-    <%= link_to 'Errors', resources_status_path, class: "btn btn-danger" %>
-  <% end %>
+</div>
+<% if model == "traits" %>  
+  <div class="col-xs-3">
+    <%= form_tag traits_path, :method => 'get' do %>
+      <div class="form-group">
+        <%= select_tag :trait_class, options_for_select(Trait.all.map(&:trait_class).uniq.reject! { |c| c.blank? }, params[:trait_class]), :onchange => "this.form.submit();", :prompt => "Subset by class...", class: "form-control" %>
+      </div>
+    <% end %>
+  </div>
 <% end %>
+
+<div class="btn-group pull-right">
+  <% if signed_in? && current_user.admin? %>  
+    <% if model == "species" %>  
+      <%= link_to "New #{model.capitalize}", "#{model}/new", class: "btn btn-primary" %>
+    <% else %>
+      <%= link_to "New #{model.singularize.capitalize}", "#{model}/new", class: "btn btn-primary" %>
+    <% end %>
+  <% end %>
 </div>
 <br><br>

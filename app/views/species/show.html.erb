@@ -1,11 +1,9 @@
 <% provide(:title, @specie.specie_name) %>
 
-<div class="col-md-12">
+<div class="col-md-8">
   <h1><em><%= @specie.specie_name %></em></h1>
 	<hr>
-</div>
 
-<div class="col-md-8">
   <p>
     <strong>ID:</strong>
     	<%= @specie.id %>
@@ -51,50 +49,55 @@
 
 	<p>
     <div class="btn-group">
+			<%= link_to 'Back', species_path, class: "btn btn-xs btn-default" %>
 	  	<% if signed_in? && current_user.admin? %>
-				<%= link_to 'Edit', edit_specie_path(@specie), class: "btn btn-default" %>
+				<%= link_to 'Edit', edit_specie_path(@specie), class: "btn btn-xs btn-default" %>
+      	<%= link_to 'Delete', @specie, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
 			<% end %>
-			<%= link_to 'Back', species_path, class: "btn btn-default" %>
 		</div>
 	</p>
 </div>
 
 <div class="col-md-4">
-		<div class="well">
-		<p><strong>External resources for this species:</strong></p>
-		<ul>
-			<li>
-				<%= link_to "World Register of Marine Species", "http://www.marinespecies.org/aphia.php?p=taxlist&tName=" + @specie.specie_name.to_s, target: "_blank" %>
-			</li>
+	<ul class="list-group">
+		<li class="list-group-item">							
+			<p><strong>External resources for this species:</strong></p>
+			<ul>
+				<li type="disc">
+					<%= link_to "World Register of Marine Species", "http://www.marinespecies.org/aphia.php?p=taxlist&tName=" + @specie.specie_name.to_s, target: "_blank" %>
+				</li>
 
-			<li>
-				<% fac = Measurement.where("observation_id IN (?) AND trait_id=?", @observations.map(&:id), 62)  %>
-				<% if !fac.blank? %>
-					AIMS factsheet and images:
-					<% fac.each do |f| %>
-						<%= link_to f.value, "http://coral.aims.gov.au/factsheet.jsp?speciesCode=" + f.value.to_s.rjust(4, '0'), target: "_blank" %>
+				<li type="disc">
+					<% fac = Measurement.where("observation_id IN (?) AND trait_id=?", @observations.map(&:id), 62)  %>
+					<% if !fac.blank? %>
+						AIMS factsheet and images:
+						<% fac.each do |f| %>
+							<%= link_to f.value, "http://coral.aims.gov.au/factsheet.jsp?speciesCode=" + f.value.to_s.rjust(4, '0'), target: "_blank" %>
+						<% end %>
+					<% else %>
+						AIMS factsheet and images (not available)
 					<% end %>
-				<% else %>
-					AIMS factsheet and images (not available)
-				<% end %>
-			</li>
+				</li>
 
-			<li>
-				<% pal = Measurement.where("observation_id IN (?) AND trait_id=?", @observations.map(&:id), 140) %>
-				<% if !pal.blank? %>
-					PaleoDB fossil records:
-					<% pal.each do |p| %>
-						<%= link_to p.value, "http://paleodb.org/bridge.pl?a=checkTaxonInfo&taxon_no=" + p.value.to_s, target: "_blank" %>
-					<% end %>
-				<% else %>
-					PaleoDB records (not available)
-					<% end %>
-			</li>
-			<li><%= link_to "OBIS observation records", "http://iobis.org/mapper/?taxon=" + @specie.specie_name.to_s, target: "_blank" %></li>
-		</ul>
-	
-	</div>
+				<li type="disc">
+					<% pal = Measurement.where("observation_id IN (?) AND trait_id=?", @observations.map(&:id), 140) %>
+					<% if !pal.blank? %>
+						PaleoDB fossil records:
+						<% pal.each do |p| %>
+							<%= link_to p.value, "http://paleodb.org/bridge.pl?a=checkTaxonInfo&taxon_no=" + p.value.to_s, target: "_blank" %>
+						<% end %>
+					<% else %>
+						PaleoDB records (not available)
+						<% end %>
+				</li>
+				<li type="disc">
+					<%= link_to "OBIS observation records", "http://iobis.org/mapper/?taxon=" + @specie.specie_name.to_s, target: "_blank" %>
+				</li>
+			</ul>
+		</li>
+	</ul>	
 </div>
+
 
 <div class="col-md-12">
 
