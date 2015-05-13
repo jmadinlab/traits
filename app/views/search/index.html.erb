@@ -12,7 +12,7 @@
 	    
 			<div class="form-group">
 		    Limit search to (optional):
-		    <%= select_tag 'model_name', options_for_select(['Specie', 'Trait', 'Observation', 'Resource', 'Standard', 'Location', 'Methodology']), { :multiple => true, :size =>7, class: "form-control"} %>
+		    <%= select_tag :model_name, options_for_select(['Specie', 'Trait', 'Resource', 'Location', 'Standard', 'Methodology', 'Observation'], params[:model_name]), { :multiple => true, :size =>7, class: "form-control"} %>
 			</div>
 
 	    <%= submit_tag "Search Again", class: "btn btn-primary" %>
@@ -42,9 +42,13 @@
 			<% @specie_search.results.sort_by{|e| e[:specie_name]}.each do |s| %>
 	     	<li class="list-group-item">							
 					<%= link_to s.specie_name, s %>
-     			<div class="btn-group pull-right">							
-						<%= link_to "Show", s, class: "btn btn-xs btn-default" %><%#= link_to "Edit", edit_specie_path(s), class: "btn btn-xs btn-default" %>
-					</div>
+					<% if s.synonyms.size > 0 %>
+						<% synonyms = [] %>
+						<% s.synonyms.each do |synonym| %>
+				    	<% synonyms << synonym.synonym_name %>
+						<% end %>
+						(<%= synonyms.join(", ") %>)
+					<% end %>
 				</li>
 			<% end %>
 		</ul>
@@ -58,9 +62,6 @@
 			<% @trait_search.results.sort_by{|e| e[:trait_name]}.each do |s| %>
 	     	<li class="list-group-item">							
 					<%= link_to s.trait_name, s %>
-     			<div class="btn-group pull-right">							
-						<%= link_to "Show", s, class: "btn btn-xs btn-default" %>
-					</div>
 				</li>
 			<% end %>
 		</ul>
@@ -77,9 +78,6 @@
 					<% if s.standard_unit %>
 						(<%= s.standard_unit %>)
 					<% end %>
-     			<div class="btn-group pull-right">							
-						<%= link_to "Show", s, class: "btn btn-xs btn-default" %>
-					</div>
 				</li>
 			<% end %>
 		</ul>
@@ -93,11 +91,8 @@
 		<ul class="list-group">
 			<% @location_search.results.sort_by{|e| e[:location_name]}.each do |s| %>
 	     	<li class="list-group-item">							
-					<%= link_to s.location_name, s %><br>
-					Latitude: <%= s.latitude %> | Longitude: <%= s.longitude %>
-     			<div class="btn-group pull-right">							
-						<%= link_to "Show", s, class: "btn btn-xs btn-default" %>
-					</div>
+					<%= link_to s.location_name, s %>
+					(lat: <%= s.latitude %>, lon: <%= s.longitude %>)
 				</li>
 			<% end %>
 		</ul>
@@ -110,14 +105,17 @@
 		<ul class="list-group">
 			<% @resource_search.results.sort_by{|e| e[:title]}.each do |s| %>
 	     	<li class="list-group-item">							
-					<%= link_to s.title, s %><br>
-					Year: <%= s.year %> | Author: <%= s.author %>
-					<% if s.journal %>
-						| <em><%= s.journal %></em>
-					<% end %>
-     			<div class="btn-group pull-right">							
-						<%= link_to "Show", s, class: "btn btn-xs btn-default" %>
-					</div>
+		        	<%= link_to s.author, s %>
+		        	<% if s.year %>
+			        	(<%= s.year %>)
+	    				<% end %>		
+		        	<%= s.title %>.
+              <% if s.journal %>
+                <em><%= s.journal %></em>
+              <% end %>   
+              <% if s.volume_pages %>
+                <%= s.volume_pages %>
+              <% end %>   
 				</li>
 			<% end %>
 		</ul>
@@ -131,9 +129,6 @@
 			<% @methodology_search.results.sort_by{|e| e[:methodology_name]}.each do |s| %>
 	     	<li class="list-group-item">							
 					<%= link_to s.methodology_name, s %>
-     			<div class="btn-group pull-right">							
-						<%= link_to "Show", s, class: "btn btn-xs btn-default" %>
-					</div>
 				</li>
 			<% end %>
 		</ul>
@@ -147,8 +142,8 @@
 			<% @observation_search.results.each do |s| %>
 				<% s.measurements.each do |m| %>				
 		     	<li class="list-group-item">							
-						<%= link_to "Observation #{s.id}", s %><br>
-						<em><%= link_to s.specie.specie_name, specie_path(s.specie) %></em>
+						<%= link_to "Observation #{s.id}", s %>
+						| <em><%= link_to s.specie.specie_name, specie_path(s.specie) %></em>
 						<% if s.location %>
 							| <%= link_to s.location.location_name, location_path(s.location) %>
 						<% end %>
@@ -156,9 +151,6 @@
 						<% if m.standard.standard_unit %>
 							(<%= m.standard.standard_unit %>)
 						<% end %>
-	     			<div class="btn-group pull-right">							
-							<%= link_to "Show", s, class: "btn btn-xs btn-default" %>
-						</div>
 					</li>
 				<% end %>
 			<% end %>
