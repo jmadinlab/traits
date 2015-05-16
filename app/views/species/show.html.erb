@@ -101,8 +101,9 @@
 
 <div class="col-md-12">
 
-	<% if signed_in? %>
-		<% if Measurement.joins(:observation).where("trait_id = ? AND specie_id = ?", 62, @specie.id).exists? %>
+	<% if Measurement.joins(:observation).where("trait_id = ? AND specie_id = ?", 62, @specie.id).exists? %>
+
+		<% if signed_in? %>
 
 			<% img = "#{Measurement.joins(:observation).where("trait_id = ? AND specie_id = ?", 62, @specie.id).last.value}M.jpg" %>
 
@@ -111,13 +112,13 @@
 				<p><%= image_tag "veron/#{img}", :style => "border:0px;", class:  "img-responsive" %></p>
 				<p><%= link_to "Ⓒ Corals of the World", resource_path(10) %> (viewable to logged-in users, but copyrighted material, so please do not distribute)</p>
 			<% else %>
-					<p>No Corals of the World map</p>
+					<p>No map</p>
 			<% end %>
 		<% else %>
-			<p>No Corals of the World map</p>
+			<p><%= link_to "Sign in", signin_path %> to see map</p>
 		<% end %>
 	<% else %>
-		<p><%= link_to "Sign in", signin_path %> to see Corals of the World map</p>
+		<p>No map</p>
 	<% end %>
 
 	<%= render "specie_observations" %>
