@@ -19,12 +19,19 @@
 <% end %>
 
 <div class="btn-group pull-right">
-  <% if signed_in? && current_user.admin? %>  
-    <% if model == "species" %>  
-      <%= link_to "New #{model.capitalize}", "#{model}/new", class: "btn btn-primary" %>
-    <% else %>
+  <% if model == "locations" or model == "resources" or model == "standards" or model == "methodologies" %>  
+    <% if signed_in? and current_user.contributor? %>  
       <%= link_to "New #{model.singularize.capitalize}", "#{model}/new", class: "btn btn-primary" %>
+    <% end %>
+  <% elsif model == "traits" %>
+    <% if signed_in? and current_user.editor? %>  
+      <%= link_to "New #{model.singularize.capitalize}", "#{model}/new", class: "btn btn-primary" %>
+    <% end %>
+  <% elsif model == "species" %>
+    <% if signed_in? and current_user.admin? %>  
+      <%= link_to "New #{model.capitalize}", "#{model}/new", class: "btn btn-primary" %>
     <% end %>
   <% end %>
 </div>
+
 <br><br>
