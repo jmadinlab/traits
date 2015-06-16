@@ -1,16 +1,19 @@
 A bulk import of observations and measurements is the fastest way to get data into the database. The import function accepts csv-formatted spreadsheets and runs a number of tests to make sure your data fit correctly into the database (note that you can export csv-formatted files from Excel using "Save as..."). Any errors will reject the entire import and the system will attempt to tell you where the errors occur, so you can fix these and try the import again.</p>
 
-The spreadsheet you import must have a header with following column names.
+The spreadsheet you import must have a header with the following column names.
 
     observation_id, access, user_id, specie_id, location_id, resource_id, trait_id, standard_id, methodology_id, value, value_type, precision, precision_type, precision_upper, replicates, notes
 
 `specie_id` and `trait_id` may be substituted for `specie_name` and `trait_name`, respectively, which can be useful for navigating large data entry spreadsheets. These names must reflect the database names exactly, and so best to copy and paste names directly from the database.
 
-`resource_id` is reserved for the original data resource.  You can credit papers that compiled large datasets from the literature by adding a column named `resource_secondary_id`.
+`resource_id` is reserved for the original data resource.  You can credit papers that compiled large datasets from the literature by adding a column named `resource_secondary_id`. `resource_id` and `resource_secondary_id` may be substituted for `resource_doi` and `resource_secondary_doi`, respectively (the doi should start with "10", not "doi:"). The resource will automatically be added using Crossref if the doi is not in the database. 
 
 Copy and paste the above into a text file and save as `import_trait_author_year.csv`, where author and year correspond with the resource (paper). Alternatively, download a [CSV](/import_template_author_year.csv) or [Excel](/import_template_author_year.xlsx) template.
 
 ### Observation-level data
+
+    [FIX] The first six columns are associated with the observation. observation_id is an unique integer that groups a set of measurements into one observation. access is a boolean value indicating if the observation should be accessible (0 denotes private and 1 denotes public). 
+    user_id is the unique ID (integer) of the person entering the data. specie_id or specie_name is the unique ID or name of the coral species of which the observation was taken. location_id is the unique ID of the location where the observation took place. resource_id is the unique ID of the resource (paper) where the observation was published. resource_id can be empty for unpublished data, in which case access must be private (0) until the data are published and the published resource is entered. resource_secondary_id can be optionally included when entering data from a paper that compiled data from other resources.
 
 `observation_id` is an unique integer that groups a set of measurements into one observation. In [example 1](#example1) below, the first four rows belong to the same observation of a coral.
 
@@ -29,6 +32,8 @@ Copy and paste the above into a text file and save as `import_trait_author_year.
 *[Top](#)*
 
 ### Measurement-level data
+
+    [FIX] Columns 7 to 16 are associated with measurement-level data. All measurements corresponding to the same observation should have exactly the same observation-level data.  trait_id or trait_name is the unique ID (integer) or name of the coral trait, species-level characteristic or contextual “trait” that was measured. standard_id is the unique ID of the standard (measurement unit) that was used to measure the trait. methodology_id is the unique ID of the methodology used to measure the trait. value is the actual measured value (number, text, true/false, etc.). If the value is an option of a categorical trait (e.g., growth form), then the value must exactly match the value options for the trait (e.g., massive). If the value option does not exist for a trait, it must first be added by editing the trait. value_type describes the type of value. Current options are: raw_value for a direct measurement, mean if the value represents the mean of more than one value, median if the value represents the median of more than one value, maximum if the value represents the maximum of more than one value, minimum if the value represents the minimum of more than one value, model_derived if the value is derived from a model, expert_opinion if the actual value has not been measured directly, but an expert feels confident of the value, perhaps based on phylogenetic relatedness or an indirect observation, group_opinion if the actual value has not been measured directly, but a group of experts feel confident of the value. precision is the level of variation associated with the value if it is made up from more than one measurement (e.g., mean). precision_type is the kind of variation that the precision estimate (above) corresponds with. Current options are standard_error, standard_deviation, 95_ci and range. precision_upper is used to capture the maximum (upper) value if range is used (above). replicates is the number of measurement (replicates) that were used to calculate the value. Leave this field blank if equal to one (e.g., a raw_value). notes is an optional field for reporting useful information about how the measurement was made.
 
 `trait_id` is the unique ID (integer) of the coral trait, species-level characteristic or contextual "trait" that was measured. IDs occur in grey to the left of [traits](/traits) or at the top of a given trait's observations page.
 

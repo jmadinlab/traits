@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   include SessionsHelper
   
-  # WillPaginate.per_page = 15
+  WillPaginate.per_page = 12
   Sunspot.config.pagination.default_per_page = 12
 
   before_filter :set_last_seen_at, if: proc { |p| signed_in? && (session[:last_seen_at] == nil || session[:last_seen_at] < 15.minutes.ago) }
@@ -212,13 +212,13 @@ class ApplicationController < ActionController::Base
     # Combine file1 and file2 into zip file
     zipfile_name = 'zippedfiles.zip'
     Zip::File.open(zipfile_name, Zip::File::CREATE) do |zipfile|
-      zipfile.add("data.csv", data_file_path)
-      zipfile.add("resources.csv", resource_file_path)
+      zipfile.add("data_#{Date.today.strftime('%Y%m%d')}.csv", data_file_path)
+      zipfile.add("resources_#{Date.today.strftime('%Y%m%d')}.csv", resource_file_path)
     end
 
     File.open(zipfile_name, 'r') do |f|
       send_data f.read, type: "application/zip", :stream => true,
-      :disposition => "attachment; filename = ctdb.zip"
+      :disposition => "attachment; filename = ctdb_#{Date.today.strftime('%Y%m%d')}.zip"
     end
     File.delete(zipfile_name)
     FileUtils.rm_f(data_file_path)

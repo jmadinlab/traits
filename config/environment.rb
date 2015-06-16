@@ -6,3 +6,4 @@ require 'base_ext'
 Traits::Application.initialize!
 
 Time::DATE_FORMATS[:ctdb_date] = "%e %B %Y at %I:%M %p"
+Time::DATE_FORMATS[:ctdb_date2] = "%e %B %Y"

@@ -1,0 +1,22 @@
+<%= form_for(@snapshot) do |f| %>
+  <%= render 'shared/error_messages', object: @snapshot %>
+
+  <%= f.hidden_field :user_id, :value => current_user.id %>
+
+
+<!--   <div class="form-group">
+    <%#= f.label :snapshot_code %><br>
+    <%#= f.text_field :snapshot_code, class: "form-control" %>
+  </div>
+ -->  <div class="form-group">
+    <%= f.label :snapshot_date %><br>
+    <%= f.date_select :snapshot_date, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.label :snapshot_notes %><br>
+    <%= f.text_area :snapshot_notes, class: "form-control" %>
+  </div>
+
+  <%= f.submit "Submit", class: "btn btn-primary btn-lg" %>
+
+<% end %>

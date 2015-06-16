@@ -1,5 +1,7 @@
 Traits::Application.routes.draw do
 
+  resources :snapshots
+
   # resources :observations do
   #   resources :issues
   # end
@@ -27,6 +29,7 @@ Traits::Application.routes.draw do
   get '/traits/:id/resources', to: 'traits#show'
   get '/locations/:id/resources', to: 'locations#show'
   get '/resources/:id/resources', to: 'resources#show'
+  get '/snapshots/:id/resources', to: 'snapshots#show'
   
     get '/resources/status', to: 'resources#status'
 

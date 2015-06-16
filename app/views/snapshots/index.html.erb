@@ -1,0 +1,59 @@
+<div class="col-md-12">
+  <%= render "shared/index_header" %>
+  <br>
+  <%= markdown File.open(Rails.root + "public/snapshots.md", 'r').read %>
+</div>
+
+
+<div class="col-sm-12">
+
+  <%= will_paginate @snapshots, :inner_window => 1, :outer_window => 0 %>
+
+  <ul class="list-group">
+    <% @snapshots.each do |snapshot| %>
+      <li class="list-group-item">              
+        <div class="row">
+          <div class="col-sm-1" style="color: lightgrey;">
+            <%= snapshot.id %>
+          </div>
+
+          <div class="col-sm-2">
+            ctdb_<%= snapshot.snapshot_date.strftime('%Y%m%d') %>
+          </div>
+
+          <div class="col-sm-2">
+            <%= snapshot.snapshot_date.to_s(:ctdb_date2) %>
+          </div>
+
+          <div class="col-sm-4">
+            <%= snapshot.snapshot_notes %>
+          </div>
+
+          <div class="col-sm-3">
+            <div class="btn-group pull-right">
+              <% if @snapzips.include?("ctdb_#{snapshot.snapshot_date.strftime('%Y%m%d')}") %>
+                <%= link_to 'Download', snapshot_path(snapshot), class: "btn btn-xs btn-success" %>
+              <% else %>
+                <%= link_to 'Missing', snapshot_path(snapshot), class: "btn btn-xs btn-success", disabled: "disabled" %>
+              <% end %>
+              <% if signed_in? && current_user.admin? %>
+                <%= link_to 'Edit', edit_snapshot_path(snapshot), class: "btn btn-xs btn-default" %>
+                <%= link_to 'Delete', snapshot, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
+              <% end %>
+            </div>
+          </div>
+
+        </div>
+      </li>
+    <% end %>
+  </ul>
+
+  <% if @snapshots.blank? %>
+    <div class="alert alert-danger" role="alert">No snapshots entered.</div>
+  <% end %>
+</div>
+
+
+<div class="col-sm-12">
+  <p>Download full snapshots list as a <%= link_to "csv", snapshots_path(format: "csv", search: params[:search], page: params[:page], all: params[:all]) %>.</p>
+</div>

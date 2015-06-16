@@ -54,35 +54,44 @@ The Coral Trait Database is an open source research initiative that aims to make
 
 #### Administrator
 
+Contact the Administrator for any information about the database.
+
 - Toni Mizerek (part-time)
 
 #### Managerial Board
 
 > For decisions requiring a vote, at least three of the Managerial Board should agree.
 
-- Joshua Madin
 - Andrew Baird
-- Daniel Falster
 - Emily Darling
+- Daniel Falster
+- Joshua Madin
 
 #### Editorial Board
 
-> Editors listed *[here](http://coraltraits.org/editors)* are responsible for quality control of trait data.
+> Editors listed *[here](http://coraltraits.org/editors)* are responsible for quality control of trait data. Contact a member of the Editorial Board if you would like to add a new trait to the database.
 
 #### Taxonomy Advisory Board
 
-- Andrew Baird
+Contact a member of the Taxonomy Advisory Board if you would like to add or edit a species.
+
 - Danwei Huang
+- Andrew Baird
 
 #### Technical Advisory Board
 
 > The database relies on external people with breadth of experience and technical know-how, and who appreciate the subtle difficulties of managing large data compilations.
 
+Contact a member of the Technical Advisory Board if you would suggest a new feature.
+
 - TBD
 
-#### Database programmers
+#### Database Programmers
+
+Contact a Database programmer for issue related to the website.
 
 - Joshua Madin
+- TBD
 
 *[Top](#database-procedures)*
 

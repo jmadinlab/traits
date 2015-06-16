@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= @snapshot.user %>
+</p>
+
+<p>
+  <strong>Snapshot code:</strong>
+  <%= @snapshot.snapshot_code %>
+</p>
+
+<p>
+  <strong>Snapshot date:</strong>
+  <%= @snapshot.snapshot_date %>
+</p>
+
+<p>
+  <strong>Snapshot notes:</strong>
+  <%= @snapshot.snapshot_notes %>
+</p>
+
+<%= link_to 'Edit', edit_snapshot_path(@snapshot) %> |
+<%= link_to 'Back', snapshots_path %>
