@@ -4,6 +4,7 @@ SITE_URL: 'example.org'
 
 # Is your database in beta?
 SITE_BETA: 'true'
+SITE_DEV: 'true'
 
 # Gmail details here:
 GMAIL_USERNAME: 'example@gmail.com'

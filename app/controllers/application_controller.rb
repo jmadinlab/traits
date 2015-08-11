@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
   
   # Before filters
 
-  def observation_filter(observations)
+  def observation_filter(observations, traits=false)
     if signed_in?
       if current_user.admin?
         observations = observations
@@ -29,7 +29,10 @@ class ApplicationController < ActionController::Base
       observations = observations.where("observations.private = ?", false)
     end
     
-    if not @trait or not (signed_in? && current_user.editor?)
+    if not traits or not (signed_in? && current_user.editor?)
+      puts "#{not @trait}"
+      puts "----"
+      puts "#{not (signed_in? && current_user.editor?)}"
       observations = observations.remove_hidden
     end
     

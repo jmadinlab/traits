@@ -36,11 +36,11 @@ The Coral Trait Database is an open source research initiative that aims to make
 
 ## 1. Mission
 
-- Advance coral reef science through the gathering and dissemination of data resources
-- Provide an open access portal providing unrestricted interactive and automated access to information about corals
+- Assemble disparate information on coral traits
+- Provide unrestricted, open-source and easy access to coral trait data
 - Avoid redundant data gathering efforts
-- Fairly recognize those who collected original data, as well as those who compile larger data compilations
-- Provide a platform for community engagement in data quality control
+- Facilitate and encourage the appropriate crediting of original data sources
+- Engage the reef coral research community in the collection and quality control of trait data
 - Facilitate reproducible science
 - Do the above with a sustainable future for the database in mind, in terms of management and longevity
 
@@ -49,8 +49,6 @@ The Coral Trait Database is an open source research initiative that aims to make
 ***
 
 ## 2. Governance
-
-> Other than part-time programming and administrative help, the database is run and maintained by volunteers.
 
 #### Administrator
 
@@ -82,16 +80,13 @@ Contact a member of the Taxonomy Advisory Board if you would like to add or edit
 
 > The database relies on external people with breadth of experience and technical know-how, and who appreciate the subtle difficulties of managing large data compilations.
 
-Contact a member of the Technical Advisory Board if you would suggest a new feature.
-
-- TBD
+- Mark Schilhauer
 
 #### Database Programmers
 
-Contact a Database programmer for issue related to the website.
+Contact a Database programmer for issue related to the website or to suggest a new feature.
 
 - Joshua Madin
-- TBD
 
 *[Top](#database-procedures)*
 
@@ -99,9 +94,22 @@ Contact a Database programmer for issue related to the website.
 
 ## 3. Traits
 
-> The Coral Traits Consortium is flexible about the definition of trait.
+The database was designed to contain `individual-level` trait and `species-level` characteristic measurements. `Individual-level` traits include any heritable quality of an organism (Violle et al. 2007, Cadotte et al. 2009). In the database, individual-level traits are accompanied by contextual characteristics, which give information about the environment or situation in which an individual-level trait was measured (e.g., characteristics of the habitat, seawater or an experiment), and are important for understanding variation in individual-level traits (e.g., as predictor variables in analyses). For example, an measurement of [larval swimming speed](/observations/97883) was measured within the context of swimming direction and water temperature, both of which provide important information about that particular swimming speed measurement. 
 
-A true trait is a heritable quality of an organism. However, including species-level characteristics, such as geographical range size and conservation status, in the same database makes analyses of true traits much more effective. In addition, the database captures contextual (ancillary) data about the environment in which a trait measurement was recorded (e.g., "traits" of habitat, seawater or an experiment). Contextual "traits" are important for understanding true traits (e.g., as predictors or co-variates). Individual-level (true) traits, species-level characteristics and contextual data are all considered traits in the database.
+In addition, we record `species-level` characteristics – either as discrete individual-level traits that are constant across all individuals of a species (e.g., [sexual system](http://coraltraits.org/traits/8)), or characteristics of species as entities (such as geographical range size and maximum depth observed). Species-level characteristics do not have contextual traits because, by definition, they apply to all individuals of the species, globally.
+
+For simplicity, we use the single term “trait” to refer to individual-level, species-level (invariant or emergent) and contextual (environmental or situational) measurements. Moreover, these traits are grouped into ten use-classes: 
+
+- Biomechanical
+- Conservation
+- Ecological
+- Geographical
+- Morphological
+- Phylogenetic
+- Physiological
+- Reproductive
+- Stoichiometric
+- Contextual
 
 > The current list of traits can be found *[here](http://coraltraits.org/traits)*.
 
@@ -116,10 +124,6 @@ Unpublished can also be imported into the database if it is kept private. Privat
 - Being able to easily download the data alongside useful public data for analysis
 - Being more likely to contribute the data at end of project and improve its longevity
 - Identify duplicate research efforts
-
-`Individual-level` measurements typically include other measurements of the environment that provide useful context. One (or more) trait measurements of a coral and other contextual measurements are bound together as an observation. For example, an measurement of [larval swimming speed](/observations/97883) was measured within the context of swimming direction and water temperature, both of which provide important information about that particular swimming speed measurement.
-
-`Species-level` measurements are either traits that do not vary among individuals over ecological time-scales (such as [sexual system](http://coraltraits.org/traits/8) and if [zooxanthellate](http://coraltraits.org/traits/41) or not) or emergent characteristics of individuals within a species (such as geographical [range size](http://coraltraits.org/traits/138), [conservation status](http://coraltraits.org/traits/77), [wave exposure preference](http://coraltraits.org/traits/96) and [lower depth](http://coraltraits.org/traits/92)).
 
 #### Observations and measurements
 

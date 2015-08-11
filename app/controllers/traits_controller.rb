@@ -49,7 +49,7 @@ class TraitsController < ApplicationController
   def export
     if params[:checked]
       @observations = Observation.joins(:measurements).where(:measurements => {:trait_id => params[:checked]})
-      @observations = observation_filter(@observations)
+      @observations = observation_filter(@observations, true)
     else
       @observations = []
     end
@@ -75,7 +75,7 @@ class TraitsController < ApplicationController
       @rec_traitvalues = @trait.traitvalues.map(&:value_name).uniq
     end
 
-    @observations = observation_filter(@observations)
+    @observations = observation_filter(@observations, true)
 
     @methodologies = Methodology.where(:id => Measurement.where("observation_id IN (?) AND trait_id = ?", @observations.map(&:id), @trait.id).map(&:methodology_id))
 

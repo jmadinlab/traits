@@ -25,12 +25,20 @@
   </p>
   <p>
     <strong>Latitude:</strong>
-    <%= @location.latitude.round(4) %>
+    <% if @location.latitude.present? %>
+      <%= @location.latitude.round(4) %>
+    <% else %>
+      <font style="color:lightgrey;">No record</font>
+    <% end %>
   </p>
 
   <p>
     <strong>Longitude:</strong>
-    <%= @location.longitude.round(4) %>
+    <% if @location.longitude.present? %>
+      <%= @location.longitude.round(4) %>
+    <% else %>
+      <font style="color:lightgrey;">No record</font>
+    <% end %>
   </p>
   
 
@@ -57,14 +65,15 @@
 
 </div>
 
-<div class="col-md-8" data-no-turbolink>
-  <% if @location.location_name != "Global" %>
-    <div id="map-canvas" class="map-container" data-no-turbolink></div> 
-  <% end %>
-</div>
+<% if @location.latitude.present? and @location.longitude.present? %>
+  <div class="col-md-8" data-no-turbolink>
+    <% if @location.location_name != "Global" %>
+      <div id="map-canvas" class="map-container" data-no-turbolink></div> 
+    <% end %>
+  </div>
+<% end %>
 
 <div class="col-md-12">
-
   <h3>Observations from <%= @location.location_name %></h3>
 
   <% if @observations.empty? %>

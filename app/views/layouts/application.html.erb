@@ -11,8 +11,12 @@
     <%= csrf_meta_tags %>
     <%= render 'layouts/shim' %>
   </head>
+  
   <body>
     
+    <% if ENV["SITE_DEV"] == 'true' %>
+      <div style="position:absolute;"><font color="red">DEVELOPMENT</font></div>
+    <% end %>
 
     <div class="container">
           <%= render 'layouts/header' %>
