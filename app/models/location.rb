@@ -12,17 +12,10 @@ class Location < ActiveRecord::Base
 
   searchable do
     text :location_name  
+    text :id  
     string :location_name_sortable do 
       location_name
     end
   end
   
-  #def self.search(search)
-  #    if search
-  #      where('location_name LIKE ?', "%#{search}%")
-  #    else
-  #      all
-  #    end
-  #end  
-
 end
