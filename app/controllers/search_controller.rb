@@ -61,7 +61,8 @@ class SearchController < ApplicationController
 				
 				search = @model.search do
 					without(:hide, true) if m == "Trait"
-					keywords(params["search"])
+					fulltext params[:search]
+					# keywords(params["search"])
 				end
 
 				if search.results.count > 0
