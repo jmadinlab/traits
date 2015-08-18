@@ -27,11 +27,13 @@
 	  <%= @user.email %>
 	</p>
 
-	<p>
-	  <strong>Observations:</strong>
-	  <%= render "shared/access_counts", :acc => Observation.where(:user_id => @user.id) %>
-	</p>
-
+	<div id="countlist">
+		<p>
+		  <strong>Observations:</strong>
+		   <%= render "shared/access_counts", :model => "user", :recordid => @user.id %>
+		</p>
+	</div>
+	
 	<% if current_user.admin? %>
 		<p>
 	    <div class="btn-group">

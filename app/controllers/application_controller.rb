@@ -4,8 +4,8 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   include SessionsHelper
   
-  WillPaginate.per_page = 12
-  Sunspot.config.pagination.default_per_page = 12
+  WillPaginate.per_page = 25
+  Sunspot.config.pagination.default_per_page = 25
 
   before_filter :set_last_seen_at, if: proc { |p| signed_in? && (session[:last_seen_at] == nil || session[:last_seen_at] < 15.minutes.ago) }
 

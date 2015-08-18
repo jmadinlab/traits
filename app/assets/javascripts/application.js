@@ -20,6 +20,22 @@
 //= require cocoon
 //= require_tree .
 
+$(document).on('page:load ready', function() {
+
+  $("#countlist p").each(function(i,el){  // loop though each user
+    var $pubcount = $(el).find(".pubcount");  // get the record count element
+    var $pricount = $(el).find(".pricount");  // get the record count element
+    var model = $pubcount.data("model");   // get the user id data param
+    var recordid = $pubcount.data("recordid");   // get the user id data param
+
+    $.get( "/observations/"+model+"/"+recordid )
+      .done(function( data ) {
+        console.log(data); 
+        $pubcount.html( data.pub );   // change the content of the span to the count
+        $pricount.html( data.pri );   // change the content of the span to the count
+    });
+  });
+});
 
 
 // $(document).ready(function() {

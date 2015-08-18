@@ -18,7 +18,7 @@
 
   	<ul class="list-group">
     	<% @locations.sort_by{|e| e[:location_name]}.each do |location| %>
-  		  <li class="list-group-item">							
+  		  <li id="countlist" class="list-group-item">							
   				<div class="row">
   	        <div class="col-sm-1" style="color: lightgrey;">
   	        	<%= location.id %>
@@ -37,9 +37,9 @@
 
             <div class="col-sm-3">
               <p class="pull-right">
-                <% if not params[:all] %>
-                  <%= render "shared/access_counts", :acc => Observation.where(:location_id => location) %>
-                <% end %>
+                <%# if not params[:all] %>
+                  <%= render "shared/access_counts", :model => "location", :recordid => location.id %>
+                <%# end %>
                 <%= check_box_tag "checked[]", location.id %>
                 </p>
             </div>

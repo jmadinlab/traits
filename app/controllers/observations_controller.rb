@@ -1,7 +1,7 @@
  class ObservationsController < ApplicationController
 
   # before_action :contributor, only: [:new, :create ]
-  before_action :enterer, except: [:show]
+  before_action :enterer, except: [:show, :count]
   # before_action :enterer, only: [:new, :create, :edit, :update, :destroy]
   before_action :set_observation, only: [:show, :edit, :update, :destroy]
   # before_action :admin, :destroy
@@ -9,6 +9,25 @@
   # autocomplete :location, :name, :full => true
   # autocomplete :specie, :name, :full => true
   # autocomplete :resource, :author, :full => true, :extra_data => [:year], :display_value => :resource_fill
+
+  def count
+    if params[:model] == "trait" or params[:model] == "standard" or params[:model] == "methodology"
+      @observations = Observation.where(:id => Measurement.where("#{params[:model]}_id = ?", params[:itemid]).map(&:observation_id))
+    elsif params[:model] == "user"
+      @observations = Observation.where("observations.#{params[:model]}_id = ?", params[:itemid])
+    else
+      @observations = Observation.where("#{params[:model]}_id = ?", params[:itemid])
+    end
+
+    @observations = observation_filter(@observations)
+
+    puts @observations.where(:private => false).size
+    puts "----------------------------------"
+    render json: {
+      pub: @observations.where(:private => false).size, 
+      pri: @observations.where(:private => true).size
+    }    
+  end
 
   def import
     Observation.import(params[:file])

@@ -30,7 +30,7 @@
 				<% end %>
 			<% end %>
 
-  		<li class="list-group-item">							
+  		<li id="countlist" class="list-group-item">							
 				<div class="row">
 					<div class="col-sm-1" style="color:lightgrey;"><%= standard.id %></div>
 					<div class="col-sm-5">
@@ -44,7 +44,7 @@
 				 	<div class="col-sm-3">
 				 		<p class="pull-right">
 							<% if not params[:all] %>
-		        		<%= render "shared/access_counts", :acc => Observation.where(:id => Measurement.where(:standard_id => standard).map(&:observation_id)) %>
+                  				<%= render "shared/access_counts", :model => "standard", :recordid => standard.id %>
 							<% end %>
 							<%= check_box_tag "checked[]", standard.id %>
 							</p>

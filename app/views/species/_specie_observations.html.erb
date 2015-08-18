@@ -43,7 +43,7 @@
 
 									<div class="col-sm-6">
 										<% if grp.size > 1 %>
-											<%= render "shared/access_counts", :acc => grp %> observations
+											<span class="label label-warning" data-toggle="tooltip" data-placement="top" title="Available observations"><%= grp.size %></span> observations
 										<% else %>
 
 						          <% if grp.first.measurements.first.trait.traitvalues.present? %>

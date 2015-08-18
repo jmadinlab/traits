@@ -38,7 +38,7 @@
 
 				<%= hidden_field_tag "ids[]", user.id %>
 			  
-			  <li class="list-group-item">							
+			  <li id="countlist" class="list-group-item">							
 					<div class="row">
 						<div class="col-sm-1" style="color: lightgrey;">
 							<%= user.id %>
@@ -80,7 +80,9 @@
 						</div>
 
 						<div class="col-sm-2">
-							<%= render "shared/access_counts", :acc => Observation.where(:user_id => user.id) %>
+					 		<p>
+	                  			<%= render "shared/access_counts", :model => "user", :recordid => user.id %>
+                  			</p>
 						</div>
 
 		        <div class="col-sm-2">

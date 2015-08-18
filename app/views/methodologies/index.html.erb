@@ -16,7 +16,7 @@
 
 		<ul class="list-group">
     	<% @methodologies.sort_by{|e| e[:methodology_name]}.each do |methodology| %>
-			  <li class="list-group-item">							
+			  <li id="countlist" class="list-group-item">							
 					<div class="row">
 		        <div class="col-sm-1" style="color: lightgrey;">
 		        	<%= methodology.id %>
@@ -31,7 +31,7 @@
 					 	<div class="col-sm-3">
 					 		<p class="pull-right">
 								<% if not params[:all] %>
-			        		<%= render "shared/access_counts", :acc => Observation.where(:id => Measurement.where(:methodology_id => methodology).map(&:observation_id)) %>
+                  					<%= render "shared/access_counts", :model => "methodology", :recordid => methodology.id %>
 								<% end %>
 								<%= check_box_tag "checked[]", methodology.id %>
 								</p>

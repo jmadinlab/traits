@@ -16,7 +16,7 @@
 
 		<ul class="list-group">
     	<% @resources.each do |resource| %>
-			  <li class="list-group-item">							
+			  <li id="countlist" class="list-group-item">							
 					<div class="row">
 		        <div class="col-sm-1" style="color: lightgrey;">
 		        	<%= resource.id %>
@@ -42,10 +42,10 @@
 					 	<div class="col-sm-3">
 					 		<p class="pull-right">
 								<% if not params[:all] %>
-			        		<%= render "shared/access_counts", :acc => Observation.where(:resource_id => resource) %>
+                  					<%= render "shared/access_counts", :model => "resource", :recordid => resource.id %>
 								<% end %>
 								<%= check_box_tag "checked[]", resource.id %>
-								</p>
+							</p>
 						</div>
 
 					</div>

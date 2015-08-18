@@ -25,6 +25,7 @@ MB,mib,megabyte,megabytes
 Television, Televisions, TV, TVs
 
 GBR,Great Barrier Reef
+Great Barrier Reef,GBR
 
 #notice we use "gib" instead of "GiB" so any WordDelimiterFilter coming
 #after us won't split it into two words.

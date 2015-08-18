@@ -4,6 +4,7 @@
   <%= render "shared/index_header" %>
 </div>
 
+
 <%= form_tag export_traits_path do %>
 
   <div class="col-md-3">
@@ -12,7 +13,7 @@
 
   <div class="col-sm-12">
 
-  	<%= will_paginate @traits, :inner_window => 1, :outer_window => 0 %>
+  	<%= will_paginate @traits, :inner_window => 1, :outer_window => 0, :page_links => false %>
 
 		<% temp = [] %>
 		<% @traits.sort_by{ |h| [h[:trait_class] || "z", h[:trait_name]] }.each do |trait| %>
@@ -35,9 +36,9 @@
 
       <% if not trait.hide or (signed_in? && current_user.editor?) %>
         <% if trait.hide %>
-          <li class="list-group-item disabled">             
+          <li id="countlist" class="list-group-item disabled">             
         <% else %>
-          <li class="list-group-item">             
+          <li id="countlist" class="list-group-item">             
         <% end %>
 		
   				<div class="row">
@@ -54,9 +55,9 @@
 
             <div class="col-sm-3">
               <p class="pull-right">
-                <% if not params[:all] %>
-                  <%= render "shared/access_counts", :acc => Observation.where(:id => Measurement.where(:trait_id => trait).map(&:observation_id)) %>
-                <% end %>
+                <%# if not params[:all] %>
+                  <%= render "shared/access_counts", :model => "trait", :recordid => trait.id %>
+                <%# end %>
                 <%= check_box_tag "checked[]", trait.id %>
                 </p>
             </div>

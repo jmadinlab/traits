@@ -47,6 +47,13 @@
 		<% end %>
 	</p>
 
+	<div id="countlist">
+		<p>
+	  	<strong>Observations:</strong>
+		   <%= render "shared/access_counts", :model => "specie", :recordid => @specie.id %>
+		</p>
+	</div>
+
 	<p>
     <div class="btn-group">
 			<%= link_to 'Back', species_path, class: "btn btn-xs btn-default" %>

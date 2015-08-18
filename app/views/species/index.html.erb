@@ -16,7 +16,7 @@
 
 		<ul class="list-group">
 	    <% @species.sort_by{ |h| h[:specie_name] }.each do |specie| %>
-			  <li class="list-group-item">							
+			  <li id="countlist" class="list-group-item">							
 					<div class="row">
 		        <div class="col-sm-1" style="color: lightgrey;">
 		        	<%= specie.id %>
@@ -30,11 +30,11 @@
 
 					 	<div class="col-sm-3">
 					 		<p class="pull-right">
-								<% if not params[:all] %>
-			        		<%= render "shared/access_counts", :acc => Observation.where(:specie_id => specie) %>
-								<% end %>
+                <% if not params[:all] %>
+		        			<%= render "shared/access_counts", :model => "specie", :recordid => specie.id %>
+                <% end %>
 								<%= check_box_tag "checked[]", specie.id %>
-								</p>
+							</p>
 						</div>
 
 					</div>

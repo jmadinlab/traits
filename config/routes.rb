@@ -1,5 +1,9 @@
 Traits::Application.routes.draw do
 
+
+  get '/observations/:model/:itemid', to: 'observations#count'
+
+
   resources :snapshots
 
   # resources :observations do
@@ -30,8 +34,9 @@ Traits::Application.routes.draw do
   get '/locations/:id/resources', to: 'locations#show'
   get '/resources/:id/resources', to: 'resources#show'
   get '/snapshots/:id/resources', to: 'snapshots#show'
+
   
-    get '/resources/status', to: 'resources#status'
+  get '/resources/status', to: 'resources#status'
 
   match '/meta/:id',     to: 'static_pages#show',    via: 'get', :as => :show_meta
   match '/duplicate/:id',     to: 'static_pages#duplicate',    via: 'get', :as => :duplicate_meta
