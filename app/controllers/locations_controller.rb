@@ -47,7 +47,7 @@ class LocationsController < ApplicationController
 
     @observations = Observation.where('location_id = ?', @location.id)
     @observations = observation_filter(@observations)
-
+    
     respond_to do |format|
       format.html { @observations = @observations.paginate(page: params[:page]) }
       format.csv { download_observations(@observations, params[:taxonomy], params[:contextual] || "on", params[:global]) }

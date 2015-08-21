@@ -1,11 +1,7 @@
 <p>
   <strong>Description:</strong>
   <% if not description.empty? %>
-    <button class="btn btn-default btn-xs" type="button" data-toggle="collapse" data-target="#collapseDescription" aria-expanded="false" aria-controls="collapseDescription">Show</button>
-
-    <div class="collapse" id="collapseDescription">
       <%= markdown description %>
-    </div>
   <% else %>
     <font style="color:lightgrey;">Not entered</font>
   <% end %>

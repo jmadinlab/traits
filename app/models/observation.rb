@@ -5,13 +5,13 @@ class Observation < ActiveRecord::Base
   belongs_to :resource
   has_paper_trail
   
-  default_scope -> { 
-    joins(:specie).order('species.specie_name ASC') 
-  }
-
   # default_scope -> { 
   #   joins(:specie).order('species.specie_name ASC') 
   # }
+
+  default_scope -> { 
+    joins(:specie).order('species.specie_name ASC') 
+  }
   
   # default_scope -> {
   #   :joins => :specie, :order => 'species.specie_name DESC', :group => 'id'

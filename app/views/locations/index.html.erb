@@ -38,7 +38,7 @@
             <div class="col-sm-3">
               <p class="pull-right">
                 <%# if not params[:all] %>
-                  <%= render "shared/access_counts", :model => "location", :recordid => location.id %>
+                  <%= render "shared/access_counts", :itemid1 => location.id %>
                 <%# end %>
                 <%= check_box_tag "checked[]", location.id %>
                 </p>

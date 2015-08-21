@@ -11,6 +11,7 @@ class StandardsController < ApplicationController
     @search = Standard.search do
       fulltext params[:search]
       order_by :standard_class_sortable, :asc
+      order_by :standard_name_sortable, :asc
 
       if params[:all]
         paginate page: params[:page], per_page: 9999

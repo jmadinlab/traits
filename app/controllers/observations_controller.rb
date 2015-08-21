@@ -11,18 +11,25 @@
   # autocomplete :resource, :author, :full => true, :extra_data => [:year], :display_value => :resource_fill
 
   def count
-    if params[:model] == "trait" or params[:model] == "standard" or params[:model] == "methodology"
-      @observations = Observation.where(:id => Measurement.where("#{params[:model]}_id = ?", params[:itemid]).map(&:observation_id))
-    elsif params[:model] == "user"
-      @observations = Observation.where("observations.#{params[:model]}_id = ?", params[:itemid])
+
+    @model1 = params[:model1].singularize
+    if params[:model2]
+      @model2 = params[:model2].singularize
+      if @model1 == "specie" and @model2 == "trait"
+       @observations = Observation.joins(:measurements).where("specie_id = ? AND trait_id = ?", params[:itemid1], params[:itemid2])
+      end
     else
-      @observations = Observation.where("#{params[:model]}_id = ?", params[:itemid])
+      if @model1 == "trait" or @model1 == "standard" or @model1 == "methodology"
+        @observations = Observation.where(:id => Measurement.where("#{@model1}_id = ?", params[:itemid1]).map(&:observation_id))
+      elsif @model1 == "user"
+        @observations = Observation.where("observations.#{@model1}_id = ?", params[:itemid1])
+      else
+        @observations = Observation.where("#{@model1}_id = ?", params[:itemid1])
+      end
     end
 
-    @observations = observation_filter(@observations)
+    # @observations = observation_filter(@observations)
 
-    puts @observations.where(:private => false).size
-    puts "----------------------------------"
     render json: {
       pub: @observations.where(:private => false).size, 
       pri: @observations.where(:private => true).size

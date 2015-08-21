@@ -12,9 +12,11 @@
 	<% if !@specie.synonyms.blank? %>
 	  <p>
 	    <strong>Other names:</strong>
-			<% @specie.synonyms.each do |s| %>
-	    	<br><%= s.synonym_name %>
-			<% end %>
+	    <ul>
+				<% @specie.synonyms.each do |s| %>
+		    	<li><%= s.synonym_name %></li>
+				<% end %>
+			</ul>
 	  </p>
 	<% end %>
 
@@ -46,13 +48,6 @@
 	  	<%= @specie.user.name %> <%= @specie.user.last_name %>
 		<% end %>
 	</p>
-
-	<div id="countlist">
-		<p>
-	  	<strong>Observations:</strong>
-		   <%= render "shared/access_counts", :model => "specie", :recordid => @specie.id %>
-		</p>
-	</div>
 
 	<p>
     <div class="btn-group">

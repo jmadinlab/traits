@@ -13,7 +13,7 @@
 
   <div class="col-sm-12">
 
-  	<%= will_paginate @traits, :inner_window => 1, :outer_window => 0, :page_links => false %>
+  	<%= will_paginate @traits, :inner_window => 1, :outer_window => 0 %>
 
 		<% temp = [] %>
 		<% @traits.sort_by{ |h| [h[:trait_class] || "z", h[:trait_name]] }.each do |trait| %>
@@ -56,7 +56,7 @@
             <div class="col-sm-3">
               <p class="pull-right">
                 <%# if not params[:all] %>
-                  <%= render "shared/access_counts", :model => "trait", :recordid => trait.id %>
+                  <%= render "shared/access_counts", :itemid1 => trait.id %>
                 <%# end %>
                 <%= check_box_tag "checked[]", trait.id %>
                 </p>

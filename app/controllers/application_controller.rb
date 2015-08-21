@@ -35,6 +35,8 @@ class ApplicationController < ActionController::Base
       puts "#{not (signed_in? && current_user.editor?)}"
       observations = observations.remove_hidden
     end
+
+    # observations = observations.joins(:specie).order('species.specie_name ASC')
     
     observations
   end

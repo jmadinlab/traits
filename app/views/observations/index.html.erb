@@ -20,7 +20,9 @@
 </div>
 
 <% if @observations.empty? %>
-	<%= render "shared/no_observations" %>
+	<div class="col-md-12">
+		<%= render "shared/no_observations" %>
+	</div>
 <% else %>
 
 	<%= will_paginate @observations, :inner_window => 1, :outer_window => 0 %>

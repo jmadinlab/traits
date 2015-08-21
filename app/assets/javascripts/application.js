@@ -25,18 +25,47 @@ $(document).on('page:load ready', function() {
   $("#countlist p").each(function(i,el){  // loop though each user
     var $pubcount = $(el).find(".pubcount");  // get the record count element
     var $pricount = $(el).find(".pricount");  // get the record count element
-    var model = $pubcount.data("model");   // get the user id data param
-    var recordid = $pubcount.data("recordid");   // get the user id data param
+    var model1 = $pubcount.data("model1");   // get the user id data param
+    var itemid1 = $pubcount.data("itemid1");   // get the user id data param
+    var model2 = $pubcount.data("model2");   // get the user id data param
+    var itemid2 = $pubcount.data("itemid2");   // get the user id data param
 
-    $.get( "/observations/"+model+"/"+recordid )
-      .done(function( data ) {
-        console.log(data); 
-        $pubcount.html( data.pub );   // change the content of the span to the count
-        $pricount.html( data.pri );   // change the content of the span to the count
-    });
+    if (model2) {
+      $.get( "/observations/count/"+model1+"/"+itemid1+"/"+model2+"/"+itemid2 )
+        .done(function( data ) {
+          console.log(data); 
+          $pubcount.html( data.pub );   // change the content of the span to the count
+          $pricount.html( data.pri );   // change the content of the span to the count
+      });
+    } else {
+      $.get( "/observations/count/"+model1+"/"+itemid1 )
+        .done(function( data ) {
+          console.log(data); 
+          $pubcount.html( data.pub );   // change the content of the span to the count
+          $pricount.html( data.pri );   // change the content of the span to the count
+      });
+    }
   });
 });
 
+$(document).on('page:load ready', function() {
+
+  $("#doilist li").each(function(i,el){  // loop though each user
+    var $doi = $(el).find(".doi");  // get the record count element
+    var resourceid = $doi.data("resourceid");   // get the user id data param
+
+    $.get( "/resources/"+resourceid+"/doi" )
+      .done(function( data ) {
+        console.log(data.sug.message); 
+        $doi.html( 
+          "<li>" + data.sug.message.items[0].DOI+" <small>(<a href='http://dx.doi.org/" + data.sug.message.items[0].DOI+"' target='_blank'>"+data.sug.message.items[0].title+"</a>)</small></li>" +
+          "<li>" + data.sug.message.items[1].DOI+" <small>(<a href='http://dx.doi.org/" + data.sug.message.items[1].DOI+"' target='_blank'>"+data.sug.message.items[1].title+"</a>)</small></li>" +
+          "<li>" + data.sug.message.items[2].DOI+" <small>(<a href='http://dx.doi.org/" + data.sug.message.items[2].DOI+"' target='_blank'>"+data.sug.message.items[2].title+"</a>)</small></li>"
+        );
+    });
+
+  });
+});
 
 // $(document).ready(function() {
 //   $('select#simple-example').select2();

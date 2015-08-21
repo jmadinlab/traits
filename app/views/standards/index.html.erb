@@ -15,7 +15,7 @@
   	<%= will_paginate @standards, :inner_window => 1, :outer_window => 0 %>
 
 		<% temp = [] %>
-		<% @standards.sort_by{ |h| [h[:standard_class]] }.each do |standard| %>
+		<% @standards.each do |standard| %>
 			<% if temp != standard.standard_class %>
 				<% temp = standard.standard_class %>
 				<% if standard.standard_class.blank? %>
@@ -44,7 +44,7 @@
 				 	<div class="col-sm-3">
 				 		<p class="pull-right">
 							<% if not params[:all] %>
-                  				<%= render "shared/access_counts", :model => "standard", :recordid => standard.id %>
+                  				<%= render "shared/access_counts", :itemid1 => standard.id %>
 							<% end %>
 							<%= check_box_tag "checked[]", standard.id %>
 							</p>

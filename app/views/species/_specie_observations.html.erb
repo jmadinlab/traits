@@ -1,7 +1,7 @@
 <% if @observations.empty? %>
    <%= render "shared/no_observations" %>
 <% else %>
-
+	
 	<% temp = [] %>
 		
 	<div class="row">
@@ -26,7 +26,13 @@
 									<% end %>
 							<% end %>
 
-					  	<li class="list-group-item">							
+			        <% if trait.hide %>
+			          <li class="list-group-item disabled">             
+			        <% else %>
+			          <li class="list-group-item">             
+			        <% end %>
+
+					  	<!-- <li class="list-group-item">							 -->
 								<div class="row">
 					        <div class="col-sm-1" style="color: lightgrey;">
 					        	<%= trait.id %>
@@ -43,7 +49,16 @@
 
 									<div class="col-sm-6">
 										<% if grp.size > 1 %>
-											<span class="label label-warning" data-toggle="tooltip" data-placement="top" title="Available observations"><%= grp.size %></span> observations
+											<div id="countlist">
+												<p>
+													<span class="label label-success" data-toggle="tooltip" data-placement="top" title="Number of public observations"><span class="glyphicon glyphicon-ok-circle" style="color:white;"></span> <span class="pubcount" data-itemid1=<%= @specie.id %> data-model1=<%= params[:controller] %> data-itemid2=<%= trait.id %> data-model2="traits"><span class="glyphicon glyphicon-refresh spinning"></span></span></span>
+
+													<% if signed_in? && current_user.contributor? %>
+														<span class="label label-danger" data-toggle="tooltip" data-placement="top" title="Number of public observations"><span class="glyphicon glyphicon-remove-circle" style="color:white;"></span> <span class="pricount" data-itemid1=<%= @specie.id %> data-model1=<%= params[:controller] %> data-itemid2=<%= trait.id %> data-model2="traits"><span class="glyphicon glyphicon-refresh spinning"></span></span></span>
+													<% end %>
+													&nbsp;observations
+												</p>
+											</div>
 										<% else %>
 
 						          <% if grp.first.measurements.first.trait.traitvalues.present? %>

@@ -1,8 +1,12 @@
 Traits::Application.routes.draw do
 
 
-  get '/observations/:model/:itemid', to: 'observations#count'
+  get '/observations/count/:model1/:itemid1', to: 'observations#count'
+  get '/observations/count/:model1/:itemid1/:model2/:itemid2', to: 'observations#count'
 
+  get '/resources/:id/doi', to: 'resources#doi'
+
+  get '/users/:id/species', to: 'users#species'
 
   resources :snapshots
 

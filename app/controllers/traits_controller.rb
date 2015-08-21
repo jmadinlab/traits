@@ -83,9 +83,11 @@ class TraitsController < ApplicationController
     
     data_table = GoogleVisualr::DataTable.new
 
+    puts @trait.standard
+
     if @trait.standard
       if @trait.standard.standard_unit != "id" && @trait.standard.standard_unit != "text"
-        if @trait.standard.standard_name == "Category" || @trait.standard.standard_name == "Binomial"
+        if @trait.standard.standard_class == "Nominal class" || @trait.standard.standard_name == "Category" || @trait.standard.standard_name == "Binomial"
           data_table.new_column('string')
           data_table.new_column('number')
 

@@ -2,7 +2,7 @@ class ResourcesController < ApplicationController
 
   before_action :contributor, except: [:index, :show, :export]
   before_action :admin_user, only: [:destroy, :status]
-  before_action :set_resource, only: [:show, :edit, :update, :destroy]
+  before_action :set_resource, only: [:show, :edit, :update, :destroy, :doi]
 
   def index
 
@@ -88,8 +88,7 @@ class ResourcesController < ApplicationController
     @resource = Resource.new
   end
 
-  # GET /resources/1/edit
-  def edit
+  def doi
 
     if @resource.doi_isbn.present?
       begin
@@ -109,6 +108,35 @@ class ResourcesController < ApplicationController
         @sug = "Invalid"
       end        
     end
+
+    render json: {
+      sug: @sug, 
+      doi: @doi
+    }    
+
+  end
+
+  # GET /resources/1/edit
+  def edit
+
+    # if @resource.doi_isbn.present?
+    #   begin
+    #     @doi = JSON.load(open("https://api.crossref.org/works/#{@resource.doi_isbn}"))
+    #     if @doi["message"]["author"][0]["family"] == "Peresson"
+    #       @doi = "Invalid"
+    #     end
+    #   rescue
+    #     @doi = "Invalid"
+    #   end
+    # end
+
+    # if (not @resource.doi_isbn.present? or @doi == "Invalid") and (@resource.resource_type == "paper" or @resource.resource_type.blank?)
+    #   begin
+    #     @sug = JSON.load(open("https://api.crossref.org/works?query=#{@resource.title.tr(" ", "+")}&rows=3"))
+    #   rescue
+    #     @sug = "Invalid"
+    #   end        
+    # end
     
   end
 

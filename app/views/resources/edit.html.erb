@@ -17,6 +17,19 @@
       </ul>
     <% end %>
 
+    <% if not @resource.doi_isbn.present? and (@resource.resource_type == "paper" or @resource.resource_type.blank?) %>
+      <ul class="list-group">
+        <li class="list-group-item">              
+          <strong>Suggested doi from CrossRef based on title:</strong>
+          <ul id="doilist">
+            <li><span class="doi" data-resourceid=<%= @resource.id %>><span class="glyphicon glyphicon-refresh spinning"></span></span></li>
+          </ul>
+        </li>
+      </ul>
+    <% end %>
+
+
+
 		<%= render 'form' %>
 
 		<%= link_to 'Show', @resource %> |

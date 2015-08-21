@@ -51,6 +51,14 @@ class UsersController < ApplicationController
     end
   end
 
+
+  def species
+    @user = User.find(params[:id])
+    render json: {
+      species: Specie.where(:id => @user.observations.map(&:specie_id)).select(:id, :specie_name)
+    }
+  end
+
   def new
     @user = User.new
   end
