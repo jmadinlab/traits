@@ -18,7 +18,7 @@
 </div>
 
 
-<div class="col-md-4">
+<div class="col-md-6">
   <p>
     <strong>ID:</strong>
       <%= @location.id %>
@@ -66,7 +66,7 @@
 </div>
 
 <% if @location.latitude.present? and @location.longitude.present? %>
-  <div class="col-md-8" data-no-turbolink>
+  <div class="col-md-6" data-no-turbolink>
     <% if @location.location_name != "Global" %>
       <div id="map-canvas" class="map-container" data-no-turbolink></div> 
     <% end %>

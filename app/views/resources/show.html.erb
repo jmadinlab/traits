@@ -25,7 +25,9 @@
 
   </h3>
   <hr>
+</div>
 
+<div class="col-md-6">
   <p>
     <strong>ID:</strong>
     	<%= @resource.id %>
@@ -63,7 +65,16 @@
 		</p>
 		</div>
 	<% end %>
+</div>
 
+
+<% if not @locations.map(&:id).include? 1 %>
+  <div class="col-md-6" data-no-turbolink>
+    <div id="map-canvas" class="map-container" data-no-turbolink></div> 
+  </div>
+<% end %>
+
+<div class="col-md-12">
 
 	<h3>Observations from this resource</h3>
 
@@ -91,3 +102,43 @@
 	<% end %>  
 
 </div>
+
+<script type="text/javascript">
+  var locations = <%= raw @locations.map {|i| [i.location_name.to_s, i.latitude.to_s, i.longitude.to_s, i.id.to_s] } %>;
+
+
+  var map = new google.maps.Map(document.getElementById('map-canvas'), {
+    zoom: 1,
+    center: new google.maps.LatLng(0, 155),
+    mapTypeId: google.maps.MapTypeId.SATELLITE,
+    streetViewControl: false
+  });
+
+  var opt = { maxZoom: 15 };
+  map.setOptions(opt);
+
+  var infowindow = new google.maps.InfoWindow();
+
+  var marker, i;
+  var bounds = new google.maps.LatLngBounds();
+
+  for (i = 0; i < locations.length; i++) {  
+    marker = new google.maps.Marker({
+      position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+      map: map
+    });
+
+    bounds.extend(marker.getPosition());
+
+    google.maps.event.addListener(marker, 'click', (function(marker, i) {
+      return function() {
+        infowindow.setContent('<a data-no-turbolink="true" href="/locations/'+locations[i][3]+'">'+locations[i][0]+'</a>');
+        infowindow.open(map, marker);
+      }
+    })(marker, i));
+
+  }
+  map.fitBounds(bounds);
+
+</script>
+

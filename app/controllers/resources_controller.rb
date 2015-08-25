@@ -43,30 +43,13 @@ class ResourcesController < ApplicationController
 
   def show
 
-    # if @resource.doi_isbn.present?
-    #   begin
-    #     @doi = JSON.load(open("https://api.crossref.org/works/#{@resource.doi_isbn}"))
-    #     if @doi["message"]["author"][0]["family"] == "Peresson"
-    #       @doi = "Invalid"
-    #     end
-    #   rescue
-    #     @doi = "Invalid"
-    #   end
-    # end
-
-    # if (not @resource.doi_isbn.present? or @doi == "Invalid") and (@resource.resource_type == "paper" or @resource.resource_type.blank?)
-    #   begin
-    #     @sug = JSON.load(open("https://api.crossref.org/works?query=#{@resource.title.tr(" ", "+")}&rows=3"))
-    #   rescue
-    #     @sug = "Invalid"
-    #   end        
-    # end
-
     @primary = Observation.where('resource_id = ?', @resource.id)
     @secondary = Observation.where('resource_secondary_id = ?', @resource.id)
 
     @primary = observation_filter(@primary)
     @secondary = observation_filter(@secondary)
+
+    @locations = Location.where("id IN (?)", @primary.map(&:location_id))
 
     respond_to do |format|
       format.html {
