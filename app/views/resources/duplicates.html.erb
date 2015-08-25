@@ -1,0 +1,76 @@
+<% provide(:title, 'Duplicates') %>
+
+<div class="col-sm-12">
+
+  <h3>
+
+      <p>
+        <%= @resource.author %>
+        <% if @resource.year %>
+          (<%= @resource.year %>)
+        <% end %>
+        <%= @resource.title %>.
+        <% if @resource.journal %>
+          <em><%= @resource.journal %></em>
+        <% end %>
+        <% if @resource.volume_pages %>
+          <%= @resource.volume_pages %>
+        <% end %>
+      </p>
+
+    <% if @resource.approval_status == "pending" %>
+      <span class="label label-danger pull-right">pending approval</span>
+    <% end %>
+  </h3>
+  <hr>
+
+  <p>
+    <%= link_to 'Back', @resource, class: "btn btn-xs btn-default" %>
+  </p>
+
+  <p>
+    
+  </p>
+
+  <p>
+    <span class="label label-warning"><%= @duplicates.length %></span> potential duplicate records have been detected for this resource. Detection occurs when an observation occurs of the same species, resource and location with the same measured trait, standard and value. Duplicates might be legitimate.
+  </p>
+
+  <% if @duplicates %>
+    <% @duplicates.order(:specie_id).each do |dup| %>
+
+      <ul class="list-group">
+        <li class="list-group-item">             
+          <div class="row">
+            <div class="col-sm-2">
+              <em><%= link_to Specie.select(:specie_name).find_by_id(dup.specie_id).specie_name, specie_path(dup.specie_id) %></em>
+            </div>
+            <div class="col-sm-2">
+              <%= link_to Trait.select(:trait_name).find_by_id(dup.trait_id).trait_name, trait_path(dup.trait_id) %>
+            </div>
+            <div class="col-sm-2">
+              <%= dup.value %>
+            </div>
+            <div class="col-sm-2">
+              <% standard = Standard.select(:standard_name, :standard_unit).find_by_id(dup.standard_id) %>
+              <%= link_to standard.standard_unit, standard_path(dup.standard_id) %> (<%= standard.standard_name %>)
+            </div>
+            <div class="col-sm-2">
+              <% dup.ids.each do |id| %>
+                <p><%= link_to id, observation_path(id), class: "btn btn-default btn-xs" %></p>
+              <% end %>
+            </div>
+            <div class="col-sm-2">
+              <%= link_to "Show", specie_trait_path(dup.specie_id, dup.trait_id), class: "btn btn-default btn-xs" %></p>
+            </div>
+          </div>
+
+        </li>
+      </ul>
+    <% end %>
+  <% else %>
+    None
+  <% end %>
+  
+</div>
+

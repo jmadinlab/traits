@@ -67,6 +67,24 @@ $(document).on('page:load ready', function() {
   });
 });
 
+$(document).on('page:load ready', function() {
+
+  $("#dupdetect p").each(function(i,el){  // loop though each user
+    var $dup = $(el).find(".dup");  // get the record count element
+    var resourceid = $dup.data("resourceid");   // get the user id data param
+
+    $.get( "/resources/"+resourceid+"/duplicates.json" )
+      .done(function( data ) {
+        console.log(data); 
+        if (data.dups != 0) {
+          $dup.html( "<a href='/resources/"+resourceid+"/duplicates' class='label label-warning'>"+data.dups+"</a> potential duplicates" );
+        } else {
+          $dup.html( false );
+        }
+    });
+  });
+});
+
 // $(document).ready(function() {
 //   $('select#simple-example').select2();
 // });

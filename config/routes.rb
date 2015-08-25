@@ -8,6 +8,10 @@ Traits::Application.routes.draw do
 
   get '/users/:id/species', to: 'users#species'
 
+  get '/resources/:id/duplicates', to: 'resources#duplicates'
+
+  resources :duplicates 
+
   resources :snapshots
 
   # resources :observations do

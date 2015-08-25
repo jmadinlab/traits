@@ -2,7 +2,7 @@ class ResourcesController < ApplicationController
 
   before_action :contributor, except: [:index, :show, :export]
   before_action :admin_user, only: [:destroy, :status]
-  before_action :set_resource, only: [:show, :edit, :update, :destroy, :doi]
+  before_action :set_resource, only: [:show, :edit, :update, :destroy, :doi, :duplicates]
 
   def index
 
@@ -77,9 +77,18 @@ class ResourcesController < ApplicationController
       format.zip{ send_zip(@primary, params[:taxonomy], params[:contextual] || "on", params[:global]) }
     end
 
-      # format.html { @observations = @observations.paginate(page: params[:page]) }
-      # format.csv { download_observations(@observations, params[:taxonomy], params[:contextual] || "on", params[:global]) }
-      # format.zip{ send_zip(@observations, params[:taxonomy], params[:contextual] || "on", params[:global]) }
+  end
+
+  def duplicates
+
+    @duplicates = Observation.joins(:measurements).select("specie_id, resource_id, location_id, trait_id, standard_id, value, array_agg(observation_id) as ids").where("resource_id = ?", params[:id]).where("trait_id NOT IN (?) AND value_type != 'raw_value'", Trait.where("trait_class = 'Contextual'").map(&:id)).group(:specie_id, :resource_id, :location_id, :trait_id, :standard_id, :value).having("count(*) > 1")
+
+    respond_to do |format|
+      format.html { }
+      format.json { 
+        render json: { dups: @duplicates.length }
+      }
+    end
 
   end
 

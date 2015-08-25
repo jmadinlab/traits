@@ -38,6 +38,7 @@ class ApplicationController < ActionController::Base
 
     # observations = observations.joins(:specie).order('species.specie_name ASC')
     
+    observations = observations.order_species
     observations
   end
 

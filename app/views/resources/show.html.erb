@@ -18,8 +18,11 @@
 			</p>
 
 		<% if @resource.approval_status == "pending" %>
-			<small><span class="label label-danger pull-right">pending approval</span></small>
+			<p>
+				<span class="label label-danger pull-right">pending approval</span> 
+			</p>
 		<% end %>
+
   </h3>
   <hr>
 
@@ -32,11 +35,6 @@
 	  <strong>DOI:</strong>
 		<% if @resource.doi_isbn.present? %>
 	  	<%= link_to @resource.doi_isbn, "http://dx.doi.org/" + @resource.doi_isbn, :target => "_blank" %>
-<!-- 			<%# if @doi == "Invalid" %>
-				<span class="label label-danger">invalid</span>
-			<%# else %>
-				<span class="label label-success">valid</span>
-			<%# end %> -->
 		<% elsif @resource.resource_type == "paper" or @resource.resource_type.blank? %>
 			<span class="label label-danger">not added</span>
 		<% else %>
@@ -44,38 +42,8 @@
 		<% end %>
 	</p>
 
-<!-- 	<%# if @sug and not @sug == "Invalid" or @doi == "Invalid" %>
-	  <ul class="list-group">
-	    <li class="list-group-item">              
-			  <p>
-				  <strong>Suggested DOI based on title:</strong>
-				  <ul>
-			    <%# @sug["message"]["items"].each do |a| %>
-			      <li><%#= a["DOI"] %> <small>(<%#= link_to a["title"][0], "http://dx.doi.org/" + a["DOI"], :target => "_blank" %>)</small></li>
-			    <%# end %>
-			    </ul>
-			  </p>
-			</li>
-		</ul>
-	<%# end %>
- -->
-
   <%= render "shared/description", :description => @resource.resource_notes %>
 
-<!-- 	<p>
-		<%# if @resource.resource_type.present? %>
-	  	<%#= @resource.resource_type %>
-		<%# end %>
-	</p>
- -->
-
-<!-- 	<%# if @resource.user %>
-		<p>
-		  <strong>Added by:</strong>
-		  <%#= @resource.user.name %> <%#= @resource.user.last_name %>
-		</p>
-	<%# end %>
- -->
 	<p>
     <div class="btn-group">
       <%= link_to 'Back', resources_path, class: "btn btn-xs btn-default" %>
@@ -87,6 +55,15 @@
 			<% end %>
     </div>
 	</p>
+
+  <% if signed_in? && current_user.contributor? %>
+		<div id="dupdetect">
+		<p>
+			<span class="dup" data-resourceid=<%= @resource.id %>></span>
+		</p>
+		</div>
+	<% end %>
+
 
 	<h3>Observations from this resource</h3>
 

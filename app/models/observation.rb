@@ -9,7 +9,7 @@ class Observation < ActiveRecord::Base
   #   joins(:specie).order('species.specie_name ASC') 
   # }
 
-  default_scope -> { 
+  scope :order_species, -> { 
     joins(:specie).order('species.specie_name ASC') 
   }
   
