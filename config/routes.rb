@@ -37,11 +37,11 @@ Traits::Application.routes.draw do
   get '/history', to:'versions#index'
   get '/history/:version_id', to: 'versions#show'
   post '/revert/:version_id', to: 'versions#revert_back'
-  get '/species/:id/resources', to: 'species#show'
-  get '/traits/:id/resources', to: 'traits#show'
-  get '/locations/:id/resources', to: 'locations#show'
-  get '/resources/:id/resources', to: 'resources#show'
-  get '/snapshots/:id/resources', to: 'snapshots#show'
+  # get '/species/:id/resources', to: 'species#show'
+  # get '/traits/:id/resources', to: 'traits#show'
+  # get '/locations/:id/resources', to: 'locations#show'
+  # get '/resources/:id/resources', to: 'resources#show'
+  # get '/snapshots/:id/resources', to: 'snapshots#show'
 
   
   get '/resources/status', to: 'resources#status'
