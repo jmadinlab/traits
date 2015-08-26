@@ -85,6 +85,24 @@ $(document).on('page:load ready', function() {
   });
 });
 
+$(document).on('page:load ready', function() {
+
+  $("#duptrait p").each(function(i,el){  // loop though each user
+    var $dup = $(el).find(".dup");  // get the record count element
+    var traitid = $dup.data("traitid");   // get the user id data param
+
+    $.get( "/traits/"+traitid+"/duplicates.json" )
+      .done(function( data ) {
+        console.log(data); 
+        if (data.dups != 0) {
+          $dup.html( "<a href='/traits/"+traitid+"/duplicates' class='btn btn-xs btn-warning'>"+data.dups+" potential duplicates</a>" );
+        } else {
+          $dup.html( false );
+        }
+    });
+  });
+});
+
 // $(document).ready(function() {
 //   $('select#simple-example').select2();
 // });

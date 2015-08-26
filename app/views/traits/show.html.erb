@@ -127,7 +127,7 @@
 			<%= @trait.user.name %> <%= @trait.user.last_name %> (<%= mail_to @trait.user.email, "contact", {:subject => "#{ENV["SITE_NAME"]} enquiry"} %>)
 		<% end %>
 		<% if signed_in? && current_user.editor? %>
-			<%= link_to "meta", show_meta_path(@trait), class: "btn btn-default btn-xs" %>
+			<%= link_to "meta", meta_trait_path(@trait), class: "btn btn-default btn-xs" %>
 		<% end %>
 	</p>
 

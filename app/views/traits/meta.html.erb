@@ -1,0 +1,248 @@
+<% provide(:title, 'Meta: #{@trait.trait_name}') %>
+
+<div class="col-md-12">
+	<h1>
+		<% if @trait.trait_class == "Contextual" %>
+  		<span class="glyphicon glyphicon-eye-open" data-toggle="tooltip" data-placement="top" title="Contextual trait"></span>
+		<% end %>
+		<%= @trait.trait_name %>
+    <span class="label label-danger pull-right">meta</span>
+	</h1>
+	<hr>
+
+  <% if signed_in? && current_user.contributor? %>
+		<div id="duptrait">
+		<p>
+			<span class="dup" data-traitid=<%= @trait.id %>></span>
+		</p>
+		</div>
+	<% end %>
+
+	<p>
+		<div class="btn-group">
+			<%= link_to "Back", trait_path(@trait), class: "btn btn-default btn-xs" %>
+		</div>
+	</p>
+
+	<p>
+		<strong>Editor:</strong>
+		<% if !@trait.user.blank? %>
+			<%= @trait.user.name %> <%= @trait.user.last_name %> (<%= mail_to @trait.user.email, "contact", {:subject => "#{ENV["SITE_NAME"]} enquiry"} %>)
+		<% end %>
+	</p>
+
+	<h3>Reported issues</h3>
+
+	<ul class="list-group">
+
+	  <li class="list-group-item">							
+
+			<div class="row">
+				<div class="col-md-3" style="text-align:right;">
+					<strong>Issues reported by users:</strong>
+					<br><span class="label label-warning">important</span>
+				</div>
+				<div class="col-md-9">
+					<% obs = Observation.where(:id => Measurement.where(:trait_id => @trait.id).map(&:observation_id)) %>
+					<% obs = Observation.where(:id => Measurement.where(:trait_id => @trait.id).map(&:observation_id)).where(:id => Issue.all.map(&:observation_id)) %>
+					<% if !obs.empty? %>
+						<% obs.each do |o| %>
+							<%= link_to o.id, observation_path(o.id), class: "label label-danger" %>
+						<% end %>
+					<% else %>
+						Looking good
+					<% end %>
+				</div>
+			</div>
+		</li>
+	</ul>
+
+	<h3>Observation issues</h3>
+
+	<ul class="list-group">
+
+	  <li class="list-group-item">							
+			<div class="row">
+				<div class="col-md-3" style="text-align:right;">
+					<strong>Observations with no species:</strong>
+					<br><span class="label label-danger">critical</span>
+				</div>
+				<div class="col-md-9">
+					<% obs = Observation.where(:id => Measurement.where(:trait_id => @trait.id).map(&:observation_id)).where("specie_id IS NULL") %>
+					<% if !obs.empty? %>
+						<% obs.each do |o| %>
+							<%= link_to o.id, observation_path(o.id), class: "label label-default" %>
+						<% end %>
+					<% else %>
+						Looking good
+					<% end %>
+				</div>
+			</div>
+		</li>
+
+	  <li class="list-group-item">							
+			<div class="row">
+				<div class="col-md-3" style="text-align:right;">
+					<strong>Observations with no resource:</strong>
+					<br><span class="label label-danger">critical</span>
+				</div>
+				<div class="col-md-9">
+					<% obs = Observation.where(:id => Measurement.where(:trait_id => @trait.id).map(&:observation_id)).where("resource_id IS NULL OR resource_id = ?", 0) %>
+					<% if !obs.blank? %>
+						<% obs.each do |o| %>
+							<%= link_to o.id, observation_path(o.id), class: "label label-default" %>
+						<% end %>
+					<% else %>
+						Looking good
+					<% end %>
+				</div>
+			</div>
+		</li>
+
+	  <li class="list-group-item">							
+			<div class="row">
+				<div class="col-md-3" style="text-align:right;">
+					<strong>Observations with no location:</strong>
+					<br><span class="label label-danger">critical</span>
+				</div>
+				<div class="col-md-9">
+					<% obs = Observation.where(:id => Measurement.where(:trait_id => @trait.id).map(&:observation_id)).where("location_id IS NULL") %>
+					<% if !obs.empty? %>
+						<% obs.each do |o| %>
+							<%= link_to o.id, observation_path(o.id), class: "label label-default" %>
+						<% end %>
+					<% else %>
+						Looking good
+					<% end %>
+				</div>
+			</div>
+		</li>
+
+	</ul>
+
+	<h3>Measurement issues</h3>
+
+	<ul class="list-group">
+	  <li class="list-group-item">							
+			<div class="row">
+				<div class="col-md-3" style="text-align:right;">
+					<strong>Measurements with no value:</strong>
+					<br><span class="label label-danger">critical</span>
+				</div>
+				<div class="col-md-9">
+					<% obs = Observation.where(:id => Measurement.where("trait_id = ? AND (value IS NULL)", @trait.id).map(&:observation_id)) %>
+					<% if !obs.empty? %>
+						<% obs.each do |o| %>
+							<%= link_to o.id, observation_path(o.id), class: "label label-default" %>
+						<% end %>
+					<% else %>
+						Looking good
+					<% end %>
+				</div>
+			</div>
+		</li>
+
+	  <li class="list-group-item">							
+			<div class="row">
+				<div class="col-md-3" style="text-align:right;">
+					<strong>Measurements with no value type:</strong>
+					<br><span class="label label-danger">critical</span>
+				</div>
+				<div class="col-md-9">
+					<% obs = Observation.where(:id => Measurement.where("trait_id = ? AND (value_type = ? OR value_type IS NULL)", @trait.id, "").map(&:observation_id)) %>
+					<% if !obs.empty? %>
+						<% obs.each do |o| %>
+							<%= link_to o.id, observation_path(o.id), class: "label label-default" %>
+						<% end %>
+					<% else %>
+						Looking good
+					<% end %>
+				</div>
+			</div>
+		</li>
+
+	  <li class="list-group-item">							
+			<div class="row">
+				<div class="col-md-3" style="text-align:right;">
+					<strong>Measurements with no standard:</strong>
+					<br><span class="label label-danger">critical</span>
+				</div>
+				<div class="col-md-9">
+					<% obs = Observation.where(:id => Measurement.where("trait_id = ? AND (standard_id IS NULL)", @trait.id).map(&:observation_id)) %>
+					<% if !obs.empty? %>
+						<% obs.each do |o| %>
+							<%= link_to o.id, observation_path(o.id), class: "label label-default" %>
+						<% end %>
+					<% else %>
+						Looking good
+					<% end %>
+				</div>
+			</div>
+		</li>
+
+	  <li class="list-group-item">							
+			<div class="row">
+				<div class="col-md-3" style="text-align:right;">
+					<strong>Measurements with no methodology:</strong>
+					<br><span class="label label-warning">desirable</span>
+				</div>
+				<div class="col-md-9">
+					<% obs = Observation.where(:id => Measurement.where("trait_id = ? AND (methodology_id IS NULL)", @trait.id).map(&:observation_id)) %>
+					<% if !obs.empty? %>
+						<% obs.each do |o| %>
+							<%= link_to o.id, observation_path(o.id), class: "label label-default" %>
+						<% end %>
+					<% else %>
+						Looking good
+					<% end %>
+				</div>
+			</div>
+		</li>
+
+	</ul>
+
+
+	<h3>Coverage issues</h3>
+
+	<ul class="list-group">
+
+	  <li class="list-group-item">							
+			<div class="row">
+				<div class="col-md-3" style="text-align:right;">
+					<strong>Species with more than one observation of trait:</strong>
+					<br><span class="label label-warning">possible</span>
+					<br>E.g., for global traits
+				</div>
+				<div class="col-md-9">
+					<% dup = Observation.where(:id => Measurement.where(:trait_id => @trait.id).map(&:observation_id)).map(&:specie_id) %>
+					<% species = dup.select{|element| dup.count(element) > 1 } %>
+					<% if !species.empty? %>
+						<% Specie.where("id IN (?)", species).each do |specie| %>
+							<%= link_to specie.specie_name, specie_trait_path(specie, @trait), class: "label label-default" %>
+						<% end %>
+					<% else %>
+						Looking good
+					<% end %>
+				</div>
+			</div>
+		</li>
+
+		<% with = Observation.where(:id => Measurement.where(:trait_id => @trait.id).map(&:observation_id)).map(&:specie_id).uniq %>
+		<% species = (Specie.all.map(&:id) - with) %>
+
+	  <li class="list-group-item">							
+			<div class="row">
+				<div class="col-md-3" style="text-align:right;">
+					<strong>Species without this trait (<%= species.count %> of <%= Specie.all.count %>)</strong>
+					<br><span class="label label-warning">possible</span>
+				</div>
+				<div class="col-md-9">
+					<% Specie.where(:id => species).each do |specie| %>
+						<%= link_to specie.specie_name, specie_path(specie), class: "label label-default" %>
+					<% end %>
+				</div>
+			</div>
+		</li>
+
+	</ul>
+</div>

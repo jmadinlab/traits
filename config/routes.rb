@@ -9,6 +9,9 @@ Traits::Application.routes.draw do
   get '/users/:id/species', to: 'users#species'
 
   get '/resources/:id/duplicates', to: 'resources#duplicates'
+  get '/traits/:id/duplicates', to: 'traits#duplicates'
+  get '/traits/:id/meta', to: 'traits#meta', :as => :meta_trait
+  # match '/meta/:id',     to: 'static_pages#show',    via: 'get', :as => :show_meta
 
   resources :duplicates 
 
@@ -46,8 +49,7 @@ Traits::Application.routes.draw do
   
   get '/resources/status', to: 'resources#status'
 
-  match '/meta/:id',     to: 'static_pages#show',    via: 'get', :as => :show_meta
-  match '/duplicate/:id',     to: 'static_pages#duplicate',    via: 'get', :as => :duplicate_meta
+  # match '/duplicate/:id',     to: 'static_pages#duplicate',    via: 'get', :as => :duplicate_meta
 # get '/meta/:ids', to: 'static_pages#show'
 
   

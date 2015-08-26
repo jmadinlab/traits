@@ -2,7 +2,7 @@ class TraitsController < ApplicationController
 
   # before_action :signed_in_user
   before_action :editor, except: [:index, :show, :export]
-  before_action :set_trait, only: [:show, :edit, :update, :destroy]
+  before_action :set_trait, only: [:show, :edit, :update, :destroy, :duplicates, :meta]
   before_action :admin_user, only: :destroy
 
   # GET /traits
@@ -123,6 +123,30 @@ class TraitsController < ApplicationController
       format.zip{ send_zip(@observations, params[:taxonomy], params[:contextual] || "on", params[:global]) }
     end
 
+  end
+
+  def meta
+    # params[:editor] = "ready_for_release" if params[:status].blank?
+    query = Trait.all
+    query = query.editor(params[:editor]) if not params[:editor].blank?
+    query = query.where(:release_status => params[:release_status]) if not params[:release_status].blank?
+    @traits = query.all
+  end
+
+  def meta
+    # @trait = Trait.find(params[:id])
+  end
+
+  def duplicates
+
+    @duplicates = Observation.joins(:measurements).select("specie_id, resource_id, location_id, trait_id, standard_id, value, array_agg(observation_id) as ids").where("trait_id = ?", params[:id]).where("trait_id NOT IN (?) AND value_type != 'raw_value'", Trait.where("trait_class = 'Contextual'").map(&:id)).group(:specie_id, :resource_id, :location_id, :trait_id, :standard_id, :value).having("count(*) > 1")
+
+    respond_to do |format|
+      format.html { }
+      format.json { 
+        render json: { dups: @duplicates.length }
+      }
+    end
   end
 
   # GET /traits/new

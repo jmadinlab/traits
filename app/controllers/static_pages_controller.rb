@@ -27,10 +27,6 @@ class StaticPagesController < ApplicationController
 
   end
 
-  def show
-    @trait = Trait.find(params[:id])
-  end
-
   def uploads
   end
 

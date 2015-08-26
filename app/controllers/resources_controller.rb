@@ -26,13 +26,6 @@ class ResourcesController < ApplicationController
 
   def status
 
-    # @resources_iss = Resource.where("author like ? OR volume_pages like ? OR journal like ?", "%.%", "%:%", "%.%")
-    # @resources_dup = Resource.find_by_sql("SELECT * 
-    #   FROM resources AS res, 
-    #   (SELECT author, year FROM resources GROUP BY author, year HAVING COUNT(*) > 1) AS sub 
-    #   WHERE res.author = sub.author AND res.year = sub.year;")
-
-
     @resources = Resource.where("doi_isbn IS NULL OR doi_isbn = ?", "").paginate(page: params[:page], per_page: 10)
 
     respond_to do |format|
@@ -49,7 +42,7 @@ class ResourcesController < ApplicationController
     @primary = observation_filter(@primary)
     @secondary = observation_filter(@secondary)
 
-    @locations = Location.where("id IN (?)", @primary.map(&:location_id))
+    @locations = Location.where("id IN (?) OR id IN (?)", @primary.map(&:location_id), @secondary.map(&:location_id))
 
     respond_to do |format|
       format.html {

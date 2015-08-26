@@ -1,0 +1,65 @@
+<% provide(:title, 'Duplicates') %>
+
+<% provide(:title, @trait.trait_name) %>
+
+<div class="col-md-12">
+  <h1>
+    <% if @trait.trait_class == "Contextual" %>
+      <span class="glyphicon glyphicon-eye-open" data-toggle="tooltip" data-placement="top" title="Contextual trait"></span>
+    <% end %>
+    <%= @trait.trait_name %>
+    <span class="label label-danger pull-right">duplicates</span>
+
+  </h1>
+  <hr>
+
+  <p>
+    <%= link_to 'Back', meta_trait_path(@trait), class: "btn btn-xs btn-default" %>
+  </p>
+
+  <p>
+    
+  </p>
+
+  <p>
+    <span class="label label-warning"><%= @duplicates.length %></span> potential duplicate records have been detected for this trait. Detection occurs when an observation occurs of the same species, resource and location with the same measured trait, standard and value. Duplicates might be legitimate.
+  </p>
+
+  <% if @duplicates %>
+    <ul class="list-group">
+      <% @duplicates.order(:specie_id).each do |dup| %>
+
+        <li class="list-group-item">             
+          <div class="row">
+            <div class="col-sm-1">
+              <% dup.ids.each do |id| %>
+                <%= link_to id, observation_path(id), class: "label label-default" %>
+              <% end %>
+            </div>
+            <div class="col-sm-2">
+              <em><%= link_to Specie.select(:specie_name).find_by_id(dup.specie_id).specie_name, specie_path(dup.specie_id) %></em>
+            </div>
+            <div class="col-sm-3">
+              <%= link_to Resource.select(:author).find_by_id(dup.resource_id).author, resource_path(dup.resource_id) %>
+            </div>
+            <div class="col-sm-2">
+              <%= dup.value %>
+            </div>
+            <div class="col-sm-2">
+              <% standard = Standard.select(:standard_name, :standard_unit).find_by_id(dup.standard_id) %>
+              <%= link_to standard.standard_unit, standard_path(dup.standard_id) %> (<%= standard.standard_name %>)
+            </div>
+            <div class="col-sm-2">
+              <%= link_to "Show", specie_trait_path(dup.specie_id, dup.trait_id), class: "btn btn-default btn-xs pull-right" %></p>
+            </div>
+          </div>
+
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    None
+  <% end %>
+  
+</div>
+
