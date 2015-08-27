@@ -68,7 +68,7 @@
 </div>
 
 
-<% if not @locations.map(&:id).include? 1 %>
+<% if not @locations.empty? and not @locations.map(&:id).include? 1 %>
   <div class="col-md-6" data-no-turbolink>
     <div id="map-canvas" class="map-container" data-no-turbolink></div> 
   </div>
@@ -123,6 +123,9 @@
   var bounds = new google.maps.LatLngBounds();
 
   for (i = 0; i < locations.length; i++) {  
+    
+    var content = '<a data-no-turbolink="true" href="/locations/'+locations[i][3]+'">'+locations[i][0]+'</a>';
+    
     marker = new google.maps.Marker({
       position: new google.maps.LatLng(locations[i][1], locations[i][2]),
       map: map
@@ -130,12 +133,12 @@
 
     bounds.extend(marker.getPosition());
 
-    google.maps.event.addListener(marker, 'click', (function(marker, i) {
+    google.maps.event.addListener(marker, 'click', function(marker, content) {
       return function() {
-        infowindow.setContent('<a data-no-turbolink="true" href="/locations/'+locations[i][3]+'">'+locations[i][0]+'</a>');
+        infowindow.setContent(content);
         infowindow.open(map, marker);
       }
-    })(marker, i));
+    }(marker, content));
 
   }
   map.fitBounds(bounds);
