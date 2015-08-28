@@ -76,7 +76,6 @@ class Import
       end    
     end
     
-
     imp_items = imported_items
 
     puts "IMPORT --- imported_items: #{imp_items}".red
