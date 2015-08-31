@@ -15,7 +15,7 @@ Traits::Application.routes.draw do
 
   resources :duplicates 
 
-  resources :snapshots
+  resources :releases
 
   # resources :observations do
   #   resources :issues
@@ -44,7 +44,7 @@ Traits::Application.routes.draw do
   # get '/traits/:id/resources', to: 'traits#show'
   # get '/locations/:id/resources', to: 'locations#show'
   # get '/resources/:id/resources', to: 'resources#show'
-  # get '/snapshots/:id/resources', to: 'snapshots#show'
+  # get '/releases/:id/resources', to: 'releases#show'
 
   
   get '/resources/status', to: 'resources#status'

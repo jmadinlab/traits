@@ -1,0 +1,62 @@
+<div class="col-md-12">
+  <%= render "shared/index_header" %>
+  <br>
+  <%= markdown File.open(Rails.root + "public/releases.md", 'r').read %>
+  <br>
+</div>
+
+<div class="col-sm-12">
+
+  <%= will_paginate @releases, :inner_window => 1, :outer_window => 0 %>
+
+  <ul class="list-group">
+    <% @releases.each do |release| %>
+      <li class="list-group-item">              
+        <div class="row">
+          <div class="col-sm-1" style="color: lightgrey;">
+            <%#= release.id %>
+          </div>
+
+          <div class="col-sm-2">
+            <% if release.release_code == Release.all.map(&:release_code).max %>
+              <span class="label label-primary"><%= release.release_code %></span>
+            <% else %>
+              <span class="label label-default"><%= release.release_code %></span>
+            <% end %>
+          </div>
+
+          <div class="col-sm-2">
+            <%= release.release_date.to_s(:ctdb_date2) %>
+          </div>
+
+          <div class="col-sm-4">
+            <%= release.release_notes %>
+          </div>
+
+          <div class="col-sm-3">
+            <div class="btn-group pull-right">
+              <% if @snapzips.include?("ctdb_#{release.release_code}") %>
+                <%= link_to 'Download', release_path(release), class: "btn btn-xs btn-success" %>
+              <% else %>
+                <%= link_to 'Missing', nil, class: "btn btn-xs btn-success", disabled: "disabled" %>
+              <% end %>
+              <% if signed_in? && current_user.admin? %>
+                <%= link_to 'Edit', edit_release_path(release), class: "btn btn-xs btn-default" %>
+              <% end %>
+            </div>
+          </div>
+
+        </div>
+      </li>
+    <% end %>
+  </ul>
+
+  <% if @releases.blank? %>
+    <div class="alert alert-danger" role="alert">No releases entered.</div>
+  <% end %>
+</div>
+
+
+<div class="col-sm-12">
+  <p>Download full releases list as a <%= link_to "csv", releases_path(format: "csv", search: params[:search], page: params[:page], all: params[:all]) %>.</p>
+</div>

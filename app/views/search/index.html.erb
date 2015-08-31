@@ -134,14 +134,14 @@
 		</ul>
 	<% end %>
 
-	<% if @snapshot_search %>
-		<% if not @snapshot_search.results.blank? %>
-			<h4><%= link_to "Snapshots", snapshots_path(search: params[:search]) %></h4>
+	<% if @version_search %>
+		<% if not @version_search.results.blank? %>
+			<h4><%= link_to "Database versions", versions_path(search: params[:search]) %></h4>
 		<% end %>
 		<ul class="list-group">
-			<% @snapshot_search.results.sort_by{|e| e[:snapshot_date]}.each do |s| %>
+			<% @version_search.results.sort_by{|e| e[:version_date]}.each do |s| %>
 	     	<li class="list-group-item">							
-					<%= link_to s.snapshot_notes s %>
+					<%= link_to s.version_notes s %>
 				</li>
 			<% end %>
 		</ul>

@@ -1,0 +1,11 @@
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+
+    <h1>Editing Releases</h1>
+
+    <%= render 'form' %>
+
+    <%= link_to 'Delete', @release, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger pull-right" %>
+    <%= link_to 'Back', releases_path %>
+  </div>
+</div>

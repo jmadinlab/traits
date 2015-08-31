@@ -31,7 +31,7 @@
     <% if signed_in? and current_user.admin? %>  
       <%= link_to "New #{model.capitalize}", "#{model}/new", class: "btn btn-primary" %>
     <% end %>
-  <% elsif model == "snapshots" %>
+  <% elsif model == "releases" %>
     <% if signed_in? and current_user.admin? %>  
       <%= link_to "New #{model.singularize.capitalize}", "#{model}/new", class: "btn btn-primary" %>
     <% end %>

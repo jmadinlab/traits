@@ -50,7 +50,7 @@ class SearchController < ApplicationController
 	end
 
 	def json_completion
-		model_names = ['Specie', 'Trait', 'Location', 'Resource', 'Standard', 'Methodology', 'Snapshot']
+		model_names = ['Specie', 'Trait', 'Location', 'Resource', 'Standard', 'Methodology', 'Version']
 		
 		bucket = []
 		model_names.each do |m|

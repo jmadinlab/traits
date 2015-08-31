@@ -3,6 +3,7 @@
     require 'rails/all'
     require 'csv'
     require 'open-uri'
+    require 'semantic'    
     
     # Pick the frameworks you want:
     # require "active_record/railtie"
