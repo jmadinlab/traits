@@ -122,6 +122,9 @@ $(document).ready(function(){
     $('span').tooltip();
 });
 
+$(document).ready(function(){
+    $('button').tooltip();
+});
 
 
 function checkUncheckAll(theElement) { 

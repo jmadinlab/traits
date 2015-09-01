@@ -13,6 +13,8 @@ Traits::Application.routes.draw do
   get '/traits/:id/meta', to: 'traits#meta', :as => :meta_trait
   # match '/meta/:id',     to: 'static_pages#show',    via: 'get', :as => :show_meta
 
+  match '/resources/:id/expunge',     to: 'resources#expunge',    via: 'get', :as => :expunge_resource
+
   resources :duplicates 
 
   resources :releases

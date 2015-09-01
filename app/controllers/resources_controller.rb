@@ -1,8 +1,8 @@
 class ResourcesController < ApplicationController
 
   before_action :contributor, except: [:index, :show, :export]
-  before_action :admin_user, only: [:destroy, :status]
-  before_action :set_resource, only: [:show, :edit, :update, :destroy, :doi, :duplicates]
+  before_action :admin_user, only: [:destroy, :expunge, :status]
+  before_action :set_resource, only: [:show, :edit, :update, :destroy, :expunge, :doi, :duplicates]
 
   def index
 
@@ -217,6 +217,14 @@ class ResourcesController < ApplicationController
       format.html { redirect_to resources_url }
       format.json { head :no_content }
     end
+  end
+
+  def expunge
+    Observation.where("resource_id = ?", @resource.id).each do |obs|
+      obs.destroy
+    end
+
+    redirect_to @resource, flash: {success: "Resource observations successfully expunged." }
   end
 
   def export
