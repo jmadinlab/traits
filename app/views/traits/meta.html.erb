@@ -124,7 +124,7 @@
 					<br><span class="label label-danger">critical</span>
 				</div>
 				<div class="col-md-9">
-					<% obs = Observation.where(:id => Measurement.where(:trait_id => @trait.id).map(&:observation_id)).where("location_id IS NULL") %>
+					<% obs = Observation.where(:id => Measurement.where(:trait_id => @trait.id).map(&:observation_id)).where("location_id IS NULL OR location_id = ?", 0) %>
 					<% if !obs.empty? %>
 						<% obs.each do |o| %>
 							<%= link_to o.id, observation_path(o.id), class: "label label-default" %>
