@@ -258,7 +258,7 @@ class ObservationImport
         $observation.errors[:base] << "Row #{i}: Value_type=#{row["value_type"]} doesn't match allowed value types"
       end
       if row["precision_type"].blank?
-      elsif !['standard_error', 'standard_deviation', '95_ci', 'range'].include? row["precision_type"]
+      elsif !['standard_error', 'standard_deviation', '95_ci', 'range', 'not_given'].include? row["precision_type"]
         $observation.errors[:base] << "Row #{i}: Precision_type=#{row["precision_type"]} doesn't match allowed precision types"
       end
       return $observation

@@ -122,7 +122,7 @@
 				  
 					  <%= f.label :precision_type %>
 					  <%#= f.text_field :precision_type, class: "form-control" %>
-						<%= f.select :precision_type, ['standard_error', 'standard_deviation', '95_ci', 'range'], {:include_blank => "Choose if applicable..."}, class: "form-control" %>
+						<%= f.select :precision_type, ['standard_error', 'standard_deviation', '95_ci', 'range', 'not_given'], {:include_blank => "Choose if applicable..."}, class: "form-control" %>
 				</div>
 				<div class="col-md-6">
 					  <%= f.label :precision %>
