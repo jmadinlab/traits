@@ -14,7 +14,7 @@
 	  <% end %>
 
 	</h1>
-	<hr>
+  <hr>
 </div>
 
 <div class="col-md-8">
@@ -136,21 +136,27 @@
 	    <%= link_to 'Back', traits_path, class: "btn btn-xs btn-default" %>
 	    <% if signed_in? && current_user.contributor? %>
 	      <%= link_to 'Edit', edit_trait_path(@trait), class: "btn btn-xs btn-default" %>
-        <%= link_to 'Delete', @trait, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
 	    <% end %>
 	  </div>
+    <% if signed_in? && current_user.admin? %>
+      <div class="btn-group pull-right">
+        <%= link_to 'Delete', @trait, method: :delete, data: { confirm: 'Delete entire trait, including observations and measurements?' }, class: "btn btn-xs btn-danger" %>
+      </div>
+    <% end %>
   </p>
   
 </div>
 
 <div class="col-md-4">
-  <div class="col-md-3">
+<ul class="list-group">
+<li class="list-group-item">							
 		<% if @chart %>
 			<div id='chart'></div>
 			<%= render_chart @chart, 'chart' %>
 			<%#= @data_table %>
 		<% end %>
-	</div>
+</li>
+</ul>
 </div>
 
 <div class="col-md-12">

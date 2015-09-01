@@ -9,7 +9,10 @@
 			<small><span class="label label-danger pull-right">pending approval</span></small>
 		<% end %>
 	</h1>
-	<hr>		
+  <hr>
+
+</div>
+<div class="col-md-12">
 
 	<p>
 	  <strong>ID:</strong>
@@ -107,9 +110,15 @@
 	<% if signed_in? && (@observation.user_id == current_user.id || current_user.editor?) %>
 		<div class="btn-group">
 			<%= link_to 'Edit', edit_observation_path(@observation), class: "btn btn-xs btn-default" %>
-	  	<%= link_to 'Delete', observation_path(@observation), method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
 		</div>
+    <div class="btn-group pull-right">
+	  	<%= link_to 'Delete', observation_path(@observation), method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
+    </div>
 	<% end %>
+
+</div>
+
+<div class="col-md-12">
 
 	<h3>Measurements</h3>
 

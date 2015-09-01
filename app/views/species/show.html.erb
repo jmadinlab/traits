@@ -1,8 +1,11 @@
 <% provide(:title, @specie.specie_name) %>
 
-<div class="col-md-8">
+<div class="col-md-12">
   <h1><em><%= @specie.specie_name %></em></h1>
-	<hr>
+  <hr>
+</div>
+
+<div class="col-md-8">
 
   <p>
     <strong>ID:</strong>
@@ -54,10 +57,35 @@
 			<%= link_to 'Back', species_path, class: "btn btn-xs btn-default" %>
 	  	<% if signed_in? && current_user.admin? %>
 				<%= link_to 'Edit', edit_specie_path(@specie), class: "btn btn-xs btn-default" %>
-      	<%= link_to 'Delete', @specie, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
 			<% end %>
 		</div>
+    <% if signed_in? && current_user.admin? %>
+      <div class="btn-group pull-right">
+        <%= link_to 'Delete', @specie, method: :delete, data: { confirm: 'Delete entire species, including observations and measurements?' }, class: "btn btn-xs btn-danger" %>
+      </div>
+    <% end %>
 	</p>
+
+	<% if Measurement.joins(:observation).where("trait_id = ? AND specie_id = ?", 62, @specie.id).exists? %>
+
+		<% if signed_in? %>
+
+			<% img = "#{Measurement.joins(:observation).where("trait_id = ? AND specie_id = ?", 62, @specie.id).last.value}M.jpg" %>
+
+			<% @vtemp = @vfiles.find_all{|item| item.include? img }.last %>
+			<% if !@vtemp.nil? %>
+				<p><%= image_tag "veron/#{img}", :style => "border:0px;", class:  "img-responsive" %></p>
+				<p><%= link_to "Ⓒ Corals of the World", resource_path(10) %> (viewable to logged-in users, but copyrighted material, so please do not distribute)</p>
+			<% else %>
+					<p>No map</p>
+			<% end %>
+		<% else %>
+			<p><%= link_to "Sign in", signin_path %> to see map</p>
+		<% end %>
+	<% else %>
+		<p>No map</p>
+	<% end %>
+
 </div>
 
 <div class="col-md-4">
@@ -103,25 +131,7 @@
 
 <div class="col-md-12">
 
-	<% if Measurement.joins(:observation).where("trait_id = ? AND specie_id = ?", 62, @specie.id).exists? %>
-
-		<% if signed_in? %>
-
-			<% img = "#{Measurement.joins(:observation).where("trait_id = ? AND specie_id = ?", 62, @specie.id).last.value}M.jpg" %>
-
-			<% @vtemp = @vfiles.find_all{|item| item.include? img }.last %>
-			<% if !@vtemp.nil? %>
-				<p><%= image_tag "veron/#{img}", :style => "border:0px;", class:  "img-responsive" %></p>
-				<p><%= link_to "Ⓒ Corals of the World", resource_path(10) %> (viewable to logged-in users, but copyrighted material, so please do not distribute)</p>
-			<% else %>
-					<p>No map</p>
-			<% end %>
-		<% else %>
-			<p><%= link_to "Sign in", signin_path %> to see map</p>
-		<% end %>
-	<% else %>
-		<p>No map</p>
-	<% end %>
+	<h3>Traits</h3>
 
 	<%= render "specie_observations" %>
 </div>

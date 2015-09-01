@@ -57,19 +57,25 @@
       <% if signed_in? && current_user.contributor? %>
         <%= link_to 'Edit', edit_location_path(@location), class: "btn btn-xs btn-default" %>
       <% end %>
-      <% if signed_in? && current_user.admin? %>
-        <%= link_to 'Delete', @location, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
-      <% end %>
     </div>
+    <% if signed_in? && current_user.admin? %>
+      <div class="btn-group pull-right">
+        <%= link_to 'Delete', @location, method: :delete, data: { confirm: 'Delete entire location, including observations and measurements?' }, class: "btn btn-xs btn-danger" %>
+      </div>
+    <% end %>
   </p>
 
 </div>
 
 <% if @location.latitude.present? and @location.longitude.present? %>
   <div class="col-md-6" data-no-turbolink>
+<ul class="list-group">
+<li class="list-group-item">              
     <% if @location.location_name != "Global" %>
       <div id="map-canvas" class="map-container" data-no-turbolink></div> 
     <% end %>
+</li>
+</ul>
   </div>
 <% end %>
 

@@ -61,25 +61,30 @@
     <% end %>
 	</p>
 
-  <% if signed_in? && current_user.contributor? %>
-		<div id="dupdetect">
-		<p>
-			<span class="dup" data-resourceid=<%= @resource.id %>></span>
-		</p>
-		</div>
-	<% end %>
 </div>
 
 
 <% if not @locations.empty? and not @locations.map(&:id).include? 1 %>
   <div class="col-md-6" data-no-turbolink>
+    <ul class="list-group">
+    <li class="list-group-item">              
     <div id="map-canvas" class="map-container" data-no-turbolink></div> 
+    </li>
+    </ul>
   </div>
 <% end %>
 
 <div class="col-md-12">
 
 	<h3>Observations from this resource</h3>
+
+  <% if signed_in? && current_user.contributor? %>
+    <div id="dupdetect">
+    <p>
+      <span class="dup" data-resourceid=<%= @resource.id %>></span>
+    </p>
+    </div>
+  <% end %>
 
 	<ul class="nav nav-tabs">
 		<% if params[:secondary] %>
