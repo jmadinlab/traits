@@ -27,6 +27,9 @@
     <% if signed_in? and current_user.editor? %>  
       <%= link_to "New #{model.singularize.capitalize}", "#{model}/new", class: "btn btn-primary" %>
     <% end %>
+    <% if signed_in? and current_user.admin? %>  
+      <%= link_to "Overview", overview_traits_path(:release_status => 'ready_for_release'), class: "btn btn-default" %>
+    <% end %>
   <% elsif model == "species" %>
     <% if signed_in? and current_user.admin? %>  
       <%= link_to "New #{model.capitalize}", "#{model}/new", class: "btn btn-primary" %>

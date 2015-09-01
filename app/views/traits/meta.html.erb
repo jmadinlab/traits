@@ -10,6 +10,7 @@
 	</h1>
 	<hr>
 
+
   <% if signed_in? && current_user.contributor? %>
 		<div id="duptrait">
 		<p>
@@ -21,6 +22,7 @@
 	<p>
 		<div class="btn-group">
 			<%= link_to "Back", trait_path(@trait), class: "btn btn-default btn-xs" %>
+			<%= link_to "Overview", overview_traits_path(:release_status => 'ready_for_release'), class: "btn btn-default btn-xs" %>
 		</div>
 	</p>
 
@@ -35,6 +37,16 @@
 
 	<ul class="list-group">
 
+	  <li class="list-group-item">							
+			<div class="row">
+				<div class="col-md-3" style="text-align:right;">
+					<strong>Release status:</strong>
+				</div>
+				<div class="col-md-9">
+					<span class="label label-primary"><%= @trait.release_status %></span>
+				</div>
+			</div>
+		</li>
 	  <li class="list-group-item">							
 
 			<div class="row">

@@ -37,9 +37,11 @@ class TraitsController < ApplicationController
     end    
   end
 
-  def status
+  def overview
 
-    @traits_iss = Trait.where("trait_name like ?", "%.%")
+    query = Trait.all
+    query = query.where(:release_status => params[:release_status]) if not params[:release_status].blank?
+    @traits = query.all
 
     respond_to do |format|
       format.html
