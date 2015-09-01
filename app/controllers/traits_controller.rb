@@ -2,7 +2,7 @@ class TraitsController < ApplicationController
 
   # before_action :signed_in_user
   before_action :editor, except: [:index, :show, :export]
-  before_action :set_trait, only: [:show, :edit, :update, :destroy, :duplicates, :meta]
+  before_action :set_trait, only: [:show, :edit, :update, :destroy, :duplicates, :meta, :resources]
   before_action :admin_user, only: :destroy
 
   # GET /traits
@@ -36,6 +36,17 @@ class TraitsController < ApplicationController
       format.csv { send_data Trait.all.to_csv }
     end    
   end
+
+  def resources
+    
+    @resources = Resource.where("id IN (?)", Observation.joins(:measurements).where("trait_id = ?", @trait.id).map(&:resource_id).uniq)
+
+    respond_to do |format|
+      format.html
+      # format.csv { send_data Trait.all.to_csv }
+    end    
+  end
+
 
   def overview
 

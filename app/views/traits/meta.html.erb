@@ -10,6 +10,19 @@
 	</h1>
 	<hr>
 
+  <p>
+    <div class="btn-group">
+      <%= link_to 'Back', trait_path(@trait), class: "btn btn-xs btn-default" %>
+    </div>
+    <div class="btn-group">
+      <% if signed_in? && current_user.editor? %>
+        <%= link_to "Meta", meta_trait_path(@trait), class: "btn btn-default btn-xs active" %>
+        <%= link_to "Duplicates", duplicates_trait_path(@trait), class: "btn btn-default btn-xs" %>
+        <%= link_to "Resources", resources_trait_path(@trait), class: "btn btn-default btn-xs" %>
+        <%= link_to "Overview", overview_traits_path(:release_status => 'ready_for_release'), class: "btn btn-default btn-xs" %>
+      <% end %>
+    </div>
+  </p>
 
   <% if signed_in? && current_user.contributor? %>
 		<div id="duptrait">
@@ -18,13 +31,6 @@
 		</p>
 		</div>
 	<% end %>
-
-	<p>
-		<div class="btn-group">
-			<%= link_to "Back", trait_path(@trait), class: "btn btn-default btn-xs" %>
-			<%= link_to "Overview", overview_traits_path(:release_status => 'ready_for_release'), class: "btn btn-default btn-xs" %>
-		</div>
-	</p>
 
 	<p>
 		<strong>Editor:</strong>

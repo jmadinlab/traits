@@ -57,7 +57,11 @@
 				  	<%= counter %>.
 			  		<% counter = counter + 1 %>
 				  	<%= link_to trait.trait_name, trait_path(trait), 'data-no-turbolink' => true %><br>
-					  (<%= trait.trait_class %>)
+					  (<%= trait.trait_class %>)<br>
+						<%= link_to "meta", meta_trait_path(trait), class: "btn btn-default btn-xs" %>
+						<%= link_to "duplicates", duplicates_trait_path(trait), class: "btn btn-default btn-xs" %>
+						<%= link_to "resources", resources_trait_path(trait), class: "btn btn-default btn-xs" %>
+
 				  </div>
 					<div class="col-md-2">
 					  <%= trait.trait_description %>
@@ -84,7 +88,6 @@
 					  <%= Observation.where("private IS false AND observations.id IN (?)", Measurement.where(:trait_id => trait.id).map(&:observation_id)).map(&:resource_id).uniq.join(", ") %>
 				  </div>
 					<div class="col-md-1">
-					  <%= link_to 'Meta', meta_trait_path(trait.id), class: "btn btn-default btn-xs" %>
 					  <%= link_to 'Edit', edit_trait_path(trait), class: "btn btn-default btn-xs" %>
 				  </div>
 			  </div>
