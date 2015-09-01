@@ -7,6 +7,29 @@
 	</h1>
 	<hr>
 
+	<ul class="list-group">
+
+	  <li class="list-group-item">							
+			<div class="row">
+				<div class="col-md-3" style="text-align:right;">
+					<strong>Public observations with no resource:</strong>
+					<br><span class="label label-danger">critical</span>
+				</div>
+				<div class="col-md-9">
+					<% obs = Observation.where("private='0' AND (resource_id IS NULL OR resource_id = ?)", 0) %>
+					<% if !obs.blank? %>
+						<% obs.each do |o| %>
+							<%= link_to o.id, observation_path(o.id), class: "label label-default" %>
+						<% end %>
+					<% else %>
+						Looking good
+					<% end %>
+				</div>
+			</div>
+		</li>
+	</ul>
+
+
 	<p>Download species/trait measurements matrix <%= link_to 'CSV', '/export_specie_trait', :action => 'export_specie_trait' %></p>
 	<p>Download location/trait measurements matrix <%= link_to 'CSV', '/export_location_trait', :action => 'export_location_trait' %></p>
 	<p>Download ready trait summaries <%= link_to 'CSV', '/export_ready_trait', :action => 'export_ready_trait' %></p>

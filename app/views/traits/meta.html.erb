@@ -101,11 +101,30 @@
 	  <li class="list-group-item">							
 			<div class="row">
 				<div class="col-md-3" style="text-align:right;">
-					<strong>Observations with no resource:</strong>
+					<strong>Public observations with no resource:</strong>
 					<br><span class="label label-danger">critical</span>
 				</div>
 				<div class="col-md-9">
-					<% obs = Observation.where(:id => Measurement.where(:trait_id => @trait.id).map(&:observation_id)).where("resource_id IS NULL OR resource_id = ?", 0) %>
+					<% obs = Observation.where("private='0' AND id IN (?)", Measurement.where(:trait_id => @trait.id).map(&:observation_id)).where("resource_id IS NULL OR resource_id = ?", 0) %>
+					<% if !obs.blank? %>
+						<% obs.each do |o| %>
+							<%= link_to o.id, observation_path(o.id), class: "label label-default" %>
+						<% end %>
+					<% else %>
+						Looking good
+					<% end %>
+				</div>
+			</div>
+		</li>
+
+	  <li class="list-group-item">							
+			<div class="row">
+				<div class="col-md-3" style="text-align:right;">
+					<strong>Private observations with no resource:</strong>
+					<br><span class="label label-warning">desirable</span>
+				</div>
+				<div class="col-md-9">
+					<% obs = Observation.where("private='1' AND id IN (?)", Measurement.where(:trait_id => @trait.id).map(&:observation_id)).where("resource_id IS NULL OR resource_id = ?", 0) %>
 					<% if !obs.blank? %>
 						<% obs.each do |o| %>
 							<%= link_to o.id, observation_path(o.id), class: "label label-default" %>
