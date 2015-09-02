@@ -27,6 +27,9 @@ class Observation < ActiveRecord::Base
   validates :specie, :presence => true
   validates :measurements, :presence => true
   #validates :resource, :presence => true
+
+  # validates_presence_of :resource, :granted_at, :if => lambda { |o| o.private == 1 }
+  validates :resource, presence: { message: "is required for public observations. Make the observation private if the data are unpublished." }, unless: :private?
     
   has_many :measurements, :dependent => :destroy, :before_add => :set_nest
 

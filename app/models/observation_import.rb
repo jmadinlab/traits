@@ -206,6 +206,7 @@ class ObservationImport
         end
 
         $observation = validate_observation_exist(i, row)
+        $observation = validate_public_resource(i, row)
 
         measurement = $observation.measurements.build
 
@@ -265,11 +266,16 @@ class ObservationImport
     end
 
     def validate_observation_consistency(i, row)
-      $observation.errors[:base] << "Row #{i}: Access should be same for all measurements" if $observation.private != row["private"]
-      $observation.errors[:base] << "Row #{i}: User_id should be same for all measurements" if $observation.user_id != row["user_id"].to_i
-      $observation.errors[:base] << "Row #{i}: Specie_id should be same for all measurements" if $observation.specie_id != row["specie_id"].to_i
-      $observation.errors[:base] << "Row #{i}: Location_id should be same for all measurements" if $observation.location_id != row["location_id"].to_i
-      $observation.errors[:base] << "Row #{i}: Resource_id should be same for all measurements" if $observation.resource_id != row["resource_id"].to_i
+      $observation.errors[:base] << "Row #{i}: Access should be same for all measurements for a given observation" if $observation.private != row["private"]
+      $observation.errors[:base] << "Row #{i}: User_id should be same for all measurements for a given observation" if $observation.user_id != row["user_id"].to_i
+      $observation.errors[:base] << "Row #{i}: Specie_id should be same for all measurements for a given observation" if $observation.specie_id != row["specie_id"].to_i
+      $observation.errors[:base] << "Row #{i}: Location_id should be same for all measurements for a given observation" if $observation.location_id != row["location_id"].to_i
+      $observation.errors[:base] << "Row #{i}: Resource_id should be same for all measurements for a given observation" if $observation.resource_id != row["resource_id"].to_i unless row["resource_id"].blank?
+      return $observation
+    end
+
+    def validate_public_resource(i, row)
+      $observation.errors[:base] << "Row #{i}: Resource_id required for public observations" if row["resource_id"].blank? and (row["private"] == false)
       return $observation
     end
 
@@ -278,7 +284,7 @@ class ObservationImport
       # $observation.errors[:base] << "Row #{i}: Access #{row["private"]} isn't assigned" if row["private"].blank?
       $observation.errors[:base] << "Row #{i}: Specie_id=#{row["specie_id"]} doesn't exist" if Specie.where("id = ?", row["specie_id"]).blank?
       $observation.errors[:base] << "Row #{i}: Location_id=#{row["location_id"]} doesn't exist" if Location.where("id = ?", row["location_id"]).blank?
-      $observation.errors[:base] << "Row #{i}: Resource_id=#{row["resource_id"]} doesn't exist and access is public" if (Resource.where("id = ?", row["resource_id"]).blank? and not row["private"])
+      $observation.errors[:base] << "Row #{i}: Resource_id=#{row["resource_id"]} doesn't exist and access is public" if (Resource.where("id = ?", row["resource_id"]).blank? and not row["private"]) unless row["resource_id"].blank?
       return $observation
     end
 
