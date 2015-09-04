@@ -1,7 +1,7 @@
 <% if object.errors.any? %>
   <div id="error_explanation">
     <div class="alert alert-danger">
-      The form contains <%= pluralize(object.errors.count, "error") %>.
+      The form contains <%= pluralize(object.errors.full_messages.uniq.count, "error") %>.
     </div>
     <ul>
     <% object.errors.full_messages.uniq.each do |msg| %>

@@ -6,6 +6,10 @@
 	</h1>
 	<hr>
 
+	<p>
+		<span class="badge"><%= @users.size %></span> users.
+	</p>
+
 	<%= form_tag update_multiple_users_path do %>
 
 	  <% if current_user.admin? %>

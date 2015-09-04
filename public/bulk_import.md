@@ -1,14 +1,16 @@
-A bulk import of observations and measurements is the fastest way to get data into the database. The import function accepts csv-formatted spreadsheets and runs a number of tests to make sure your data fit correctly into the database (note that you can export csv-formatted files from Excel using "Save as..."). Any errors will reject the entire import and the system will attempt to tell you where the errors occur, so you can fix these and try the import again.</p>
+A spreadsheet import is the fastest way to get data into the database. The import function accepts csv-formatted spreadsheets and runs a number of tests to make sure your data fit the database correctly (note that you can export csv-formatted files from Excel using "Save as..."). Any errors will reject the entire import and the system will attempt to tell you where the errors occur, so you can fix these errors and try the import again.</p>
 
-The spreadsheet you import must have a header with the following column names.
+The spreadsheet you import must have a header with *at least* the following column names:
 
     observation_id, access, user_id, specie_id, location_id, resource_id, trait_id, standard_id, methodology_id, value, value_type, precision, precision_type, precision_upper, replicates, notes
 
-`specie_id` and `trait_id` may be substituted for `specie_name` and `trait_name`, respectively, which can be useful for navigating large data entry spreadsheets. These names must reflect the database names exactly, and so best to copy and paste names directly from the database.
+`specie_name` and `trait_name` can be included instead of `specie_id` and `trait_id`, respectively (or you can include both ids and names). Having the names can be useful for navigating large datasets. These names must reflect the database names exactly, and so best to copy and paste names directly from the database.
 
-`resource_id` is reserved for the original data resource.  You can credit papers that compiled large datasets from the literature by adding a column named `resource_secondary_id`. `resource_id` and `resource_secondary_id` may be substituted for `resource_doi` and `resource_secondary_doi`, respectively (the doi should start with "10", not "doi:"). The resource will automatically be added using Crossref if the doi is not in the database. 
+`resource_id` is reserved for the original data resource (i.e., the paper that reports the original collection of the measurement).  You can credit papers that compiled large datasets from the literature by adding a column named `resource_secondary_id`. `resource_id` and `resource_secondary_id` may be substituted with `resource_doi` and `resource_secondary_doi`, respectively (the doi should start with "10", not "doi:"). The resource will automatically be added using Crossref if the doi is not in the database.
 
-Copy and paste the above into a text file and save as `import_trait_author_year.csv`, where author and year correspond with the resource (paper). Alternatively, download a [CSV](/import_template_author_year.csv) or [Excel](/import_template_author_year.xlsx) template.
+`user_id` must by your own database user id (i.e., you cannot import data for other people). You can find your user id by clicking on your name in the top right corner and selecting "My Observations".
+
+Copy and paste the above headers into a text file and save as `import_trait_author_year.csv`, where author and year correspond with the resource (paper). Alternatively, download a [CSV](/import_template_author_year.csv) or [Excel](/import_template_author_year.xlsx) template.
 
 ### Observation-level data
 

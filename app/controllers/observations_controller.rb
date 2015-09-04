@@ -59,12 +59,39 @@
   end
 
   def update_multiple
-    Observation.where(:user_id => params[:con_id], :id => params[:all_ids]).update_all(:private => false)
-    Observation.where(:user_id => params[:con_id], :id => params[:pri_ids]).update_all(:private => true)
+    @user = User.where(:id => params[:con_id]).first
+    Observation.where(:user_id => params[:con_id], :id => params[:all_ids]).update_all(:private => true)
+
+    if params[:pub_ids]
+      puts params[:pub_ids].size
+      fails = []
+      params[:pub_ids].each do |pub|
+        puts "=============================================================="
+        puts pub
+        puts "=============================================================="
+
+        @observation = Observation.where(:user_id => params[:con_id], :id => pub).first
+        if @observation.resource
+          puts "=======================YESYESYESY=============================="
+          @observation.update(:private => false)
+        else
+          puts "=======================NONONONONO=============================="
+          fails << "#{pub}"
+          # flash: {success: "Cannot make observation_id=#{pub} public, because no resource." }
+        end
+
+        if !fails.empty?
+          flash[:danger] = "Observation/s #{fails.join(", ")} cannot be made public because they do not have a resource."
+        end
+
+      end
+
+    end
+
     # flash[:notice] = "Updated observations!"
     puts "============ HERE ================"
     puts params[:location]
-    redirect_to user_path(params[:con_id], :page => @page, :search => @search, :resource => params[:resource], :location => params[:location], :specie => params[:specie], :trait => params[:trait]), flash: {success: "Privacy updated." }
+    redirect_to user_path(@user, :page => @page, :search => @search, :resource => params[:resource], :location => params[:location], :specie => params[:specie], :trait => params[:trait]), flash: {success: "Privacy updated." }
   end
 
   # GET /observations

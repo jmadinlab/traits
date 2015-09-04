@@ -3,7 +3,9 @@ class ObservationImport
   include ActiveModel::Conversion
   include ActiveModel::Validations
 
-  attr_accessor :file, :import_type
+  attr_accessor :file, :import_type, :user_id
+
+
 
   def initialize(attributes = {})
     attributes.each { |name, value| send("#{name}=", value) }
@@ -12,6 +14,7 @@ class ObservationImport
   def persisted?
     false
   end
+
 
 
   def save
@@ -28,6 +31,15 @@ class ObservationImport
     end
 
     any_error = check_add_errors(imported_observations)
+
+    if errors[:base]
+      any_error = true
+    end
+
+    puts "KKKKLKKKKLKKKKLKKKKLKKKKLKKKKLKKKKLKKKKLKKKKL"
+    puts any_error
+    puts "KKKKLKKKKLKKKKLKKKKLKKKKLKKKKLKKKKLKKKKLKKKKL"
+
 
     if any_error
       false
@@ -101,19 +113,25 @@ class ObservationImport
         row = Hash[[header, spreadsheet.row(i)].transpose]
         row = process_private(row)
 
+
         if row["specie_name"]
           specie = Specie.where("specie_name = ?", row["specie_name"])
           puts "=== Specie: #{specie.inspect}".red
           if specie.empty?
             errors[:base] << "Row #{i}: Species name '#{row["specie_name"]}' does not exist"
+            puts "Row #{i}: Species name '#{row["specie_name"]}' does not exist".blue
           else
             if not row["specie_id"] or row["specie_id"].blank?
               row["specie_id"] = specie.first.id
+              puts "=== Here 1".green
+
             elsif specie.first.id != row["specie_id"].to_i
+              puts "=== Here 2".green
               errors[:base] << "Row #{i}: Species name '#{row["specie_name"]}' does not match species_id=#{specie.first.id}"
             end
           end
         end
+
         if row["trait_name"]
           trait = Trait.where("trait_name = ?", row["trait_name"])
           puts "=== Trait: #{trait.inspect}".red
@@ -127,6 +145,7 @@ class ObservationImport
             end
           end
         end
+
         if row["resource_doi"]
           resource = Resource.where("doi_isbn = ?", row["resource_doi"])
           puts "=== DOI: #{resource.inspect}".red
@@ -168,11 +187,61 @@ class ObservationImport
           else
             if not row["resource_id"] or row["resource_id"].blank?
               row["resource_id"] = resource.first.id
+              puts "------------------------------- HERE ============================="
+              puts resource.first.id
             elsif resource.first.id != row["resource_id"].to_i
               errors[:base] << "Row #{i}: Resource doi '#{row["resource_doi"]}' does not match resource_id=#{resource.first.id}"
             end
           end
         end
+
+        if row["resource_secondary_doi"]
+          resource = Resource.where("doi_isbn = ?", row["resource_secondary_doi"])
+          puts "=== DOI: #{resource.inspect}".red
+          if resource.empty?
+            begin
+              @doi = JSON.load(open("http://api.crossref.org/works/#{row["resource_secondary_doi"]}"))
+              if @doi["message"]["author"][0]["family"] == "Peresson"
+                @doi = "Invalid"
+              end
+            rescue
+              @doi = "Invalid"
+            end
+
+            if @doi and not @doi == "Invalid"
+              @resource = Resource.new
+              @resource.doi_isbn = row["resource_secondary_doi"]
+
+              authors = ""
+              @doi["message"]["author"].each do |a|
+                authors = authors + "#{a["family"].titleize}, #{a["given"].titleize}, "
+              end
+
+              @resource.author = authors
+              @resource.year = @doi["message"]["issued"]["date-parts"][0][0]
+              @resource.title = @doi["message"]["title"][0]
+              @resource.journal = @doi["message"]["container-title"][0]
+              @resource.volume_pages = "#{@doi["message"]["volume"]}, #{@doi["message"]["page"]}"
+
+              @resource.save!
+
+              row["resource_secondary_id"] = @resource.id
+
+              puts "------------------------------- HERE ============================="
+              puts @resource.id
+            else
+              errors[:base] << "Row #{i}: Secondary resource DOI does not resolve"
+            end
+
+          else
+            if not row["resource_secondary_id"] or row["resource_secondary_id"].blank?
+              row["resource_secondary_id"] = resource.first.id
+            elsif resource.first.id != row["resource_secondary_id"].to_i
+              errors[:base] << "Row #{i}: Secondary resource doi '#{row["resource_secondary_doi"]}' does not match secondary resource_id=#{resource.first.id}"
+            end
+          end
+        end
+
 
         # puts "#{row["specie_id"].inspect}".blue
         # puts "#{Observation.where("specie_id IS ?", row["specie_id"]).inspect}".blue
@@ -204,6 +273,10 @@ class ObservationImport
         else
           $observation = validate_observation_consistency(i, row)
         end
+
+
+
+
 
         $observation = validate_observation_exist(i, row)
         $observation = validate_public_resource(i, row)
@@ -271,6 +344,7 @@ class ObservationImport
       $observation.errors[:base] << "Row #{i}: Specie_id should be same for all measurements for a given observation" if $observation.specie_id != row["specie_id"].to_i
       $observation.errors[:base] << "Row #{i}: Location_id should be same for all measurements for a given observation" if $observation.location_id != row["location_id"].to_i
       $observation.errors[:base] << "Row #{i}: Resource_id should be same for all measurements for a given observation" if $observation.resource_id != row["resource_id"].to_i unless row["resource_id"].blank?
+      $observation.errors[:base] << "Row #{i}: Secondary resource_id should be same for all measurements for a given observation" if $observation.resource_secondary_id != row["resource_secondary_id"].to_i unless row["resource_secondary_id"].blank?
       return $observation
     end
 
@@ -279,12 +353,19 @@ class ObservationImport
       return $observation
     end
 
+
     def validate_observation_exist(i, row)
+      puts "here #{user_id}"
+      puts "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+
       $observation.errors[:base] << "Row #{i}: User_id=#{row["user_id"]} doesn't exist" if User.where("id = ?", row["user_id"]).blank?
+      $observation.errors[:base] << "Row #{i}: User_id=#{row["user_id"]} is not your ID" if (user_id != row["user_id"] and not User.find_by_id(user_id).admin)
       # $observation.errors[:base] << "Row #{i}: Access #{row["private"]} isn't assigned" if row["private"].blank?
       $observation.errors[:base] << "Row #{i}: Specie_id=#{row["specie_id"]} doesn't exist" if Specie.where("id = ?", row["specie_id"]).blank?
       $observation.errors[:base] << "Row #{i}: Location_id=#{row["location_id"]} doesn't exist" if Location.where("id = ?", row["location_id"]).blank?
+      $observation.errors[:base] << "Row #{i}: Resource_id=#{row["resource_id"]} doesn't exist" if Resource.where("id = ?", row["resource_id"]).blank?
       $observation.errors[:base] << "Row #{i}: Resource_id=#{row["resource_id"]} doesn't exist and access is public" if (Resource.where("id = ?", row["resource_id"]).blank? and not row["private"]) unless row["resource_id"].blank?
+      $observation.errors[:base] << "Row #{i}: Secondary resource_id=#{row["resource_secondary_id"]} doesn't exist" if Resource.where("id = ?", row["resource_secondary_id"]).blank?
       return $observation
     end
 

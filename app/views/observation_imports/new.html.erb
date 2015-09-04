@@ -19,6 +19,7 @@
             <%= f.radio_button :import_type, "overwrite" %>
             <%= f.label :import_type, "Overwrite existing observations" %>
             <%= f.file_field :file, class: "form-control" %><br>
+            <%= f.hidden_field :user_id, :value => current_user.id %>
             <%= f.submit "Import", class: "btn btn-primary" %>
           <% end %>
         </div>
@@ -26,7 +27,6 @@
     </li>
   </ul>
 </div>
-
 
 <div class="col-md-12">
   <%= markdown File.open(Rails.root + "public/bulk_import.md", 'r').read %>

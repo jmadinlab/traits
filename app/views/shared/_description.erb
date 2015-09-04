@@ -1,6 +1,6 @@
 <p>
   <strong>Description:</strong>
-  <% if not description.empty? %>
+  <% if description.present? %>
       <%= markdown description %>
   <% else %>
     <font style="color:lightgrey;">Not entered</font>

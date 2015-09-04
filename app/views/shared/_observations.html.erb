@@ -25,7 +25,7 @@
 				<label class="checkbox-inline">
 
 					<% if @user %>
-						<%= check_box_tag "pri_ids[]", obs.id, obs.private %>
+						<%= check_box_tag "pub_ids[]", obs.id, !obs.private %>
 					<% end %>
 
 					<% if obs.private == true %>
