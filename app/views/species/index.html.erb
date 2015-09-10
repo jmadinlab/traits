@@ -55,7 +55,9 @@
 
 
 <% if @species.blank? %>
-  <div class="alert alert-danger" role="alert">No species entered.</div>
+  <div class="col-md-12">
+    <%= render "shared/no_observations" %>
+  </div>
 <% end %>
 
 <div class="col-sm-12">
