@@ -48,8 +48,8 @@ class StaticPagesController < ApplicationController
 
   def export_location_trait
     
-    traits = Trait.where("release_status IS ? OR release_status IS ?", "ready_for_release", "needs_work_before_release")
-    # traits = Trait.where("trait_class IS NOT ?", "Contextual")
+    # traits = Trait.where("release_status IS ? OR release_status IS ?", "ready_for_release", "needs_work_before_release")
+    traits = Trait.where("trait_class != ?", "Contextual")
     locations = Location.all
 
     csv_string = CSV.generate do |csv|
@@ -60,7 +60,7 @@ class StaticPagesController < ApplicationController
         temp = 0
         traits.sort_by{|t| t[:trait_name]}.each do |tra|
 
-          temp = temp + Measurement.where("trait_id IS ?", tra.id).joins(:observation).where("location_id IS ?", loc.id).size
+          temp = temp + Measurement.where("trait_id = ?", tra.id).joins(:observation).where("location_id = ?", loc.id).size
         end
 
         csv << [loc.location_name, loc.latitude, loc.longitude, temp]
