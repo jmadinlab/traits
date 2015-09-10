@@ -32,14 +32,15 @@
 	<% end %>
 
 	<div class="row">
-		<div class="col-md-3">
+		<div class="col-md-2">
 			<%= form_tag overview_traits_path, :method => 'get' do %>
 			  <%= select_tag :release_status, options_for_select(Trait.all.map(&:release_status).uniq, params[:release_status]), include_blank: true, onchange: "$(this).parent('form').submit();", class: "form-control" %>
 			<% end %>
 		</div>
-
+	</div>
 	<%= form_tag export_traits_path do %>
-		<div class="col-md-9">
+	<div class="row">
+		<div class="col-md-12">
 			<%= submit_tag "Download Release", {class: "btn btn-success pull-right"} %>
 		</div>
 	</div><br>
