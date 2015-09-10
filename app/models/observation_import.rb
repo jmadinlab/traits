@@ -32,7 +32,7 @@ class ObservationImport
 
     any_error = check_add_errors(imported_observations)
 
-    if errors[:base]
+    if errors[:base].present?
       any_error = true
     end
 
@@ -344,7 +344,9 @@ class ObservationImport
       $observation.errors[:base] << "Row #{i}: Specie_id should be same for all measurements for a given observation" if $observation.specie_id != row["specie_id"].to_i
       $observation.errors[:base] << "Row #{i}: Location_id should be same for all measurements for a given observation" if $observation.location_id != row["location_id"].to_i
       $observation.errors[:base] << "Row #{i}: Resource_id should be same for all measurements for a given observation" if $observation.resource_id != row["resource_id"].to_i unless row["resource_id"].blank?
+
       $observation.errors[:base] << "Row #{i}: Secondary resource_id should be same for all measurements for a given observation" if $observation.resource_secondary_id != row["resource_secondary_id"].to_i unless row["resource_secondary_id"].blank?
+
       return $observation
     end
 
@@ -361,11 +363,15 @@ class ObservationImport
       $observation.errors[:base] << "Row #{i}: User_id=#{row["user_id"]} doesn't exist" if User.where("id = ?", row["user_id"]).blank?
       $observation.errors[:base] << "Row #{i}: User_id=#{row["user_id"]} is not your ID" if (user_id != row["user_id"] and not User.find_by_id(user_id).admin)
       # $observation.errors[:base] << "Row #{i}: Access #{row["private"]} isn't assigned" if row["private"].blank?
+
+      puts "specie_id: #{row["specie_id"].present?}".green
       $observation.errors[:base] << "Row #{i}: Specie_id=#{row["specie_id"]} doesn't exist" if Specie.where("id = ?", row["specie_id"]).blank?
       $observation.errors[:base] << "Row #{i}: Location_id=#{row["location_id"]} doesn't exist" if Location.where("id = ?", row["location_id"]).blank?
       $observation.errors[:base] << "Row #{i}: Resource_id=#{row["resource_id"]} doesn't exist" if Resource.where("id = ?", row["resource_id"]).blank?
       $observation.errors[:base] << "Row #{i}: Resource_id=#{row["resource_id"]} doesn't exist and access is public" if (Resource.where("id = ?", row["resource_id"]).blank? and not row["private"]) unless row["resource_id"].blank?
-      $observation.errors[:base] << "Row #{i}: Secondary resource_id=#{row["resource_secondary_id"]} doesn't exist" if Resource.where("id = ?", row["resource_secondary_id"]).blank?
+
+      $observation.errors[:base] << "Row #{i}: Secondary resource_id=#{row["resource_secondary_id"]} doesn't exist" if Resource.where("id = ?", row["resource_secondary_id"]).blank? unless row["resource_secondary_id"].blank?
+
       return $observation
     end
 
