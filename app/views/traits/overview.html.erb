@@ -7,113 +7,110 @@
 	</h1>
 	<hr>
 
-	<ul class="list-group">
+	<p>
+		<span class="badge"><%= @traits.size %></span> traits
+	</p>
 
-	  <li class="list-group-item">							
-			<div class="row">
-				<div class="col-md-3" style="text-align:right;">
-					<strong>Public observations with no resource:</strong>
-					<br><span class="label label-danger">critical</span>
-				</div>
-				<div class="col-md-9">
-					<% obs = Observation.where("private='0' AND (resource_id IS NULL OR resource_id = ?)", 0) %>
-					<% if !obs.blank? %>
+	<% obs = Observation.where("private='0' AND (resource_id IS NULL OR resource_id = ?)", 0) %>
+	<% if !obs.blank? %>
+		<ul class="list-group">
+
+		  <li class="list-group-item">							
+				<div class="row">
+					<div class="col-md-4" style="text-align:right;">
+						<strong>Public observations with no resource:</strong>
+						<br><span class="label label-danger">critical</span>
+					</div>
+					<div class="col-md-8">
 						<% obs.each do |o| %>
 							<%= link_to o.id, observation_path(o.id), class: "label label-default" %>
 						<% end %>
-					<% else %>
-						Looking good
-					<% end %>
+					</div>
 				</div>
-			</div>
-		</li>
-	</ul>
+			</li>
+		</ul>
+	<% end %>
 
+	<div class="row">
+		<div class="col-md-3">
+			<%= form_tag overview_traits_path, :method => 'get' do %>
+			  <%= select_tag :release_status, options_for_select(Trait.all.map(&:release_status).uniq, params[:release_status]), include_blank: true, onchange: "$(this).parent('form').submit();", class: "form-control" %>
+			<% end %>
+		</div>
 
-	<p>Download species/trait measurements matrix <%= link_to 'CSV', '/export_specie_trait', :action => 'export_specie_trait' %></p>
-	<p>Download location/trait measurements matrix <%= link_to 'CSV', '/export_location_trait', :action => 'export_location_trait' %></p>
-	<p>Download ready trait summaries <%= link_to 'CSV', '/export_ready_trait', :action => 'export_ready_trait' %></p>
-	<p>Download ready trait resources <%= link_to 'CSV', '/export_ready_resources', :action => 'export_ready_resources' %></p>
-	<p>Download ready zip <%= link_to 'ZIP', '/export_ready', :action => 'export_ready' %></p>
+	<%= form_tag export_traits_path do %>
+		<div class="col-md-9">
+			<%= submit_tag "Download Release", {class: "btn btn-success pull-right"} %>
+		</div>
+	</div><br>
 
-
-	<p>
-		<%= form_tag overview_traits_path, :method => 'get' do %>
-		  <strong>Subset traits by release status: </strong><%= select_tag :release_status, options_for_select(Trait.all.map(&:release_status).uniq, params[:release_status]), include_blank: true, onchange: "$(this).parent('form').submit();" %>
-		<% end %>
-	</p>
-
-	<ul class="list-group">
-	  <li class="list-group-item">							
-			<div class="row">
-				<div class="col-md-2">
-			  </div>
-				<div class="col-md-2">
-				  <strong>Description</strong>
-			  </div>
-				<div class="col-md-1">
-				  <strong>Editor</strong>
-			  </div>
-				<div class="col-md-1">
-				  <strong>Standard</strong>
-			  </div>
-				<div class="col-md-2">
-				  <strong>Value range</strong>
-			  </div>
-				<div class="col-md-1">
-				  <strong>Measurements</strong>
-			  </div>
-				<div class="col-md-1">
-				  <strong>Resources</strong>
-			  </div>
-				<div class="col-md-1">
-			  </div>
-			</div>
-		</li>
-		
-		<% counter = 1 %>
-		<% @traits.sort_by{ |h| h[:release_status] }.each do |trait| %>
+		<ul class="list-group">
 		  <li class="list-group-item">							
 				<div class="row">
 					<div class="col-md-2">
-				  	<%= counter %>.
-			  		<% counter = counter + 1 %>
-				  	<%= link_to trait.trait_name, trait_path(trait), 'data-no-turbolink' => true %><br>
-					  (<%= trait.trait_class %>)<br>
-						<%= link_to "meta", meta_trait_path(trait), class: "btn btn-default btn-xs" %>
-						<%= link_to "duplicates", duplicates_trait_path(trait), class: "btn btn-default btn-xs" %>
-						<%= link_to "resources", resources_trait_path(trait), class: "btn btn-default btn-xs" %>
+				  </div>
+					<div class="col-md-2">
+					  <strong>Description</strong>
+				  </div>
+					<div class="col-md-1">
+					  <strong>Standard</strong>
+				  </div>
+					<div class="col-md-2">
+					  <strong>Value range</strong>
+				  </div>
+					<div class="col-md-3">
+					  <strong>Resources</strong>
+				  </div>
+					<div class="col-md-1">
+				  </div>
+					  <strong>Measurements</strong>
+					<div class="col-md-1">
+				  </div>
+				</div>
+			</li>
+			
+			<% @traits.sort_by{ |h| h[:release_status] }.each do |trait| %>
+			  <li class="list-group-item">							
+					<div class="row">
+						<div class="col-md-2">
+					  	<%= trait.id %>.
+					  	<%= link_to trait.trait_name, trait_path(trait), 'data-no-turbolink' => true %><br>
+						  <span class="label label-default"><%= trait.trait_class %></span><br>
+					  	(<%= trait.user.name %>)<br>
+						  <%= link_to 'Edit', edit_trait_path(trait), class: "btn btn-default btn-xs" %>
+							<%= link_to "Meta", meta_trait_path(trait), class: "btn btn-default btn-xs" %>
+							<%= link_to "Duplicates", duplicates_trait_path(trait), class: "btn btn-default btn-xs" %>
+							<%= link_to "Resources", resources_trait_path(trait), class: "btn btn-default btn-xs" %>
 
-				  </div>
-					<div class="col-md-2">
-					  <%= trait.trait_description %>
-				  </div>
-					<div class="col-md-1">
-					  <%= trait.user.name %>
-				  </div>
-					<div class="col-md-1">
-					  <%= trait.standard.standard_name %> (<%= trait.standard.standard_unit %>)
-				  </div>
-					<div class="col-md-2">
-					  <% trait.traitvalues.each do |v| %>
-					  	<span class="label label-primary"><%= v.value_name %></span>
-						<% end %>
-						<% if trait.standard.id != 2 && trait.standard.id != 10 && trait.standard.id != 40 %>
-					  	<span class="label label-success">not applicable</span>
-						<% end %>
+					  </div>
+						<div class="col-md-2">
+						  <%= trait.trait_description %>
+					  </div>
+						<div class="col-md-1">
+						  <%= trait.standard.standard_name %> (<%= trait.standard.standard_unit %>)
+					  </div>
+						<div class="col-md-2">
+						  <% trait.traitvalues.each do |v| %>
+						  	<span class="label label-primary"><%= v.value_name %></span>
+							<% end %>
+							<% if trait.standard.id != 2 && trait.standard.id != 10 && trait.standard.id != 40 %>
+						  	<span class="label label-success">not applicable</span>
+							<% end %>
 
+					  </div>
+						<div class="col-md-3">
+						  <%= Observation.where("private IS false AND observations.id IN (?)", Measurement.where(:trait_id => trait.id).map(&:observation_id)).map(&:resource_id).uniq.join(", ") %>
+					  </div>
+						<div class="col-md-1">
+						  <%= Measurement.where("trait_id = ?", trait.id).joins(:observation).where("private IS false").size %>
+					  </div>
+						<div class="col-md-1">
+						  <%= check_box_tag "checked[]", trait.id, checked = true %>
+					  </div>
 				  </div>
-					<div class="col-md-1">
-					  <%= Measurement.where("trait_id = ?", trait.id).joins(:observation).where("private IS false").size %>
-				  </div>
-					<div class="col-md-2">
-					  <%= Observation.where("private IS false AND observations.id IN (?)", Measurement.where(:trait_id => trait.id).map(&:observation_id)).map(&:resource_id).uniq.join(", ") %>
-				  </div>
-					<div class="col-md-1">
-					  <%= link_to 'Edit', edit_trait_path(trait), class: "btn btn-default btn-xs" %>
-				  </div>
-			  </div>
-		  </li>
+			  </li>
+			<% end %>
+
 		<% end %>
 
 	</ul>		
