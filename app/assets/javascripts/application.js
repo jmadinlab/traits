@@ -126,6 +126,10 @@ $(document).ready(function(){
     $('button').tooltip();
 });
 
+$(document).ready(function(){
+    $('div').tooltip();
+});
+
 
 function checkUncheckAll(theElement) { 
 	var theForm = theElement.form, z = 0; 
