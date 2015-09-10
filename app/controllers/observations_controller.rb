@@ -102,11 +102,7 @@
       fulltext params[:search]
       (with :private, false or with :user_id, current_user.id) unless signed_in? && current_user.admin?
 
-      if params[:all]
-        paginate page: params[:page], per_page: 2000
-      else
-        paginate page: params[:page]
-      end
+      paginate page: params[:page]
     end
 
     @observations = @search.results

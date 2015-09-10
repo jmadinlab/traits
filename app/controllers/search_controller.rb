@@ -41,7 +41,7 @@ class SearchController < ApplicationController
 				puts singletons.keys
 				redirect_to eval("#{singletons.keys[0]}_path(@#{singletons.keys[0]}_search.results.first, :search => params[:search])")
 			elsif models.count == 1
-				redirect_to eval("#{models.keys[0]}s_path(:search => params[:search])")
+				redirect_to eval("#{models.keys[0].pluralize}_path(:search => params[:search])")
 			end
 
 		else
