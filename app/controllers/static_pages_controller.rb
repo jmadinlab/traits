@@ -172,12 +172,25 @@ class StaticPagesController < ApplicationController
           
   end
 
-  def export_ready
+  # def export_release
     
-    @observations = Observation.where(:id => Trait.where("release_status = ?", "ready_for_release").collect { |t| t.measurements.map(&:observation_id)})
+  #   @observations = Observation.where(:id => Trait.where("release_status = ?", "ready_for_release").collect { |t| t.measurements.map(&:observation_id)})
 
-    send_zip(@observations)
+  #   send_zip(@observations)
               
-  end
+  # end
+
+  # def export_release
+  #   # if params[:checked]
+  #   #   # @observations = Observation.where("private IS false").joins(:measurements).where(:measurements => {:trait_id => params[:checked]})
+  #   #   @observations = Observation.where(:id => Trait.where("release_status = ?", "ready_for_release").collect { |t| t.measurements.map(&:observation_id)})
+  #   # else
+  #   #   @observations = []
+  #   # end
+
+  #   @observations = Observation.where(:id => Trait.where("release_status = ?", "ready_for_release").collect { |t| t.measurements.map(&:observation_id)})
+
+  #   send_zip(@observations)
+  # end
 
 end

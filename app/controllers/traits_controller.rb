@@ -62,7 +62,7 @@ class TraitsController < ApplicationController
   def export
     if params[:checked]
       @observations = Observation.joins(:measurements).where(:measurements => {:trait_id => params[:checked]})
-      @observations = observation_filter(@observations, true)
+      @observations = observation_filter(@observations, true, params[:release])
     else
       @observations = []
     end

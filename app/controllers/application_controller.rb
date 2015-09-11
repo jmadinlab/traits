@@ -16,19 +16,24 @@ class ApplicationController < ActionController::Base
   
   # Before filters
 
-  def observation_filter(observations, traits=false)
-    if signed_in?
-      if current_user.admin?
-        observations = observations
-      elsif current_user.editor? | current_user.contributor?
-        observations = observations.where("observations.private = ? OR (observations.user_id = ? AND observations.private = ?)", false, current_user.id, true)
+  def observation_filter(observations, traits=false, release=false)
+
+    if release
+      observations = observations.where("observations.private = ?", false)
+    else
+      if signed_in?
+        if current_user.admin?
+          observations = observations
+        elsif current_user.editor? | current_user.contributor?
+          observations = observations.where("observations.private = ? OR (observations.user_id = ? AND observations.private = ?)", false, current_user.id, true)
+        else
+          observations = observations.where("observations.private = ?", false)
+        end
       else
         observations = observations.where("observations.private = ?", false)
       end
-    else
-      observations = observations.where("observations.private = ?", false)
     end
-    
+        
     if not traits or not (signed_in? && current_user.editor?)
       puts "#{not @trait}"
       puts "----"
