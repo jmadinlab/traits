@@ -154,15 +154,15 @@
 </div>
 
 <div class="col-md-4">
-<ul class="list-group">
-<li class="list-group-item">							
-		<% if @chart %>
-			<div id='chart'></div>
-			<%= render_chart @chart, 'chart' %>
-			<%#= @data_table %>
-		<% end %>
-</li>
-</ul>
+	<% if @chart %>
+		<ul class="list-group">
+			<li class="list-group-item">							
+				<div id='chart'></div>
+				<%= render_chart @chart, 'chart' %>
+				<%#= @data_table %>
+			</li>
+		</ul>
+	<% end %>
 </div>
 
 <div class="col-md-12">

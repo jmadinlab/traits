@@ -110,7 +110,7 @@ class TraitsController < ApplicationController
 
   #        data_table.sort(1)
 
-          option = { width: 250, height: 250, legend: 'none' }
+          option = { width: 300, height: 250, legend: 'none' }
           @chart = GoogleVisualr::Interactive::PieChart.new(data_table, option)
         else
           data_table.new_column('number')
@@ -118,11 +118,19 @@ class TraitsController < ApplicationController
           p = 0
           # @trait.measurements.map(&:value).map{|v| v.to_d}.sort.reverse.each do |i|
           @trait.measurements.each do |i|
-            data_table.add_row([i.value.to_d])
+            if @trait.log_data
+              data_table.add_row([Math.log10(i.value.to_d)])
+            else
+              data_table.add_row([i.value.to_d])
+            end
           end
 
-          option = { width: 250, height: 250, legend: 'none', :vAxis => { :title => "Frequency" }, :hAxis => { :title => "#{@trait.trait_name}" } }
-          # @chart = GoogleVisualr::Interactive::ScatterChart.new(data_table, option)
+          if @trait.log_data
+            option = { width: 300, height: 250, legend: 'none', :vAxis => { :title => "Frequency" }, :hAxis => { :title => "#{@trait.trait_name} (#{@trait.standard.standard_unit}), log10" } }
+          else
+            option = { width: 300, height: 250, legend: 'none', :vAxis => { :title => "Frequency" }, :hAxis => { :title => "#{@trait.trait_name} (#{@trait.standard.standard_unit})" } }
+          end
+
           @chart = GoogleVisualr::Interactive::Histogram.new(data_table, option)
           # @chart.add_listener("select", "function(e) { EventHandler(e, chart, data_table) }")
         end
@@ -235,7 +243,7 @@ class TraitsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def trait_params
-      params.require(:trait).permit(:trait_name, :trait_description, :trait_class, :value_range, :standard_id, :user_id, :approval_status, :release_status, :methodologies, :hide, traitvalues_attributes: [:id, :value_name, :value_description, :_destroy])
+      params.require(:trait).permit(:trait_name, :trait_description, :trait_class, :value_range, :standard_id, :user_id, :approval_status, :release_status, :methodologies, :hide, :log_data, traitvalues_attributes: [:id, :value_name, :value_description, :_destroy])
     end
 end
 
