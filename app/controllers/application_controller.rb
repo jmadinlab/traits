@@ -71,7 +71,7 @@ class ApplicationController < ActionController::Base
       ) unless (signed_in? && ((@observation.user_id == current_user.id) || current_user.admin?))      
     else
       redirect_to(
-        root_url, flash: { danger: "You need to become a contributor to enter data." }
+        root_url, flash: { danger: "You need to become a contributor to access this area of the database." }
       ) unless (signed_in? && current_user.contributor?)
     end
   end
