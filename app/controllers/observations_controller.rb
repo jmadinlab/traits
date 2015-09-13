@@ -98,15 +98,23 @@
   # GET /observations.json
   def index
 
+  puts "#{current_user.id}".green
+
     @search = Observation.search do
       fulltext params[:search]
-      (with :private, false or with :user_id, current_user.id) unless signed_in? && current_user.admin?
+      # (with :private, false or with :user_id, current_user.id)
+
+      any_of do
+        with(:private, false) unless signed_in? && current_user.admin?
+        with(:user_id, current_user.id) unless signed_in? && current_user.admin?
+      end
 
       paginate page: params[:page]
     end
 
     @observations = @search.results
-    
+    # @observations = observation_filter(@observations)
+
     respond_to do |format|
       format.html
 
