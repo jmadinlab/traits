@@ -1,6 +1,6 @@
 <% provide(:title, 'Contributors') %>
 
-<div class="col-md-12">
+<div class="col-md-10 col-md-offset-1">
   <%= markdown File.open(Rails.root + "public/contributors.md", 'r').read %>
 
   <div class="list-group">

@@ -1,12 +1,8 @@
 <% provide(:title, 'Procedures') %>
 
-<div class="col-md-12">
+<div class="col-md-10 col-md-offset-1">
 
-<%# if signed_in? && current_user.contributor? %>
   <label class="label label-danger">Under Review</label>
   <%= markdown File.open(Rails.root + "public/procedures.md", 'r').read %>
-<%# else %>
-  <!-- <label class="label label-danger">Under Review</label> -->
-<%# end %>
 
 </div>

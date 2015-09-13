@@ -1,22 +1,32 @@
 <% provide(:title, 'Home') %>
 
 <div class="jumbotron">
-	<h1><%= ENV["SITE_NAME"]%></h1>
-  <br>
-	<p>The Coral Trait Database is a growing compilation of scleractinian coral life history trait, phylogenetic and biogeographic data. As of today, there are <%= Observation.all.size %> coral observations with <%= Measurement.all.size %> trait entries of <%= Trait.all.size %> traits for <%= Specie.all.size %> coral species in the database. Most of these entries are for shallow-water, reef-building species.</p>
+  <div class="row">
+    <div class="col-md-9">
+  	<h1><%= ENV["SITE_NAME"]%></h1>
+    <br>
+  	<p>The Coral Trait Database is a growing compilation of scleractinian coral life history trait, phylogenetic and biogeographic data. As of today, there are <%= Observation.all.size %> coral observations with <%= Measurement.all.size %> trait entries of <%= Trait.all.size %> traits for <%= Specie.all.size %> coral species in the database. Most of these entries are for shallow-water, reef-building species.</p>
 
-	<% if not signed_in? %>
-		<p><%= link_to "Sign up?", signup_path, class: "btn btn-primary" %></p>
+  	<% if not signed_in? %>
+  		<p><%= link_to "Sign up?", signup_path, class: "btn btn-primary" %></p>
 
-		<p>Sign up to become a member and recieve periodic news about the database. Sign up is not required to access public data.  Please email <a href="mailto:<%= ENV["GMAIL_USERNAME"] %>?subject=<%= ENV["SITE_NAME"] %> enquiry"><%= ENV["GMAIL_USERNAME"] %></a> with any comments, to become a contributor, or for more information.</p>
-	<% end %>
+  		<p>Sign up to become a member and recieve periodic news about the database. Sign up is not required to access public data.  Please email <a href="mailto:<%= ENV["GMAIL_USERNAME"] %>?subject=<%= ENV["SITE_NAME"] %> enquiry"><%= ENV["GMAIL_USERNAME"] %></a> with any comments, to become a contributor, or for more information.</p>
+  	<% end %>
 
-  <p>
-    <div id="map-canvas" class="map-container"></div>
-  </p>
+    <p>
+      <div id="map-canvas" class="map-container"></div>
+    </p>
 
+    </div>
+
+    <div class="col-md-3">
+      <a class="twitter-timeline" href="https://twitter.com/coraltraits" data-widget-id="643167985499148292">Tweets by @coraltraits</a>
+      <script src="//platform.twitter.com/widgets.js"></script>
+    </div>
+  </div>
 
 </div>
+
 
 
 <script type="text/javascript">
