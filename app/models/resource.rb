@@ -1,6 +1,8 @@
 class Resource < ActiveRecord::Base
 
   belongs_to :user
+  has_many :observations
+
   has_paper_trail
   
   # validates :author, :presence => true
@@ -8,7 +10,7 @@ class Resource < ActiveRecord::Base
   validates_uniqueness_of :doi_isbn, :allow_blank => true
   validate :check_consistency
 
-  default_scope -> { order('author ASC') }
+  # default_scope -> { order('author ASC') }
 
   VALID_DOI_REGEX = /\b(10[.][0-9]{4,}(?:[.][0-9]+)*\/(?:(?!["&\'<>])\S)+)\b/
   # VALID_DOI_REGEX = /(10.(\d)+\/(\S)+)/
@@ -18,9 +20,15 @@ class Resource < ActiveRecord::Base
 
   searchable do
     text :author
+
     string :author_sortable do 
       author
     end
+
+    integer :count_sortable do
+      observations.size
+    end
+
     text :doi_isbn
     text :title
     text :year

@@ -14,6 +14,7 @@
 
     @model1 = params[:model1].singularize
     if params[:model2]
+      puts "HERE".green
       @model2 = params[:model2].singularize
       if @model1 == "specie" and @model2 == "trait"
        @observations = Observation.joins(:measurements).where("specie_id = ? AND trait_id = ?", params[:itemid1], params[:itemid2])

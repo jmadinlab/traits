@@ -8,8 +8,13 @@ class ResourcesController < ApplicationController
 
     @search = Resource.search do
       fulltext params[:search]
-      order_by :author_sortable, :asc
       
+      if params[:count]
+        order_by :count_sortable, :desc
+      else
+        order_by :author_sortable, :asc
+      end
+
       if params[:all]
         paginate page: params[:page], per_page: 9999
       else
