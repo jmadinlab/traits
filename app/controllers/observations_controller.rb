@@ -18,6 +18,9 @@
       if @model1 == "specie" and @model2 == "trait"
        @observations = Observation.joins(:measurements).where("specie_id = ? AND trait_id = ?", params[:itemid1], params[:itemid2])
       end
+      if @model1 == "trait" and @model2 == "resource"
+       @observations = Observation.joins(:measurements).where("trait_id = ? AND resource_id = ?", params[:itemid1], params[:itemid2])
+      end
     else
       if @model1 == "trait" or @model1 == "standard" or @model1 == "methodology"
         @observations = Observation.where(:id => Measurement.where("#{@model1}_id = ?", params[:itemid1]).map(&:observation_id))
