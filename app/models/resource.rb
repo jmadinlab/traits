@@ -26,7 +26,7 @@ class Resource < ActiveRecord::Base
     end
 
     integer :count_sortable do
-      observations.size
+      observations.where(:private => false).size
     end
 
     text :doi_isbn

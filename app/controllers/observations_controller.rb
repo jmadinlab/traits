@@ -32,7 +32,7 @@
       end
     end
 
-    # @observations = observation_filter(@observations)
+    @observations = observation_filter(@observations)
 
     render json: {
       pub: @observations.where(:private => false).size, 
