@@ -35,7 +35,6 @@ class ResourcesController < ApplicationController
 
     respond_to do |format|
       format.html
-      # format.csv { send_data Resource.all.to_csv }
     end    
   end
 

@@ -24,7 +24,7 @@
       <%= link_to "New #{model.singularize.capitalize}", "#{model}/new", class: "btn btn-primary" %>
     <% end %>
     <% if model == "resources" and signed_in? && current_user.admin? %>
-      <%= link_to "Order by Counts", resources_path(:count => true), class: "btn btn-default" %>
+      <%= link_to "Order by Counts", resources_path(:count => true, :search => params[:search]), class: "btn btn-default" %>
     <% end %>
 
   <% elsif model == "traits" %>
