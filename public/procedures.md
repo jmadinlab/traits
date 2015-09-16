@@ -80,6 +80,7 @@ Contact a member of the Taxonomy Advisory Board if you would like to add or edit
 
 > The database relies on external people with breadth of experience and technical know-how, and who appreciate the subtle difficulties of managing large data compilations.
 
+- Matthew Kosnik
 - Mark Schilhauer
 
 #### Database Programmers

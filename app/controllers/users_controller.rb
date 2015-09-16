@@ -35,6 +35,10 @@ class UsersController < ApplicationController
       @observations = @observations.where(:id => Measurement.where(:trait_id => params[:trait]).map(&:observation_id))
     end
 
+    if params[:access].present?
+      @observations = @observations.where(:private => params[:access])
+    end
+
     @resources = Resource.where(:id => @observations.map(&:resource_id))
     @locations = Location.where(:id => @observations.map(&:location_id))
     @species = Specie.where(:id => @observations.map(&:specie_id))
