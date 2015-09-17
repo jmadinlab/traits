@@ -9,6 +9,9 @@ class Release < ActiveRecord::Base
   validates_uniqueness_of :release_code
   validates_format_of :release_code, with: /\A(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+)\z/i, on: [:create, :update]
 
+  VALID_DOI_REGEX = /\b(10[.][0-9]{4,}(?:[.][0-9]+)*\/(?:(?!["&\'<>])\S)+)\b/
+  validates :release_link, format: { with: VALID_DOI_REGEX }, :allow_blank => true
+
   default_scope -> { order('release_code DESC') }
 
   searchable do

@@ -12,7 +12,7 @@ Traits::Application.routes.draw do
   get '/traits/:id/duplicates', to: 'traits#duplicates', :as => :duplicates_trait
   get '/traits/:id/meta', to: 'traits#meta', :as => :meta_trait
   get '/traits/overview', to: 'traits#overview', :as => :overview_traits
-  get '/traits/:id/resources', to: 'traits#resources', :as => :resources_trait
+  get '/traits/:id/papers', to: 'traits#resources', :as => :resources_trait
   # match '/meta/:id',     to: 'static_pages#show',    via: 'get', :as => :show_meta
 
   match '/resources/:id/expunge',     to: 'resources#expunge',    via: 'get', :as => :expunge_resource
@@ -44,11 +44,11 @@ Traits::Application.routes.draw do
   get '/history', to:'versions#index'
   get '/history/:version_id', to: 'versions#show'
   post '/revert/:version_id', to: 'versions#revert_back'
-  # get '/species/:id/resources', to: 'species#show'
-  # get '/traits/:id/resources', to: 'traits#show'
-  # get '/locations/:id/resources', to: 'locations#show'
-  # get '/resources/:id/resources', to: 'resources#show'
-  # get '/releases/:id/resources', to: 'releases#show'
+  get '/species/:id/resources', to: 'species#show'
+  get '/traits/:id/resources', to: 'traits#show'
+  get '/locations/:id/resources', to: 'locations#show'
+  get '/resources/:id/resources', to: 'resources#show'
+  get '/releases/:id/resources', to: 'releases#show'
 
   
   get '/resources/status', to: 'resources#status'

@@ -10,6 +10,11 @@
   </div>
 
   <div class="form-group">
+    <%= f.label :figshare_doi %><br>
+    <%= f.text_field :release_link, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
     <%= f.label :release_date %><br>
     <%= f.date_select :release_date, class: "form-control" %>
   </div>

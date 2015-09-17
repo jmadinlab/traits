@@ -13,13 +13,10 @@
     <% @releases.each do |release| %>
       <li class="list-group-item">              
         <div class="row">
-          <div class="col-sm-1" style="color: lightgrey;">
-            <%#= release.id %>
-          </div>
 
-          <div class="col-sm-2">
+          <div class="col-sm-1">
             <% if release.release_code == Release.all.map(&:release_code).max %>
-              <span class="label label-primary"><%= release.release_code %></span>
+              <span class="label label-success"><%= release.release_code %></span>
             <% else %>
               <span class="label label-default"><%= release.release_code %></span>
             <% end %>
@@ -29,11 +26,19 @@
             <%= release.release_date.to_s(:ctdb_date2) %>
           </div>
 
-          <div class="col-sm-4">
+          <div class="col-sm-5">
             <%= release.release_notes %>
           </div>
 
-          <div class="col-sm-3">
+          <div class="col-sm-2">
+            <% if release.release_link %>
+              <%= link_to 'Figshare link', "http://dx.doi.org/" + release.release_link, :target => "_blank" %>
+            <% else %>
+              <span class="label label-danger">Not entered</span>
+            <% end %>
+          </div>
+
+          <div class="col-sm-2">
             <div class="btn-group pull-right">
               <% if @snapzips.include?("ctdb_#{release.release_code}") %>
                 <%= link_to 'Download', release_path(release), class: "btn btn-xs btn-success" %>

@@ -1,15 +1,14 @@
-<%= render 'shared/error_messages', object: @observation_import %>
 
-<div class="col-md-10 col-md-offset-1">
 
   <div class="col-md-8">
+    <%= render 'shared/error_messages', object: @observation_import %>
     <h1>
       Importing data
     </h1>
     <hr>
   </div>
 
-  <div class="col-md-4">
+  <div class="col-md-4" style="float:right;">
     <ul class="list-group">
       <li class="list-group-item">              
         <div class="row">
@@ -30,8 +29,7 @@
     </ul>
   </div>
 
-  <div class="col-md-12">
+  <div class="col-md-8">
     <%= markdown File.open(Rails.root + "public/bulk_import.md", 'r').read %>
   </div>
 
-</div>

@@ -1,8 +1,6 @@
 <% provide(:title, 'Editors') %>
 
-<div class="col-md-10 col-md-offset-1">
-
-  <label class="label label-danger">Under Review</label>
+<div class="col-md-8">
 
   <%= markdown File.open(Rails.root + "public/editors.md", 'r').read %>
 

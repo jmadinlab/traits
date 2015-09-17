@@ -30,8 +30,6 @@
 							<li><%= link_to "Locations", locations_path %></li>
 							<li><%= link_to "Standards", standards_path %></li>
 							<li><%= link_to "Methodologies", methodologies_path %></li>
-							<li class="divider"></li>
-	         		<li><%= link_to "Releases", releases_path %></li>
 		         	<% if signed_in? && current_user.admin? %>
 								<li class="divider"></li>
 		         		<li><%= link_to "Observations", observations_path %></li>
@@ -41,6 +39,8 @@
 		         		<li><%= link_to "New Observation", new_observation_path, :data => { :no_turbolink => true } %></li>
 		         		<li><%= link_to "Import Observations", new_observation_import_path %></li>
 						 	<% end %>
+							<li class="divider"></li>
+	         		<li><%= link_to "Releases", releases_path %></li>
 						</ul>
 		     	</li>
 				</ul>
