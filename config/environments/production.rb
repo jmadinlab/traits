@@ -71,14 +71,23 @@ Traits::Application.configure do
   
   config.action_mailer.smtp_settings = {
     address: "smtp.gmail.com",
-    port: 2525,
+    port: 587,
     domain: ENV["SITE_URL"],
     authentication: "plain",
     enable_starttls_auto: true,
     user_name: ENV["GMAIL_USERNAME"],
     password: ENV["GMAIL_PASSWORD"],
-    enable_starttls_auto: true,
     ssl: true
+
+    # address: "smtp.gmail.com",
+    # port: 2525,
+    # domain: ENV["SITE_URL"],
+    # authentication: "plain",
+    # enable_starttls_auto: true,
+    # user_name: ENV["GMAIL_USERNAME"],
+    # password: ENV["GMAIL_PASSWORD"],
+    # enable_starttls_auto: true,
+    # ssl: true
     # openssl_verify_mode: 'none'
   }  
 # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
