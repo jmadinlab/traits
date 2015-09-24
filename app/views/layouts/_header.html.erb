@@ -36,11 +36,11 @@
 						 	<% end %>
 		         	<% if signed_in? && current_user.contributor? %>
 								<li class="divider"></li>
-		         		<li><%= link_to "New Observation", new_observation_path, :data => { :no_turbolink => true } %></li>
-		         		<li><%= link_to "Import Observations", new_observation_import_path %></li>
+		         		<li><%= link_to "Add Observation", new_observation_path, :data => { :no_turbolink => true } %></li>
+		         		<li><%= link_to "Import Spreadsheet", new_observation_import_path %></li>
 						 	<% end %>
 							<li class="divider"></li>
-	         		<li><%= link_to "Releases", releases_path %></li>
+	         		<li><%= link_to "Database Releases", releases_path %></li>
 						</ul>
 		     	</li>
 				</ul>
@@ -86,8 +86,6 @@
 		       	</a>
 		       	<ul class="dropdown-menu" style="text-align: left;">
 						 	<li><%= link_to "Procedures", procedures_path %></li>
-						 	<li><%= link_to "Downloading", download_path %></li>
-						 	<li><%= link_to "Importing", bulk_import_path %></li>
 						 	<li><%= link_to "Contributors", contributors_path %></li>
 						 	<li><%= link_to "Editors", editors_path %></li>
 						 

@@ -3,6 +3,14 @@
 
 body { padding-top: 70px; }
 
+
+:target:before {
+  content:"";
+  display:block;
+  height:60px; /* fixed header height*/
+  margin:-60px 0 0; /* negative fixed header height */
+}
+
 .pagination {
   margin: 0px !important; 
 }

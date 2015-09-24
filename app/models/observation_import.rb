@@ -361,7 +361,7 @@ class ObservationImport
       puts "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 
       $observation.errors[:base] << "Row #{i}: User_id=#{row["user_id"]} doesn't exist" if User.where("id = ?", row["user_id"]).blank?
-      $observation.errors[:base] << "Row #{i}: User_id=#{row["user_id"]} is not your ID" if (user_id != row["user_id"] and not User.find_by_id(user_id).admin)
+      $observation.errors[:base] << "Row #{i}: User_id=#{row["user_id"]} is not your user ID." if (user_id != row["user_id"] and not User.find_by_id(user_id).admin)
       # $observation.errors[:base] << "Row #{i}: Access #{row["private"]} isn't assigned" if row["private"].blank?
 
       puts "specie_id: #{row["specie_id"].present?}".green

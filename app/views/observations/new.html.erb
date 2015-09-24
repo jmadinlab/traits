@@ -1,8 +1,8 @@
-<div class="col-md-8">
+<div class="col-md-8 col-md-offset-2">
   <h1>New observation</h1>
   <hr>
   
-  <p><label class="label label-danger">Warning</label> Please ensure that the species, location, resource (paper) and trait already exist in the database or you won't be able to find them in the searchable pull-down menus below. If you have multiple observations to enter, consider doing a <%= link_to "bulk import", "/imports/observations" %>.</p>
+  <p><label class="label label-danger">Warning</label> Please ensure that the species, location, resource (paper) and trait already exist in the database or you won't be able to find them in the searchable pull-down menus below. If you have multiple observations to enter, consider doing a <%= link_to "spreadsheet import", "/observation_imports/new" %>.</p>
 
   <%= render 'form' %>
 

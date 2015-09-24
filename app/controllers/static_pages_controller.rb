@@ -34,9 +34,6 @@ class StaticPagesController < ApplicationController
     @trait = Trait.find(params[:id])
   end
 
-  def about
-  end
-
   def procedures
   end
 

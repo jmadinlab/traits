@@ -55,7 +55,7 @@ Traits::Application.configure do
   config.assets.debug = true
 
   # Google Analytics code
-  GA.tracker = "UA-51287714-1"
+  # GA.tracker = "UA-51287714-1"
 end
 
 # MandrillMailer.configure do |config|

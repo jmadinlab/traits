@@ -1,6 +1,6 @@
 # Contributors
 ***
 
-The Coral Trait Database replies on contributors who add data to the database.
+The Coral Trait Database relies on contributors who add data to the database.
 
 (List automatically generated)

@@ -3,14 +3,14 @@
 <div class="col-md-8">
 
 
-  <label class="label label-danger">Under Review</label>
+  <!-- <label class="label label-danger">Under Review</label> -->
   <%= markdown File.open(Rails.root + "public/procedures.md", 'r').read %>
 
 
 </div>
 
 <div class="col-md-4">
-  <ul class="list-group">
+  <ul class="list-group" style="position:fixed;padding-right:50px;">
     <li class="list-group-item">              
       <%= markdown File.open(Rails.root + "public/procedures_contents.md", 'r').read %>
     </li>
