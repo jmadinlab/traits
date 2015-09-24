@@ -12,7 +12,11 @@
     <%= render 'layouts/shim' %>
   </head>
   
-  <body>
+  <% if action_name == 'home' %>
+    <body class="home">
+  <% else %>
+    <body>
+  <% end %>
     
     <% if ENV["SITE_DEV"] == 'true' %>
       <div style="position:absolute;"><font color="red">DEVELOPMENT</font></div>
