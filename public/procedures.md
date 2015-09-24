@@ -181,7 +181,8 @@ The first six required columns are associated with the observation.
 
 `resource_id` is the unique ID of the resource (paper) where the observation was published. `resource_id` can be empty for unpublished data, in which case `access` must be private (0) until the data are published and the published resource is entered. In the example the resource_id 606 is [Gleason et al. (2009)](/resources/606).
 
-[![import_example1.png](/images/import_example1_small.png)](/images/import_example1.png)
+<a href="/images/import_example1.png"><img src="/images/import_example1_small.png" class="img-responsive" /></a>
+
 
 #### Measurement-level data
 
