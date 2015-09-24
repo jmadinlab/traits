@@ -147,10 +147,16 @@ class ResourcesController < ApplicationController
       end
     end
 
+    puts @doi["message"].green
+
     if @doi and not @doi == "Invalid"
       authors = ""
       @doi["message"]["author"].each do |a|
-        authors = authors + "#{a["family"].titleize}, #{a["given"].titleize}, "
+        if a["family"]
+          authors = authors + "#{a["family"].titleize}, #{a["given"].titleize}, "
+        else
+          authors = authors + "#{a.titleize}, "
+        end
       end
 
       @resource.author = authors
@@ -195,7 +201,12 @@ class ResourcesController < ApplicationController
     if @doi and not @doi == "Invalid"
       authors = ""
       @doi["message"]["author"].each do |a|
-        authors = authors + "#{a["family"].titleize}, #{a["given"].titleize}, "
+        if a["family"].present?
+          authors = authors + "#{a["family"].titleize}, "
+        end
+        if a["given"].present?
+          authors = authors + "#{a["given"].titleize}, "
+        end
       end
 
       params[:resource][:author] = authors
