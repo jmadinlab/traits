@@ -19,23 +19,17 @@
     <% end %>
 
     <div class="container">
-          <%= render 'layouts/header' %>
+      <%= render 'layouts/header' %>
 
-          <!-- <div class="alert alert-danger" role="alert">The Coral Traits Database is under review for release in approximately November 2014. Please feel free to use the database, but be aware that changes might occur.</div> -->
+      <% flash.each do |key, value| %>
+        <div class="alert alert-<%= key %>"><%= value %></div>
+      <% end %>
 
-          <!-- <div class="col-md-10 col-md-offset-1"> -->
-            <% flash.each do |key, value| %>
-              <div class="alert alert-<%= key %>"><%= value %></div>
-            <% end %>
+      <%= yield %>
 
-            <%= yield %>
-          <!-- </div> -->
-            	
-          <%# render partial: "layouts/google_analytics" %>
+      <% render partial: "layouts/google_analytics" %>
 
-          <%#= render 'layouts/footer' %>
-          <%#= debug(params) if Rails.env.development? %>
-        </div>
-
+      <%#= debug(params) if Rails.env.development? %>
+    </div>
   </body>
 </html>
