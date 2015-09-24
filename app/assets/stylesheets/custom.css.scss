@@ -3,6 +3,13 @@
 
 body { padding-top: 70px; }
 
+body { 
+  background: url(/images/outer_reef_2a_fade.JPG) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
 
 :target:before {
   content:"";

@@ -110,7 +110,7 @@ class TraitsController < ApplicationController
 
   #        data_table.sort(1)
 
-          option = { width: 300, height: 250, legend: 'none' }
+          option = { width: 250, height: 250, legend: 'none' }
           @chart = GoogleVisualr::Interactive::PieChart.new(data_table, option)
         else
           data_table.new_column('number')
@@ -126,9 +126,9 @@ class TraitsController < ApplicationController
           end
 
           if @trait.log_data
-            option = { width: 300, height: 250, legend: 'none', :vAxis => { :title => "Frequency" }, :hAxis => { :title => "#{@trait.trait_name} (#{@trait.standard.standard_unit}), log10" } }
+            option = { width: 250, height: 250, legend: 'none', :vAxis => { :title => "Frequency" }, :hAxis => { :title => "#{@trait.trait_name} (#{@trait.standard.standard_unit}), log10" } }
           else
-            option = { width: 300, height: 250, legend: 'none', :vAxis => { :title => "Frequency" }, :hAxis => { :title => "#{@trait.trait_name} (#{@trait.standard.standard_unit})" } }
+            option = { width: 250, height: 250, legend: 'none', :vAxis => { :title => "Frequency" }, :hAxis => { :title => "#{@trait.trait_name} (#{@trait.standard.standard_unit})" } }
           end
 
           @chart = GoogleVisualr::Interactive::Histogram.new(data_table, option)
