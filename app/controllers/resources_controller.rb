@@ -152,11 +152,11 @@ class ResourcesController < ApplicationController
     if @doi and not @doi == "Invalid"
       authors = ""
       @doi["message"]["author"].each do |a|
-        if a["given"].present?
-          authors = authors + "#{a["given"].titleize}, "
-        end
         if a["family"].present?
           authors = authors + "#{a["family"].titleize}, "
+        end
+        if a["given"].present?
+          authors = authors + "#{a["given"].titleize}, "
         end
       end
 
@@ -202,11 +202,11 @@ class ResourcesController < ApplicationController
     if @doi and not @doi == "Invalid"
       authors = ""
       @doi["message"]["author"].each do |a|
-        if a["given"].present?
-          authors = authors + "#{a["given"].titleize}, "
-        end
         if a["family"].present?
           authors = authors + "#{a["family"].titleize}, "
+        end
+        if a["given"].present?
+          authors = authors + "#{a["given"].titleize}, "
         end
       end
 
