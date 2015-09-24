@@ -1,5 +1,4 @@
 # Procedures
-***
 
 The Coral Trait Database is an open source research initiative that aims to make all observations and measurements of Scleractinian corals accessible in order to more rapidly advance coral reef science. Anyone collecting coral trait data (e.g., collected in field and laboratory studies, extracted from the literature, or by other means) can join and contribute to the growing data compilation. Contributors have control over the privacy of their data and greatly benefit from being able to download complementary public data from the database in a standard format for use in their analyses. We hope that private data will become public once the contributor has published them, which will subsequently be cited when their data are used in analyses by other people. The citation system has been carefully designed to ensure full transparency about the origin of each individual data point as well as larger data compilations of other peoples' data (such as data extracted from literature for meta-analyses).
 

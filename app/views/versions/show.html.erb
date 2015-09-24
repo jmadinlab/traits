@@ -1,87 +1,106 @@
+<div class="col-md-12">
+  <h3> Version <%= @version.id %> | <%= @version.item_type %></h3>
+        
+  <%= link_to 'Back', history_path, class: "btn btn-xs btn-default" %>
+        
+  <h4>Updated fields</h4>
 
-    <div class="panel panel-info">
-      <div class="panel-heading">
-        <h3 class="panel-title"> Version <%= @version.id %> | <%= @version.item_type %></h3>
+  <ul class="list-group">
+    <li class="list-group-item">             
+      <div class="row">
+        <div class="col-md-4">
+          <strong>Field</strong>
+        </div>
+        <div class="col-md-4">
+          <strong>Previous Value</strong>
+        </div>
+        <div class="col-md-4">
+          <strong>Updated Value</strong>
+        </div>
       </div>
-      <div class = "panel-body">
-        
-        
-        
-        <!--
-          <pre><%= @version.changeset %></pre>
-        -->
-        <% keys = [] %>
-        
-        <% if @version.changeset.size > 0 %>
-          <table class="table">
-            <tr>
-              <th> Field </th>
-              <th> Original Value </th>
-              <th> Updated Value </th>
+    </li>
 
-            </tr>
-            
-            <% @version.changeset.each do |key, value| %>
-              <% if key != "updated_at" %>
-                
-                <% keys.append(key) %>
-                <tr>
-
-                  <td> <b> <%= key %> </b>  </td>
-                  <td><%= value[0] %> </td>
-                  <td><%= value[1] %> </td>
-                </tr>
-              <% end %>
-            <% end %>
-          </table>
-        <% end %>
-
-        <h4>Original Object </h4>
-        <table class="table table-striped table-hover">
-          <% if @object.size == 0 %>
-            Since this is a newly created object, its original object is not available.
-          <% else %>
-            <% @object.each do |field, value| %>
-              <% if keys.include? field %>
-                <tr class="danger"> 
-              <% else %>
-                <tr>
-              <% end %>
-
-                <td><b> <%= field  %> </b> </td>
-                <td> <%= value %>   </td>
-              </tr>
-            <% end %>
-          <% end %>
-      
-        </table>
-
-      
-
-      <div class="alert alert-danger">
-      <b>User:</b>
-      <% if @version.whodunnit && @version.whodunnit != 'Guest' %>
-        <% user = User.find_by_id(@version.whodunnit) %>
-        <% if user %>
-          <%= user.name %>
+    <% keys = [] %>    
+    <% if @version.changeset.size > 0 %>
+      <% @version.changeset.each do |key, value| %>
+        <% if key != "updated_at" %>
           
+          <% keys.append(key) %>
+          <li class="list-group-item list-group-item-success">
+            <div class="row">
+              <div class="col-md-4">
+                <%= key %>
+              </div>
+              <div class="col-md-4">
+                <%= value[0] %>
+              </div>
+              <div class="col-md-4">
+                <%= value[1] %>
+              </div>
+            </div>
+          </li>
         <% end %>
-      <% else %>
-        Guest
       <% end %>
-      
-     &nbsp;&nbsp;&nbsp;&nbsp;
-      
-      <b>Remote address:</b> <%= @version.ip %>
-&nbsp;          
-          <b>Target:</b> <%= @version.item_type %>
-          <small>(id: <%= @version.item_id %>)</small>; <b>action:</b> <%= @version.event %>;
-          &nbsp;          
-          <b>Date:</b> <%= l(@version.created_at, format: '%B %e at %l:%M %p') %> 
-          &nbsp;
-          <%= link_to 'Revert Back', "/revert/#{@version.id}" ,class: "btn btn-danger btn-md ", :method => :post%>
-            
-        </div>
-        </div>
+    <% end %>
+  </ul>
 
-        </div> <!-- End panel -->
+  <h4>Original object</h4>
+  <ul class="list-group">
+    <% if @object.size == 0 %>
+      <li class="list-group-item">
+        <p>Since this is a newly created object, its original object is not available.</p>
+      </li>
+    <% else %>
+      <% @object.each do |field, value| %>
+        <% if keys.include? field %>
+          <li class="list-group-item list-group-item-danger">
+        <% else %>
+          <li class="list-group-item">
+        <% end %>
+
+          <div class="row">
+            <div class="col-md-4">
+              <strong><%= field %></strong>
+            </div>
+            <div class="col-md-4">
+              <%= value %>
+            </div>
+          </div>
+        </li>
+      <% end %>
+    <% end %>
+  </ul>
+
+
+  <ul class="list-group">
+    <li class="list-group-item">             
+      <div class="row">
+        <div class="col-md-2">
+          Changed by:</b>
+          <% if @version.whodunnit && @version.whodunnit != 'Guest' %>
+            <% user = User.find_by_id(@version.whodunnit) %>
+            <% if user %>
+              <%= link_to "#{user.name} #{user.last_name}", user %>
+            <% end %>
+          <% else %>
+            Guest
+          <% end %>
+        </div>
+        <div class="col-md-2">
+          IP address: <%= @version.ip %>
+        </div>
+        <div class="col-md-3">
+          Target: <%= @version.item_type %> id=<%= @version.item_id %> (<%= @version.event %>)
+        </div>
+        <div class="col-md-3">
+          Date: <%= @version.created_at %>
+        </div>
+        <div class="col-md-2">
+          <%= link_to 'Revert', "/revert/#{@version.id}" ,class: "btn btn-xs btn-danger", :method => :post %>
+        </div>
+      </div>
+    </li>
+  </ul>
+
+
+</div>

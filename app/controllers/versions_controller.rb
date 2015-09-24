@@ -3,11 +3,9 @@ class VersionsController < ApplicationController
   before_action :editor
   
   def index
-
-    @versions = PaperTrail::Version.order('created_at DESC').paginate(:page => params[:page], :per_page => 20)
+    @versions = PaperTrail::Version.order('created_at DESC').paginate(page: params[:page])
     
-    @versions_by_item = params[:type] ? PaperTrail::Version.where(item_type: params[:type]).paginate(:page=> params[:page], :per_page => 20) : @versions
-    
+    @versions_by_item = params[:type] ? PaperTrail::Version.where(item_type: params[:type]).paginate(page: params[:page]) : @versions
   end
 
   def show
@@ -17,7 +15,6 @@ class VersionsController < ApplicationController
       @object_fields = ''
       @object = []
     else
-
       @object_fields = @version.object.split("\n")
 
       # ignoring the first item which is '---'
@@ -25,10 +22,8 @@ class VersionsController < ApplicationController
       @object = []
       @object_fields.each do |obj|
         @object.append([ obj.split(":")[0], obj.split(":")[1] ])
-        
       end
-    end
-    
+    end    
   end
 
   def revert_back
@@ -42,10 +37,10 @@ class VersionsController < ApplicationController
         # revert back for create action
         @version.item.destroy
       end
-      flash[:success] = ' Successfully Reverted back to the version'
+      flash[:success] = 'Successfully reverted back to previous version'
 
     rescue
-      flash[:alert] = 'Revert Failed'
+      flash[:alert] = 'Revert failed'
     ensure 
       redirect_to history_path
     end

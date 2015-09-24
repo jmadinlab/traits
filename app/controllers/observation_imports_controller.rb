@@ -27,7 +27,9 @@ class ObservationImportsController < ApplicationController
       # @observations = Observation.where(:approval_status => "pending")
     # end
 
-    @observations = Observation.where(:approval_status => "pending", :id => Measurement.joins(:trait).where("traits.user_id = ?", current_user.id).map(&:observation_id))
+    # @observations = Observation.where(:approval_status => "pending", :id => Measurement.joins(:trait).where("traits.user_id = ?", current_user.id).map(&:observation_id))
+
+    @observations = Observation.where(:approval_status => "pending", :id => Measurement.joins(:trait).where("traits.user_id = ?", current_user.id).map(&:observation_id)).paginate(page: params[:page])
 
     # @observations = Observation.where(:approval_status => 'pending').joins(measurements: :trait).where("trait.user_id = ?", current_user.id)
 

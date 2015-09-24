@@ -1,91 +1,51 @@
 <% provide(:title, 'History') %>
 
-<h1>History</h1>
+<div class="col-md-12">
 
-<%= will_paginate @versions_by_item %> <br/>
+  <h1>History</h1>
 
-Filter by: <%= link_to "All", '/history' %> |  <%= link_to "User", '/history?type=User' %> |  <%= link_to "Species", '/history?type=Specie' %> | <%= link_to "Measurements", '/history?type=Measurement' %> |  <%= link_to "Trait", '/history?type=Trait' %> |  <%= link_to "Observation", '/history?type=Observation' %> |  <%= link_to "Location", '/history?type=Location' %> |  <%= link_to "Resource", '/history?type=Resource' %> |  
+  <p>Filter by: <%= link_to "All", '/history' %> |  <%= link_to "User", '/history?type=User' %> |  <%= link_to "Species", '/history?type=Specie' %> | <%= link_to "Measurements", '/history?type=Measurement' %> |  <%= link_to "Trait", '/history?type=Trait' %> |  <%= link_to "Observation", '/history?type=Observation' %> |  <%= link_to "Location", '/history?type=Location' %> |  <%= link_to "Resource", '/history?type=Resource' %> |  </p>
 
-<br/><br/>
+  <% if @versions_by_item.empty? %>
+    <%= render "shared/no_observations" %>
+  <% else %>
 
-<ul class="list-group">
-  <% @versions_by_item.each do |version| %>
-  
+    <%= will_paginate @versions_by_item, :inner_window => 1, :outer_window => 0 %>
 
-  <div class="panel panel-info">
-    <div class="panel-heading">
-      <a href="#"><h3 class="panel-title"> Version <%= version.id %> | <%= version.item_type %> </h3></a>
-    </div>
-    <div class = "panel-body">
+    <ul class="list-group">
+      <% @versions_by_item.each do |version| %>
       
-      <!--
-        <pre><%= version.changeset %></pre>
-      -->
-      <% if version.changeset.size > 0 %>
-        <table class="table table-condensed">
-          <tr>
-            <th> Field </th>
-            <th> Original Value </th>
-            <th> Updated Value </th>
+        <li class="list-group-item">             
 
-          </tr>
-
-          <% version.changeset.each do |key, value| %>
-            <% if key != "updated_at" %>
-              <tr>
-                <td> <b> <%= key %> </b>  </td>
-                <td><%= value[0] %> </td>
-                <td><%= value[1] %> </td>
-              </tr>
-            <% end %>
-          <% end %>
-        </table>
-      <% else %>
-        <%= version.item_type %> with id <%= version.item_id %> <b>DELETED</b>  <br/><br/>
+          <div class="row">
+            <div class="col-md-3">
+              <%= version.created_at.to_s(:ctdb_date) %>
+            </div>
+            <div class="col-md-3">
+              <%= version.item_type %> ID: <%= version.item_id %>
+            </div>
+            <div class="col-md-3">
+              <% if version.whodunnit && version.whodunnit != 'Guest' %>
+                <% user = User.find_by_id(version.whodunnit) %>
+                <% if user %>
+                  <%= link_to "#{user.name} #{user.last_name}", user %>
+                <% end %>
+              <% else %>
+                Guest
+              <% end %>
+            </div>
+            <div class="col-md-3">
+              <div class="btn-group pull-right">
+                <%= link_to 'View', "/history/#{version.id}", class: "btn btn-xs btn-default" %>
+                <%= link_to 'Revert', "/revert/#{version.id}" ,class: "btn btn-xs btn-danger", :method => :post %>
+              </div>
+            </div>
+          </div>
+        </li>
       <% end %>
-  
+    </ul>
 
-    
-
-    <div class="alert alert-danger">
-    <b>User:</b>
-    <% if version.whodunnit && version.whodunnit != 'Guest' %>
-      <% user = User.find_by_id(version.whodunnit) %>
-      <% if user %>
-        <%= user.name %>
-        
-      <% end %>
-    <% else %>
-      Guest
-    <% end %>
-    
-   &nbsp;&nbsp;&nbsp;&nbsp;
-    
-    <b>Remote address:</b> <%= version.ip %>
-&nbsp;          
-        <b>Target:</b> <%= version.item_type %>
-        <small>(id: <%= version.item_id %>)</small>; <b>action:</b> <%= version.event %>;
-        &nbsp;          
-        <b>Date:</b> <%= l(version.created_at, format: '%B %e at %l:%M %p') %> 
-        &nbsp;
-
-        <%= link_to 'View Change', "/history/#{version.id}", class: "btn btn-primary" %>
-        
-        <%= link_to 'Revert Back', "/revert/#{version.id}" ,class: "btn btn-danger btn-md ", :method => :post%>
-          
-      </div>
-      </div>
-
-      </div> <!-- End panel -->
-
-            <!--
-            <pre><%= version.object %></pre>
-
-          -->
-        
-      
-      
+    <%= will_paginate @versions_by_item %>
   <% end %>
-</ul>
-<%= will_paginate @versions_by_item %>
 
+</div>

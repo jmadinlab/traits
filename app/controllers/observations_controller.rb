@@ -102,7 +102,7 @@
   # GET /observations.json
   def index
 
-  puts "#{current_user.id}".green
+    puts "#{current_user.id}".green
 
     @search = Observation.search do
       fulltext params[:search]

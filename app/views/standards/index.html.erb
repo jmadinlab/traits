@@ -40,16 +40,22 @@
 
 					<div class="col-sm-3">
 					</div>
-				
-				 	<div class="col-sm-3">
-				 		<p class="pull-right">
-							<% if not params[:all] %>
-                  				<%= render "shared/access_counts", :itemid1 => standard.id %>
-							<% end %>
-							<%= check_box_tag "checked[]", standard.id %>
-							</p>
-					</div>
 
+          <% if not params[:all] %>
+            <div id="countlist" class="col-sm-3">
+              <p class="pull-right">
+                <%= render "shared/access_counts", :itemid1 => standard.id %>
+                <%= check_box_tag "checked[]", standard.id %>
+              </p>
+            </div>
+          <% else %>
+            <div class="col-sm-3">
+              <p class="pull-right">
+                <%= check_box_tag "checked[]", standard.id %>
+              </p>
+            </div>
+          <% end %>
+				
 		  	</div>
 			</li>
 	  <% end %>

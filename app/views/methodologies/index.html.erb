@@ -28,14 +28,20 @@
 		        <div class="col-sm-3">
 						</div>
 
-					 	<div class="col-sm-3" id="countlist">
-					 		<p class="pull-right">
-								<%# if not params[:all] %>
+            <% if not params[:all] %>
+              <div id="countlist" class="col-sm-3">
+                <p class="pull-right">
                   <%= render "shared/access_counts", :itemid1 => methodology.id %>
-								<%# end %>
-								<%= check_box_tag "checked[]", methodology.id %>
-								</p>
-						</div>
+                  <%= check_box_tag "checked[]", methodology.id %>
+                </p>
+              </div>
+            <% else %>
+              <div class="col-sm-3">
+                <p class="pull-right">
+                  <%= check_box_tag "checked[]", methodology.id %>
+                </p>
+              </div>
+            <% end %>
 
 					</div>
 				</li>

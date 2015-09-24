@@ -1,6 +1,6 @@
 <% model = request.original_url.split("/").last.split("?").first %>
 <h1><%= model.capitalize %></h1>
-<hr>
+
 <div class="btn-group pull-left">
   <% if params[:all] %>
   	<%= link_to "Paginate", "#{model}", class: "btn btn-default" %>

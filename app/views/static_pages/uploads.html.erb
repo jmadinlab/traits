@@ -1,27 +1,13 @@
 <% provide(:title, 'Uploads') %>
 
-<div class="row">
-  <div class="col-md-8 col-md-offset-2">
+<div class="col-md-12">
 
-    <div class="page-header">
-      <h1>Uploads</h1>
-    </div>
+  <h1>Uploads</h1>
 
-    <h3>CSV</h3>
+  <ul>
+  <% Dir["public/uploads/*.csv"].each do |file| %>
+    <li><%= link_to file.split("/")[2], file[/\/.*/] %></li>
+  <% end %>
+  </ul>
 
-    <ul>
-    <% Dir["public/uploads/*.csv"].each do |file| %>
-      <li><%= link_to file.split("/")[2], file[/\/.*/] %></li>
-    <% end %>
-    </ul>
-
-    <h3>Excel</h3>
-
-    <ul>
-    <% Dir["public/uploads/*.xls"].each do |file| %>
-      <li><%= link_to file.split("/")[2], file[/\/.*/] %></li>
-    <% end %>
-    </ul>
-
-  </div>
 </div>

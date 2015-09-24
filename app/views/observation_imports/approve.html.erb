@@ -1,10 +1,17 @@
-<div class="page-header">
-  <h1>Approve import observations</h1>
+<div class="col-md-12">
+
+  <h1><%= current_user.name %> <%= current_user.last_name %>: observations for approval</h1>
+
+  <br>
+  <% if @observations.empty? %>
+    <p class="alert alert-danger">No records available.</p>
+  <% else %>
+    <%= will_paginate @observations, :inner_window => 1, :outer_window => 0 %>
+      
+    <%= render "shared/observations" %>
+
+    <br>
+    <%= will_paginate @observations, :inner_window => 1, :outer_window => 0 %>
+  <% end %>
+
 </div>
-
-<% if @observations.empty? %>
-  <p class="alert alert-danger">No records available.</p>
-<% else %>
-  <%= render "shared/observations" %>
-<% end %>
-
