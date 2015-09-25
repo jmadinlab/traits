@@ -154,40 +154,51 @@ class StaticPagesController < ApplicationController
   end
 
   def export_ready_resources
-    
-    @observations = Observation.where(:id => Trait.where("release_status = ?", "ready_for_release").collect { |t| t.measurements.map(&:observation_id)})
+    ids = Observation.joins(:measurements).where(:measurements => {:trait_id => Trait.where(:release_status => 'ready_for_release')}).map{|f| [f.resource_id, f.resource_secondary_id]}.uniq.compact
+    resources = Resource.where(:id => ids)
 
-    resources_string = CSV.generate do |csv|
-      Resource.where(:id => @observations.map(&:resource).uniq).each do |res|
-        csv << ["#{res.author}, #{res.title}. #{res.journal} #{res.volume_pages} (#{res.year}) DOI:#{res.doi_isbn}"]
+    header = ["id", "author", "year", "title", "resource_type", "doi_isbn", "journal", "volume_pages", "resource_notes"]
+    csv_string = CSV.generate do |csv|
+      csv << ["resource_id", "author", "year", "title", "resource_type", "doi_isbn", "journal", "volume_pages", "resource_notes"]
+      resources.each do |obs|
+        csv << obs.attributes.values_at(*header)
+      end
+    end
+    send_data csv_string, 
+     :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
+     :disposition => "attachment; filename=export_ready_resources_#{Date.today.strftime('%Y%m%d')}.csv"   
+  end
+
+  def export_ready
+    ids = Observation.joins(:measurements).where(:measurements => {:trait_id => Trait.where(:release_status => 'ready_for_release')}).map(&:id).join(',')
+    observations = Observation.find_by_sql("SELECT mea.observation_id, CASE WHEN obs.private='f' THEN 1 ELSE 0 END AS access, obs.user_id, obs.specie_id, spe.specie_name, obs.location_id, loc.location_name, CASE WHEN loc.latitude=0 THEN '' END AS latitude, CASE WHEN loc.longitude=0 THEN '' END AS longitude, obs.resource_id, obs.resource_secondary_id, mea.id, mea.trait_id, tra.trait_name, mea.standard_id, sta.standard_unit, mea.methodology_id, meth.methodology_name, mea.value, mea.value_type, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates, mea.notes
+      FROM observations AS obs
+        right OUTER JOIN species AS spe
+            ON spe.id = obs.specie_id
+        left OUTER JOIN locations AS loc
+            ON loc.id = obs.location_id
+        right OUTER JOIN measurements AS mea
+            ON mea.observation_id = obs.id
+        right OUTER JOIN traits AS tra
+            ON mea.trait_id = tra.id
+        right OUTER JOIN standards AS sta
+            ON mea.standard_id = sta.id
+        left OUTER JOIN methodologies AS meth
+            ON mea.methodology_id = meth.id
+      WHERE obs.private='f' AND obs.id IN (#{ids})
+      ORDER BY obs.id;")
+    header = ["observation_id", "access", "user_id", "specie_id", "specie_name", "location_id", "location_name", "latitude", "longitude", "resource_id", "resource_secondary_id", "measurement_id", "trait_id", "trait_name", "standard_id", "standard_unit", "methodology_id", "methodology_name", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates", "notes"]
+
+    csv_string = CSV.generate do |csv|
+      csv << header
+      observations.each do |obs|
+        csv << obs.attributes.values_at(*header)
       end
     end
 
-    send_data resources_string, 
+    send_data csv_string, 
      :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
-     :disposition => "attachment; filename=ready_resources_#{Date.today.strftime('%Y%m%d')}.csv"
-          
+     :disposition => "attachment; filename=export_ready_#{Date.today.strftime('%Y%m%d')}.csv"              
   end
-
-  # def export_release
-    
-  #   @observations = Observation.where(:id => Trait.where("release_status = ?", "ready_for_release").collect { |t| t.measurements.map(&:observation_id)})
-
-  #   send_zip(@observations)
-              
-  # end
-
-  # def export_release
-  #   # if params[:checked]
-  #   #   # @observations = Observation.where("private IS false").joins(:measurements).where(:measurements => {:trait_id => params[:checked]})
-  #   #   @observations = Observation.where(:id => Trait.where("release_status = ?", "ready_for_release").collect { |t| t.measurements.map(&:observation_id)})
-  #   # else
-  #   #   @observations = []
-  #   # end
-
-  #   @observations = Observation.where(:id => Trait.where("release_status = ?", "ready_for_release").collect { |t| t.measurements.map(&:observation_id)})
-
-  #   send_zip(@observations)
-  # end
 
 end

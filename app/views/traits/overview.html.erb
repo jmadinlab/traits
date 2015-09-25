@@ -43,18 +43,22 @@
 	<%= form_tag export_traits_path do %>
     <%= hidden_field_tag :release, :value => true %>
 
-	<div class="row">
-		<div class="col-md-12">
-	<ul class="list-group">
-	  <li class="list-group-item">							
-			<%= link_to 'Species-trait matrix', '/export_specie_trait', :action => 'export_specie_trait', class: "btn btn-default" %>
-			<%= link_to 'Location-trait matrix', '/export_location_trait', :action => 'export_location_trait', class: "btn btn-default" %>
-			<%= link_to 'Overview table', '/export_ready_trait', :action => 'export_ready_trait', class: "btn btn-default" %>
-			<%= submit_tag "Download Release", {class: "btn btn-success pull-right"} %>
-		</li>
-	</ul>
-	</div>
-	</div>
+  	<% if params[:release_status] == 'ready_for_release' %>
+			<div class="row">
+				<div class="col-md-12">
+					<ul class="list-group">
+					  <li class="list-group-item">							
+							<%= link_to 'Species-trait matrix', '/export_specie_trait', :action => 'export_specie_trait', class: "btn btn-default" %>
+							<%= link_to 'Location-trait matrix', '/export_location_trait', :action => 'export_location_trait', class: "btn btn-default" %>
+							<%= link_to 'Overview table', '/export_ready_trait', :action => 'export_ready_trait', class: "btn btn-default" %>
+							<%= link_to 'Export release data', '/export_ready', :action => 'export_ready', class: "btn btn-success" %>
+							<%= link_to 'Export release resources', '/export_ready_resources', :action => 'export_ready_resources', class: "btn btn-success" %>
+							<%#= submit_tag "Download Release", {class: "btn btn-success pull-right"} %>
+						</li>
+					</ul>
+				</div>
+			</div>
+		<% end %>
 
 
 		<ul class="list-group">
@@ -62,7 +66,7 @@
 				<div class="row">
 					<div class="col-md-2">
 				  </div>
-					<div class="col-md-2">
+					<div class="col-md-3">
 					  <strong>Description</strong>
 				  </div>
 					<div class="col-md-1">
@@ -71,13 +75,11 @@
 					<div class="col-md-2">
 					  <strong>Value range</strong>
 				  </div>
-					<div class="col-md-3">
+					<div class="col-md-2">
 					  <strong>Resources</strong>
 				  </div>
-					<div class="col-md-1">
-				  </div>
+					<div class="col-md-2">
 					  <strong>Measurements</strong>
-					<div class="col-md-1">
 				  </div>
 				</div>
 			</li>
@@ -96,7 +98,7 @@
 							<%= link_to "Resources", resources_trait_path(trait), class: "btn btn-default btn-xs" %>
 
 					  </div>
-						<div class="col-md-2">
+						<div class="col-md-3">
 						  <%= trait.trait_description %>
 					  </div>
 						<div class="col-md-1">
@@ -117,9 +119,9 @@
 						<div class="col-md-1">
 						  <%= Measurement.where("trait_id = ?", trait.id).joins(:observation).where("private IS false").size %>
 					  </div>
-						<div class="col-md-1">
-						  <%= check_box_tag "checked[]", trait.id, checked = true %>
-					  </div>
+<!-- 						<div class="col-md-1">
+						  <%#= check_box_tag "checked[]", trait.id, checked = true %>
+					  </div> -->
 				  </div>
 			  </li>
 			<% end %>

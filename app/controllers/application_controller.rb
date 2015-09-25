@@ -96,6 +96,7 @@ class ApplicationController < ActionController::Base
   # Return the main csv string depending upon the model (species data / traits data / lcation data etc)
 
   def download_observations(observations, taxonomy=nil, contextual=nil, global=nil)
+    puts "download_observations".green
 
     if request.url.include? 'resources.csv'
       csv_string = get_resources_csv(observations)
@@ -110,6 +111,8 @@ class ApplicationController < ActionController::Base
   end
 
   def get_main_csv(observations, taxonomy=nil, contextual=nil, global=nil)
+    puts "get_main_csv".green
+    
     csv_string = CSV.generate do |csv|
       if taxonomy == "on"
         csv << ["observation_id", "access", "user_id", "specie_id", "specie_name", "major_clade", "family_molecules", "family_morphology", "location_id", "location_name", "latitude", "longitude", "resource_id", "resource_secondary_id", "measurement_id", "trait_id", "trait_name", "standard_id", "standard_unit", "methodology_id", "methodology_name", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates", "notes"]
@@ -161,6 +164,7 @@ class ApplicationController < ActionController::Base
 
   # Return the resources csv
   def get_resources_csv(observations)
+    puts "get_resources_csv".green
     resources_string = CSV.generate do |csv|
         csv << ["resource_id", "primary_secondary", "author", "year", "title", "resource_type", "resource_ISBN", "resource_journal", "resource_volume_pages", "resource_notes"]
 
@@ -207,6 +211,7 @@ class ApplicationController < ActionController::Base
 
   # Return the zip file
   def send_zip(observations, taxonomy=nil, contextual=nil, global=nil)
+    puts "send_zip".green
     require 'rubygems'
     require 'zip'
 
