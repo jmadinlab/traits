@@ -157,9 +157,9 @@ class StaticPagesController < ApplicationController
     ids = Observation.joins(:measurements).where(:measurements => {:trait_id => Trait.where(:release_status => 'ready_for_release')}).map{|f| [f.resource_id, f.resource_secondary_id]}.uniq.compact
     resources = Resource.where(:id => ids)
 
-    header = ["id", "author", "year", "title", "resource_type", "doi_isbn", "journal", "volume_pages", "resource_notes"]
+    header = ["id", "author", "year", "title", "doi_isbn", "journal", "volume_pages"]
     csv_string = CSV.generate do |csv|
-      csv << ["resource_id", "author", "year", "title", "resource_type", "doi_isbn", "journal", "volume_pages", "resource_notes"]
+      csv << ["resource_id", "author", "year", "title", "doi_isbn", "journal", "volume_pages"]
       resources.each do |obs|
         csv << obs.attributes.values_at(*header)
       end
