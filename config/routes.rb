@@ -16,6 +16,7 @@ Traits::Application.routes.draw do
   # match '/meta/:id',     to: 'static_pages#show',    via: 'get', :as => :show_meta
 
   match '/resources/:id/expunge',     to: 'resources#expunge',    via: 'get', :as => :expunge_resource
+  match '/resources/:id/update',     to: 'resources#update',    via: 'get', :as => :update_resource
 
   resources :duplicates 
 

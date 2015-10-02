@@ -5,6 +5,8 @@ class TraitsController < ApplicationController
   before_action :set_trait, only: [:show, :edit, :update, :destroy, :duplicates, :meta, :resources]
   before_action :admin_user, only: :destroy
 
+  skip_before_filter :verify_authenticity_token, :only => [:update]
+
   # GET /traits
   # GET /traits.json
   def index

@@ -183,6 +183,16 @@ class ResourcesController < ApplicationController
   # PATCH/PUT /resources/1.json
   def update
 
+    puts "RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR"
+    puts @resource.to_json
+
+    if params[:resource].blank?
+      params[:resource] = @resource.attributes
+    end
+
+    puts "RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR"
+    puts params[:resource]
+
     if params[:resource][:doi_isbn].present?
       begin
         @doi = JSON.load(open("https://api.crossref.org/works/#{params[:resource][:doi_isbn]}"))
@@ -196,19 +206,34 @@ class ResourcesController < ApplicationController
       end
     end
 
-    puts "----------------------------------------------- HERE ---"
-    puts @doi
 
     if @doi and not @doi == "Invalid"
-      authors = ""
+      authors = []
       @doi["message"]["author"].each do |a|
         if a["family"].present?
-          authors = authors + "#{a["family"].titleize}, "
+          authors << a["family"].titleize
         end
         if a["given"].present?
-          authors = authors + "#{a["given"].titleize}, "
+          given = a["given"].split(/ |,/)
+          if given.length > 1
+            temp = []
+            given.each do |g|
+              temp << "#{g[0].capitalize}."
+            end
+            authors << temp.join(" ")
+          else
+            puts "----------------------------------------------- HERE ---"
+            puts a["given"]
+            puts "----------------------------------------------- HERE ---"
+            if a["given"].length == 2 and not a["given"].include? "."
+              authors << "#{a["given"][0]}. #{a["given"][1]}."
+            else
+              authors << "#{a["given"][0].titleize}."
+            end
+          end
         end
       end
+      authors = authors.join(", ")
 
       params[:resource][:author] = authors
       params[:resource][:year] = @doi["message"]["issued"]["date-parts"][0][0]

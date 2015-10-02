@@ -56,6 +56,7 @@
       <div class="btn-group pull-right">
         <%= link_to 'Delete', @resource, method: :delete, data: { confirm: 'Delete entire resource, including observations and measurements?' }, class: "btn btn-xs btn-danger" %>
         <%= link_to 'Expunge', expunge_resource_path(@resource), data: { confirm: 'Delete all associated observations and measuerments for this resource?' }, class: "btn btn-xs btn-warning" %>
+        <%= link_to 'Update', update_resource_path(@resource), class: "btn btn-xs btn-success" %>
       </div>
     <% end %>
 	</p>
