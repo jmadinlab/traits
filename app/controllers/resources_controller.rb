@@ -1,6 +1,6 @@
 class ResourcesController < ApplicationController
 
-  before_action :contributor, except: [:index, :show, :export]
+  before_action :contributor, except: [:index, :show, :export, :update]
   before_action :admin_user, only: [:destroy, :expunge, :status]
   before_action :set_resource, only: [:show, :edit, :update, :destroy, :expunge, :doi, :duplicates]
 
