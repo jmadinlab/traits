@@ -195,7 +195,7 @@ class ResourcesController < ApplicationController
     puts "RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR"
     puts params[:resource]
 
-    if params[:resource][:doi_isbn].present?
+    if params[:resource][:doi_isbn].present? and (params[:resource][:resource_type] == "paper" or params[:resource][:resource_type].blank?)
       begin
         @doi = JSON.load(open("https://api.crossref.org/works/#{params[:resource][:doi_isbn]}"))
         if @doi["message"]["author"][0]["family"] == "Peresson"
