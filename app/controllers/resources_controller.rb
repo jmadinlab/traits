@@ -239,51 +239,19 @@ class ResourcesController < ApplicationController
       params[:resource][:volume_pages] = "#{@doi["message"]["volume"]}, #{@doi["message"]["page"]}"
 
     else
-      author_vec = []
-      authors = params[:resource][:author].split(",")
-      authors.each do |author|
-        temp = author.strip.split(" ")
-        author_vec << temp[0]
-        i_vec = []
-        temp[1].split("").each do |i|
-          i_vec << "#{i}."
-        end
-        author_vec << i_vec.join(" ")
-      end
-      params[:resource][:author] = author_vec.join(", ")
-
-      # puts "----------------------------------------------- HERE ---"
-      # puts final
-      # puts "----------------------------------------------- HERE ---"
-
-      # authors = []
-      # @doi["message"]["author"].each do |a|
-      #   if a["family"].present?
-      #     authors << a["family"].titleize
+      # author_vec = []
+      # authors = params[:resource][:author].split(",")
+      # authors.each do |author|
+      #   temp = author.strip.split(" ")
+      #   author_vec << temp[0]
+      #   i_vec = []
+      #   temp[1].split("").each do |i|
+      #     i_vec << "#{i}."
       #   end
-      #   if a["given"].present?
-      #     given = a["given"].split(/ |,/)
-      #     if given.length > 1
-      #       temp = []
-      #       given.each do |g|
-      #         temp << "#{g[0].capitalize}."
-      #       end
-      #       authors << temp.join(" ")
-      #     else
-      #       puts "----------------------------------------------- HERE ---"
-      #       puts a["given"]
-      #       puts "----------------------------------------------- HERE ---"
-      #       if a["given"].length == 2 and not a["given"].include? "."
-      #         authors << "#{a["given"][0]}. #{a["given"][1]}."
-      #       else
-      #         authors << "#{a["given"][0].titleize}."
-      #       end
-      #     end
-      #   end
+      #   author_vec << i_vec.join(" ")
       # end
-      # authors = authors.join(", ")
+      # params[:resource][:author] = author_vec.join(", ")
 
-      # params[:resource][:author] = authors      
     end
 
 
