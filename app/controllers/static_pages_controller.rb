@@ -171,7 +171,7 @@ class StaticPagesController < ApplicationController
 
   def export_ready
     ids = Observation.joins(:measurements).where(:measurements => {:trait_id => Trait.where(:release_status => 'ready_for_release')}).map(&:id).join(',')
-    observations = Observation.find_by_sql("SELECT mea.observation_id, CASE WHEN obs.private='f' THEN 1 ELSE 0 END AS access, obs.user_id, obs.specie_id, spe.specie_name, obs.location_id, loc.location_name, CASE WHEN loc.latitude=0 THEN '' END AS latitude, CASE WHEN loc.longitude=0 THEN '' END AS longitude, obs.resource_id, obs.resource_secondary_id, mea.id, mea.trait_id, tra.trait_name, mea.standard_id, sta.standard_unit, mea.methodology_id, meth.methodology_name, mea.value, mea.value_type, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates, mea.notes
+    observations = Observation.find_by_sql("SELECT mea.observation_id, CASE WHEN obs.private='f' THEN 1 ELSE 0 END AS access, obs.user_id, obs.specie_id, spe.specie_name, obs.location_id, loc.location_name, CASE WHEN loc.latitude=0 THEN NULL ELSE loc.latitude END AS latitude, CASE WHEN loc.longitude=0 THEN NULL ELSE loc.longitude END AS longitude, obs.resource_id, obs.resource_secondary_id, mea.id, mea.trait_id, tra.trait_name, mea.standard_id, sta.standard_unit, mea.methodology_id, meth.methodology_name, mea.value, mea.value_type, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates, mea.notes
       FROM observations AS obs
         right OUTER JOIN species AS spe
             ON spe.id = obs.specie_id
