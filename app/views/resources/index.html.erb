@@ -26,7 +26,7 @@
 		        </div>
 
 		        <div class="col-sm-7">
-		        	<%= link_to resource.author, resource %>
+		        	<%= link_to resource.author.html_safe, resource %>
 		        	<% if resource.year %>
 			        	(<%= resource.year %>)
 	    				<% end %>		

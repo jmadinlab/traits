@@ -183,6 +183,8 @@ class ResourcesController < ApplicationController
   # PATCH/PUT /resources/1.json
   def update
 
+    require 'uri'
+
     puts "RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR"
     puts @resource.to_json
 
@@ -211,7 +213,7 @@ class ResourcesController < ApplicationController
       authors = []
       @doi["message"]["author"].each do |a|
         if a["family"].present?
-          authors << a["family"].titleize
+          authors << a["family"]
         end
         if a["given"].present?
           given = a["given"].split(/ |,/)

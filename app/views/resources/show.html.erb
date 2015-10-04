@@ -4,11 +4,11 @@
   <h3>
 
 			<p>
-			  <%= @resource.author %>
+			  <%= @resource.author.html_safe %>
 				<% if @resource.year %>
 			  	(<%= @resource.year %>)
 				<% end %>
-			  <%= @resource.title %>.
+			  <%= @resource.title.html_safe %>.
 				<% if @resource.journal %>
 			  	<em><%= @resource.journal %></em>
 				<% end %>

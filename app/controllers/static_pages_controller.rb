@@ -196,7 +196,7 @@ class StaticPagesController < ApplicationController
       end
     end
 
-    send_data csv_string, 
+    send_data csv_string.html_safe, 
      :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
      :disposition => "attachment; filename=export_ready_#{Date.today.strftime('%Y%m%d')}.csv"              
   end
