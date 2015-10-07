@@ -40,7 +40,7 @@ gem 'roo'
 gem 'paper_trail', '~> 3.0.1'
 
 # using mandrill for mailer
-#gem 'mandrill_mailer'
+gem 'mandrill_mailer'
 
 # using google analytics gem
 gem 'google-analytics-rails'

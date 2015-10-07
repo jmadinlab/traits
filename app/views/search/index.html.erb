@@ -39,7 +39,7 @@
 			<h4><%= link_to "Species", species_path(search: params[:search]) %></h4>
 		<% end %>
 		<ul class="list-group">
-			<% @specie_search.results.sort_by{|e| e[:specie_name]}.each do |s| %>
+			<% @specie_search.results.each do |s| %>
 	     	<li class="list-group-item">							
 					<%= link_to s.specie_name, s %>
 					<% if s.synonyms.size > 0 %>
@@ -59,7 +59,7 @@
 			<h4><%= link_to "Traits", traits_path(search: params[:search]) %></h4>
 		<% end %>
 		<ul class="list-group">
-			<% @trait_search.results.sort_by{|e| e[:trait_name]}.each do |s| %>
+			<% @trait_search.results.each do |s| %>
 	     	<li class="list-group-item">							
 					<%= link_to s.trait_name, s %>
 				</li>
@@ -72,7 +72,7 @@
 			<h4><%= link_to "Standards", standards_path(search: params[:search]) %></h4>
 		<% end %>
 		<ul class="list-group">
-			<% @standard_search.results.sort_by{|e| e[:standard_name]}.each do |s| %>
+			<% @standard_search.results.each do |s| %>
 	     	<li class="list-group-item">							
 					<%= link_to s.standard_name, s %>
 					<% if s.standard_unit %>
@@ -89,7 +89,7 @@
 			<h4><%= link_to "Locations", locations_path(search: params[:search]) %></h4>
 		<% end %>
 		<ul class="list-group">
-			<% @location_search.results.sort_by{|e| e[:location_name]}.each do |s| %>
+			<% @location_search.results.each do |s| %>
 	     	<li class="list-group-item">							
 					<%= link_to s.location_name, s %>
 					(lat: <%= s.latitude %>, lon: <%= s.longitude %>)
@@ -103,7 +103,7 @@
 			<h4><%= link_to "Resources", resources_path(search: params[:search]) %></h4>
 		<% end %>
 		<ul class="list-group">
-			<% @resource_search.results.sort_by{|e| e[:title]}.each do |s| %>
+			<% @resource_search.results.each do |s| %>
 	     	<li class="list-group-item">							
 		        	<%= link_to s.author, s %>
 		        	<% if s.year %>
@@ -126,7 +126,7 @@
 			<h4><%= link_to "Methodologies", methodologies_path(search: params[:search]) %></h4>
 		<% end %>
 		<ul class="list-group">
-			<% @methodology_search.results.sort_by{|e| e[:methodology_name]}.each do |s| %>
+			<% @methodology_search.results.each do |s| %>
 	     	<li class="list-group-item">							
 					<%= link_to s.methodology_name, s %>
 				</li>
@@ -139,7 +139,7 @@
 			<h4><%= link_to "Database versions", versions_path(search: params[:search]) %></h4>
 		<% end %>
 		<ul class="list-group">
-			<% @version_search.results.sort_by{|e| e[:version_date]}.each do |s| %>
+			<% @version_search.results.each do |s| %>
 	     	<li class="list-group-item">							
 					<%= link_to s.version_notes s %>
 				</li>
