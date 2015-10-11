@@ -3,7 +3,9 @@
 ActionMailer::Base.smtp_settings = {
     :address   => 'smtp.mandrillapp.com',
     :port      => 25,
+    :enable_starttls_auto => true, # detects and uses STARTTLS
     :user_name => ENV['MANDRILL_USERNAME'],
+    :authentication => 'login', # Mandrill supports 'plain' or 'login'
     :password  => ENV['MANDRILL_PASSWORD'],
     :domain    => 'coraltraits.org'
   }
