@@ -2,7 +2,7 @@
 # Uncomment for Mandrill Mailer
 ActionMailer::Base.smtp_settings = {
     :address   => 'smtp.mandrillapp.com',
-    :port      => 2525,
+    :port      => 25,
     :user_name => ENV['MANDRILL_USERNAME'],
     :password  => ENV['MANDRILL_PASSWORD'],
     :domain    => 'coraltraits.org'
