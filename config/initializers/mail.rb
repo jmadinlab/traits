@@ -2,7 +2,7 @@
 # Uncomment for Mandrill Mailer
 ActionMailer::Base.smtp_settings = {
     :address   => 'smtp.mandrillapp.com',
-    :port      => 25,
+    :port      => 2525,
     :enable_starttls_auto => true, # detects and uses STARTTLS
     :user_name => ENV['MANDRILL_USERNAME'],
     :authentication => 'login', # Mandrill supports 'plain' or 'login'
