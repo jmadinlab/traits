@@ -147,7 +147,7 @@ class ResourcesController < ApplicationController
       end
     end
 
-    puts @doi["message"].green
+    # puts @doi["message"].green
 
     if @doi and not @doi == "Invalid"
       authors = ""
