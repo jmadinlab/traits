@@ -9,7 +9,18 @@ class StaticPagesController < ApplicationController
     @locations = Location.all
   end
   
-  def help
+  def test
+    require 'savon'
+
+    client = Savon.client(
+        :wsdl => "http://www.marinespecies.org/aphia.php?p=soap&wsdl=1",
+        :open_timeout => 10,
+        :read_timeout => 10,
+        :log => false
+    )
+
+    @test = client.call(:get_aphia_id, message: { scientificname: "Acropora hyacinthus" })
+
   end
 
   def meta
@@ -129,7 +140,7 @@ class StaticPagesController < ApplicationController
 
     csv_string = CSV.generate do |csv|
 
-      csv << ["trait_name", "class", "description", "standard", "unit", "values", "value description", "measurements", "link"]
+      csv << ["trait_name", "class", "description", "standard", "unit", "values", "value description", "measurements", "references"]
       traits.sort_by{|t| t[:trait_name]}.each do |tra|
 
         csv << [
@@ -141,8 +152,9 @@ class StaticPagesController < ApplicationController
           tra.traitvalues.collect(&:value_name).join(", "), 
           tra.traitvalues.map(&:value_description).join(", "), 
           tra.measurements.size, 
-          # Observation.where(:id => tra.measurements.map(&:observation_id)).map(&:resource_id).uniq.join(", "), 
-          "https://coraltraits.org/traits/#{tra.id}.zip"
+          [Observation.where(:id => tra.measurements.map(&:observation_id)).map(&:resource_id).uniq.join(", "), 
+          Observation.where(:id => tra.measurements.map(&:observation_id)).map(&:resource_secondary_id).uniq.reject(&:blank?).join(", ")].join(", ")#, 
+          # "https://coraltraits.org/traits/#{tra.id}.zip"
         ]
       end
     end
@@ -153,7 +165,7 @@ class StaticPagesController < ApplicationController
           
   end
 
-  def export_ready_resources
+  def export_release_resources
     ids = Observation.joins(:measurements).where(:measurements => {:trait_id => Trait.where(:release_status => 'ready_for_release')}).map{|f| [f.resource_id, f.resource_secondary_id]}.uniq.compact
     resources = Resource.where(:id => ids)
 
@@ -166,12 +178,12 @@ class StaticPagesController < ApplicationController
     end
     send_data csv_string, 
      :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
-     :disposition => "attachment; filename=export_ready_resources_#{Date.today.strftime('%Y%m%d')}.csv"   
+     :disposition => "attachment; filename=export_release_resources_#{Date.today.strftime('%Y%m%d')}.csv"   
   end
 
-  def export_ready
+  def export_release
     ids = Observation.joins(:measurements).where(:measurements => {:trait_id => Trait.where(:release_status => 'ready_for_release')}).map(&:id).join(',')
-    observations = Observation.find_by_sql("SELECT mea.observation_id, CASE WHEN obs.private='f' THEN 1 ELSE 0 END AS access, obs.user_id, obs.specie_id, spe.specie_name, obs.location_id, loc.location_name, CASE WHEN loc.latitude=0 THEN NULL ELSE loc.latitude END AS latitude, CASE WHEN loc.longitude=0 THEN NULL ELSE loc.longitude END AS longitude, obs.resource_id, obs.resource_secondary_id, mea.id, mea.trait_id, tra.trait_name, mea.standard_id, sta.standard_unit, mea.methodology_id, meth.methodology_name, mea.value, mea.value_type, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates, mea.notes
+    observations = Observation.find_by_sql("SELECT mea.observation_id, CASE WHEN obs.private='f' THEN 1 ELSE 0 END AS access, obs.user_id, obs.specie_id, spe.specie_name, obs.location_id, loc.location_name, CASE WHEN loc.latitude=0 THEN NULL ELSE loc.latitude END AS latitude, CASE WHEN loc.longitude=0 THEN NULL ELSE loc.longitude END AS longitude, obs.resource_id, obs.resource_secondary_id, mea.id, mea.trait_id, tra.trait_name, tra.trait_class, mea.standard_id, sta.standard_unit, mea.methodology_id, meth.methodology_name, mea.value, mea.value_type, mea.precision, mea.precision_type, mea.precision_upper, mea.replicates, mea.notes
       FROM observations AS obs
         right OUTER JOIN species AS spe
             ON spe.id = obs.specie_id
@@ -187,7 +199,7 @@ class StaticPagesController < ApplicationController
             ON mea.methodology_id = meth.id
       WHERE obs.private='f' AND obs.id IN (#{ids})
       ORDER BY obs.id;")
-    header = ["observation_id", "access", "user_id", "specie_id", "specie_name", "location_id", "location_name", "latitude", "longitude", "resource_id", "resource_secondary_id", "measurement_id", "trait_id", "trait_name", "standard_id", "standard_unit", "methodology_id", "methodology_name", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates", "notes"]
+    header = ["observation_id", "access", "user_id", "specie_id", "specie_name", "location_id", "location_name", "latitude", "longitude", "resource_id", "resource_secondary_id", "measurement_id", "trait_id", "trait_name", "trait_class", "standard_id", "standard_unit", "methodology_id", "methodology_name", "value", "value_type", "precision", "precision_type", "precision_upper", "replicates", "notes"]
 
     csv_string = CSV.generate do |csv|
       csv << header
@@ -198,7 +210,7 @@ class StaticPagesController < ApplicationController
 
     send_data csv_string.html_safe, 
      :type => 'text/csv; charset=iso-8859-1; header=present', :stream => true,
-     :disposition => "attachment; filename=export_ready_#{Date.today.strftime('%Y%m%d')}.csv"              
+     :disposition => "attachment; filename=export_release_#{Date.today.strftime('%Y%m%d')}.csv"              
   end
 
 end

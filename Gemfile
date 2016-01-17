@@ -23,7 +23,7 @@ gem 'jquery-rails'#, '< 3.0.0'
 gem 'turbolinks'
 gem 'jbuilder'
 gem 'jquery-turbolinks'
-
+gem 'savon', '~> 2.10.0'
 
 gem 'capistrano',  '~> 3.1'
 gem 'capistrano-rails', '~> 1.1'

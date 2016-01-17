@@ -141,6 +141,7 @@ Traits::Application.routes.draw do
   match '/release',        to: 'static_pages#release',    via: 'get'
   match '/uploads',        to: 'static_pages#uploads',    via: 'get'
 
+  match '/test',  to: 'static_pages#test',   via: 'get'
   match '/procedures',  to: 'static_pages#procedures',   via: 'get'
   match '/editors',     to: 'static_pages#editors',   via: 'get'
   match '/contributors', to: 'static_pages#contributors',   via: 'get'
@@ -152,8 +153,8 @@ Traits::Application.routes.draw do
   match '/export_location_trait', to: 'static_pages#export_location_trait',   via: 'get'
   match '/export_ready_trait', to: 'static_pages#export_ready_trait',   via: 'get'
 
-  match '/export_ready_resources', to: 'static_pages#export_ready_resources',   via: 'get'
-  match '/export_ready', to: 'static_pages#export_ready',   via: 'get'
+  match '/export_release_resources', to: 'static_pages#export_release_resources',   via: 'get'
+  match '/export_release', to: 'static_pages#export_release',   via: 'get'
 
   match '/doi_new',    to: 'resources#doi_new',   via: 'get'
 
