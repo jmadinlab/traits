@@ -166,7 +166,7 @@ class StaticPagesController < ApplicationController
   end
 
   def export_release_resources
-    ids = Observation.joins(:measurements).where(:measurements => {:trait_id => Trait.where(:release_status => 'ready_for_release')}).map{|f| [f.resource_id, f.resource_secondary_id]}.uniq.compact
+    ids = Observation.where(:private => 'f').joins(:measurements).where(:measurements => {:trait_id => Trait.where(:release_status => 'ready_for_release')}).map{|f| [f.resource_id, f.resource_secondary_id]}.uniq.compact
     resources = Resource.where(:id => ids)
 
     header = ["id", "author", "year", "title", "doi_isbn", "journal", "volume_pages"]
