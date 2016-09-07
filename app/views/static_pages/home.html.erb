@@ -13,45 +13,50 @@
   	<% end %>
 
     <p>
-      <div id="map-canvas" class="map-container"></div>
+      <div id="map"></div>
     </p>
 
   </div>
-
 </div>
 
-    <div class="col-md-3">
-      <a class="twitter-timeline" href="https://twitter.com/coraltraits" data-widget-id="643167985499148292">Tweets by @coraltraits</a>
-      <script src="//platform.twitter.com/widgets.js"></script>
-    </div>
+<div class="col-md-3">
+  <a class="twitter-timeline" href="https://twitter.com/coraltraits" data-widget-id="643167985499148292">Tweets by @coraltraits</a>
+  <script src="//platform.twitter.com/widgets.js"></script>
+</div>
 
 
-<script type="text/javascript">
-  var locations = <%= raw @locations.map {|i| [i.location_name.to_s, i.latitude.to_s, i.longitude.to_s, i.id.to_s] } %>;
+<script>
 
-  var map = new google.maps.Map(document.getElementById('map-canvas'), {
-    zoom: 2,
-    center: new google.maps.LatLng(0, 155),
-    mapTypeId: google.maps.MapTypeId.SATELLITE,
-    streetViewControl: false
-  });
+  function initMap() {
+    var locations = <%= raw @locations.map {|i| [i.location_name.to_s, i.latitude.to_s, i.longitude.to_s, i.id.to_s] } %>;
 
-  var infowindow = new google.maps.InfoWindow();
-
-  var marker, i;
-
-  for (i = 0; i < locations.length; i++) {  
-    marker = new google.maps.Marker({
-      position: new google.maps.LatLng(locations[i][1], locations[i][2]),
-      map: map
+    var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 2,
+      center: new google.maps.LatLng(0, 155),
+      mapTypeId: google.maps.MapTypeId.SATELLITE,
+      streetViewControl: false
     });
 
-    google.maps.event.addListener(marker, 'click', (function(marker, i) {
-      return function() {
-        infowindow.setContent('<a data-no-turbolink="true" href="locations/'+locations[i][3]+'">'+locations[i][0]+'</a>');
-        infowindow.open(map, marker);
-      }
-    })(marker, i));
+    var infowindow = new google.maps.InfoWindow();
+
+    var marker, i;
+
+    for (i = 0; i < locations.length; i++) {  
+      marker = new google.maps.Marker({
+        position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+        map: map
+      });
+
+      google.maps.event.addListener(marker, 'click', (function(marker, i) {
+        return function() {
+          infowindow.setContent('<a data-no-turbolink="true" href="locations/'+locations[i][3]+'">'+locations[i][0]+'</a>');
+          infowindow.open(map, marker);
+        }
+      })(marker, i));
+    }
   }
+
 </script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBJG1Hc3Z4RxhlbmvsHvzXakd_pCZjD_5I&callback=initMap" async defer></script>
+
 

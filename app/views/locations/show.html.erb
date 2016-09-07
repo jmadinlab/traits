@@ -71,7 +71,7 @@
 <ul class="list-group">
 <li class="list-group-item">              
     <% if @location.location_name != "Global" %>
-      <div id="map-canvas" class="map-container" data-no-turbolink></div> 
+      <div id="map" data-no-turbolink></div> 
     <% end %>
 </li>
 </ul>
@@ -91,24 +91,27 @@
   <% end %>
 </div>
 
-<script type="text/javascript">
-  var loc = <%= raw [@location.location_name.to_s, @location.latitude.to_s, @location.longitude.to_s, @location.id.to_s] %>;
+<script>
+  function initMap() {
+    var loc = <%= raw [@location.location_name.to_s, @location.latitude.to_s, @location.longitude.to_s, @location.id.to_s] %>;
 
-  var map = new google.maps.Map(document.getElementById('map-canvas'), {
-    zoom: 10,
-    center: new google.maps.LatLng(loc[1], loc[2]),
-    mapTypeId: google.maps.MapTypeId.SATELLITE,
-    streetViewControl: false
-  });
+    var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 10,
+      center: new google.maps.LatLng(loc[1], loc[2]),
+      mapTypeId: google.maps.MapTypeId.SATELLITE,
+      streetViewControl: false
+    });
 
-  var infowindow = new google.maps.InfoWindow();
+    var infowindow = new google.maps.InfoWindow();
 
-  marker = new google.maps.Marker({
-    position: new google.maps.LatLng(loc[1], loc[2]),
-    map: map
-  });
+    marker = new google.maps.Marker({
+      position: new google.maps.LatLng(loc[1], loc[2]),
+      map: map
+    });
+  }
 </script>
 
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBJG1Hc3Z4RxhlbmvsHvzXakd_pCZjD_5I&callback=initMap" async defer></script>
 
 
 

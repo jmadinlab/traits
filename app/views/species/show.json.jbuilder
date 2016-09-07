@@ -1,0 +1,1 @@
+json.partial! "species/specie", specie: @specie

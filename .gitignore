@@ -25,6 +25,7 @@ revisions.log
 /solr/production
 /solr/pids
 /log
+solr/*
 
 # Ignore all logfiles and tempfiles.
 /log/*.log
@@ -53,4 +54,6 @@ notes_josh.md
 documentation.md
 *.sql
 *.dump
+*.log
+
 postgres/
