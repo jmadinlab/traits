@@ -1,11 +1,14 @@
 source 'https://rubygems.org'
+ruby '2.1.4'
 
-gem 'rails'
+gem 'rails', '~> 4.2', '>= 4.2.8'
+# gem 'rails'#, '4.2.5'
 gem 'bootstrap-sass'
 gem 'bcrypt'
 gem 'cocoon'
 gem 'will_paginate'
 gem 'bootstrap-will_paginate'
+gem 'rake', '< 11.0'
 
 gem 'select2-rails'
 gem 'sunspot_rails'
@@ -24,6 +27,8 @@ gem 'turbolinks'
 gem 'jbuilder'
 gem 'jquery-turbolinks'
 gem 'savon', '~> 2.10.0'
+
+gem 'jquery-ui-rails' # jquery ui
 
 gem 'capistrano',  '~> 3.1'
 gem 'capistrano-rails', '~> 1.1'

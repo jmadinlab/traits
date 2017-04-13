@@ -12,15 +12,15 @@
 //
 //= require jquery
 //= require jquery.turbolinks
-//= require jquery-ui
 //= require jquery_ujs
+//= require jquery-ui
 //= require turbolinks
 //= require bootstrap
 //= require select2
 //= require cocoon
 //= require_tree .
 
-$(document).on('page:load ready', function() {
+$(document).on("turbolinks:load", function() {
 
   $("#countlist p").each(function(i,el){  // loop though each user
     var $pubcount = $(el).find(".pubcount");  // get the record count element
@@ -48,7 +48,7 @@ $(document).on('page:load ready', function() {
   });
 });
 
-$(document).on('page:load ready', function() {
+$(document).on("turbolinks:load", function() {
 
   $("#doilist li").each(function(i,el){  // loop though each user
     var $doi = $(el).find(".doi");  // get the record count element
@@ -67,7 +67,7 @@ $(document).on('page:load ready', function() {
   });
 });
 
-$(document).on('page:load ready', function() {
+$(document).on("turbolinks:load", function() {
 
   $("#dupdetect p").each(function(i,el){  // loop though each user
     var $dup = $(el).find(".dup");  // get the record count element
@@ -85,7 +85,7 @@ $(document).on('page:load ready', function() {
   });
 });
 
-$(document).on('page:load ready', function() {
+$(document).on("turbolinks:load", function() {
 
   $("#duptrait p").each(function(i,el){  // loop though each user
     var $dup = $(el).find(".dup");  // get the record count element
