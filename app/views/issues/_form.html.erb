@@ -3,8 +3,8 @@
   <%= render 'shared/error_messages', object: f.object %>
 
   <div class="form-group">
-    <%= f.label "Issue reported by" %>: <%= current_user.name %>
-    <%= f.hidden_field :user_id, :value => current_user.id %>
+    <%= f.label "Issue reported by" %>: <%= link_to "#{@issue.user.name} #{@issue.user.last_name}", user_path(@issue.user) %>
+    <%= f.hidden_field :user_id, :value => @issue.user_id %>
   </div>
 
   <div class="form-group">

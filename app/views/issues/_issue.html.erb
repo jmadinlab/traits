@@ -22,7 +22,7 @@
 
     <div class="col-md-2">
       <% if issue.resolved %>
-        <%= User.find_by_id(issue.resolved_user).name %>  <%= issue.user.last_name %><small> (<%= mail_to User.find_by_id(issue.resolved_user).email %>)</small>
+        <%= User.find_by_id(issue.resolved_user).name %>  <%= User.find_by_id(issue.resolved_user).last_name %><small> (<%= mail_to User.find_by_id(issue.resolved_user).email %>)</small>
       <% end %>
     </div>
 
