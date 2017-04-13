@@ -59,7 +59,7 @@
 				    			<li><%= link_to "Approvals", observation_imports_approve_path %></li>
 				    			<li><%= link_to "Uploads", uploads_path %></li>
 					      	<li><%= link_to "Change History", history_path %></li>
-				    			<% issues_count = Issue.all.size %>
+				    			<% issues_count = Issue.where("resolved IS NOT TRUE").size %>
 				    			<li><%= link_to "Issues <span class='badge pull-right'>#{issues_count}</span>".html_safe, issues_path %></li>
 
 								<% end %>
