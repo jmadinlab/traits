@@ -25,7 +25,7 @@ revisions.log
 /solr/production
 /solr/pids
 /log
-solr/*
+#solr/*
 
 # Ignore all logfiles and tempfiles.
 /log/*.log
