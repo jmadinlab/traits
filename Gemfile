@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.1.4'
+ruby '2.4.0'
 
 gem 'rails', '~> 4.2', '>= 4.2.8'
 # gem 'rails'#, '4.2.5'
@@ -36,7 +36,7 @@ gem 'capistrano-rails', '~> 1.1'
 gem 'colorize'
 
 # database setup (postgres), and for Heroku
-gem 'pg'
+gem 'pg', '~> 0.21'
 # gem 'rails_12factor', group: :production
 
 gem 'roo'
