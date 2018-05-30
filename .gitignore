@@ -41,6 +41,8 @@ local_env.yml
 # Ignore other unneeded files.
 #Gemfile.lock
 database.yml
+config/database.yml
+config/secrets.yml
 doc/
 *.swp
 *~
