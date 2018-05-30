@@ -1,4 +1,4 @@
-class ChangeDatatypeOnResourcesAllFromStringToText < ActiveRecord::Migration
+class ChangeDatatypeOnResourcesAllFromStringToText < ActiveRecord::Migration[4.2]
    def up
     change_column :resources, :title, :text, :limit => nil
     change_column :resources, :resource_type, :text, :limit => nil

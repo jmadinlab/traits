@@ -1,4 +1,4 @@
-class ChangeVersionSnapNameToReleaseName < ActiveRecord::Migration
+class ChangeVersionSnapNameToReleaseName < ActiveRecord::Migration[4.2]
   def change
     rename_table :versions, :releases
     rename_table :changes, :versions

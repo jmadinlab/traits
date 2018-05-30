@@ -1,4 +1,4 @@
-class CreateMeasurements < ActiveRecord::Migration
+class CreateMeasurements < ActiveRecord::Migration[4.2]
   def change
     create_table :measurements do |t|
       t.references :observation, index: true

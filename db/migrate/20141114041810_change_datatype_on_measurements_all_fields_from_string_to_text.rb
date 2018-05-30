@@ -1,4 +1,4 @@
-class ChangeDatatypeOnMeasurementsAllFieldsFromStringToText < ActiveRecord::Migration
+class ChangeDatatypeOnMeasurementsAllFieldsFromStringToText < ActiveRecord::Migration[4.2]
    def up
     change_column :measurements, :orig_value, :text, :limit => nil
     change_column :measurements, :precision_type, :text, :limit => nil

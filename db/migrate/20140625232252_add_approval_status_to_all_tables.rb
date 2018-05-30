@@ -1,4 +1,4 @@
-class AddApprovalStatusToAllTables < ActiveRecord::Migration
+class AddApprovalStatusToAllTables < ActiveRecord::Migration[4.2]
   def change
   	add_column :corals, :approval_status, :string
   	add_column :traits, :approval_status, :string

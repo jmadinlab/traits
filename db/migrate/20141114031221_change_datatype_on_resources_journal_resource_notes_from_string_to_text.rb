@@ -1,4 +1,4 @@
-class ChangeDatatypeOnResourcesJournalResourceNotesFromStringToText < ActiveRecord::Migration
+class ChangeDatatypeOnResourcesJournalResourceNotesFromStringToText < ActiveRecord::Migration[4.2]
    def up
     change_column :resources, :journal, :text, :limit => nil
     change_column :resources, :resource_notes, :text, :limit => nil

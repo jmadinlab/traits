@@ -1,4 +1,4 @@
-class CreateTraits < ActiveRecord::Migration
+class CreateTraits < ActiveRecord::Migration[4.2]
   def change
     create_table :traits do |t|
       t.string :trait_name

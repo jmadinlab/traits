@@ -1,4 +1,4 @@
-class DropTableCitations < ActiveRecord::Migration
+class DropTableCitations < ActiveRecord::Migration[4.2]
   def change
     drop_table :citations
   end

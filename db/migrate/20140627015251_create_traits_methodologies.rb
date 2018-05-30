@@ -1,4 +1,4 @@
-class CreateTraitsMethodologies < ActiveRecord::Migration
+class CreateTraitsMethodologies < ActiveRecord::Migration[4.2]
   def change
     create_table :methodologies do |t|
     	t.string   :methodology_name
