@@ -40,7 +40,7 @@ class SpeciesController < ApplicationController
   # GET /species/1
   # GET /species/1.json
   def show
-    @vfiles = Dir.glob("public/images/veron/*")
+    @vfiles = Dir.glob("public/assets/veron/*")
     @hfiles = Dir.glob("app/assets/images/hughes/*")
     @cgfiles = Dir.glob("app/assets/images/veron_cg/*")
 
