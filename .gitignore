@@ -32,6 +32,7 @@ revisions.log
 /log/*.log
 /tmp
 /public/assets/
+/public/images/veron*
 /public/uploads/*
 /app/assets/images/hughes/
 /app/assets/images/veron/
