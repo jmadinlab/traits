@@ -34,7 +34,7 @@
         config.assets.precompile += %w(*.png *.jpg *.jpeg *.gif)
         # config.assets.precompile = ['*.js', '*.css', '*.eot', '*.svg', '*.ttf', '*.woff']
         
-        config.assets.paths << "#{Rails.root}/app/assets/images"
+        # config.assets.paths << "#{Rails.root}/app/assets/pdfs"
 
         config.before_configuration do
           env_file = File.join(Rails.root, 'config', 'local_env.yml')
