@@ -99,6 +99,7 @@ Traits::Application.configure do
   }
   
   config.assets.precompile += %w( '.woff', '.eot', '.svg', '.ttf' )
+  config.assets.precompile += %w( '.png', '.jpg', '.jpeg', '.gif')
   
   # Google Analytics code
   GA.tracker = "UA-51287714-1"
