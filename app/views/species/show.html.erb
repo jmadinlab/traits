@@ -71,17 +71,17 @@
 
 			<% img = "#{Measurement.joins(:observation).where("trait_id = ? AND specie_id = ?", 62, @specie.id).last.value}M.jpg" %>
 
-			<% @vtemp = @vfiles.find_all{|item| item.include? img }.last %>
-			<% if !@vtemp.nil? %>
+			<%# @vtemp = @vfiles.find_all{|item| item.include? img }.last %>
+			<%# if !@vtemp.nil? %>
         <ul class="list-group">
           <li class="list-group-item">	 		
             <%= image_tag "veron/#{img}", :style => "border:0px;", class:  "img-responsive" %>
 				<%= link_to "Ⓒ Corals of the World", resource_path(10) %> (viewable to logged-in users, but copyrighted material, so please do not distribute)
             </li>
             </ul>
-			<% else %>
-					<p>No map</p>
-			<% end %>
+			<%# else %>
+					<!-- <p>No map</p> -->
+			<%# end %>
 		<% else %>
 			<p><%= link_to "Sign in", signin_path %> to see map</p>
 		<% end %>
