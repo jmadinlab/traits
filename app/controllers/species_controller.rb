@@ -41,8 +41,6 @@ class SpeciesController < ApplicationController
   # GET /species/1.json
   def show
     @vfiles = Dir.glob("app/assets/images/veron/*")
-    @hfiles = Dir.glob("app/assets/images/hughes/*")
-    @cgfiles = Dir.glob("app/assets/images/veron_cg/*")
 
     @observations = Observation.where(:specie_id => @specie.id)
     @observations = observation_filter(@observations)

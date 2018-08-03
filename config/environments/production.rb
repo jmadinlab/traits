@@ -43,7 +43,7 @@ Traits::Application.configure do
   config.force_ssl = false
 
   # Set to :debug to see everything in the log.
-  config.log_level = :debug
+  config.log_level = :warn
 
   # Prepend all log lines with the following tags.
   # config.log_tags = [ :subdomain, :uuid ]
@@ -66,9 +66,9 @@ Traits::Application.configure do
   # config.action_mailer.raise_delivery_errors = false
   config.action_mailer.default_url_options = { host: ENV["SITE_URL"] }
   config.action_mailer.raise_delivery_errors = true
-  
+
   config.action_mailer.delivery_method = :smtp
-  
+
   # config.action_mailer.smtp_settings = {
   #   address: "smtp.gmail.com",
   #   port: 587,
@@ -78,7 +78,7 @@ Traits::Application.configure do
   #   user_name: ENV["GMAIL_USERNAME"],
   #   password: ENV["GMAIL_PASSWORD"],
   #   ssl: true
-  # }  
+  # }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation can not be found).
@@ -97,9 +97,9 @@ Traits::Application.configure do
   config.action_dispatch.default_headers = {
       'X-Frame-Options' => 'ALLOWALL'
   }
-  
+
   config.assets.precompile += %w( '.woff', '.eot', '.svg', '.ttf' )
-  
+
   # Google Analytics code
   GA.tracker = "UA-51287714-1"
 end
