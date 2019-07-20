@@ -4,7 +4,7 @@
   <div class="jumbotron" style="background: rgba(238, 238, 238, 0.8)!important;">
   	<h1><%= ENV["SITE_NAME"]%></h1>
     <br>
-  	<p>The Coral Trait Database is a growing compilation of scleractinian coral life history trait, phylogenetic and biogeographic data. As of today, there are <%= Observation.all.size %> coral observations with <%= Measurement.all.size %> trait entries of <%= Trait.all.size %> traits for <%= Specie.all.size %> coral species in the database. Most of these entries are for shallow-water, reef-building species.</p>
+  	<p>The Coral Trait Database is a growing compilation of scleractinian coral life history trait, phylogenetic and biogeographic data. As of today, there are <%= Observation.all.size %> coral observations with <%= Measurement.all.size %> trait entries of <%= Trait.all.size %> traits for <%= Specie.all.size %> coral species in the database. Most of these entries are for shallow-water, reef-building species. test</p>
 
   	<% if not signed_in? %>
   		<p><%= link_to "Sign up?", signup_path, class: "btn btn-primary" %></p>
@@ -58,5 +58,3 @@
 
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBJG1Hc3Z4RxhlbmvsHvzXakd_pCZjD_5I&callback=initMap" async defer></script>
-
-
