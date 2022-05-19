@@ -3,7 +3,7 @@
 <div class="col-md-9">
   <%= render "shared/index_header" %>
 <ul class="list-group">
-<li class="list-group-item">              
+<li class="list-group-item">
   <div id="map"></div>
   </li>
   </ul>
@@ -22,7 +22,7 @@
 
   	<ul class="list-group">
     	<% @locations.sort_by{|e| e[:location_name]}.each do |location| %>
-  		  <li id="countlist" class="list-group-item">							
+  		  <li id="countlist" class="list-group-item">
   				<div class="row">
   	        <div class="col-sm-1" style="color: lightgrey;">
   	        	<%= location.id %>
@@ -57,7 +57,7 @@
 
   				</div>
   			</li>
-      <% end %>		
+      <% end %>
     </ul>
 
     <%= will_paginate @locations, :inner_window => 1, :outer_window => 0 %>
@@ -91,7 +91,7 @@
 
     var marker, i;
 
-    for (i = 0; i < locations.length; i++) {  
+    for (i = 0; i < locations.length; i++) {
       marker = new google.maps.Marker({
         position: new google.maps.LatLng(locations[i][1], locations[i][2]),
         map: map
@@ -108,9 +108,3 @@
 </script>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBJG1Hc3Z4RxhlbmvsHvzXakd_pCZjD_5I&callback=initMap" async defer></script>
-
-
-
-
-
-

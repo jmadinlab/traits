@@ -10,7 +10,7 @@
     <strong>ID:</strong>
     	<%= @specie.id %>
   </p>
-	
+
 	<% if !@specie.synonyms.blank? %>
 	  <p>
 	    <strong>Other names:</strong>
@@ -74,7 +74,7 @@
 			<%# @vtemp = @vfiles.find_all{|item| item.include? img }.last %>
 			<%# if !@vtemp.nil? %>
         <ul class="list-group">
-          <li class="list-group-item">	 		
+          <li class="list-group-item">
             <%= image_tag "#{img}", :style => "border:0px;", class:  "img-responsive" %>
 				<%= link_to "Ⓒ Corals of the World", resource_path(10) %> (viewable to logged-in users, but copyrighted material, so please do not distribute)
             </li>
@@ -93,7 +93,7 @@
 
 <div class="col-md-4">
 	<ul class="list-group">
-		<li class="list-group-item">							
+		<li class="list-group-item">
 			<p><strong>External resources for this species:</strong></p>
 			<ul>
 				<li type="disc">
@@ -105,7 +105,7 @@
 					<% if !fac.blank? %>
 						AIMS factsheet and images:
 						<% fac.each do |f| %>
-							<%= link_to f.value, "http://coral.aims.gov.au/factsheet.jsp?speciesCode=" + f.value.to_s.rjust(4, '0'), target: "_blank" %>
+							<%= link_to f.value, "http://www.coralsoftheworld.org/species_factsheets/species_factsheet_summary/" + @specie.specie_name.to_s.parameterize(separator: '-'), target: "_blank" %>
 						<% end %>
 					<% else %>
 						AIMS factsheet and images (not available)
@@ -128,7 +128,7 @@
 				</li>
 			</ul>
 		</li>
-	</ul>	
+	</ul>
 </div>
 
 
@@ -138,4 +138,3 @@
 
 	<%= render "specie_observations" %>
 </div>
-

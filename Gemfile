@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.5.1'
+ruby '2.6.10'
 
 gem 'capistrano', '~> 3.7', '>= 3.7.1'
 gem 'capistrano-rails', '~> 1.2'
@@ -72,5 +72,3 @@ group :test do
 end
 
 # gem 'rake', '< 11.0'
-
-
