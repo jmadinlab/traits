@@ -1,8 +1,8 @@
 # config valid for current version and patch releases of Capistrano
-lock "~> 3.10.2"
+lock "~> 3.17.0"
 
 set :application, "traits"
-set :repo_url, "git@github.com:jmadin/traits.git"
+set :repo_url, "git@github.com:jmadinlab/traits.git"
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp

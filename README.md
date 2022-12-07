@@ -30,7 +30,7 @@ The below quick start guide was last updated for ruby-2.6.10.
         cd ..
         bundle install
 
-5. 
+5.
 
 5. Migrate database structure to sqlite3 development database
 
@@ -60,11 +60,7 @@ The below quick start guide was last updated for ruby-2.6.10.
 ### Notes
 
 
-1. The bundler will complain if you don't have postgres installed. Postgres is used for production, but you don't have to have it installed when developing on local machine, which uses
-
-https://wiki.postgresql.org/wiki/Homebrew
-
-
+1. The bundler will complain if you don't have postgres installed. For more help: https://wiki.postgresql.org/wiki/Homebrew
 
 2. On a Mac, you need to have JDK 8 installed. Easiest to do with `brew`
 
