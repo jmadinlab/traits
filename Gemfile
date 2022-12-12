@@ -1,11 +1,17 @@
 source 'https://rubygems.org'
-ruby '2.6.10'
+ruby '2.5.1'
 
-gem 'capistrano', '~> 3.7', '>= 3.7.1'
-gem 'capistrano-rails', '~> 1.2'
+# gem 'capistrano', '~> 3.7', '>= 3.7.1'
+# gem 'capistrano-rails', '~> 1.2'
+# gem 'capistrano-passenger', '~> 0.2.0'
+# gem 'capistrano-sunspot'
+# gem 'capistrano-rbenv', '~> 2.1'
+
+gem 'capistrano', '~> 3.11'
+gem 'capistrano-rails', '~> 1.4'
 gem 'capistrano-passenger', '~> 0.2.0'
-gem 'capistrano-sunspot'
-gem 'capistrano-rbenv', '~> 2.1'
+gem 'capistrano-rbenv', '~> 2.1', '>= 2.1.4'
+
 
 gem 'sunspot_rails'
 gem 'sunspot_solr'
