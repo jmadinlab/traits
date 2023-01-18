@@ -181,7 +181,8 @@ GEM
       highline (>= 1.6, < 3)
       options (~> 2.3.0)
     public_suffix (5.0.0)
-    puma (3.12.6)
+    puma (4.3.12)
+      nio4r (~> 2.0)
     racc (1.6.1)
     rack (2.2.4)
     rack-test (2.0.2)
@@ -333,7 +334,7 @@ DEPENDENCIES
   paper_trail
   pg (>= 0.18, < 2.0)
   progress_bar
-  puma (~> 3.11)
+  puma (~> 4.3)
   rails (~> 5.2.0)
   redcarpet
   roo
